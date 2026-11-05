@@ -26,9 +26,10 @@
 
 import {
   AppsOutlinedIcon,
+  Box,
   Divider,
-  StarBorderIcon,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -40,31 +41,32 @@ import {
 } from '@dataspace-mgm/ui-mui';
 import { NavLink } from 'react-router-dom';
 import { useFavourites } from '../../contexts/FavouritesContext';
+import FavouritesMenu from './FavouritesMenu';
+import { NotificationsMenu, ProfileMenu, railButtonSx } from './HeaderMenus';
 
 const RAIL_WIDTH = 72;
 
-const railButton = {
-  flex: 'none',
-  width: 44,
-  height: 44,
-  justifyContent: 'center',
-  position: 'relative',
-  color: 'text.secondary',
-} as const;
-
-/** Header height on desktop (74 px toolbar + 1 px border): the rail sticks right below it. */
-const HEADER_HEIGHT = 75;
+/** One centred slot of the rail. */
+function RailSlot({ children }: { children: React.ReactNode }) {
+  return (
+    <ListItem disablePadding sx={{ justifyContent: 'center', py: 0.25 }}>
+      {children}
+    </ListItem>
+  );
+}
 
 /**
- * Icon rail on desktop (MUI Drawer + List), the full height of the page next to the content and its
- * footer: the person's favourite features on top and, at the bottom left, "Choose favourites" and
- * "All apps". The icons stick below the header, so both stay in reach while the page scrolls.
+ * Icon rail on desktop (MUI Drawer + List), fixed on the left of the shell from the header to the bottom
+ * of the window; it never scrolls with the page.
+ * - Top: Home and the person's favourite features, and right under the last one the "+" to edit them.
+ * - Bottom left: notifications, the profile, and "All apps" as the last button.
  * On phones and tablets the BottomBar shows the same favourites.
  */
 export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
-  const items = useFavourites().favourites;
+  const { favourites } = useFavourites();
   // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
   const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
+  const hover = { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) };
 
   return (
     <Drawer
@@ -74,24 +76,19 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
       sx={{
         width: RAIL_WIDTH,
         flexShrink: 0,
-        // The rail runs the full height of the page; its content sticks below the header.
-        borderRight: 1,
-        borderColor: 'divider',
         '& .MuiDrawer-paper': {
-          position: 'sticky',
-          top: HEADER_HEIGHT,
+          position: 'relative',
           width: RAIL_WIDTH,
-          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
           overflowX: 'hidden',
-          borderRight: 0,
         },
       }}
     >
-      <List sx={{ py: 2, flex: 1, overflowY: 'auto' }}>
-        {items.map((item) => (
-          <ListItem key={item.path} disablePadding sx={{ justifyContent: 'center' }}>
+      <List aria-label="Favourites" sx={{ py: 2, flex: 1, overflowY: 'auto' }}>
+        {favourites.map((item) => (
+          <RailSlot key={item.path}>
             <Tooltip title={item.disabled ? `${item.name} (coming soon)` : item.name} placement="right">
               <ListItemButton
                 component={NavLink}
@@ -100,8 +97,11 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
                 disabled={item.disabled}
                 aria-label={item.name}
                 sx={{
-                  ...railButton,
-                  '&:hover': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) },
+                  ...railButtonSx,
+                  flex: 'none',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  '&:hover': hover,
                   '&.active': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.15) },
                   '&.active::before': {
                     content: '""',
@@ -118,28 +118,22 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
                 <ListItemIcon sx={{ minWidth: 0, color: 'inherit' }}>{item.icon}</ListItemIcon>
               </ListItemButton>
             </Tooltip>
-          </ListItem>
+          </RailSlot>
         ))}
+        <RailSlot>
+          <FavouritesMenu placement="rail" />
+        </RailSlot>
       </List>
       <Divider sx={{ mx: 2 }} />
-      <List sx={{ py: 2 }} aria-label="App actions">
-        {[
-          { label: 'Choose favourites', icon: <StarBorderIcon /> },
-          { label: 'All apps', icon: <AppsOutlinedIcon /> },
-        ].map((action) => (
-          <ListItem key={action.label} disablePadding sx={{ justifyContent: 'center' }}>
-            <Tooltip title={action.label} placement="right">
-              <ListItemButton
-                onClick={onOpenApps}
-                aria-label={action.label}
-                sx={{ ...railButton, '&:hover': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) } }}
-              >
-                <ListItemIcon sx={{ minWidth: 0, color: 'inherit' }}>{action.icon}</ListItemIcon>
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-        ))}
-      </List>
+      <Box sx={{ py: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+        <NotificationsMenu placement="rail" />
+        <ProfileMenu placement="rail" />
+        <Tooltip title="All apps" placement="right">
+          <IconButton onClick={onOpenApps} aria-label="All apps" sx={{ ...railButtonSx, '&:hover': hover }}>
+            <AppsOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
     </Drawer>
   );
 }

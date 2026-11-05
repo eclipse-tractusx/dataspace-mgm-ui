@@ -24,33 +24,114 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import { forwardRef, useId, type ReactElement, type ReactNode, type Ref } from 'react';
 import {
   AppBar,
-  Avatar,
   Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
+  ButtonBase,
   CloseIcon,
   Container,
+  DarkModeOutlinedIcon,
   Dialog,
-  DialogContent,
-  Grid,
+  GitHubIcon,
   IconButton,
-  Stack,
-  StarBorderIcon,
-  StarIcon,
+  LightModeOutlinedIcon,
+  Slide,
   Toolbar,
-  Tooltip,
   Typography,
+  alpha,
   tractusx,
+  useColorMode,
   useMediaQuery,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
-import { useNavigate } from 'react-router-dom';
-import { FIXED_FAVOURITES, MAX_FAVOURITES, useFavourites } from '../../contexts/FavouritesContext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { activePath } from '../../contexts/FavouritesContext';
 import type { NavigationItem } from '../../types/routing';
+
+const SOURCE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-ui';
+
+/** On phones the view rises from the bottom bar. */
+const SlideUp = forwardRef(function SlideUp(props: { children: ReactElement; in?: boolean }, ref: Ref<unknown>) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+interface TileProps {
+  label: string;
+  icon: ReactNode;
+  note?: string;
+  active?: boolean;
+  disabled?: boolean;
+  onSelect: () => void;
+}
+
+/** One square tile of the launcher: an app, or a setting on phones. */
+function Tile({ label, icon, note, active = false, disabled = false, onSelect }: TileProps) {
+  const theme = useTheme();
+  const iconColor = theme.palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+  return (
+    <ButtonBase
+      onClick={onSelect}
+      disabled={disabled}
+      aria-current={active ? 'page' : undefined}
+      aria-label={note ? `${label}, ${note.toLowerCase()}` : label}
+      sx={{
+        aspectRatio: '1 / 1',
+        width: '100%',
+        borderRadius: '10px',
+        border: '1px solid',
+        borderColor: active ? tractusx.orange : theme.palette.ui.cardBorder,
+        bgcolor: theme.palette.ui.surface,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        p: 1,
+        textAlign: 'center',
+        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+        '&:hover': { boxShadow: theme.palette.ui.glow },
+        '&.Mui-focusVisible': { outline: `2px solid ${tractusx.orange}`, outlineOffset: 2 },
+        '&.Mui-disabled': { opacity: 0.55 },
+      }}
+    >
+      <Box
+        aria-hidden
+        sx={{
+          width: 44,
+          height: 44,
+          borderRadius: '10px',
+          display: 'grid',
+          placeItems: 'center',
+          color: iconColor,
+          bgcolor: alpha(tractusx.orange, 0.15),
+        }}
+      >
+        {icon}
+      </Box>
+      <Typography component="span" sx={{ fontWeight: 700, fontSize: 14, lineHeight: 1.25 }}>
+        {label}
+      </Typography>
+      {note && (
+        <Typography component="span" variant="caption" color="text.secondary">
+          {note}
+        </Typography>
+      )}
+    </ButtonBase>
+  );
+}
+
+function TileGrid({ children }: { children: ReactNode }) {
+  return (
+    <Box
+      sx={{
+        display: 'grid',
+        gap: 1.5,
+        gridTemplateColumns: { xs: 'repeat(3, minmax(0, 1fr))', sm: 'repeat(4, minmax(0, 1fr))', md: 'repeat(5, minmax(0, 1fr))' },
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
 
 interface AppsDialogProps {
   open: boolean;
@@ -59,102 +140,117 @@ interface AppsDialogProps {
 }
 
 /**
- * Every feature of the portal in one view, full screen on phones and tablets. The star of each app
- * turns it on or off as a favourite: favourites appear in the sidebar and in the phone's bottom bar.
+ * "All apps": every feature as a square tile. On desktop a dialog opened from the foot of the sidebar; on
+ * phones and tablets a full-screen view that rises from the bottom bar, with the settings below the apps and
+ * the close button where the button that opened it was. Opening an app closes it.
  */
 export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const navigate = useNavigate();
-  const { favourites, isFavourite, canToggle, toggle } = useFavourites();
-  const iconColor = theme.palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+  const { pathname } = useLocation();
+  const { mode, toggle } = useColorMode();
+  const appsHeading = useId();
+  const settingsHeading = useId();
+  const current = activePath(
+    pathname,
+    items.map((item) => item.path),
+  );
 
-  const openFeature = (item: NavigationItem) => {
+  const go = (path: string) => {
     onClose();
-    navigate(item.path);
+    navigate(path);
   };
 
-  const starHint = (item: NavigationItem) => {
-    if (FIXED_FAVOURITES.includes(item.path)) return `${item.name} is always in your bar`;
-    if (isFavourite(item.path)) return `Remove ${item.name} from favourites`;
-    if (!canToggle(item.path)) return `Up to ${MAX_FAVOURITES} favourites: remove one first`;
-    return `Add ${item.name} to favourites`;
-  };
+  const closeButton = (
+    <IconButton onClick={onClose} aria-label="Close all apps" sx={{ color: 'text.primary', width: 44, height: 44 }}>
+      <CloseIcon />
+    </IconButton>
+  );
 
   return (
-    <Dialog open={open} onClose={onClose} fullScreen={fullScreen} fullWidth maxWidth="md" aria-labelledby="apps-dialog-title">
-      <AppBar
-        position="sticky"
-        elevation={0}
-        sx={{ bgcolor: theme.palette.ui.navbar, color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}
-      >
-        <Toolbar sx={{ minHeight: { xs: 64, md: 74 }, gap: 2, pt: fullScreen ? 'env(safe-area-inset-top, 0px)' : 0 }}>
-          <Typography id="apps-dialog-title" component="h2" sx={{ flex: 1, fontWeight: 800, fontSize: 20 }}>
-            All apps
-          </Typography>
-          <IconButton edge="end" onClick={onClose} aria-label="Close all apps" sx={{ color: 'text.primary' }}>
-            <CloseIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <DialogContent sx={{ px: 0, py: 3, pb: fullScreen ? 'calc(32px + env(safe-area-inset-bottom, 0px))' : 4 }}>
-        <Container maxWidth="md">
-          <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Star up to {MAX_FAVOURITES} favourites for your sidebar and the bar on your phone ({favourites.length} of{' '}
-            {MAX_FAVOURITES} chosen). Home is always there.
-          </Typography>
-          <Grid container spacing={2}>
-            {items.map((item) => {
-              const favourite = isFavourite(item.path);
-              return (
-                <Grid key={item.path} size={{ xs: 6, sm: 4 }}>
-                  <Card sx={{ height: '100%', position: 'relative', borderColor: favourite ? tractusx.orange : undefined }}>
-                    <CardActionArea
-                      disabled={item.disabled}
-                      onClick={() => openFeature(item)}
-                      aria-label={item.disabled ? `${item.name}, coming soon` : `Open ${item.name}`}
-                      sx={{ height: '100%', alignItems: 'flex-start' }}
-                    >
-                      <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } } }}>
-                        <Stack spacing={1.5} sx={{ opacity: item.disabled ? 0.6 : 1 }}>
-                          <Avatar variant="rounded" aria-hidden sx={{ color: iconColor }}>
-                            {item.icon}
-                          </Avatar>
-                          <Typography component="h3" sx={{ fontWeight: 700, fontSize: 16, lineHeight: 1.3, pr: 4 }}>
-                            {item.name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {item.description}
-                          </Typography>
-                          {item.disabled && (
-                            <Chip label="Coming soon" size="small" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-                          )}
-                        </Stack>
-                      </CardContent>
-                    </CardActionArea>
-                    <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                      <Tooltip title={starHint(item)}>
-                        <span>
-                          <IconButton
-                            size="small"
-                            onClick={() => toggle(item.path)}
-                            disabled={!canToggle(item.path)}
-                            aria-pressed={favourite}
-                            aria-label={`Favourite: ${item.name}`}
-                            sx={{ color: favourite ? tractusx.orange : 'text.secondary', '&.Mui-disabled': { color: favourite ? tractusx.orange : undefined } }}
-                          >
-                            {favourite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    </Box>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen={fullScreen}
+      fullWidth
+      maxWidth="md"
+      aria-labelledby={appsHeading}
+      slots={fullScreen ? { transition: SlideUp } : undefined}
+      transitionDuration={reduceMotion ? 0 : undefined}
+    >
+      {!fullScreen && (
+        <AppBar position="static" elevation={0} sx={{ bgcolor: 'transparent', color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}>
+          <Toolbar sx={{ minHeight: 64 }}>
+            <Typography component="span" sx={{ flex: 1, fontWeight: 800, fontSize: 20 }}>
+              All apps
+            </Typography>
+            {closeButton}
+          </Toolbar>
+        </AppBar>
+      )}
+      <Box sx={{ flex: 1, overflowY: 'auto', pt: fullScreen ? 'calc(24px + env(safe-area-inset-top, 0px))' : 3, pb: 3 }}>
+        <Container maxWidth="md" sx={{ display: 'grid', gap: 4 }}>
+          <Box component="section" aria-labelledby={appsHeading} sx={{ display: 'grid', gap: 2 }}>
+            <Typography id={appsHeading} component="h2" variant="overline" color="text.secondary">
+              All apps
+            </Typography>
+            <TileGrid>
+              {items.map((item) => (
+                <Tile
+                  key={item.path}
+                  label={item.name}
+                  icon={item.icon}
+                  note={item.disabled ? 'Coming soon' : undefined}
+                  active={item.path === current}
+                  disabled={item.disabled}
+                  onSelect={() => go(item.path)}
+                />
+              ))}
+            </TileGrid>
+          </Box>
+          {fullScreen && (
+            <Box component="section" aria-labelledby={settingsHeading} sx={{ display: 'grid', gap: 2 }}>
+              <Typography id={settingsHeading} component="h2" variant="overline" color="text.secondary">
+                Settings
+              </Typography>
+              <TileGrid>
+                <Tile
+                  label={mode === 'light' ? 'Dark mode' : 'Light mode'}
+                  icon={mode === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
+                  onSelect={toggle}
+                />
+                <Tile
+                  label="Source code"
+                  icon={<GitHubIcon />}
+                  onSelect={() => globalThis.open?.(SOURCE_URL, '_blank', 'noopener,noreferrer')}
+                />
+              </TileGrid>
+            </Box>
+          )}
         </Container>
-      </DialogContent>
+      </Box>
+      {fullScreen && (
+        // Closing sits where the button that opened it was: the right end of the bottom bar.
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            height: 64,
+            flexShrink: 0,
+            borderTop: 1,
+            borderColor: 'divider',
+            bgcolor: theme.palette.ui.navbar,
+            pb: 'env(safe-area-inset-bottom, 0px)',
+            pr: 'calc(8px + env(safe-area-inset-right, 0px))',
+            boxSizing: 'content-box',
+          }}
+        >
+          {closeButton}
+        </Box>
+      )}
     </Dialog>
   );
 }

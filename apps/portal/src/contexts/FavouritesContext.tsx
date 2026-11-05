@@ -24,77 +24,85 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { NavigationItem } from '../types/routing';
 
-/** At most this many favourites: the phone's bottom bar has room for five destinations. */
-export const MAX_FAVOURITES = 5;
-/** Home is always a favourite, so the bar never ends up empty. */
-export const FIXED_FAVOURITES = ['/'];
-export const FAVOURITES_STORAGE_KEY = 'dataspace-mgm.favourites';
+/** How many favourites the phone's bottom bar shows; the desktop sidebar shows all of them. */
+export const PHONE_FAVOURITE_SLOTS = 5;
+/** Always first in the sidebar and the bar, and not in the list of favourites to choose. */
+export const HOME_PATH = '/';
+/** The apps the person took out: everything else is a favourite, so a new feature shows up by itself. */
+export const HIDDEN_STORAGE_KEY = 'dataspace-mgm.navigation.hidden';
 
 interface FavouritesValue {
-  /** The favourite items, in registry order: the sidebar and the bottom bar show these. */
+  /** Home first, then the favourite features in registry order. */
   favourites: NavigationItem[];
+  /** Every feature that can be a favourite (all but Home), in registry order. */
+  candidates: NavigationItem[];
   isFavourite: (path: string) => boolean;
-  /** Fixed favourites cannot be removed, and no more than MAX_FAVOURITES can be added. */
-  canToggle: (path: string) => boolean;
   toggle: (path: string) => void;
 }
 
 const FavouritesContext = createContext<FavouritesValue | null>(null);
 
-/** Known paths only, the fixed ones first, no duplicates, at most MAX_FAVOURITES. */
-export function sanitiseFavourites(paths: unknown, items: NavigationItem[]): string[] {
-  const known = new Set(items.map((item) => item.path));
-  const list = Array.isArray(paths) ? paths.filter((p): p is string => typeof p === 'string' && known.has(p)) : [];
-  const fixed = FIXED_FAVOURITES.filter((p) => known.has(p));
-  return [...new Set([...fixed, ...list])].slice(0, MAX_FAVOURITES);
+/** The paths that are not hidden, Home first. */
+export function favouritesOf(items: readonly NavigationItem[], hidden: readonly string[]): NavigationItem[] {
+  const home = items.filter((item) => item.path === HOME_PATH);
+  return [...home, ...items.filter((item) => item.path !== HOME_PATH && !hidden.includes(item.path))];
 }
 
-function load(items: NavigationItem[]): string[] {
+/** The hidden list after `path` was switched between favourite and not. Home cannot be hidden. */
+export function toggleHidden(hidden: readonly string[], path: string): string[] {
+  if (path === HOME_PATH) return [...hidden];
+  return hidden.includes(path) ? hidden.filter((entry) => entry !== path) : [...hidden, path];
+}
+
+function readHidden(): string[] {
   try {
-    const stored = globalThis.localStorage?.getItem(FAVOURITES_STORAGE_KEY);
-    if (stored) return sanitiseFavourites(JSON.parse(stored), items);
+    const parsed: unknown = JSON.parse(globalThis.localStorage?.getItem(HIDDEN_STORAGE_KEY) ?? '[]');
+    return Array.isArray(parsed) ? parsed.filter((path): path is string => typeof path === 'string') : [];
   } catch {
-    // storage blocked or corrupt: use the defaults
+    return []; // blocked or unreadable storage: everything is a favourite
   }
-  return sanitiseFavourites(
-    items.slice(0, MAX_FAVOURITES).map((item) => item.path),
-    items,
-  );
 }
 
 /**
- * The person's favourite features. Kept in this browser for now (a per-person convenience);
- * once the backend stores preferences, load and save them through its core package instead.
+ * The person's favourite features, kept in this browser for now and shared with its other tabs.
+ * Once the backend stores preferences, load and save them through its core package instead.
  */
 export function FavouritesProvider({ items, children }: { items: NavigationItem[]; children: ReactNode }) {
-  const [paths, setPaths] = useState<string[]>(() => load(items));
+  const [hidden, setHidden] = useState<string[]>(readHidden);
 
-  const isFavourite = useCallback((path: string) => paths.includes(path), [paths]);
-  const canToggle = useCallback(
-    (path: string) => !FIXED_FAVOURITES.includes(path) && (paths.includes(path) || paths.length < MAX_FAVOURITES),
-    [paths],
-  );
-  const toggle = useCallback(
-    (path: string) => {
-      if (!canToggle(path)) return;
-      const next = sanitiseFavourites(paths.includes(path) ? paths.filter((p) => p !== path) : [...paths, path], items);
+  // Another tab changed the favourites.
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === HIDDEN_STORAGE_KEY) setHidden(readHidden());
+    };
+    globalThis.addEventListener?.('storage', onStorage);
+    return () => globalThis.removeEventListener?.('storage', onStorage);
+  }, []);
+
+  const toggle = useCallback((path: string) => {
+    setHidden((current) => {
+      const next = toggleHidden(current, path);
       try {
-        globalThis.localStorage?.setItem(FAVOURITES_STORAGE_KEY, JSON.stringify(next));
+        globalThis.localStorage?.setItem(HIDDEN_STORAGE_KEY, JSON.stringify(next));
       } catch {
-        // not persisted, the choice still applies to this visit
+        // not remembered, the change holds until the page reloads
       }
-      setPaths(next);
-    },
-    [canToggle, items, paths],
-  );
+      return next;
+    });
+  }, []);
 
-  const value = useMemo<FavouritesValue>(
-    () => ({ favourites: items.filter((item) => paths.includes(item.path)), isFavourite, canToggle, toggle }),
-    [items, paths, isFavourite, canToggle, toggle],
-  );
+  const value = useMemo<FavouritesValue>(() => {
+    const favourites = favouritesOf(items, hidden);
+    return {
+      favourites,
+      candidates: items.filter((item) => item.path !== HOME_PATH),
+      isFavourite: (path) => favourites.some((item) => item.path === path),
+      toggle,
+    };
+  }, [items, hidden, toggle]);
 
   return <FavouritesContext.Provider value={value}>{children}</FavouritesContext.Provider>;
 }
@@ -103,4 +111,11 @@ export function useFavourites(): FavouritesValue {
   const value = useContext(FavouritesContext);
   if (!value) throw new Error('useFavourites must be used inside <FavouritesProvider>');
   return value;
+}
+
+/** The item whose path is the current page or a parent of it (Home only matches itself). */
+export function activePath(pathname: string, paths: readonly string[]): string | undefined {
+  return paths
+    .filter((path) => pathname === path || (path !== HOME_PATH && pathname.startsWith(`${path}/`)))
+    .sort((a, b) => b.length - a.length)[0];
 }

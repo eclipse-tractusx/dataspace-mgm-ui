@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Divider,
@@ -37,7 +37,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import AppsDialog from '../components/general/AppsDialog';
 import BottomBar from '../components/general/BottomBar';
 import Header from '../components/general/Header';
@@ -117,23 +117,32 @@ function Footer() {
   );
 }
 
-/** Height of the phone's bottom bar; the page keeps this space free at its end. */
-const BOTTOM_BAR_HEIGHT = 64;
-
+/**
+ * The app shell: the header stays at the top, the sidebar (desktop) on the left and the bottom bar
+ * (phones and tablets) at the bottom. Only the canvas between them scrolls: the page and its footer.
+ */
 export default function MainLayout() {
   const theme = useTheme();
   const compact = useMediaQuery(theme.breakpoints.down('md'));
   const [appsOpen, setAppsOpen] = useState(false);
   const openApps = () => setAppsOpen(true);
+  const canvas = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
+
+  // A new page starts at its top, as it would with the window as the scroll container.
+  useEffect(() => {
+    canvas.current?.scrollTo?.({ top: 0 });
+  }, [pathname]);
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        height: '100vh',
+        '@supports (height: 100dvh)': { height: '100dvh' },
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
         bgcolor: 'background.default',
-        pb: compact ? `calc(${BOTTOM_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))` : 0,
       }}
     >
       <Link
@@ -156,9 +165,12 @@ export default function MainLayout() {
       <Header onOpenApps={openApps} />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
         {!compact && <Sidebar onOpenApps={openApps} />}
-        {/* The content column: the page and, inside it, the footer. */}
-        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-          <Box component="main" id="main-content" tabIndex={-1} sx={{ flex: 1, outline: 'none' }}>
+        <Box
+          ref={canvas}
+          id="canvas"
+          sx={{ flex: 1, minWidth: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}
+        >
+          <Box component="main" id="main-content" tabIndex={-1} sx={{ flex: '1 0 auto', outline: 'none' }}>
             <Outlet />
           </Box>
           <Footer />

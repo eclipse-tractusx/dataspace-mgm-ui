@@ -29,70 +29,89 @@ import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { FAVOURITES_STORAGE_KEY, FavouritesProvider, MAX_FAVOURITES, sanitiseFavourites } from '../../contexts/FavouritesContext';
+import {
+  FavouritesProvider,
+  HIDDEN_STORAGE_KEY,
+  PHONE_FAVOURITE_SLOTS,
+  activePath,
+  favouritesOf,
+  toggleHidden,
+} from '../../contexts/FavouritesContext';
 import { features } from '../../features/main';
 import AppsDialog from './AppsDialog';
-import BottomBar, { activeFavourite } from './BottomBar';
+import BottomBar from './BottomBar';
+import Sidebar from './Sidebar';
 
-const wrap = (ui: ReactElement) =>
+const wrap = (ui: ReactElement, path = '/') =>
   render(
     <ColorModeProvider>
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[path]}>
         <FavouritesProvider items={features}>{ui}</FavouritesProvider>
       </MemoryRouter>
     </ColorModeProvider>,
   );
 
-const star = (name: string) => screen.getByRole('button', { name: `Favourite: ${name}` });
-
 beforeEach(() => localStorage.clear());
 
 describe('favourites', () => {
-  it('keeps Home first, drops unknown paths and caps the list', () => {
-    const all = features.map((item) => item.path);
-    expect(sanitiseFavourites(['/nowhere', '/company'], features)).toEqual(['/', '/company']);
-    expect(sanitiseFavourites(all.reverse(), features)).toHaveLength(MAX_FAVOURITES);
-    expect(sanitiseFavourites('garbage', features)).toEqual(['/']);
+  it('are every feature until one is taken out, with Home always first', () => {
+    expect(favouritesOf(features, [])).toHaveLength(features.length);
+    expect(favouritesOf(features, ['/company']).map((item) => item.path)).not.toContain('/company');
+    expect(toggleHidden([], '/')).toEqual([]);
+    expect(toggleHidden(['/company'], '/company')).toEqual([]);
   });
 
-  it('starts with the first five features, then profile and more options at the right', () => {
-    wrap(<BottomBar onOpenApps={() => undefined} />);
-    const bar = screen.getByRole('navigation', { name: 'Favourites' });
-    const buttons = within(bar).getAllByRole('button');
-    expect(buttons).toHaveLength(MAX_FAVOURITES + 2);
-    expect(buttons.slice(-2).map((button) => button.getAttribute('aria-label'))).toEqual(['Profile', 'More options']);
-  });
-
-  it('marks the favourite of the current page, also below it', () => {
-    expect(activeFavourite('/', ['/', '/company'])).toBe('/');
-    expect(activeFavourite('/company/123', ['/', '/company'])).toBe('/company');
-    expect(activeFavourite('/companyx', ['/', '/company'])).toBe(false);
+  it('match the current page and the pages below it', () => {
+    expect(activePath('/', ['/', '/company'])).toBe('/');
+    expect(activePath('/company/123', ['/', '/company'])).toBe('/company');
+    expect(activePath('/companyx', ['/', '/company'])).toBeUndefined();
   });
 });
 
-describe('All apps view', () => {
-  it('lists every feature and marks the upcoming ones', () => {
+describe('Sidebar', () => {
+  it('puts the plus right under the last favourite and notifications, profile and All apps at the bottom', () => {
+    wrap(<Sidebar onOpenApps={() => undefined} />);
+    const slots = within(screen.getByRole('list', { name: 'Favourites' })).getAllByRole('listitem');
+    expect(slots).toHaveLength(features.length + 1);
+    expect(within(slots[slots.length - 1]).getByRole('button', { name: 'Edit favourites' })).toBeInTheDocument();
+    const labels = within(screen.getByRole('navigation', { name: 'Features' }))
+      .getAllByRole('button')
+      .map((button) => button.getAttribute('aria-label'));
+    expect(labels.slice(-3)).toEqual(['Notifications', 'Profile', 'All apps']);
+  });
+
+  it('switches favourites on and off in the plus menu, which stays open', () => {
+    wrap(<Sidebar onOpenApps={() => undefined} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit favourites' }));
+    const menu = screen.getByRole('menu', { name: 'Favourites' });
+    expect(within(menu).queryByRole('menuitemcheckbox', { name: /Home/ })).toBeNull();
+    fireEvent.click(within(menu).getByRole('menuitemcheckbox', { name: /Company/ }));
+    expect(within(menu).getByRole('menuitemcheckbox', { name: /Company/ })).toHaveAttribute('aria-checked', 'false');
+    expect(JSON.parse(localStorage.getItem(HIDDEN_STORAGE_KEY) ?? '[]')).toEqual(['/company']);
+    expect(screen.queryByRole('link', { name: 'Company' })).toBeNull();
+  });
+});
+
+describe('Bottom bar', () => {
+  it('shows Home and the first favourites, the plus, then profile and All apps at the right', () => {
+    wrap(<BottomBar onOpenApps={() => undefined} />);
+    const labels = within(screen.getByRole('navigation', { name: 'Favourites' }))
+      .getAllByRole('button')
+      .map((button) => button.getAttribute('aria-label'));
+    expect(labels).toHaveLength(PHONE_FAVOURITE_SLOTS + 3);
+    expect(labels[0]).toBe('Home');
+    expect(labels.slice(-3)).toEqual(['Edit favourites', 'Profile', 'All apps']);
+  });
+});
+
+describe('All apps', () => {
+  it('shows every feature as a tile and marks the upcoming ones', () => {
     wrap(<AppsDialog open onClose={() => undefined} items={features} />);
     const dialog = screen.getByRole('dialog', { name: 'All apps' });
     for (const item of features) {
-      expect(within(dialog).getByRole('heading', { level: 3, name: item.name })).toBeInTheDocument();
+      expect(within(dialog).getByRole('button', { name: new RegExp(`^${item.name}`) })).toBeInTheDocument();
     }
     expect(within(dialog).getAllByText('Coming soon')).toHaveLength(features.filter((item) => item.disabled).length);
-  });
-
-  it('turns favourites on and off, keeps Home and allows at most five', () => {
-    wrap(
-      <>
-        <AppsDialog open onClose={() => undefined} items={features} />
-        <BottomBar onOpenApps={() => undefined} />
-      </>,
-    );
-    expect(star('Home')).toBeDisabled();
-    expect(star('Apps')).toBeDisabled(); // five chosen already
-    fireEvent.click(star('Company'));
-    expect(star('Company')).toHaveAttribute('aria-pressed', 'false');
-    fireEvent.click(star('Apps'));
-    expect(star('Apps')).toHaveAttribute('aria-pressed', 'true');
-    expect(JSON.parse(localStorage.getItem(FAVOURITES_STORAGE_KEY) ?? '[]')).toContain('/apps');
+    expect(within(dialog).getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
   });
 });

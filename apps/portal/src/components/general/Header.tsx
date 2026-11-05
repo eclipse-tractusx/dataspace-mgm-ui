@@ -44,24 +44,25 @@ import {
 } from '@dataspace-mgm/ui-mui';
 import { Link as RouterLink } from 'react-router-dom';
 import { useConfig } from '../../config/ConfigContext';
-import { MoreMenu, ProfileMenu } from './HeaderMenus';
+import { MoreMenu, NotificationsMenu } from './HeaderMenus';
 
 /**
  * Navigation bar after eclipse-tractusx.github.io: 74 px, black (dark) or #F0F0F0 (light), the mark in colour.
- * Right side: environment, theme switch, profile and more options; on phones the last two sit in the bottom bar.
+ * Right side on desktop: environment, theme switch and more options (notifications and the profile sit at the
+ * foot of the sidebar). On phones: notifications; profile and more options sit in the bottom bar.
  */
 export default function Header({ onOpenApps }: { onOpenApps: () => void }) {
   const { mode, toggle } = useColorMode();
   const { environment } = useConfig();
   const theme = useTheme();
   const { palette } = theme;
-  // On phones and tablets, profile and more options move to the bottom bar.
+  // On phones and tablets the sidebar is replaced by the bottom bar.
   const compact = useMediaQuery(theme.breakpoints.down('md'));
   const nextMode = mode === 'light' ? 'dark' : 'light';
 
   return (
     <AppBar
-      position="sticky"
+      position="static"
       elevation={0}
       sx={{ bgcolor: palette.ui.navbar, color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}
     >
@@ -112,8 +113,7 @@ export default function Header({ onOpenApps }: { onOpenApps: () => void }) {
             {mode === 'light' ? <DarkModeOutlinedIcon fontSize="small" /> : <LightModeOutlinedIcon fontSize="small" />}
           </IconButton>
         </Tooltip>
-        {!compact && <ProfileMenu />}
-        {!compact && <MoreMenu onOpenApps={onOpenApps} />}
+        {compact ? <NotificationsMenu /> : <MoreMenu onOpenApps={onOpenApps} />}
       </Toolbar>
     </AppBar>
   );

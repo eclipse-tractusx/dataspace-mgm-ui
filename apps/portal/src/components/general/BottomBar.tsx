@@ -24,30 +24,26 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { BottomNavigation, BottomNavigationAction, Box, Divider, Paper } from '@dataspace-mgm/ui-mui';
+import { AppsOutlinedIcon, BottomNavigation, BottomNavigationAction, Box, Divider, IconButton, Paper } from '@dataspace-mgm/ui-mui';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MAX_FAVOURITES, useFavourites } from '../../contexts/FavouritesContext';
-import { MoreMenu, ProfileMenu } from './HeaderMenus';
-
-/** The favourite whose path is the current page or a parent of it ("/" only matches itself). */
-export function activeFavourite(pathname: string, paths: string[]): string | false {
-  const matches = paths.filter((path) => pathname === path || (path !== '/' && pathname.startsWith(`${path}/`)));
-  return matches.sort((a, b) => b.length - a.length)[0] ?? false;
-}
+import { PHONE_FAVOURITE_SLOTS, activePath, useFavourites } from '../../contexts/FavouritesContext';
+import FavouritesMenu from './FavouritesMenu';
+import { ProfileMenu } from './HeaderMenus';
 
 /**
- * The navigation on phones and tablets, along the bottom of the screen: the person's favourites
- * (at most five, in registry order, icons only) and, at the right, the profile and the more-options
- * menu, which opens "All apps" in full screen. Items only move when the favourites change.
+ * The navigation on phones and tablets, at the bottom of the shell (it never scrolls): Home and the first
+ * favourites (five in all, icons only, each with its name for screen readers), the "+" to edit them, and at
+ * the right the profile and "All apps", which opens in full screen. Items only move when the favourites change.
  */
 export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const shown = useFavourites().favourites.slice(0, MAX_FAVOURITES);
-  const current = activeFavourite(
-    pathname,
-    shown.map((item) => item.path),
-  );
+  const shown = useFavourites().favourites.slice(0, PHONE_FAVOURITE_SLOTS);
+  const current =
+    activePath(
+      pathname,
+      shown.map((item) => item.path),
+    ) ?? false;
 
   return (
     <Paper
@@ -56,11 +52,7 @@ export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
       square
       elevation={0}
       sx={{
-        position: 'fixed',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: (theme) => theme.zIndex.appBar,
+        flexShrink: 0,
         display: 'flex',
         alignItems: 'center',
         bgcolor: (theme) => theme.palette.ui.navbar,
@@ -68,13 +60,13 @@ export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
         borderColor: 'divider',
         pb: 'env(safe-area-inset-bottom, 0px)',
         pl: 'env(safe-area-inset-left, 0px)',
-        pr: 'calc(8px + env(safe-area-inset-right, 0px))',
+        pr: 'calc(4px + env(safe-area-inset-right, 0px))',
       }}
     >
       <BottomNavigation
         value={current}
         onChange={(_, value: string) => navigate(value)}
-        sx={{ flex: 1, minWidth: 0, borderTop: 0, bgcolor: 'transparent' }}
+        sx={{ flex: '0 1 auto', minWidth: 0, borderTop: 0, bgcolor: 'transparent', '& .MuiBottomNavigationAction-root': { minWidth: 44, px: 0 } }}
       >
         {shown.map((item) => (
           <BottomNavigationAction
@@ -87,10 +79,16 @@ export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
           />
         ))}
       </BottomNavigation>
+      <Box sx={{ display: 'flex', alignItems: 'center', px: 0.5 }}>
+        <FavouritesMenu placement="bar" />
+      </Box>
+      <Box sx={{ flex: 1 }} />
       <Divider orientation="vertical" aria-hidden sx={{ height: 32, mx: 0.5 }} />
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
         <ProfileMenu placement="bar" />
-        <MoreMenu placement="bar" onOpenApps={onOpenApps} />
+        <IconButton onClick={onOpenApps} aria-label="All apps" aria-haspopup="dialog" sx={{ width: 44, height: 44, borderRadius: '8px', color: 'text.primary' }}>
+          <AppsOutlinedIcon />
+        </IconButton>
       </Box>
     </Paper>
   );

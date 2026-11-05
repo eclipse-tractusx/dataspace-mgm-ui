@@ -39,8 +39,8 @@ import {
   Menu,
   MenuItem,
   MoreVertIcon,
+  NotificationsOutlinedIcon,
   PersonOutlinedIcon,
-  StarBorderIcon,
   Tooltip,
   Typography,
   alpha,
@@ -50,19 +50,34 @@ import {
 
 const SOURCE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-ui';
 
-/** Where a menu button sits: in the header (menu opens below) or in the phone's bottom bar (menu opens above). */
-export type MenuPlacement = 'header' | 'bar';
+/**
+ * Where a menu button sits, which decides where its menu opens: below it in the header, above it in the
+ * phone's bottom bar, to its right (bottom-aligned) at the foot of the desktop sidebar.
+ */
+export type MenuPlacement = 'header' | 'bar' | 'rail';
 
-const originsFor = (placement: MenuPlacement) =>
-  placement === 'bar'
-    ? {
+export const originsFor = (placement: MenuPlacement) => {
+  switch (placement) {
+    case 'bar':
+      return {
         anchorOrigin: { vertical: 'top', horizontal: 'right' } as const,
         transformOrigin: { vertical: 'bottom', horizontal: 'right' } as const,
-      }
-    : {
+      };
+    case 'rail':
+      return {
+        anchorOrigin: { vertical: 'bottom', horizontal: 'right' } as const,
+        transformOrigin: { vertical: 'bottom', horizontal: 'left' } as const,
+      };
+    default:
+      return {
         anchorOrigin: { vertical: 'bottom', horizontal: 'right' } as const,
         transformOrigin: { vertical: 'top', horizontal: 'right' } as const,
       };
+  }
+};
+
+/** The 44 px square of every button on the sidebar. */
+export const railButtonSx = { width: 44, height: 44, borderRadius: '8px', color: 'text.secondary' } as const;
 
 function useMenu() {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -82,14 +97,14 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
   const menu = useMenu();
   return (
     <>
-      <Tooltip title="Profile">
+      <Tooltip title="Profile" placement={placement === 'rail' ? 'right' : 'bottom'}>
         <IconButton
           onClick={menu.show}
           aria-label="Profile"
           aria-haspopup="menu"
           aria-expanded={menu.open}
           aria-controls={menu.open ? `profile-menu-${placement}` : undefined}
-          sx={{ p: 0.5 }}
+          sx={placement === 'rail' ? { ...railButtonSx, p: 0 } : { p: 0.5 }}
         >
           <Avatar sx={{ width: 34, height: 34, bgcolor: alpha(tractusx.orange, 0.15), color: tractusx.orange }}>
             <PersonOutlinedIcon fontSize="small" />
@@ -127,7 +142,7 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
   );
 }
 
-/** More options: all apps, favourites, theme and source code. In the header on desktop, in the bottom bar on phones. */
+/** More options in the desktop header: all apps, theme and source code. On phones the All apps view holds them. */
 export function MoreMenu({ onOpenApps, placement = 'header' }: { onOpenApps: () => void; placement?: MenuPlacement }) {
   const menu = useMenu();
   const { mode, toggle } = useColorMode();
@@ -164,12 +179,6 @@ export function MoreMenu({ onOpenApps, placement = 'header' }: { onOpenApps: () 
           </ListItemIcon>
           <ListItemText primary="All apps" />
         </MenuItem>
-        <MenuItem onClick={run(onOpenApps)}>
-          <ListItemIcon>
-            <StarBorderIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Choose favourites" />
-        </MenuItem>
         <Divider />
         <MenuItem onClick={run(toggle)}>
           <ListItemIcon>
@@ -182,6 +191,46 @@ export function MoreMenu({ onOpenApps, placement = 'header' }: { onOpenApps: () 
             <GitHubIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Source code" />
+        </MenuItem>
+      </Menu>
+    </>
+  );
+}
+
+/**
+ * The person's notifications. The bell sits on the sidebar above "All apps" on desktop and in the header on
+ * phones. The inbox arrives with the notifications module; until then the menu says so.
+ */
+export function NotificationsMenu({ placement = 'header' }: { placement?: MenuPlacement }) {
+  const menu = useMenu();
+  return (
+    <>
+      <Tooltip title="Notifications" placement={placement === 'rail' ? 'right' : 'bottom'}>
+        <IconButton
+          onClick={menu.show}
+          aria-label="Notifications"
+          aria-haspopup="menu"
+          aria-expanded={menu.open}
+          aria-controls={menu.open ? `notifications-menu-${placement}` : undefined}
+          sx={
+            placement === 'rail'
+              ? { ...railButtonSx, '&:hover': { color: 'text.primary', bgcolor: alpha(tractusx.orange, 0.08) } }
+              : { color: 'text.primary', '&:hover': { color: tractusx.orange } }
+          }
+        >
+          <NotificationsOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      <Menu id={`notifications-menu-${placement}`} anchorEl={menu.anchor} open={menu.open} onClose={menu.hide} {...originsFor(placement)}>
+        <MenuItem disabled sx={{ opacity: '1 !important', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Nothing new
+          </Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem disabled>
+          <ListItemText primary="Your inbox" secondary="Arrives with the notifications module" />
         </MenuItem>
       </Menu>
     </>

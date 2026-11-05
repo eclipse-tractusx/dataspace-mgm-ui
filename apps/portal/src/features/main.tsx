@@ -29,7 +29,6 @@ import {
   BusinessOutlinedIcon,
   CableOutlinedIcon,
   ManageAccountsOutlinedIcon,
-  NotificationsOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
 import type { FeatureConfig, NavigationItem } from '../types/routing';
@@ -52,6 +51,7 @@ const upcoming = (name: string, description: string, icon: FeatureConfig['icon']
  * Registry of the feature modules. Add a feature: create src/features/<feature>/ with
  * pages/, routes.tsx (one FeatureConfig) and index.ts, then add it to this list.
  * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All apps" view.
+ * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
@@ -60,7 +60,6 @@ export const allFeatures: FeatureConfig[] = [
   upcoming('Users & roles', 'Invite people, assign roles and manage technical users.', <ManageAccountsOutlinedIcon />, '/users'),
   upcoming('Connectors', 'Register and monitor the connectors of your company.', <CableOutlinedIcon />, '/connectors'),
   upcoming('Apps', 'Find and subscribe to apps and services of the dataspace.', <StorefrontOutlinedIcon />, '/apps'),
-  upcoming('Notifications', 'Messages about your company, its applications and subscriptions.', <NotificationsOutlinedIcon />, '/notifications'),
 ];
 
 /** The navigation items of the sidebar, the bottom bar and the "All apps" view. */
