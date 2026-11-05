@@ -28,15 +28,18 @@ import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
+import { FavouritesProvider } from '../../contexts/FavouritesContext';
 import { allFeatures, features, getAllRoutes } from '../main';
 import Home from './pages/Home';
 
 describe('Home', () => {
-  it('welcomes the user and shows every service', () => {
+  it('welcomes the user, shows every service and ends with the footer', () => {
     render(
       <ColorModeProvider>
         <MemoryRouter>
-          <Home />
+          <FavouritesProvider items={features}>
+            <Home />
+          </FavouritesProvider>
         </MemoryRouter>
       </ColorModeProvider>,
     );
@@ -45,6 +48,7 @@ describe('Home', () => {
     for (const service of ['Onboarding', 'Participant management', 'Connectors as a service', 'Wallets as a service', 'Marketplace', 'Provider network']) {
       expect(screen.getByRole('heading', { level: 3, name: service })).toBeInTheDocument();
     }
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('Contributors to the Eclipse Foundation');
   });
 });
 

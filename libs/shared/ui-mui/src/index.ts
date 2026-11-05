@@ -35,6 +35,7 @@ export { tractusx, uiTokens, type BrandColors, type UiTokens } from './theme/pal
 export { fontFamily } from './theme/typography';
 export { TractusXLogo } from './components/TractusXLogo';
 export { BrandBackdrop } from './components/BrandBackdrop';
+export { SpaceGlow } from './components/SpaceGlow';
 
 // MUI components, re-exported unchanged until a feature needs a Tractus-X specific wrapper.
 export { default as AppBar } from '@mui/material/AppBar';
@@ -50,6 +51,7 @@ export { default as CardActions } from '@mui/material/CardActions';
 export { default as CardContent } from '@mui/material/CardContent';
 export { default as CardHeader } from '@mui/material/CardHeader';
 export { default as Chip } from '@mui/material/Chip';
+export { default as Collapse } from '@mui/material/Collapse';
 export { default as Container } from '@mui/material/Container';
 export { default as Dialog } from '@mui/material/Dialog';
 export { default as DialogContent } from '@mui/material/DialogContent';
@@ -105,6 +107,7 @@ export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
 export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
 export { default as InfoOutlinedIcon } from '@mui/icons-material/InfoOutlined';
 export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';
+export { default as ArrowBackIcon } from '@mui/icons-material/ArrowBack';
 export { default as OpenInNewIcon } from '@mui/icons-material/OpenInNew';
 export { default as SwapHorizOutlinedIcon } from '@mui/icons-material/SwapHorizOutlined';
 export { default as TravelExploreOutlinedIcon } from '@mui/icons-material/TravelExploreOutlined';

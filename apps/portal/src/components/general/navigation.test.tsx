@@ -123,18 +123,19 @@ describe('All services', () => {
 });
 
 describe('All services on desktop', () => {
-  it('shows every service as a square in a carousel, the description behind an info button, and filters by area', () => {
+  it('shows every service as a card in a carousel, the description below it on demand, and filters by area', () => {
     wrap(<AllServicesPage />, '/all-services');
     const carousel = screen.getByRole('region', { name: 'Services' });
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
     expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
     expect(within(carousel).getByRole('button', { name: 'Participant management, coming soon' })).toBeDisabled();
 
-    const wallets = features.find((app) => app.path === '/wallets')!;
-    expect(screen.queryByText(wallets.description)).toBeNull();
-    fireEvent.click(within(carousel).getByRole('button', { name: 'About Wallets as a service' }));
-    expect(within(screen.getByRole('dialog', { name: 'Wallets as a service' })).getByText(wallets.description)).toBeInTheDocument();
-    fireEvent.keyDown(screen.getByRole('dialog', { name: 'Wallets as a service' }), { key: 'Escape' });
+    const wallets = features.find((service) => service.path === '/wallets')!;
+    const info = within(carousel).getByRole('button', { name: 'About Wallets as a service' });
+    expect(info).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(info);
+    expect(info).toHaveAttribute('aria-expanded', 'true');
+    expect(document.getElementById(info.getAttribute('aria-controls')!)).toHaveTextContent(wallets.description);
 
     fireEvent.click(within(screen.getByRole('group', { name: 'Filter services' })).getByRole('button', { name: /^As a service/ }));
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'as-a-service').length);

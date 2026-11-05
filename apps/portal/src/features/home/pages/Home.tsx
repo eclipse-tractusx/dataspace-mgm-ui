@@ -26,23 +26,18 @@
 
 import {
   ArrowForwardIcon,
-  Avatar,
+  Box,
   BrandBackdrop,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Chip,
   Container,
-  Grid,
   OpenInNewIcon,
+  SpaceGlow,
   Stack,
   Typography,
   tractusx,
-  useTheme,
 } from '@dataspace-mgm/ui-mui';
-import { useNavigate } from 'react-router-dom';
+import Footer from '../../../components/general/Footer';
+import ServiceCarousel from '../../../components/services/ServiceCarousel';
 import { features } from '../../main';
 
 const ARCHITECTURE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture';
@@ -52,8 +47,6 @@ export default function Home() {
   // Every service of the portal except Home itself, straight from the feature registry (read at render time:
   // the registry imports this page, so it is not ready yet when this module loads).
   const services = features.filter((item) => item.path !== '/');
-  const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
-  const navigate = useNavigate();
 
   return (
     <article aria-labelledby="home-title">
@@ -97,53 +90,28 @@ export default function Home() {
         </Container>
       </BrandBackdrop>
 
-      <Container component="section" maxWidth="lg" aria-labelledby="services-title" sx={{ py: { xs: 8, md: 12 } }}>
-        <Typography variant="overline" color="text.secondary">
-          Services
-        </Typography>
-        <Typography id="services-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
-          Onboard, manage and serve your participants
-        </Typography>
-        <Typography color="text.secondary" sx={{ mb: 6, maxWidth: 680 }}>
-          What your onboarding service provider runs for the companies it brings into the dataspace. The services
-          arrive here one module at a time.
-        </Typography>
-        <Grid container spacing={3}>
-          {services.map((service) => (
-            <Grid key={service.path} size={{ xs: 12, sm: 6, lg: 4 }}>
-              <Card
-                component="section"
-                aria-labelledby={`service-${service.path}`}
-                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-              >
-                <CardHeader
-                  avatar={
-                    <Avatar variant="rounded" aria-hidden sx={{ color: iconColor }}>
-                      {service.icon}
-                    </Avatar>
-                  }
-                  title={service.name}
-                  slotProps={{ title: { id: `service-${service.path}`, component: 'h3' } }}
-                />
-                <CardContent sx={{ flex: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {service.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  {service.disabled ? (
-                    <Chip label="Coming soon" size="small" variant="outlined" />
-                  ) : (
-                    <Button size="small" onClick={() => navigate(service.path)} endIcon={<ArrowForwardIcon />}>
-                      Open
-                    </Button>
-                  )}
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+      <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+        <SpaceGlow />
+        <Container
+          component="section"
+          maxWidth="lg"
+          aria-labelledby="services-title"
+          sx={{ position: 'relative', zIndex: 1, py: { xs: 8, md: 12 } }}
+        >
+          <Typography variant="overline" color="text.secondary">
+            Services
+          </Typography>
+          <Typography id="services-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
+            Onboard, manage and serve your participants
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 5, maxWidth: 680 }}>
+            What your onboarding service provider runs for the companies it brings into the dataspace. The services
+            arrive here one module at a time.
+          </Typography>
+          <ServiceCarousel services={services} />
+        </Container>
+      </Box>
+      <Footer />
     </article>
   );
 }
