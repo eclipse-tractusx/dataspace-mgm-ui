@@ -52,10 +52,14 @@ const railButton = {
   color: 'text.secondary',
 } as const;
 
+/** Header height on desktop (74 px toolbar + 1 px border): the rail sticks right below it. */
+const HEADER_HEIGHT = 75;
+
 /**
- * Icon rail on desktop (MUI Drawer + List): the person's favourite features on top, then "All apps" and
- * "Choose favourites", which turn features on and off in the rail. On phones and tablets the BottomBar
- * shows the same favourites.
+ * Icon rail on desktop (MUI Drawer + List), the full height of the page next to the content and its
+ * footer: the person's favourite features on top and, at the bottom left, "Choose favourites" and
+ * "All apps". The icons stick below the header, so both stay in reach while the page scrolls.
+ * On phones and tablets the BottomBar shows the same favourites.
  */
 export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
   const items = useFavourites().favourites;
@@ -70,10 +74,22 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
       sx={{
         width: RAIL_WIDTH,
         flexShrink: 0,
-        '& .MuiDrawer-paper': { position: 'relative', width: RAIL_WIDTH, overflowX: 'hidden' },
+        // The rail runs the full height of the page; its content sticks below the header.
+        borderRight: 1,
+        borderColor: 'divider',
+        '& .MuiDrawer-paper': {
+          position: 'sticky',
+          top: HEADER_HEIGHT,
+          width: RAIL_WIDTH,
+          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+          display: 'flex',
+          flexDirection: 'column',
+          overflowX: 'hidden',
+          borderRight: 0,
+        },
       }}
     >
-      <List sx={{ py: 2 }}>
+      <List sx={{ py: 2, flex: 1, overflowY: 'auto' }}>
         {items.map((item) => (
           <ListItem key={item.path} disablePadding sx={{ justifyContent: 'center' }}>
             <Tooltip title={item.disabled ? `${item.name} (coming soon)` : item.name} placement="right">
@@ -106,10 +122,10 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
         ))}
       </List>
       <Divider sx={{ mx: 2 }} />
-      <List sx={{ py: 2 }}>
+      <List sx={{ py: 2 }} aria-label="App actions">
         {[
-          { label: 'All apps', icon: <AppsOutlinedIcon /> },
           { label: 'Choose favourites', icon: <StarBorderIcon /> },
+          { label: 'All apps', icon: <AppsOutlinedIcon /> },
         ].map((action) => (
           <ListItem key={action.label} disablePadding sx={{ justifyContent: 'center' }}>
             <Tooltip title={action.label} placement="right">

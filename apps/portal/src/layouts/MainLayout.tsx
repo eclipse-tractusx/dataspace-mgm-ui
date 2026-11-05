@@ -156,11 +156,14 @@ export default function MainLayout() {
       <Header onOpenApps={openApps} />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
         {!compact && <Sidebar onOpenApps={openApps} />}
-        <Box component="main" id="main-content" tabIndex={-1} sx={{ flex: 1, minWidth: 0, outline: 'none' }}>
-          <Outlet />
+        {/* The content column: the page and, inside it, the footer. */}
+        <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          <Box component="main" id="main-content" tabIndex={-1} sx={{ flex: 1, outline: 'none' }}>
+            <Outlet />
+          </Box>
+          <Footer />
         </Box>
       </Box>
-      <Footer />
       {compact && <BottomBar onOpenApps={openApps} />}
       <AppsDialog open={appsOpen} onClose={() => setAppsOpen(false)} items={features} />
     </Box>
