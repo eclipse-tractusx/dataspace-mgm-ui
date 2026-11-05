@@ -1,0 +1,17 @@
+{
+  "name": "ui-mui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/ui-mui/src",
+  "tags": ["type:ui", "scope:shared"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tsconfig.json", "cwd": "libs/shared/ui-mui" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint libs/shared/ui-mui" }
+    }
+  }
+}
