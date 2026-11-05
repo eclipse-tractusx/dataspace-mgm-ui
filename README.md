@@ -37,6 +37,41 @@ The frontend is as dumb as possible: business decisions live in the backend, and
 step comes next. The UI renders what the API returns and sends what the user enters. Live updates arrive as
 Server-Sent Events. See the [architecture of the UI](docs/architecture/README.md).
 
+## Screenshots
+
+The portal follows the Eclipse Tractus-X design guidelines: black by default with the Eclipse Tractus-X orange as
+the accent, and a light mode with the same tokens. The header stays at the top and the sidebar on the left (on
+phones, a bar at the bottom). Only the page between them scrolls. The services shown are placeholders marked
+"coming soon" until their backend modules arrive.
+
+**Home**: the welcome page, and how taking part works.
+
+![Home page: welcome to the Eclipse Tractus-X Dataspace Management UI](docs/media/screenshots/home.jpg)
+
+![Home page: how it works, with join, run and trust, and the button to all services](docs/media/screenshots/home-how-it-works.png)
+
+**All services**: every service as a card in a carousel, filtered by area. The info button shows the description and
+the version in a tooltip.
+
+![All services: service cards in a carousel, with the tooltip of Connectors as a service](docs/media/screenshots/all-services.png)
+
+**Favourites**: the + under the last favourite in the sidebar switches services on and off in the sidebar.
+Notifications, the profile and All services sit at the bottom left.
+
+![Favourites menu of the sidebar with a switch per service](docs/media/screenshots/favourites.jpg)
+
+**Light mode**
+
+![All services in light mode](docs/media/screenshots/all-services-light.png)
+
+**Phone**: the sidebar becomes a bar at the bottom with the first favourites, the +, the profile and All services.
+
+<p>
+  <img src="docs/media/screenshots/phone-home.png" alt="Home page on a phone with the bottom bar" width="300">
+  &nbsp;
+  <img src="docs/media/screenshots/phone-all-services.png" alt="All services on a phone, marked in the bottom bar" width="300">
+</p>
+
 ## Repository structure
 
 | Path | Content |
