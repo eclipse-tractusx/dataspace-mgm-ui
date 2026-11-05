@@ -24,20 +24,36 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import type { ReactNode } from 'react';
 import Box from '@mui/material/Box';
+import gradient from '../assets/tractusx-gradient.jpg';
 import { tractusx } from '../theme/palette';
 
-/** The golden-to-green line of the Tractus-X brand, used under the header and headlines. */
-export function BrandStripe({ height = 4, width = '100%' }: { height?: number; width?: number | string }) {
+/**
+ * The brand gradient for title pages, section dividers and banners (Design Guidelines, slide 7, option 1).
+ * Text sits on the dark left field, never over the bloom (slide 25); the scrim keeps it there on narrow screens.
+ */
+export function BrandBackdrop({ children, minHeight = '72vh' }: { children: ReactNode; minHeight?: string }) {
   return (
     <Box
-      aria-hidden
       sx={{
-        height,
-        width,
-        borderRadius: height,
-        background: `linear-gradient(90deg, ${tractusx.gold} 0%, ${tractusx.gold} 35%, ${tractusx.green} 100%)`,
+        position: 'relative',
+        overflow: 'hidden',
+        bgcolor: tractusx.black,
+        color: tractusx.white,
+        minHeight: { xs: 'auto', md: minHeight },
+        display: 'flex',
+        alignItems: 'center',
+        backgroundImage: {
+          xs: `linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.8) 35%, rgba(0,0,0,0.92) 100%), url(${gradient})`,
+          md: `linear-gradient(90deg, #000 0%, rgba(0,0,0,0.85) 35%, rgba(0,0,0,0) 65%), url(${gradient})`,
+        },
+        backgroundSize: 'cover',
+        backgroundPosition: { xs: '80% top', md: 'right center' },
+        backgroundRepeat: 'no-repeat',
       }}
-    />
+    >
+      {children}
+    </Box>
   );
 }

@@ -24,15 +24,89 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { Box, Link, Typography } from '@dataspace-mgm/ui-mui';
+import { Box, Link, Stack, TractusXLogo, Typography, tractusx, useTheme } from '@dataspace-mgm/ui-mui';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/general/Header';
 import Sidebar from '../components/general/Sidebar';
 import { features } from '../features/main';
 
+const ECLIPSE_LINKS = [
+  { label: 'About', href: 'https://www.eclipse.org' },
+  { label: 'Privacy Policy', href: 'https://www.eclipse.org/legal/privacy.php' },
+  { label: 'Terms of Use', href: 'https://www.eclipse.org/legal/termsofuse.php' },
+  { label: 'Compliance', href: 'https://www.eclipse.org/legal/compliance/' },
+  { label: 'Legal Resources', href: 'https://www.eclipse.org/legal' },
+];
+
+const PROJECT_LINKS = [
+  { label: 'Eclipse Tractus-X', href: 'https://eclipse-tractusx.github.io' },
+  { label: 'Source code', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-ui' },
+  { label: 'Architecture', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture' },
+];
+
+function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+  return (
+    <Stack spacing={1} component="nav" aria-label={title}>
+      <Typography variant="overline" sx={{ color: tractusx.white }}>
+        {title}
+      </Typography>
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          variant="body2"
+          sx={{ color: 'rgba(255, 255, 255, 0.85)', '&:hover': { color: tractusx.orange } }}
+        >
+          {link.label}
+        </Link>
+      ))}
+    </Stack>
+  );
+}
+
+/** Footer in the dark style of eclipse-tractusx.github.io, mentioning the Eclipse Foundation (slide 14). */
+function Footer() {
+  const { palette } = useTheme();
+  return (
+    <Box
+      component="footer"
+      sx={{ bgcolor: palette.ui.footer, color: tractusx.white, borderTop: '0.5px solid', borderColor: palette.ui.cardBorder }}
+    >
+      <Box
+        sx={{
+          px: { xs: 3, md: 6 },
+          py: 5,
+          display: 'grid',
+          gap: 4,
+          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '2fr 1fr 1fr' },
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <TractusXLogo size={32} decorative />
+            <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Eclipse Tractus-X</Typography>
+          </Stack>
+          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+            Where We Build Dataspaces
+          </Typography>
+        </Stack>
+        <FooterColumn title="Eclipse Foundation" links={ECLIPSE_LINKS} />
+        <FooterColumn title="Dataspace Management" links={PROJECT_LINKS} />
+      </Box>
+      <Box sx={{ px: { xs: 3, md: 6 }, py: 2.5, borderTop: '0.5px solid rgba(255, 255, 255, 0.3)' }}>
+        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+          Copyright © 2026 Contributors to the Eclipse Foundation · Apache-2.0
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 export default function MainLayout() {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
       <Link
         href="#main-content"
         sx={{
@@ -40,8 +114,11 @@ export default function MainLayout() {
           left: 8,
           top: -48,
           zIndex: 2000,
-          p: 1,
-          bgcolor: 'background.paper',
+          px: 2,
+          py: 1,
+          borderRadius: 1,
+          bgcolor: tractusx.orange,
+          color: `${tractusx.black} !important`,
           '&:focus': { top: 8 },
         }}
       >
@@ -54,18 +131,7 @@ export default function MainLayout() {
           <Outlet />
         </Box>
       </Box>
-      <Box component="footer" sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider' }}>
-        <Typography variant="caption" color="text.secondary">
-          Eclipse Tractus-X Dataspace Management · Copyright © 2026 Contributors to the Eclipse Foundation ·{' '}
-          <Link href="https://github.com/eclipse-tractusx/dataspace-mgm-ui" target="_blank" rel="noopener noreferrer">
-            Source code
-          </Link>{' '}
-          ·{' '}
-          <Link href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">
-            Apache-2.0
-          </Link>
-        </Typography>
-      </Box>
+      <Footer />
     </Box>
   );
 }

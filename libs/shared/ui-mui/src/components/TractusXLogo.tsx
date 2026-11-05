@@ -24,23 +24,20 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { tractusx } from '../theme/palette';
+import Box from '@mui/material/Box';
+import logo from '../assets/logo_tractus-x.svg';
 
-/** Mark of the Dataspace Management: two linked nodes in golden and green on a dark tile. */
-export function DataspaceMark({ size = 32, title }: { size?: number; title?: string }) {
+/**
+ * The Eclipse Tractus-X mark in colour, from the SVG source (Design Guidelines, slides 10-14):
+ * never recoloured, stretched, rotated or given a glow; keep clear space around it.
+ */
+export function TractusXLogo({ size = 36, decorative = false }: { size?: number; decorative?: boolean }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      role={title ? 'img' : undefined}
-      aria-hidden={title ? undefined : true}
-      aria-label={title}
-    >
-      <rect width="32" height="32" rx="8" fill={tractusx.ink} />
-      <path d="M11 21 L21 11" stroke={tractusx.white} strokeWidth="2" strokeLinecap="round" />
-      <circle cx="10" cy="22" r="4.5" fill={tractusx.gold} />
-      <circle cx="22" cy="10" r="4.5" fill={tractusx.green} />
-    </svg>
+    <Box
+      component="img"
+      src={logo}
+      alt={decorative ? '' : 'Eclipse Tractus-X logo'}
+      sx={{ height: size, width: 'auto', display: 'block', flexShrink: 0 }}
+    />
   );
 }

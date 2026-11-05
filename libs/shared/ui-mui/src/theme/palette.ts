@@ -27,42 +27,88 @@
 import type { PaletteMode, PaletteOptions } from '@mui/material/styles';
 
 /**
- * The Tractus-X colours: black and white as the base, golden and green as the accents
- * (brand01 / brand02 of the Tractus-X styleguide, see Portal Shared Components).
+ * Colour tokens of the Eclipse Tractus-X Design Guidelines v1.0 (September 2026).
  *
- * Golden and green have a low contrast on white: use them as fills, borders and accents
- * with black text on top, never as text colour on a white background (WCAG 2.1, TRG 9.01).
+ * - Primary orange (golden) #FAA023: the main accent, for accents and interactive elements only (slide 3).
+ *   Never long body copy in orange on white (slide 25).
+ * - Logo green #AFC72D: secondary accent for supporting graphic elements; orange stays the interactive
+ *   accent, and orange and green are never built into one gradient (slides 4, 25).
+ * - Base colours black #000000 and the Eclipse Tractus-X gray #1E1E1E (slide 5); secondary button gray
+ *   #232323 (slide 18); neutrals and UI tokens per theme (slide 8).
+ * - Do not introduce off-palette colours: derive tints from these tokens (slide 25).
  */
 export const tractusx = {
-  gold: '#FFA600',
-  goldDark: '#CC8500',
-  green: '#B3CB2D',
-  greenDark: '#88982D',
+  orange: '#FAA023',
+  orangeDark: '#F99407',
+  orangeDarker: '#ED8C05',
+  orangeDarkest: '#C37304',
+  orangeLight: '#FBAC3F',
+  orangeLighter: '#FBB24D',
+  orangeLightest: '#FCC477',
+  green: '#AFC72D',
   black: '#000000',
-  ink: '#111111',
   white: '#FFFFFF',
+  gray: '#1E1E1E',
+  grayButton: '#232323',
+  grayDarkest: '#626262',
+  navbarLight: '#F0F0F0',
 } as const;
 
 export type BrandColors = typeof tractusx;
 
+/** The neutrals and UI tokens of slide 8, per theme. */
+export interface UiTokens {
+  navbar: string;
+  muted: string;
+  cardBorder: string;
+  subtleBorder: string;
+  surface: string;
+  footer: string;
+  glow: string;
+}
+
+export const uiTokens: Record<PaletteMode, UiTokens> = {
+  dark: {
+    navbar: tractusx.black,
+    muted: 'rgba(255, 255, 255, 0.7)',
+    cardBorder: 'rgba(255, 255, 255, 0.3)',
+    subtleBorder: 'rgba(255, 255, 255, 0.1)',
+    surface: tractusx.gray,
+    footer: tractusx.black,
+    glow: '0 0 12px rgba(255, 255, 255, 0.5)',
+  },
+  light: {
+    navbar: tractusx.navbarLight,
+    muted: '#00000099',
+    cardBorder: 'rgba(0, 0, 0, 0.3)',
+    subtleBorder: 'rgba(0, 0, 0, 0.1)',
+    surface: tractusx.white,
+    footer: tractusx.grayDarkest,
+    glow: '0 0 12px rgba(0, 0, 0, 0.15)',
+  },
+};
+
 export function paletteFor(mode: PaletteMode): PaletteOptions {
-  const light = mode === 'light';
+  const dark = mode === 'dark';
+  const tokens = uiTokens[mode];
   return {
     mode,
     brand: tractusx,
-    primary: light
-      ? { main: tractusx.black, dark: tractusx.black, light: '#333333', contrastText: tractusx.white }
-      : { main: tractusx.gold, dark: tractusx.goldDark, light: '#FFC04D', contrastText: tractusx.black },
-    secondary: { main: tractusx.green, dark: tractusx.greenDark, light: '#D1E07A', contrastText: tractusx.black },
-    warning: { main: tractusx.gold, contrastText: tractusx.black },
-    success: { main: light ? '#00AA55' : '#33CC77' },
-    error: { main: light ? '#D91E18' : '#FF6B5E' },
-    background: light
-      ? { default: tractusx.white, paper: '#F9F9F9' }
-      : { default: tractusx.black, paper: '#121212' },
-    text: light
-      ? { primary: tractusx.ink, secondary: '#555555' }
-      : { primary: tractusx.white, secondary: '#B6B6B6' },
-    divider: light ? '#DCDCDC' : '#2A2A2A',
+    ui: tokens,
+    primary: {
+      main: tractusx.orange,
+      dark: tractusx.orangeDark,
+      light: tractusx.orangeLight,
+      contrastText: tractusx.black,
+    },
+    secondary: {
+      main: tractusx.grayButton,
+      dark: tractusx.gray,
+      light: tractusx.grayDarkest,
+      contrastText: tractusx.white,
+    },
+    background: { default: dark ? tractusx.black : tractusx.white, paper: tokens.surface },
+    text: { primary: dark ? tractusx.white : tractusx.black, secondary: tokens.muted },
+    divider: tokens.subtleBorder,
   };
 }

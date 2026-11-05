@@ -30,17 +30,17 @@ import type { NavigationItem } from '../../types/routing';
 
 /** Icon rail of the feature modules, built from the feature registry (src/features/main.tsx). */
 export default function Sidebar({ items }: { items: NavigationItem[] }) {
-  const theme = useTheme();
-  const activeColor = theme.palette.mode === 'light' ? tractusx.black : tractusx.gold;
+  // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
+  const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
 
   return (
     <Box
       component="nav"
       aria-label="Features"
       sx={{
-        width: 72,
+        width: { xs: 60, md: 72 },
         flexShrink: 0,
-        bgcolor: 'background.paper',
+        bgcolor: 'background.default',
         borderRight: 1,
         borderColor: 'divider',
         py: 2,
@@ -61,21 +61,20 @@ export default function Sidebar({ items }: { items: NavigationItem[] }) {
               aria-label={item.name}
               sx={{
                 position: 'relative',
-                borderRadius: 3,
+                width: 44,
+                height: 44,
                 color: 'text.secondary',
-                '&.active': {
-                  color: activeColor,
-                  bgcolor: alpha(tractusx.gold, 0.16),
-                },
+                '&:hover': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) },
+                '&.active': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.15) },
                 '&.active::before': {
                   content: '""',
                   position: 'absolute',
-                  left: -14,
+                  left: { xs: -8, md: -14 },
                   top: 8,
                   bottom: 8,
-                  width: 4,
+                  width: 3,
                   borderRadius: 2,
-                  bgcolor: tractusx.gold,
+                  bgcolor: tractusx.orange,
                 },
               }}
             >

@@ -25,35 +25,109 @@
  ********************************************************************************/
 
 import { createTheme, type PaletteMode, type Theme } from '@mui/material/styles';
-import { paletteFor, type BrandColors } from './palette';
+import { paletteFor, tractusx, uiTokens, type BrandColors, type UiTokens } from './palette';
 import { typography } from './typography';
 
 declare module '@mui/material/styles' {
   interface Palette {
     brand: BrandColors;
+    ui: UiTokens;
   }
   interface PaletteOptions {
     brand?: BrandColors;
+    ui?: UiTokens;
   }
 }
 
+/** Card and panel radius (slide 6). */
+export const RADIUS = 10;
+/** Button radius (slide 18): a small radius, never a pill. */
+export const BUTTON_RADIUS = 8;
+
 export function createPortalTheme(mode: PaletteMode): Theme {
+  const tokens = uiTokens[mode];
+  const focusRing = { outline: `2px solid ${tractusx.orange}`, outlineOffset: 2 };
+
   return createTheme({
     palette: paletteFor(mode),
     typography,
-    shape: { borderRadius: 12 },
+    shape: { borderRadius: RADIUS },
     components: {
-      MuiButton: {
-        defaultProps: { disableElevation: true },
-        styleOverrides: { root: { borderRadius: 999, paddingInline: 24 } },
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: { WebkitFontSmoothing: 'antialiased' },
+          '::selection': { backgroundColor: tractusx.orange, color: tractusx.black },
+        },
       },
+      MuiButtonBase: { defaultProps: { disableRipple: true } },
+      MuiButton: {
+        defaultProps: { disableElevation: true, variant: 'contained' },
+        styleOverrides: {
+          root: {
+            borderRadius: BUTTON_RADIUS,
+            padding: '14px 24px',
+            lineHeight: 1.25,
+            transition: 'background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+            '&.Mui-focusVisible': focusRing,
+          },
+        },
+        variants: [
+          {
+            props: { variant: 'contained', color: 'primary' },
+            style: { '&:hover': { backgroundColor: tractusx.orangeDark } },
+          },
+          {
+            props: { variant: 'contained', color: 'secondary' },
+            style: {
+              border: '1px solid transparent',
+              '&:hover': { backgroundColor: tractusx.grayButton, borderColor: tokens.cardBorder, boxShadow: tokens.glow },
+            },
+          },
+          {
+            props: { variant: 'outlined' },
+            style: {
+              padding: '13px 23px',
+              borderColor: tokens.cardBorder,
+              color: 'inherit',
+              '&:hover': { borderColor: tractusx.orange, backgroundColor: 'transparent', boxShadow: tokens.glow },
+            },
+          },
+        ],
+      },
+      MuiIconButton: {
+        styleOverrides: { root: { borderRadius: BUTTON_RADIUS, '&.Mui-focusVisible': focusRing } },
+      },
+      MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
       MuiCard: {
         defaultProps: { elevation: 0 },
         styleOverrides: {
-          root: ({ theme }) => ({ border: `1px solid ${theme.palette.divider}`, borderRadius: 16 }),
+          root: {
+            borderRadius: RADIUS,
+            border: `1px solid ${tokens.cardBorder}`,
+            backgroundColor: tokens.surface,
+            transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+            '&:hover': { boxShadow: tokens.glow },
+          },
         },
       },
-      MuiLink: { defaultProps: { underline: 'hover' } },
+      MuiCardContent: { styleOverrides: { root: { padding: 28, '&:last-child': { paddingBottom: 28 } } } },
+      MuiChip: {
+        styleOverrides: { root: { borderRadius: BUTTON_RADIUS / 2, fontWeight: 700 } },
+      },
+      MuiLink: {
+        defaultProps: { underline: 'hover' },
+        styleOverrides: {
+          root: {
+            color: mode === 'dark' ? tractusx.orange : tractusx.black,
+            '&.Mui-focusVisible, &:focus-visible': focusRing,
+          },
+        },
+      },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: { backgroundColor: tractusx.grayButton, color: tractusx.white, fontSize: '0.8125rem' },
+        },
+      },
     },
   });
 }

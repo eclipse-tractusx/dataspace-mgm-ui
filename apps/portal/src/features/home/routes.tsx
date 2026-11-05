@@ -39,7 +39,7 @@ export const homeFeature: FeatureConfig = {
       element: <Home />,
       meta: {
         title: 'Home',
-        description: 'Welcome to the Tractus-X Dataspace Management',
+        description: 'Welcome to the Eclipse Tractus-X Dataspace Management',
       },
     },
   ],

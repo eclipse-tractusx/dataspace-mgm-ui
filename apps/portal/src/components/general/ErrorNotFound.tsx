@@ -35,9 +35,9 @@ export default function ErrorNotFound() {
           404
         </Typography>
         <Typography variant="h2" component="h1">
-          This page is not on the chart
+          Page not found
         </Typography>
-        <Typography color="text.secondary">The page you are looking for does not exist (yet).</Typography>
+        <Typography color="text.secondary">The page you are looking for does not exist, or its feature has not arrived yet.</Typography>
         <Button variant="contained" component={RouterLink} to="/">
           Back to home
         </Button>

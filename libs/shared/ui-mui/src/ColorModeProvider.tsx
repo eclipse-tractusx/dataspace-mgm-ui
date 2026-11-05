@@ -27,6 +27,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, type PaletteMode } from '@mui/material/styles';
+import '@fontsource-variable/manrope';
 import { createPortalTheme } from './theme/theme';
 
 const STORAGE_KEY = 'dataspace-mgm.color-mode';
@@ -36,7 +37,7 @@ interface ColorModeValue {
   toggle: () => void;
 }
 
-const ColorModeContext = createContext<ColorModeValue>({ mode: 'light', toggle: () => undefined });
+const ColorModeContext = createContext<ColorModeValue>({ mode: 'dark', toggle: () => undefined });
 
 function initialMode(): PaletteMode {
   try {
@@ -45,10 +46,11 @@ function initialMode(): PaletteMode {
   } catch {
     // storage blocked (private window, policy): fall back to the system preference
   }
-  return globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  // Dark by default, whatever the system preference, as on eclipse-tractusx.github.io.
+  return 'dark';
 }
 
-/** Theme of the portal in black (dark) or white (light), with the Tractus-X golden and green accents. */
+/** Theme of the portal: black by default (dark) or white (light), Eclipse Tractus-X orange as the accent. */
 export function ColorModeProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<PaletteMode>(initialMode);
 

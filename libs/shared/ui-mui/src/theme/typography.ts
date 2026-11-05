@@ -26,12 +26,23 @@
 
 import type { TypographyVariantsOptions } from '@mui/material/styles';
 
-/** Libre Franklin is the font of the Tractus-X styleguide; the stack falls back to system fonts. */
+/**
+ * Manrope, as in the Eclipse Tractus-X Design Guidelines (slide 9): 400 body, 500 subheads,
+ * 700 labels, 800 titles; headings bold and tight; fallback Inter, Arial, sans-serif.
+ */
+export const fontFamily = '"Manrope Variable", Manrope, Inter, Arial, sans-serif';
+
 export const typography: TypographyVariantsOptions = {
-  fontFamily: '"Libre Franklin", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  h1: { fontWeight: 700, fontSize: 'clamp(2rem, 4vw + 1rem, 3.5rem)', lineHeight: 1.1, letterSpacing: '-0.02em' },
-  h2: { fontWeight: 700, fontSize: 'clamp(1.5rem, 2vw + 1rem, 2.25rem)', lineHeight: 1.2 },
-  h3: { fontWeight: 600, fontSize: '1.25rem', lineHeight: 1.3 },
-  overline: { fontWeight: 700, letterSpacing: '0.14em', lineHeight: 1.6 },
-  button: { fontWeight: 600, textTransform: 'none' },
+  fontFamily,
+  fontWeightRegular: 400,
+  fontWeightMedium: 500,
+  fontWeightBold: 700,
+  h1: { fontWeight: 800, fontSize: 'clamp(2.5rem, 4vw + 1rem, 4.5rem)', lineHeight: 1.05, letterSpacing: '-0.02em' },
+  h2: { fontWeight: 800, fontSize: 'clamp(1.75rem, 2vw + 1rem, 2.5rem)', lineHeight: 1.15, letterSpacing: '-0.01em' },
+  h3: { fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.3 },
+  subtitle1: { fontWeight: 500, fontSize: '1.125rem', lineHeight: 1.45 },
+  body1: { fontWeight: 400, fontSize: '1rem', lineHeight: 1.6 },
+  body2: { fontWeight: 400, fontSize: '0.9375rem', lineHeight: 1.6 },
+  overline: { fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.2em', lineHeight: 1.6 },
+  button: { fontWeight: 500, fontSize: '1rem', textTransform: 'none', letterSpacing: 0 },
 };

@@ -27,13 +27,14 @@
 /**
  * The only place of the workspace that imports MUI (docs/architecture: UI styleguide).
  * Apps and feature libraries import from '@dataspace-mgm/ui-mui', never from '@mui/*', so the
- * component library stays replaceable. Add a wrapper or re-export here when a feature needs one.
+ * component library stays replaceable. The theme implements the Eclipse Tractus-X Design Guidelines v1.0.
  */
 export { ColorModeProvider, useColorMode } from './ColorModeProvider';
-export { createPortalTheme } from './theme/theme';
-export { tractusx, type BrandColors } from './theme/palette';
-export { BrandStripe } from './components/BrandStripe';
-export { DataspaceMark } from './components/DataspaceMark';
+export { createPortalTheme, RADIUS, BUTTON_RADIUS } from './theme/theme';
+export { tractusx, uiTokens, type BrandColors, type UiTokens } from './theme/palette';
+export { fontFamily } from './theme/typography';
+export { TractusXLogo } from './components/TractusXLogo';
+export { BrandBackdrop } from './components/BrandBackdrop';
 
 // Layout and content primitives, used as they are until a wrapper is needed.
 export { default as AppBar } from '@mui/material/AppBar';
@@ -52,11 +53,13 @@ export { default as Typography } from '@mui/material/Typography';
 export { alpha, useTheme, type SxProps, type Theme } from '@mui/material/styles';
 
 // Icons used by the apps.
-export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';
-export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';
-export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
-export { default as TravelExploreOutlinedIcon } from '@mui/icons-material/TravelExploreOutlined';
-export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
-export { default as SwapHorizOutlinedIcon } from '@mui/icons-material/SwapHorizOutlined';
 export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
+export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
+export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';
+export { default as GitHubIcon } from '@mui/icons-material/GitHub';
+export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
+export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
+export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';
 export { default as OpenInNewIcon } from '@mui/icons-material/OpenInNew';
+export { default as SwapHorizOutlinedIcon } from '@mui/icons-material/SwapHorizOutlined';
+export { default as TravelExploreOutlinedIcon } from '@mui/icons-material/TravelExploreOutlined';

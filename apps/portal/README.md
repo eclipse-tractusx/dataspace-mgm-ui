@@ -13,9 +13,10 @@
 
 # Portal app
 
-The React app of the Dataspace Management UI. For now it is a skeleton with one feature, the welcome home page, in
-the Tractus-X colours: black and white, with golden (`#FFA600`) and green (`#B3CB2D`) accents, in a light and a dark
-mode.
+The React app of the Eclipse Tractus-X Dataspace Management UI. For now it is a skeleton with one feature, the welcome
+home page. It follows the Eclipse Tractus-X Design Guidelines v1.0 (see [libs/shared/ui-mui](../../libs/shared/ui-mui/README.md)):
+black by default, the Eclipse Tractus-X orange `#FAA023` as the accent, Manrope, the brand gradient in the hero, and a
+light mode with the same tokens.
 
 ## Run it
 

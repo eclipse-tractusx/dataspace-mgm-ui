@@ -27,11 +27,13 @@
 import type { ReactElement } from 'react';
 import {
   AdminPanelSettingsOutlinedIcon,
+  ArrowForwardIcon,
   Box,
-  BrandStripe,
+  BrandBackdrop,
   Button,
   Card,
   CardContent,
+  Chip,
   Container,
   HubOutlinedIcon,
   OpenInNewIcon,
@@ -39,14 +41,15 @@ import {
   SwapHorizOutlinedIcon,
   TravelExploreOutlinedIcon,
   Typography,
+  alpha,
   tractusx,
+  useTheme,
 } from '@dataspace-mgm/ui-mui';
 
 interface Pillar {
   title: string;
   text: string;
   icon: ReactElement;
-  accent: string;
 }
 
 const PILLARS: Pillar[] = [
@@ -54,25 +57,21 @@ const PILLARS: Pillar[] = [
     title: 'Discover',
     text: 'Find partners and their services through the dataspace discovery and the business partner directory.',
     icon: <TravelExploreOutlinedIcon />,
-    accent: tractusx.gold,
   },
   {
     title: 'Connect',
     text: 'Onboard your company, prove its identity and receive the credentials you need to join the dataspace.',
     icon: <HubOutlinedIcon />,
-    accent: tractusx.green,
   },
   {
     title: 'Exchange',
     text: 'Connect your connector and share data with your partners under the usage policies you agreed on.',
     icon: <SwapHorizOutlinedIcon />,
-    accent: tractusx.gold,
   },
   {
     title: 'Govern',
     text: 'Manage the users, roles, technical users and apps of your company in one place.',
     icon: <AdminPanelSettingsOutlinedIcon />,
-    accent: tractusx.green,
   },
 ];
 
@@ -80,69 +79,58 @@ const ARCHITECTURE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-serv
 const TRACTUSX_URL = 'https://eclipse-tractusx.github.io';
 
 export default function Home() {
+  const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+
   return (
     <Box component="article" aria-labelledby="home-title">
-      <Box
-        component="section"
-        sx={{
-          bgcolor: tractusx.black,
-          color: tractusx.white,
-          borderBottom: 1,
-          borderColor: 'divider',
-          py: { xs: 6, md: 10 },
-        }}
-      >
-        <Container maxWidth="lg">
-          <Stack spacing={3} sx={{ maxWidth: 760 }}>
-            <Typography variant="overline" sx={{ color: tractusx.green }}>
-              Eclipse Tractus-X · Dataspace Management
+      <BrandBackdrop>
+        <Container maxWidth="lg" sx={{ pt: { xs: 14, md: 12 }, pb: { xs: 8, md: 12 } }}>
+          <Stack spacing={3} sx={{ maxWidth: 640 }}>
+            <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              Eclipse Tractus-X
             </Typography>
             <Typography id="home-title" variant="h1" component="h1">
-              Welcome to your{' '}
-              <Box component="span" sx={{ color: tractusx.gold }}>
-                Tractus-X dataspace
+              Welcome to the{' '}
+              <Box component="span" sx={{ color: tractusx.orange, display: 'block' }}>
+                Dataspace Management
               </Box>
             </Typography>
-            <BrandStripe width={120} height={6} />
-            <Typography variant="h6" component="p" sx={{ color: '#D6D6D6', fontWeight: 400 }}>
-              The portal of your Operating Service Provider: onboard your company, manage its identity and its
+            <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.85)' }}>
+              The portal of your Operating Service Provider. Onboard your company, manage its identity and its
               people, and connect to the dataspace that the Core Service Provider keeps trusted.
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
               <Button
-                variant="contained"
+                color="primary"
                 href={ARCHITECTURE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                endIcon={<OpenInNewIcon />}
-                sx={{ bgcolor: tractusx.gold, color: tractusx.black, '&:hover': { bgcolor: tractusx.goldDark } }}
+                endIcon={<ArrowForwardIcon />}
               >
                 Explore the architecture
               </Button>
               <Button
-                variant="outlined"
+                color="secondary"
                 href={TRACTUSX_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 endIcon={<OpenInNewIcon />}
-                sx={{
-                  color: tractusx.white,
-                  borderColor: tractusx.green,
-                  '&:hover': { borderColor: tractusx.green, bgcolor: 'rgba(179, 203, 45, 0.12)' },
-                }}
               >
-                About Eclipse Tractus-X
+                Visit Eclipse Tractus-X
               </Button>
             </Stack>
           </Stack>
         </Container>
-      </Box>
+      </BrandBackdrop>
 
-      <Container component="section" maxWidth="lg" aria-labelledby="pillars-title" sx={{ py: { xs: 6, md: 8 } }}>
-        <Typography id="pillars-title" variant="h2" component="h2" gutterBottom>
+      <Container component="section" maxWidth="lg" aria-labelledby="pillars-title" sx={{ py: { xs: 8, md: 12 } }}>
+        <Typography variant="overline" color="text.secondary">
+          What you can do here
+        </Typography>
+        <Typography id="pillars-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
           Discover. Connect. Exchange. Govern.
         </Typography>
-        <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 720 }}>
+        <Typography color="text.secondary" sx={{ mb: 6, maxWidth: 680 }}>
           Everything your company needs to take part in the dataspace. The features arrive here one module at a
           time.
         </Typography>
@@ -154,27 +142,29 @@ export default function Home() {
           }}
         >
           {PILLARS.map((pillar) => (
-            <Card key={pillar.title} component="section" sx={{ borderTop: `4px solid ${pillar.accent}` }}>
-              <CardContent>
+            <Card key={pillar.title} component="section" aria-labelledby={`pillar-${pillar.title}`}>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
                 <Box
                   aria-hidden
                   sx={{
-                    display: 'inline-flex',
-                    p: 1.25,
-                    mb: 2,
-                    borderRadius: '50%',
-                    bgcolor: pillar.accent,
-                    color: tractusx.black,
+                    width: 48,
+                    height: 48,
+                    borderRadius: '10px',
+                    display: 'grid',
+                    placeItems: 'center',
+                    color: iconColor,
+                    bgcolor: alpha(tractusx.orange, 0.15),
                   }}
                 >
                   {pillar.icon}
                 </Box>
-                <Typography variant="h3" component="h3" gutterBottom>
+                <Typography id={`pillar-${pillar.title}`} variant="h3" component="h3">
                   {pillar.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
                   {pillar.text}
                 </Typography>
+                <Chip label="Coming soon" size="small" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
               </CardContent>
             </Card>
           ))}
