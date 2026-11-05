@@ -36,10 +36,6 @@ more.
 
 * https://projects.eclipse.org/projects/automotive.tractusx/developer
 
-Getting started:
-
-* https://eclipse-tractusx.github.io/docs/developer
-
 The project maintains the following source code repositories
 
 * https://github.com/eclipse-tractusx/dataspace-mgm-service
