@@ -78,7 +78,8 @@ function Tile({ label, icon, note, active = false, disabled = false, onSelect }:
       sx={{
         width: '100%',
         minHeight: 120,
-        justifyContent: 'flex-start',
+        // Icon and name sit in the middle of the tile; a "Coming soon" note simply adds a line.
+        justifyContent: 'center',
         borderRadius: '10px',
         border: '1px solid',
         borderColor: active ? tractusx.orange : theme.palette.ui.cardBorder,

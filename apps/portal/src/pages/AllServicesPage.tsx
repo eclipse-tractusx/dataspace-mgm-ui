@@ -30,13 +30,14 @@ import {
   Box,
   Button,
   Card,
-  CardActions,
-  CardContent,
+  CardActionArea,
   Chip,
   ChevronLeftIcon,
   ChevronRightIcon,
   Container,
   IconButton,
+  InfoOutlinedIcon,
+  Popover,
   Stack,
   Tooltip,
   Typography,
@@ -61,26 +62,47 @@ const CATEGORIES: { id: FeatureCategory; label: string }[] = [
 ];
 const categoryLabel = (id: FeatureCategory) => CATEGORIES.find((category) => category.id === id)?.label ?? id;
 
-const CARD_WIDTH = 300;
-const GAP = 24;
+const CARD_SIZE = 200;
+const GAP = 20;
 
-function AppCard({ app, favourite, onOpen }: { app: NavigationItem; favourite: boolean; onOpen: () => void }) {
+/**
+ * One service as a square: its icon and name, nothing else. Choosing it opens the service; the info button
+ * in the corner shows what it does, its area and whether it is in the sidebar.
+ */
+function ServiceSquare({ app, favourite, onOpen }: { app: NavigationItem; favourite: boolean; onOpen: () => void }) {
   const theme = useTheme();
   const iconColor = theme.palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const infoId = `service-info-${app.path.slice(1) || 'home'}`;
+
   return (
     <Card
       component="li"
-      aria-labelledby={`app-${app.path}`}
       sx={{
-        flex: `0 0 ${CARD_WIDTH}px`,
+        flex: `0 0 ${CARD_SIZE}px`,
+        aspectRatio: '1 / 1',
         scrollSnapAlign: 'start',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 320,
+        position: 'relative',
         listStyle: 'none',
+        borderColor: anchor ? tractusx.orange : undefined,
       }}
     >
-      <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2, pt: 3.5 }}>
+      <CardActionArea
+        onClick={onOpen}
+        disabled={app.disabled}
+        aria-label={app.disabled ? `${app.name}, coming soon` : `Open ${app.name}`}
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 1.5,
+          p: 2,
+          textAlign: 'center',
+          '&.Mui-disabled': { opacity: 0.6 },
+        }}
+      >
         <Box
           aria-hidden
           sx={{
@@ -96,40 +118,68 @@ function AppCard({ app, favourite, onOpen }: { app: NavigationItem; favourite: b
         >
           {app.icon}
         </Box>
-        <Stack spacing={0.5}>
-          <Typography variant="overline" color="text.secondary">
-            {categoryLabel(app.category)}
-          </Typography>
-          <Typography id={`app-${app.path}`} component="h3" sx={{ fontWeight: 800, fontSize: 22, lineHeight: 1.2 }}>
-            {app.name}
-          </Typography>
-        </Stack>
-        <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
-          {app.description}
+        <Typography component="h3" sx={{ fontWeight: 700, fontSize: 16, lineHeight: 1.25 }}>
+          {app.name}
         </Typography>
-        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-          <Chip size="small" variant="outlined" label={app.disabled ? 'Coming soon' : 'Available'} />
-          {favourite && <Chip size="small" variant="outlined" label="In your sidebar" />}
+        {app.disabled && (
+          <Typography variant="caption" color="text.secondary">
+            Coming soon
+          </Typography>
+        )}
+      </CardActionArea>
+      <IconButton
+        size="small"
+        onClick={(event) => setAnchor(event.currentTarget)}
+        aria-label={`About ${app.name}`}
+        aria-haspopup="dialog"
+        aria-expanded={Boolean(anchor)}
+        aria-controls={anchor ? infoId : undefined}
+        sx={{ position: 'absolute', top: 6, right: 6, color: 'text.secondary', '&:hover': { color: tractusx.orange } }}
+      >
+        <InfoOutlinedIcon fontSize="small" />
+      </IconButton>
+      <Popover
+        id={infoId}
+        open={Boolean(anchor)}
+        anchorEl={anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        slotProps={{
+          paper: {
+            role: 'dialog',
+            'aria-label': app.name,
+            sx: { p: 2.5, maxWidth: 320, borderRadius: '10px', border: 1, borderColor: theme.palette.ui.cardBorder },
+          },
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Stack spacing={0.25}>
+            <Typography variant="overline" color="text.secondary">
+              {categoryLabel(app.category)}
+            </Typography>
+            <Typography sx={{ fontWeight: 800, fontSize: 18 }}>{app.name}</Typography>
+          </Stack>
+          <Typography variant="body2" color="text.secondary">
+            {app.description}
+          </Typography>
+          <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+            <Chip size="small" variant="outlined" label={app.disabled ? 'Coming soon' : 'Available'} />
+            {favourite && <Chip size="small" variant="outlined" label="In your sidebar" />}
+          </Stack>
+          {!app.disabled && (
+            <Button size="small" onClick={onOpen} endIcon={<ArrowForwardIcon />} sx={{ alignSelf: 'flex-start' }}>
+              Open
+            </Button>
+          )}
         </Stack>
-      </CardContent>
-      <CardActions>
-        <Button
-          fullWidth
-          color={app.disabled ? 'secondary' : 'primary'}
-          disabled={app.disabled}
-          onClick={onOpen}
-          endIcon={app.disabled ? undefined : <ArrowForwardIcon />}
-          aria-label={app.disabled ? `${app.name}, coming soon` : `Open ${app.name}`}
-        >
-          {app.disabled ? 'Coming soon' : 'Open'}
-        </Button>
-      </CardActions>
+      </Popover>
     </Card>
   );
 }
 
 /**
- * All services on desktop, inside the canvas: the services as a carousel of cards that scrolls sideways, filtered by
+ * All services on desktop, inside the canvas: the services as a carousel of squares that scrolls sideways, filtered by
  * the part of the dataspace they serve. Favourites are kept with the "+" in the sidebar.
  */
 export default function AllServicesPage() {
@@ -163,7 +213,7 @@ export default function AllServicesPage() {
   const page = (direction: 1 | -1) => {
     const el = track.current;
     if (!el) return;
-    const step = Math.max(CARD_WIDTH + GAP, Math.floor(el.clientWidth / (CARD_WIDTH + GAP)) * (CARD_WIDTH + GAP));
+    const step = Math.max(CARD_SIZE + GAP, Math.floor(el.clientWidth / (CARD_SIZE + GAP)) * (CARD_SIZE + GAP));
     el.scrollBy?.({ left: direction * step, behavior: 'smooth' });
   };
 
@@ -239,7 +289,7 @@ export default function AllServicesPage() {
           }}
         >
           {shown.map((app) => (
-            <AppCard key={app.path} app={app} favourite={isFavourite(app.path)} onOpen={() => navigate(app.path)} />
+            <ServiceSquare key={app.path} app={app} favourite={isFavourite(app.path)} onOpen={() => navigate(app.path)} />
           ))}
         </Box>
       </Box>
