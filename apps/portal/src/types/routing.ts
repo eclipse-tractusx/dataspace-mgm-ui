@@ -44,6 +44,8 @@ export interface FeatureRoute {
 
 export interface FeatureConfig {
   name: string;
+  /** One sentence for the "All apps" view. */
+  description: string;
   icon: ReactElement;
   navigationPath: string;
   disabled: boolean;
@@ -52,6 +54,7 @@ export interface FeatureConfig {
 
 export interface NavigationItem {
   name: string;
+  description: string;
   icon: ReactElement;
   path: string;
   disabled: boolean;

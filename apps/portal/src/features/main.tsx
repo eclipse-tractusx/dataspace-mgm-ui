@@ -24,19 +24,49 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import {
+  AppRegistrationOutlinedIcon,
+  BusinessOutlinedIcon,
+  CableOutlinedIcon,
+  ManageAccountsOutlinedIcon,
+  NotificationsOutlinedIcon,
+  StorefrontOutlinedIcon,
+} from '@dataspace-mgm/ui-mui';
 import type { FeatureConfig, NavigationItem } from '../types/routing';
 import { homeFeature } from './home/routes';
 
 /**
+ * Features that are announced but not built yet: shown greyed out as "coming soon", without routes
+ * (like the Status placeholder of the Industry Core Hub). Replace one by its feature folder when it arrives.
+ */
+const upcoming = (name: string, description: string, icon: FeatureConfig['icon'], path: string): FeatureConfig => ({
+  name,
+  description,
+  icon,
+  navigationPath: path,
+  disabled: true,
+  routes: [],
+});
+
+/**
  * Registry of the feature modules. Add a feature: create src/features/<feature>/ with
  * pages/, routes.tsx (one FeatureConfig) and index.ts, then add it to this list.
- * Set `disabled: true` to show a feature in the navigation before it is ready.
+ * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All apps" view.
  */
-export const allFeatures: FeatureConfig[] = [homeFeature];
+export const allFeatures: FeatureConfig[] = [
+  homeFeature,
+  upcoming('Onboarding', 'Register your company and follow its application.', <AppRegistrationOutlinedIcon />, '/onboarding'),
+  upcoming('Company', 'Company data, business partner number and credentials.', <BusinessOutlinedIcon />, '/company'),
+  upcoming('Users & roles', 'Invite people, assign roles and manage technical users.', <ManageAccountsOutlinedIcon />, '/users'),
+  upcoming('Connectors', 'Register and monitor the connectors of your company.', <CableOutlinedIcon />, '/connectors'),
+  upcoming('Apps', 'Find and subscribe to apps and services of the dataspace.', <StorefrontOutlinedIcon />, '/apps'),
+  upcoming('Notifications', 'Messages about your company, its applications and subscriptions.', <NotificationsOutlinedIcon />, '/notifications'),
+];
 
-/** The navigation items of the sidebar. */
+/** The navigation items of the sidebar, the bottom bar and the "All apps" view. */
 export const features: NavigationItem[] = allFeatures.map((feature) => ({
   name: feature.name,
+  description: feature.description,
   icon: feature.icon,
   path: feature.navigationPath,
   disabled: feature.disabled,

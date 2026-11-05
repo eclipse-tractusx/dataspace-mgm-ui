@@ -31,7 +31,6 @@ import {
   CircleIcon,
   DarkModeOutlinedIcon,
   Divider,
-  GitHubIcon,
   IconButton,
   LightModeOutlinedIcon,
   Toolbar,
@@ -40,50 +39,51 @@ import {
   Typography,
   tractusx,
   useColorMode,
+  useMediaQuery,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
 import { Link as RouterLink } from 'react-router-dom';
 import { useConfig } from '../../config/ConfigContext';
+import { MoreMenu, ProfileMenu } from './HeaderMenus';
 
-const SOURCE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-ui';
-
-/** Navigation bar after eclipse-tractusx.github.io: 74 px, black (dark) or #F0F0F0 (light), the mark in colour. */
-export default function Header() {
+/**
+ * Navigation bar after eclipse-tractusx.github.io: 74 px, black (dark) or #F0F0F0 (light), the mark in colour.
+ * Right side: environment, theme switch, profile and more options; on phones the last two sit in the bottom bar.
+ */
+export default function Header({ onOpenApps }: { onOpenApps: () => void }) {
   const { mode, toggle } = useColorMode();
   const { environment } = useConfig();
-  const { palette } = useTheme();
+  const theme = useTheme();
+  const { palette } = theme;
+  // On phones and tablets, profile and more options move to the bottom bar.
+  const compact = useMediaQuery(theme.breakpoints.down('md'));
   const nextMode = mode === 'light' ? 'dark' : 'light';
 
   return (
     <AppBar
       position="sticky"
       elevation={0}
-      sx={{
-        bgcolor: palette.ui.navbar,
-        color: 'text.primary',
-        borderBottom: 1,
-        borderColor: 'divider',
-      }}
+      sx={{ bgcolor: palette.ui.navbar, color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}
     >
-      <Toolbar sx={{ minHeight: { xs: 64, md: 74 }, gap: 2, px: { xs: 2, md: 3 } }}>
+      <Toolbar sx={{ minHeight: { xs: 64, md: 74 }, gap: { xs: 1, sm: 2 }, px: { xs: 2, md: 3 } }}>
         <Box
           component={RouterLink}
           to="/"
           aria-label="Eclipse Tractus-X Dataspace Management, home"
-          sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: 'inherit', textDecoration: 'none' }}
+          sx={{ display: 'flex', alignItems: 'center', gap: 1.5, color: 'inherit', textDecoration: 'none', minWidth: 0 }}
         >
           <TractusXLogo size={34} decorative />
-          <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, whiteSpace: 'nowrap' }}>
+          <Typography component="span" sx={{ fontWeight: 800, fontSize: { xs: 16, sm: 18 }, whiteSpace: 'nowrap' }}>
             Eclipse Tractus-X
           </Typography>
           <Divider
             orientation="vertical"
             aria-hidden
-            sx={{ display: { xs: 'none', sm: 'block' }, height: 24, borderColor: palette.ui.cardBorder }}
+            sx={{ display: { xs: 'none', md: 'block' }, height: 24, borderColor: palette.ui.cardBorder }}
           />
           <Typography
             component="span"
-            sx={{ display: { xs: 'none', sm: 'inline' }, fontWeight: 500, fontSize: 16, color: 'text.secondary' }}
+            sx={{ display: { xs: 'none', md: 'inline' }, fontWeight: 500, fontSize: 16, color: 'text.secondary' }}
           >
             Dataspace Management
           </Typography>
@@ -103,27 +103,17 @@ export default function Header() {
             color: 'text.secondary',
           }}
         />
-        <Tooltip title="Source code on GitHub">
-          <IconButton
-            component="a"
-            href={SOURCE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Source code on GitHub"
-            sx={{ color: 'text.primary', '&:hover': { color: tractusx.orange } }}
-          >
-            <GitHubIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
         <Tooltip title={`Switch to ${nextMode} mode`}>
           <IconButton
             onClick={toggle}
             aria-label={`Switch to ${nextMode} mode`}
-            sx={{ color: 'text.primary', '&:hover': { color: tractusx.orange } }}
+            sx={{ display: { xs: 'none', md: 'inline-flex' }, color: 'text.primary', '&:hover': { color: tractusx.orange } }}
           >
             {mode === 'light' ? <DarkModeOutlinedIcon fontSize="small" /> : <LightModeOutlinedIcon fontSize="small" />}
           </IconButton>
         </Tooltip>
+        {!compact && <ProfileMenu />}
+        {!compact && <MoreMenu onOpenApps={onOpenApps} />}
       </Toolbar>
     </AppBar>
   );

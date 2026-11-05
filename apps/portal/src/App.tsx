@@ -26,6 +26,8 @@
 
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { ConfigContext } from './config/ConfigContext';
+import { FavouritesProvider } from './contexts/FavouritesContext';
+import { features } from './features/main';
 import type { RuntimeConfig } from './config';
 import AppRoutes from './routes';
 
@@ -33,7 +35,9 @@ export default function App({ config }: { config: RuntimeConfig }) {
   return (
     <ConfigContext.Provider value={config}>
       <ColorModeProvider>
-        <AppRoutes />
+        <FavouritesProvider items={features}>
+          <AppRoutes />
+        </FavouritesProvider>
       </ColorModeProvider>
     </ConfigContext.Provider>
   );

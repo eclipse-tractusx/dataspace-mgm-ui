@@ -25,6 +25,9 @@
  ********************************************************************************/
 
 import {
+  AppsOutlinedIcon,
+  Divider,
+  StarBorderIcon,
   Drawer,
   List,
   ListItem,
@@ -36,12 +39,26 @@ import {
   useTheme,
 } from '@dataspace-mgm/ui-mui';
 import { NavLink } from 'react-router-dom';
-import type { NavigationItem } from '../../types/routing';
+import { useFavourites } from '../../contexts/FavouritesContext';
 
-const RAIL_WIDTH = { xs: 60, md: 72 };
+const RAIL_WIDTH = 72;
 
-/** Icon rail of the feature modules (MUI Drawer + List), built from the feature registry (src/features/main.tsx). */
-export default function Sidebar({ items }: { items: NavigationItem[] }) {
+const railButton = {
+  flex: 'none',
+  width: 44,
+  height: 44,
+  justifyContent: 'center',
+  position: 'relative',
+  color: 'text.secondary',
+} as const;
+
+/**
+ * Icon rail on desktop (MUI Drawer + List): the person's favourite features on top, then "All apps" and
+ * "Choose favourites", which turn features on and off in the rail. On phones and tablets the BottomBar
+ * shows the same favourites.
+ */
+export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
+  const items = useFavourites().favourites;
   // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
   const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
 
@@ -63,22 +80,17 @@ export default function Sidebar({ items }: { items: NavigationItem[] }) {
               <ListItemButton
                 component={NavLink}
                 to={item.path}
-                end
+                end={item.path === '/'}
                 disabled={item.disabled}
                 aria-label={item.name}
                 sx={{
-                  flex: 'none',
-                  width: 44,
-                  height: 44,
-                  justifyContent: 'center',
-                  position: 'relative',
-                  color: 'text.secondary',
+                  ...railButton,
                   '&:hover': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) },
                   '&.active': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.15) },
                   '&.active::before': {
                     content: '""',
                     position: 'absolute',
-                    left: { xs: -8, md: -14 },
+                    left: -14,
                     top: 8,
                     bottom: 8,
                     width: 3,
@@ -88,6 +100,25 @@ export default function Sidebar({ items }: { items: NavigationItem[] }) {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: 0, color: 'inherit' }}>{item.icon}</ListItemIcon>
+              </ListItemButton>
+            </Tooltip>
+          </ListItem>
+        ))}
+      </List>
+      <Divider sx={{ mx: 2 }} />
+      <List sx={{ py: 2 }}>
+        {[
+          { label: 'All apps', icon: <AppsOutlinedIcon /> },
+          { label: 'Choose favourites', icon: <StarBorderIcon /> },
+        ].map((action) => (
+          <ListItem key={action.label} disablePadding sx={{ justifyContent: 'center' }}>
+            <Tooltip title={action.label} placement="right">
+              <ListItemButton
+                onClick={onOpenApps}
+                aria-label={action.label}
+                sx={{ ...railButton, '&:hover': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) } }}
+              >
+                <ListItemIcon sx={{ minWidth: 0, color: 'inherit' }}>{action.icon}</ListItemIcon>
               </ListItemButton>
             </Tooltip>
           </ListItem>

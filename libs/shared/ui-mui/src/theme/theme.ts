@@ -136,6 +136,65 @@ export function createPortalTheme(mode: PaletteMode): Theme {
           },
         },
       },
+      MuiBottomNavigation: {
+        styleOverrides: {
+          root: { height: 64, backgroundColor: tokens.navbar, borderTop: `1px solid ${tokens.subtleBorder}` },
+        },
+      },
+      MuiBottomNavigationAction: {
+        styleOverrides: {
+          root: {
+            minWidth: 0,
+            padding: '6px 4px 8px',
+            color: tokens.muted,
+            position: 'relative',
+            '&.Mui-selected': { color: mode === 'dark' ? tractusx.orange : tractusx.black },
+            '&.Mui-selected::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: '30%',
+              right: '30%',
+              height: 3,
+              borderRadius: '0 0 2px 2px',
+              backgroundColor: tractusx.orange,
+            },
+            '&.Mui-disabled': { opacity: 0.45 },
+            '&.Mui-focusVisible': focusRing,
+          },
+          label: { fontSize: '0.75rem', fontWeight: 500, '&.Mui-selected': { fontSize: '0.75rem', fontWeight: 700 } },
+        },
+      },
+      MuiBackdrop: { styleOverrides: { root: { backgroundColor: 'rgba(0, 0, 0, 0.7)' } } },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: mode === 'dark' ? tractusx.black : tractusx.white,
+            backgroundImage: 'none',
+            border: `1px solid ${tokens.cardBorder}`,
+          },
+          paperFullScreen: { borderRadius: 0, border: 0 },
+        },
+      },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: mode === 'dark' ? tractusx.gray : tractusx.white,
+            border: `1px solid ${tokens.cardBorder}`,
+            borderRadius: RADIUS,
+            minWidth: 240,
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            minHeight: 44,
+            '&:hover': { backgroundColor: 'rgba(250, 160, 35, 0.08)' },
+            '&.Mui-focusVisible': { backgroundColor: 'rgba(250, 160, 35, 0.15)' },
+          },
+        },
+      },
       MuiDivider: { styleOverrides: { root: { borderColor: tokens.subtleBorder } } },
       MuiChip: {
         styleOverrides: {

@@ -24,8 +24,22 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { Box, Divider, Grid, Link, Stack, TractusXLogo, Typography, tractusx, useTheme } from '@dataspace-mgm/ui-mui';
+import { useState } from 'react';
+import {
+  Box,
+  Divider,
+  Grid,
+  Link,
+  Stack,
+  TractusXLogo,
+  Typography,
+  tractusx,
+  useMediaQuery,
+  useTheme,
+} from '@dataspace-mgm/ui-mui';
 import { Outlet } from 'react-router-dom';
+import AppsDialog from '../components/general/AppsDialog';
+import BottomBar from '../components/general/BottomBar';
 import Header from '../components/general/Header';
 import Sidebar from '../components/general/Sidebar';
 import { features } from '../features/main';
@@ -103,9 +117,25 @@ function Footer() {
   );
 }
 
+/** Height of the phone's bottom bar; the page keeps this space free at its end. */
+const BOTTOM_BAR_HEIGHT = 64;
+
 export default function MainLayout() {
+  const theme = useTheme();
+  const compact = useMediaQuery(theme.breakpoints.down('md'));
+  const [appsOpen, setAppsOpen] = useState(false);
+  const openApps = () => setAppsOpen(true);
+
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: 'background.default' }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: 'background.default',
+        pb: compact ? `calc(${BOTTOM_BAR_HEIGHT}px + env(safe-area-inset-bottom, 0px))` : 0,
+      }}
+    >
       <Link
         href="#main-content"
         sx={{
@@ -123,14 +153,16 @@ export default function MainLayout() {
       >
         Skip to content
       </Link>
-      <Header />
+      <Header onOpenApps={openApps} />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <Sidebar items={features} />
+        {!compact && <Sidebar onOpenApps={openApps} />}
         <Box component="main" id="main-content" tabIndex={-1} sx={{ flex: 1, minWidth: 0, outline: 'none' }}>
           <Outlet />
         </Box>
       </Box>
       <Footer />
+      {compact && <BottomBar onOpenApps={openApps} />}
+      <AppsDialog open={appsOpen} onClose={() => setAppsOpen(false)} items={features} />
     </Box>
   );
 }
