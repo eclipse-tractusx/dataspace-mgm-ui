@@ -131,20 +131,20 @@ describe('All services on phones', () => {
 });
 
 describe('All services on desktop', () => {
-  it('shows every service as a card in a carousel, the description and version over it on demand, and filters by area', () => {
+  it('shows every service as a card in a carousel, the description and version in a tooltip, and filters by area', async () => {
     wrap(<AllServicesPage />, '/all-services');
     const carousel = screen.getByRole('region', { name: 'Services' });
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
     expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
     expect(within(carousel).getByRole('button', { name: 'Participant management, coming soon' })).toBeDisabled();
 
+    // The description is not on the card: it shows in the tooltip of the info button, with the version.
     const wallets = features.find((service) => service.path === '/wallets')!;
-    expect(screen.queryByText(wallets.description)).toBeNull();
-    fireEvent.click(within(carousel).getByRole('button', { name: 'About Wallets as a service' }));
-    const details = screen.getByRole('dialog', { name: 'Wallets as a service' });
-    expect(details).toHaveTextContent(wallets.description);
-    expect(within(details).getByLabelText(`Version ${wallets.version}`)).toHaveTextContent(`v${wallets.version}`);
-    fireEvent.keyDown(details, { key: 'Escape' });
+    expect(within(carousel).queryByText(wallets.description)).toBeNull();
+    fireEvent.mouseOver(within(carousel).getByRole('button', { name: 'About Wallets as a service' }));
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toHaveTextContent(wallets.description);
+    expect(tooltip).toHaveTextContent(`v${wallets.version}`);
 
     fireEvent.click(within(screen.getByRole('group', { name: 'Filter services' })).getByRole('button', { name: /^As a service/ }));
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'as-a-service').length);

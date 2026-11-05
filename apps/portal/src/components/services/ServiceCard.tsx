@@ -24,16 +24,13 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useId, useState } from 'react';
 import {
   ArrowForwardIcon,
   Box,
   Button,
   ButtonBase,
-  Chip,
   IconButton,
   InfoOutlinedIcon,
-  Popover,
   Stack,
   StarIcon,
   Tooltip,
@@ -64,13 +61,11 @@ interface ServiceCardProps {
 /**
  * A service as on the dataspace cards of eclipse-tractusx.github.io: a glowing square with the icon (a star at
  * the top left when it is a favourite, the info button at the top right), and below it the name, the area and
- * status, and the action. The info button opens a small panel over the square with the description and version.
+ * status, and the action. The description and version show in a tooltip on the info button, never on the card.
  */
 export default function ServiceCard({ service, favourite, onOpen }: ServiceCardProps) {
   const { palette } = useTheme();
   const dark = palette.mode === 'dark';
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  const infoId = useId();
   const iconColor = dark ? tractusx.orange : tractusx.orangeDarkest;
   const glow = dark ? '0 0 14px rgba(255, 255, 255, 0.28)' : '0 0 14px rgba(0, 0, 0, 0.12)';
   const glowStrong = dark ? '0 0 22px rgba(255, 255, 255, 0.5)' : '0 0 22px rgba(0, 0, 0, 0.2)';
@@ -87,12 +82,12 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
           aspectRatio: '1 / 1',
           borderRadius: '10px',
           border: '1px solid',
-          borderColor: anchor ? alpha(tractusx.orange, 0.6) : palette.ui.cardBorder,
+          borderColor: palette.ui.cardBorder,
           // The light falls in from the top left, as on the website's cards.
           background: dark
             ? `radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 55%), ${tractusx.gray}`
             : `radial-gradient(120% 120% at 0% 0%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 55%), ${tractusx.white}`,
-          boxShadow: anchor ? glowStrong : glow,
+          boxShadow: glow,
           transition: 'box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease',
           '&:hover': { boxShadow: glowStrong, transform: 'translateY(-4px)', borderColor: alpha(tractusx.orange, 0.6) },
           '&:hover .service-orb': { opacity: 1, transform: 'scale(1.08)' },
@@ -143,69 +138,57 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
           </Tooltip>
         )}
 
-        <Tooltip title="Details">
+        {/* The description lives in a tooltip on the info button, not on the card (hover, focus or tap). */}
+        <Tooltip
+          placement="top-end"
+          arrow
+          enterTouchDelay={0}
+          leaveTouchDelay={4000}
+          slotProps={{
+            tooltip: {
+              sx: {
+                maxWidth: SERVICE_CARD_WIDTH,
+                p: 1.5,
+                borderRadius: '8px',
+                bgcolor: dark ? tractusx.grayButton : tractusx.gray,
+                color: tractusx.white,
+                border: '1px solid',
+                borderColor: dark ? palette.ui.cardBorder : 'transparent',
+                boxShadow: glowStrong,
+              },
+            },
+            arrow: { sx: { color: dark ? tractusx.grayButton : tractusx.gray } },
+          }}
+          title={
+            <Stack spacing={0.75}>
+              <Stack direction="row" sx={{ alignItems: 'baseline', gap: 1 }}>
+                <Typography component="span" sx={{ flex: 1, fontWeight: 700, fontSize: 14 }}>
+                  {service.name}
+                </Typography>
+                <Typography component="span" sx={{ fontSize: 12, color: 'rgba(255, 255, 255, 0.7)' }}>
+                  v{service.version}
+                </Typography>
+              </Stack>
+              <Typography component="span" sx={{ fontSize: 13, lineHeight: 1.5 }}>
+                {service.description}
+              </Typography>
+            </Stack>
+          }
+        >
           <IconButton
             size="small"
-            onClick={(event) => setAnchor(event.currentTarget)}
             aria-label={`About ${service.name}`}
-            aria-haspopup="dialog"
-            aria-expanded={Boolean(anchor)}
-            aria-controls={anchor ? infoId : undefined}
             sx={{
               position: 'absolute',
               top: 6,
               right: 6,
-              color: anchor ? tractusx.orange : 'text.secondary',
+              color: 'text.secondary',
               '&:hover': { color: tractusx.orange, bgcolor: alpha(tractusx.orange, 0.1) },
             }}
           >
             <InfoOutlinedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-
-        <Popover
-          id={infoId}
-          open={Boolean(anchor)}
-          anchorEl={anchor}
-          onClose={() => setAnchor(null)}
-          // Opens over the square, from its top right corner where the button is.
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-          slotProps={{
-            paper: {
-              role: 'dialog',
-              'aria-label': service.name,
-              sx: {
-                p: 2,
-                width: SERVICE_CARD_WIDTH - 16,
-                borderRadius: '10px',
-                border: 1,
-                borderColor: palette.ui.cardBorder,
-                bgcolor: dark ? tractusx.grayButton : tractusx.white,
-                boxShadow: glowStrong,
-              },
-            },
-          }}
-        >
-          <Stack spacing={1.25}>
-            <Stack direction="row" sx={{ alignItems: 'flex-start', gap: 1 }}>
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="overline" color="text.secondary">
-                  {AREA_LABELS[service.category]}
-                </Typography>
-                <Typography sx={{ fontWeight: 700, fontSize: 16, lineHeight: 1.3 }}>{service.name}</Typography>
-              </Box>
-              <Chip size="small" variant="outlined" label={`v${service.version}`} aria-label={`Version ${service.version}`} />
-            </Stack>
-            <Typography variant="body2" color="text.secondary">
-              {service.description}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {status}
-              {favourite ? ' · In your sidebar' : ''}
-            </Typography>
-          </Stack>
-        </Popover>
       </Box>
 
       <Box>
