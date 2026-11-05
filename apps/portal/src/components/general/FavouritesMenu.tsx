@@ -47,11 +47,11 @@ import { railButtonSx } from './HeaderMenus';
 export type FavouritesPlacement = 'rail' | 'bar';
 
 /**
- * The "+" right after the last favourite, in the sidebar and in the phone's bottom bar. It opens every app
+ * The "+" right after the last favourite, in the sidebar and in the phone's bottom bar. It opens every service
  * (Home is always there and not in the list): on the desktop each with a switch, on a phone with × to take
- * a favourite out and + to put one in. A choice applies at once and the list stays open, so several apps can
+ * a favourite out and + to put one in. A choice applies at once and the list stays open, so several services can
  * be changed in one go. Favourites keep the registry order, so adding one never moves another. While the page
- * on screen belongs to an app that is not a favourite, the "+" is marked and offers to add it.
+ * on screen belongs to a service that is not a favourite, the "+" is marked and offers to add it.
  */
 export default function FavouritesMenu({ placement }: { placement: FavouritesPlacement }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -108,7 +108,7 @@ export default function FavouritesMenu({ placement }: { placement: FavouritesPla
           <Typography sx={{ fontWeight: 700 }}>Favourites</Typography>
           <Typography variant="body2" color="text.secondary">
             {rail
-              ? 'Switch on the apps you want in your sidebar.'
+              ? 'Switch on the services you want in your sidebar.'
               : 'The first five are in your bar. Home is always there.'}
           </Typography>
         </Box>

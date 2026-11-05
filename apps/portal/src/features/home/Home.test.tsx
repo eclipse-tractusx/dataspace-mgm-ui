@@ -32,7 +32,7 @@ import { allFeatures, features, getAllRoutes } from '../main';
 import Home from './pages/Home';
 
 describe('Home', () => {
-  it('welcomes the user and shows the four pillars', () => {
+  it('welcomes the user and shows every service', () => {
     render(
       <ColorModeProvider>
         <MemoryRouter>
@@ -41,9 +41,9 @@ describe('Home', () => {
       </ColorModeProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome to the Eclipse Tractus-X Dataspace Management');
-    for (const pillar of ['Discover', 'Connect', 'Exchange', 'Govern']) {
-      expect(screen.getByRole('heading', { level: 3, name: pillar })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome to the Dataspace Management UI');
+    for (const service of ['Onboarding', 'Participant management', 'Connectors as a service', 'Wallets as a service', 'Marketplace', 'Provider network']) {
+      expect(screen.getByRole('heading', { level: 3, name: service })).toBeInTheDocument();
     }
   });
 });

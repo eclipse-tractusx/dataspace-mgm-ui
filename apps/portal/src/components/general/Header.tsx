@@ -48,8 +48,8 @@ import { NotificationsMenu } from './HeaderMenus';
 
 /**
  * Navigation bar after eclipse-tractusx.github.io: 74 px, black (dark) or #F0F0F0 (light), the mark in colour.
- * Right side on desktop: environment and theme switch (notifications, profile and All apps sit at the foot of
- * the sidebar). On phones: notifications; profile and All apps sit in the bottom bar.
+ * Right side on desktop: environment and theme switch (notifications, profile and All services sit at the foot of
+ * the sidebar). On phones: notifications; profile and All services sit in the bottom bar.
  */
 export default function Header() {
   const { mode, toggle } = useColorMode();

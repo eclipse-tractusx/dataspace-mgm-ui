@@ -33,9 +33,9 @@ import { ProfileMenu } from './HeaderMenus';
 /**
  * The navigation on phones and tablets, at the bottom of the shell (it never scrolls): Home and the first
  * favourites (five in all, icons only, each with its name for screen readers), the "+" to edit them, and at
- * the right the profile and "All apps", which opens in full screen. Items only move when the favourites change.
+ * the right the profile and "All services", which opens in full screen. Items only move when the favourites change.
  */
-export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
+export default function BottomBar({ onOpenServices }: { onOpenServices: () => void }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const shown = useFavourites().favourites.slice(0, PHONE_FAVOURITE_SLOTS);
@@ -86,7 +86,7 @@ export default function BottomBar({ onOpenApps }: { onOpenApps: () => void }) {
       <Divider orientation="vertical" aria-hidden sx={{ height: 32, mx: 0.5 }} />
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
         <ProfileMenu placement="bar" />
-        <IconButton onClick={onOpenApps} aria-label="All apps" aria-haspopup="dialog" sx={{ width: 44, height: 44, borderRadius: '8px', color: 'text.primary' }}>
+        <IconButton onClick={onOpenServices} aria-label="All services" aria-haspopup="dialog" sx={{ width: 44, height: 44, borderRadius: '8px', color: 'text.primary' }}>
           <AppsOutlinedIcon />
         </IconButton>
       </Box>

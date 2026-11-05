@@ -38,10 +38,10 @@ import {
   toggleHidden,
 } from '../../contexts/FavouritesContext';
 import { features } from '../../features/main';
-import AppsDialog from './AppsDialog';
+import ServicesDialog from './ServicesDialog';
 import BottomBar from './BottomBar';
 import Sidebar from './Sidebar';
-import AllAppsPage from '../../pages/AllAppsPage';
+import AllServicesPage from '../../pages/AllServicesPage';
 
 const wrap = (ui: ReactElement, path = '/') =>
   render(
@@ -57,20 +57,20 @@ beforeEach(() => localStorage.clear());
 describe('favourites', () => {
   it('are every feature until one is taken out, with Home always first', () => {
     expect(favouritesOf(features, [])).toHaveLength(features.length);
-    expect(favouritesOf(features, ['/company']).map((item) => item.path)).not.toContain('/company');
+    expect(favouritesOf(features, ['/participants']).map((item) => item.path)).not.toContain('/participants');
     expect(toggleHidden([], '/')).toEqual([]);
-    expect(toggleHidden(['/company'], '/company')).toEqual([]);
+    expect(toggleHidden(['/participants'], '/participants')).toEqual([]);
   });
 
   it('match the current page and the pages below it', () => {
-    expect(activePath('/', ['/', '/company'])).toBe('/');
-    expect(activePath('/company/123', ['/', '/company'])).toBe('/company');
-    expect(activePath('/companyx', ['/', '/company'])).toBeUndefined();
+    expect(activePath('/', ['/', '/participants'])).toBe('/');
+    expect(activePath('/participants/123', ['/', '/participants'])).toBe('/participants');
+    expect(activePath('/participantsx', ['/', '/participants'])).toBeUndefined();
   });
 });
 
 describe('Sidebar', () => {
-  it('puts the plus right under the last favourite and notifications, profile and All apps at the bottom', () => {
+  it('puts the plus right under the last favourite and notifications, profile and All services at the bottom', () => {
     wrap(<Sidebar />);
     const slots = within(screen.getByRole('list', { name: 'Favourites' })).getAllByRole('listitem');
     expect(slots).toHaveLength(features.length + 1);
@@ -80,9 +80,9 @@ describe('Sidebar', () => {
       .getAllByRole('button')
       .map((button) => button.getAttribute('aria-label'));
     expect(labels.slice(-2)).toEqual(['Notifications', 'Profile']);
-    // All apps is the last control of the sidebar and opens the view in the canvas.
-    const allApps = within(nav).getByRole('link', { name: 'All apps' });
-    expect(allApps).toHaveAttribute('href', '/all-apps');
+    // All services is the last control of the sidebar and opens the view in the canvas.
+    const allApps = within(nav).getByRole('link', { name: 'All services' });
+    expect(allApps).toHaveAttribute('href', '/all-services');
     expect(within(nav).getAllByRole('link').at(-1)).toBe(allApps);
   });
 
@@ -91,29 +91,29 @@ describe('Sidebar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Edit favourites' }));
     const menu = screen.getByRole('menu', { name: 'Favourites' });
     expect(within(menu).queryByRole('menuitemcheckbox', { name: /Home/ })).toBeNull();
-    fireEvent.click(within(menu).getByRole('menuitemcheckbox', { name: /Company/ }));
-    expect(within(menu).getByRole('menuitemcheckbox', { name: /Company/ })).toHaveAttribute('aria-checked', 'false');
-    expect(JSON.parse(localStorage.getItem(HIDDEN_STORAGE_KEY) ?? '[]')).toEqual(['/company']);
-    expect(screen.queryByRole('link', { name: 'Company' })).toBeNull();
+    fireEvent.click(within(menu).getByRole('menuitemcheckbox', { name: /Participant management/ }));
+    expect(within(menu).getByRole('menuitemcheckbox', { name: /Participant management/ })).toHaveAttribute('aria-checked', 'false');
+    expect(JSON.parse(localStorage.getItem(HIDDEN_STORAGE_KEY) ?? '[]')).toEqual(['/participants']);
+    expect(screen.queryByRole('link', { name: 'Participant management' })).toBeNull();
   });
 });
 
 describe('Bottom bar', () => {
-  it('shows Home and the first favourites, the plus, then profile and All apps at the right', () => {
-    wrap(<BottomBar onOpenApps={() => undefined} />);
+  it('shows Home and the first favourites, the plus, then profile and All services at the right', () => {
+    wrap(<BottomBar onOpenServices={() => undefined} />);
     const labels = within(screen.getByRole('navigation', { name: 'Favourites' }))
       .getAllByRole('button')
       .map((button) => button.getAttribute('aria-label'));
     expect(labels).toHaveLength(PHONE_FAVOURITE_SLOTS + 3);
     expect(labels[0]).toBe('Home');
-    expect(labels.slice(-3)).toEqual(['Edit favourites', 'Profile', 'All apps']);
+    expect(labels.slice(-3)).toEqual(['Edit favourites', 'Profile', 'All services']);
   });
 });
 
-describe('All apps', () => {
+describe('All services', () => {
   it('shows every feature as a tile and marks the upcoming ones', () => {
-    wrap(<AppsDialog open onClose={() => undefined} items={features} />);
-    const dialog = screen.getByRole('dialog', { name: 'All apps' });
+    wrap(<ServicesDialog open onClose={() => undefined} items={features} />);
+    const dialog = screen.getByRole('dialog', { name: 'All services' });
     for (const item of features) {
       expect(within(dialog).getByRole('button', { name: new RegExp(`^${item.name}`) })).toBeInTheDocument();
     }
@@ -122,15 +122,15 @@ describe('All apps', () => {
   });
 });
 
-describe('All apps on desktop', () => {
-  it('shows every app as a card in a carousel and filters by area', () => {
-    wrap(<AllAppsPage />, '/all-apps');
-    const carousel = screen.getByRole('region', { name: 'Apps' });
+describe('All services on desktop', () => {
+  it('shows every service as a card in a carousel and filters by area', () => {
+    wrap(<AllServicesPage />, '/all-services');
+    const carousel = screen.getByRole('region', { name: 'Services' });
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
     expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
-    expect(within(carousel).getByRole('button', { name: 'Company, coming soon' })).toBeDisabled();
+    expect(within(carousel).getByRole('button', { name: 'Participant management, coming soon' })).toBeDisabled();
 
-    fireEvent.click(within(screen.getByRole('group', { name: 'Filter apps' })).getByRole('button', { name: /^Connect/ }));
-    expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'connect').length);
+    fireEvent.click(within(screen.getByRole('group', { name: 'Filter services' })).getByRole('button', { name: /^As a service/ }));
+    expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'as-a-service').length);
   });
 });

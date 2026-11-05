@@ -65,7 +65,7 @@ interface TileProps {
   onSelect: () => void;
 }
 
-/** One square tile of the launcher: an app, or a setting on phones. */
+/** One tile of the launcher: a service, or a setting on phones. Tiles in a row share their height. */
 function Tile({ label, icon, note, active = false, disabled = false, onSelect }: TileProps) {
   const theme = useTheme();
   const iconColor = theme.palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
@@ -76,8 +76,9 @@ function Tile({ label, icon, note, active = false, disabled = false, onSelect }:
       aria-current={active ? 'page' : undefined}
       aria-label={note ? `${label}, ${note.toLowerCase()}` : label}
       sx={{
-        aspectRatio: '1 / 1',
         width: '100%',
+        minHeight: 120,
+        justifyContent: 'flex-start',
         borderRadius: '10px',
         border: '1px solid',
         borderColor: active ? tractusx.orange : theme.palette.ui.cardBorder,
@@ -85,7 +86,7 @@ function Tile({ label, icon, note, active = false, disabled = false, onSelect }:
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-        p: 1,
+        p: 1.5,
         textAlign: 'center',
         transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
         '&:hover': { boxShadow: theme.palette.ui.glow },
@@ -133,25 +134,25 @@ function TileGrid({ children }: { children: ReactNode }) {
   );
 }
 
-interface AppsDialogProps {
+interface ServicesDialogProps {
   open: boolean;
   onClose: () => void;
   items: NavigationItem[];
 }
 
 /**
- * "All apps": every feature as a square tile. On desktop a dialog opened from the foot of the sidebar; on
- * phones and tablets a full-screen view that rises from the bottom bar, with the settings below the apps and
- * the close button where the button that opened it was. Opening an app closes it.
+ * "All services": every feature as a square tile. On desktop a dialog opened from the foot of the sidebar; on
+ * phones and tablets a full-screen view that rises from the bottom bar, with the settings below the services and
+ * the close button where the button that opened it was. Opening a service closes it.
  */
-export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
+export default function ServicesDialog({ open, onClose, items }: ServicesDialogProps) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { mode, toggle } = useColorMode();
-  const appsHeading = useId();
+  const servicesHeading = useId();
   const settingsHeading = useId();
   const current = activePath(
     pathname,
@@ -164,7 +165,7 @@ export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
   };
 
   const closeButton = (
-    <IconButton onClick={onClose} aria-label="Close all apps" sx={{ color: 'text.primary', width: 44, height: 44 }}>
+    <IconButton onClick={onClose} aria-label="Close all services" sx={{ color: 'text.primary', width: 44, height: 44 }}>
       <CloseIcon />
     </IconButton>
   );
@@ -176,7 +177,7 @@ export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
       fullScreen={fullScreen}
       fullWidth
       maxWidth="md"
-      aria-labelledby={appsHeading}
+      aria-labelledby={servicesHeading}
       slots={fullScreen ? { transition: SlideUp } : undefined}
       transitionDuration={reduceMotion ? 0 : undefined}
     >
@@ -184,7 +185,7 @@ export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
         <AppBar position="static" elevation={0} sx={{ bgcolor: 'transparent', color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}>
           <Toolbar sx={{ minHeight: 64 }}>
             <Typography component="span" sx={{ flex: 1, fontWeight: 800, fontSize: 20 }}>
-              All apps
+              All services
             </Typography>
             {closeButton}
           </Toolbar>
@@ -192,9 +193,9 @@ export default function AppsDialog({ open, onClose, items }: AppsDialogProps) {
       )}
       <Box sx={{ flex: 1, overflowY: 'auto', pt: fullScreen ? 'calc(24px + env(safe-area-inset-top, 0px))' : 3, pb: 3 }}>
         <Container maxWidth="md" sx={{ display: 'grid', gap: 4 }}>
-          <Box component="section" aria-labelledby={appsHeading} sx={{ display: 'grid', gap: 2 }}>
-            <Typography id={appsHeading} component="h2" variant="overline" color="text.secondary">
-              All apps
+          <Box component="section" aria-labelledby={servicesHeading} sx={{ display: 'grid', gap: 2 }}>
+            <Typography id={servicesHeading} component="h2" variant="overline" color="text.secondary">
+              All services
             </Typography>
             <TileGrid>
               {items.map((item) => (

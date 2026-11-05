@@ -25,10 +25,11 @@
  ********************************************************************************/
 
 import {
+  AccountBalanceWalletOutlinedIcon,
   AppRegistrationOutlinedIcon,
-  BusinessOutlinedIcon,
   CableOutlinedIcon,
-  ManageAccountsOutlinedIcon,
+  GroupsOutlinedIcon,
+  HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
 import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/routing';
@@ -57,19 +58,56 @@ const upcoming = (
 /**
  * Registry of the feature modules. Add a feature: create src/features/<feature>/ with
  * pages/, routes.tsx (one FeatureConfig) and index.ts, then add it to this list.
- * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All apps" views.
+ * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All services" views.
  * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming('Onboarding', 'Register your company and follow its application.', 'connect', <AppRegistrationOutlinedIcon />, '/onboarding'),
-  upcoming('Company', 'Company data, business partner number and credentials.', 'connect', <BusinessOutlinedIcon />, '/company'),
-  upcoming('Users & roles', 'Invite people, assign roles and manage technical users.', 'govern', <ManageAccountsOutlinedIcon />, '/users'),
-  upcoming('Connectors', 'Register and monitor the connectors of your company.', 'exchange', <CableOutlinedIcon />, '/connectors'),
-  upcoming('Apps', 'Find and subscribe to apps and services of the dataspace.', 'discover', <StorefrontOutlinedIcon />, '/apps'),
+  upcoming(
+    'Onboarding',
+    'Register companies, review their applications and bring them into the dataspace.',
+    'onboarding',
+    <AppRegistrationOutlinedIcon />,
+    '/onboarding',
+  ),
+  upcoming(
+    'Participant management',
+    'Company data, business partner numbers, users and technical users of every participant.',
+    'participants',
+    <GroupsOutlinedIcon />,
+    '/participants',
+  ),
+  upcoming(
+    'Connectors as a service',
+    'Run and monitor dataspace connectors for your participants, so they do not have to host their own.',
+    'as-a-service',
+    <CableOutlinedIcon />,
+    '/connectors',
+  ),
+  upcoming(
+    'Wallets as a service',
+    'Provide dataspace wallets for your participants and manage their credentials.',
+    'as-a-service',
+    <AccountBalanceWalletOutlinedIcon />,
+    '/wallets',
+  ),
+  upcoming(
+    'Marketplace',
+    'Offer apps and services to the participants and manage their subscriptions.',
+    'as-a-service',
+    <StorefrontOutlinedIcon />,
+    '/marketplace',
+  ),
+  upcoming(
+    'Provider network',
+    'Work with other onboarding service providers: find the home provider of a participant and exchange trust.',
+    'network',
+    <HubOutlinedIcon />,
+    '/network',
+  ),
 ];
 
-/** The navigation items of the sidebar, the bottom bar and the "All apps" view. */
+/** The navigation items of the sidebar, the bottom bar and the "All services" view. */
 export const features: NavigationItem[] = allFeatures.map((feature) => ({
   name: feature.name,
   description: feature.description,

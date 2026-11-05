@@ -31,7 +31,7 @@ import type { NavigationItem } from '../types/routing';
 export const PHONE_FAVOURITE_SLOTS = 5;
 /** Always first in the sidebar and the bar, and not in the list of favourites to choose. */
 export const HOME_PATH = '/';
-/** The apps the person took out: everything else is a favourite, so a new feature shows up by itself. */
+/** The services the person took out: everything else is a favourite, so a new feature shows up by itself. */
 export const HIDDEN_STORAGE_KEY = 'dataspace-mgm.navigation.hidden';
 
 interface FavouritesValue {

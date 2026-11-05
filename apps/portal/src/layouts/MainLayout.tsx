@@ -38,7 +38,7 @@ import {
   useTheme,
 } from '@dataspace-mgm/ui-mui';
 import { Outlet, useLocation } from 'react-router-dom';
-import AppsDialog from '../components/general/AppsDialog';
+import ServicesDialog from '../components/general/ServicesDialog';
 import BottomBar from '../components/general/BottomBar';
 import Header from '../components/general/Header';
 import Sidebar from '../components/general/Sidebar';
@@ -124,8 +124,8 @@ function Footer() {
 export default function MainLayout() {
   const theme = useTheme();
   const compact = useMediaQuery(theme.breakpoints.down('md'));
-  const [appsOpen, setAppsOpen] = useState(false);
-  const openApps = () => setAppsOpen(true);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const openServices = () => setServicesOpen(true);
   const canvas = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
 
@@ -176,9 +176,9 @@ export default function MainLayout() {
           <Footer />
         </Box>
       </Box>
-      {compact && <BottomBar onOpenApps={openApps} />}
-      {/* Phones open All apps full screen; desktop shows it in the canvas (/all-apps). */}
-      {compact && <AppsDialog open={appsOpen} onClose={() => setAppsOpen(false)} items={features} />}
+      {compact && <BottomBar onOpenServices={openServices} />}
+      {/* Phones open All services full screen; desktop shows it in the canvas (/all-services). */}
+      {compact && <ServicesDialog open={servicesOpen} onClose={() => setServicesOpen(false)} items={features} />}
     </Box>
   );
 }

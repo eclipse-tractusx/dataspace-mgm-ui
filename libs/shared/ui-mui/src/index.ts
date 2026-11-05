@@ -89,6 +89,7 @@ export { default as PersonOutlinedIcon } from '@mui/icons-material/PersonOutline
 export { default as StarBorderIcon } from '@mui/icons-material/StarBorder';
 export { default as StarIcon } from '@mui/icons-material/Star';
 export { default as StorefrontOutlinedIcon } from '@mui/icons-material/StorefrontOutlined';
+export { default as AccountBalanceWalletOutlinedIcon } from '@mui/icons-material/AccountBalanceWalletOutlined';
 export { default as AddIcon } from '@mui/icons-material/Add';
 export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
@@ -98,6 +99,7 @@ export { default as CheckIcon } from '@mui/icons-material/Check';
 export { default as CircleIcon } from '@mui/icons-material/Circle';
 export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';
 export { default as GitHubIcon } from '@mui/icons-material/GitHub';
+export { default as GroupsOutlinedIcon } from '@mui/icons-material/GroupsOutlined';
 export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
 export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
 export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';

@@ -41,7 +41,7 @@ import {
 } from '@dataspace-mgm/ui-mui';
 import { NavLink } from 'react-router-dom';
 import { useFavourites } from '../../contexts/FavouritesContext';
-import { ALL_APPS_PATH } from '../../pages/AllAppsPage';
+import { ALL_SERVICES_PATH } from '../../pages/AllServicesPage';
 import FavouritesMenu from './FavouritesMenu';
 import { NotificationsMenu, ProfileMenu, railButtonSx } from './HeaderMenus';
 
@@ -60,7 +60,7 @@ function RailSlot({ children }: { children: React.ReactNode }) {
  * Icon rail on desktop (MUI Drawer + List), fixed on the left of the shell from the header to the bottom
  * of the window; it never scrolls with the page.
  * - Top: Home and the person's favourite features, and right under the last one the "+" to edit them.
- * - Bottom left: notifications, the profile, and "All apps" as the last button, which opens the All apps
+ * - Bottom left: notifications, the profile, and "All services" as the last button, which opens the All services
  *   view in the canvas.
  * On phones and tablets the BottomBar shows the same favourites.
  */
@@ -130,11 +130,11 @@ export default function Sidebar() {
       <Box sx={{ py: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
         <NotificationsMenu placement="rail" />
         <ProfileMenu placement="rail" />
-        <Tooltip title="All apps" placement="right">
+        <Tooltip title="All services" placement="right">
           <IconButton
             component={NavLink}
-            to={ALL_APPS_PATH}
-            aria-label="All apps"
+            to={ALL_SERVICES_PATH}
+            aria-label="All services"
             sx={{
               ...railButtonSx,
               '&:hover': hover,

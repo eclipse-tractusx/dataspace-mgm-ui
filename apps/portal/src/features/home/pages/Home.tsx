@@ -24,9 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import type { ReactElement } from 'react';
 import {
-  AdminPanelSettingsOutlinedIcon,
   ArrowForwardIcon,
   Avatar,
   BrandBackdrop,
@@ -38,50 +36,24 @@ import {
   Chip,
   Container,
   Grid,
-  HubOutlinedIcon,
   OpenInNewIcon,
   Stack,
-  SwapHorizOutlinedIcon,
-  TravelExploreOutlinedIcon,
   Typography,
   tractusx,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
-
-interface Pillar {
-  title: string;
-  text: string;
-  icon: ReactElement;
-}
-
-const PILLARS: Pillar[] = [
-  {
-    title: 'Discover',
-    text: 'Find partners and their services through the dataspace discovery and the business partner directory.',
-    icon: <TravelExploreOutlinedIcon />,
-  },
-  {
-    title: 'Connect',
-    text: 'Onboard your company, prove its identity and receive the credentials you need to join the dataspace.',
-    icon: <HubOutlinedIcon />,
-  },
-  {
-    title: 'Exchange',
-    text: 'Connect your connector and share data with your partners under the usage policies you agreed on.',
-    icon: <SwapHorizOutlinedIcon />,
-  },
-  {
-    title: 'Govern',
-    text: 'Manage the users, roles, technical users and apps of your company in one place.',
-    icon: <AdminPanelSettingsOutlinedIcon />,
-  },
-];
+import { useNavigate } from 'react-router-dom';
+import { features } from '../../main';
 
 const ARCHITECTURE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture';
 const TRACTUSX_URL = 'https://eclipse-tractusx.github.io';
 
 export default function Home() {
+  // Every service of the portal except Home itself, straight from the feature registry (read at render time:
+  // the registry imports this page, so it is not ready yet when this module loads).
+  const services = features.filter((item) => item.path !== '/');
   const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+  const navigate = useNavigate();
 
   return (
     <article aria-labelledby="home-title">
@@ -89,17 +61,17 @@ export default function Home() {
         <Container maxWidth="lg" sx={{ pt: { xs: 14, md: 12 }, pb: { xs: 8, md: 12 } }}>
           <Stack spacing={3} sx={{ maxWidth: 760 }}>
             <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              Operating Service Provider portal
+              Eclipse Tractus-X · Onboarding service provider portal
             </Typography>
             <Typography id="home-title" variant="h1" component="h1" sx={{ fontSize: 'clamp(2.25rem, 3vw + 1rem, 4rem)' }}>
               Welcome to the{' '}
               <Typography component="span" variant="inherit" sx={{ color: tractusx.orange, display: 'block' }}>
-                Eclipse Tractus-X Dataspace Management
+                Dataspace Management UI
               </Typography>
             </Typography>
             <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.85)' }}>
-              Onboard your company, manage its identity and its people, and connect to the dataspace that the Core
-              Service Provider keeps trusted.
+              Onboard companies, manage your participants, and run their connectors and wallets as a service, in the
+              dataspace that the Core Service Provider keeps trusted.
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
               <Button
@@ -125,37 +97,47 @@ export default function Home() {
         </Container>
       </BrandBackdrop>
 
-      <Container component="section" maxWidth="lg" aria-labelledby="pillars-title" sx={{ py: { xs: 8, md: 12 } }}>
+      <Container component="section" maxWidth="lg" aria-labelledby="services-title" sx={{ py: { xs: 8, md: 12 } }}>
         <Typography variant="overline" color="text.secondary">
-          What you can do here
+          Services
         </Typography>
-        <Typography id="pillars-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
-          Discover. Connect. Exchange. Govern.
+        <Typography id="services-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
+          Onboard, manage and serve your participants
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 6, maxWidth: 680 }}>
-          Everything your company needs to take part in the dataspace. The features arrive here one module at a
-          time.
+          What your onboarding service provider runs for the companies it brings into the dataspace. The services
+          arrive here one module at a time.
         </Typography>
         <Grid container spacing={3}>
-          {PILLARS.map((pillar) => (
-            <Grid key={pillar.title} size={{ xs: 12, sm: 6, lg: 3 }}>
-              <Card component="section" aria-labelledby={`pillar-${pillar.title}`} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {services.map((service) => (
+            <Grid key={service.path} size={{ xs: 12, sm: 6, lg: 4 }}>
+              <Card
+                component="section"
+                aria-labelledby={`service-${service.path}`}
+                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+              >
                 <CardHeader
                   avatar={
                     <Avatar variant="rounded" aria-hidden sx={{ color: iconColor }}>
-                      {pillar.icon}
+                      {service.icon}
                     </Avatar>
                   }
-                  title={pillar.title}
-                  slotProps={{ title: { id: `pillar-${pillar.title}`, component: 'h3' } }}
+                  title={service.name}
+                  slotProps={{ title: { id: `service-${service.path}`, component: 'h3' } }}
                 />
                 <CardContent sx={{ flex: 1 }}>
                   <Typography variant="body2" color="text.secondary">
-                    {pillar.text}
+                    {service.description}
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Chip label="Coming soon" size="small" variant="outlined" />
+                  {service.disabled ? (
+                    <Chip label="Coming soon" size="small" variant="outlined" />
+                  ) : (
+                    <Button size="small" onClick={() => navigate(service.path)} endIcon={<ArrowForwardIcon />}>
+                      Open
+                    </Button>
+                  )}
                 </CardActions>
               </Card>
             </Grid>

@@ -28,7 +28,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ErrorNotFound from './components/general/ErrorNotFound';
 import { getAllRoutes } from './features/main';
 import MainLayout from './layouts/MainLayout';
-import AllAppsPage, { ALL_APPS_PATH } from './pages/AllAppsPage';
+import AllServicesPage, { ALL_SERVICES_PATH } from './pages/AllServicesPage';
 
 export default function AppRoutes() {
   const featureRoutes = getAllRoutes();
@@ -44,7 +44,7 @@ export default function AppRoutes() {
               <Route key={route.path} path={route.path} element={route.element} />
             ),
           )}
-          <Route path={ALL_APPS_PATH.slice(1)} element={<AllAppsPage />} />
+          <Route path={ALL_SERVICES_PATH.slice(1)} element={<AllServicesPage />} />
           <Route path="*" element={<ErrorNotFound />} />
         </Route>
       </Routes>

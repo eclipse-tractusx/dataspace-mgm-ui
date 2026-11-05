@@ -135,7 +135,7 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
 }
 
 /**
- * The person's notifications. The bell sits on the sidebar above "All apps" on desktop and in the header on
+ * The person's notifications. The bell sits on the sidebar above "All services" on desktop and in the header on
  * phones. The inbox arrives with the notifications module; until then the menu says so.
  */
 export function NotificationsMenu({ placement = 'header' }: { placement?: MenuPlacement }) {

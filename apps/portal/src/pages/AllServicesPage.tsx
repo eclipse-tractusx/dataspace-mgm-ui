@@ -49,15 +49,15 @@ import { useFavourites } from '../contexts/FavouritesContext';
 import { features } from '../features/main';
 import type { FeatureCategory, NavigationItem } from '../types/routing';
 
-/** The desktop "All apps" view lives in the canvas at this path; phones open it full screen instead. */
-export const ALL_APPS_PATH = '/all-apps';
+/** The desktop "All services" view lives in the canvas at this path; phones open it full screen instead. */
+export const ALL_SERVICES_PATH = '/all-services';
 
 const CATEGORIES: { id: FeatureCategory; label: string }[] = [
   { id: 'start', label: 'Start' },
-  { id: 'discover', label: 'Discover' },
-  { id: 'connect', label: 'Connect' },
-  { id: 'exchange', label: 'Exchange' },
-  { id: 'govern', label: 'Govern' },
+  { id: 'onboarding', label: 'Onboarding' },
+  { id: 'participants', label: 'Participants' },
+  { id: 'as-a-service', label: 'As a service' },
+  { id: 'network', label: 'Network' },
 ];
 const categoryLabel = (id: FeatureCategory) => CATEGORIES.find((category) => category.id === id)?.label ?? id;
 
@@ -129,10 +129,10 @@ function AppCard({ app, favourite, onOpen }: { app: NavigationItem; favourite: b
 }
 
 /**
- * All apps on desktop, inside the canvas: the apps as a carousel of cards that scrolls sideways, filtered by
+ * All services on desktop, inside the canvas: the services as a carousel of cards that scrolls sideways, filtered by
  * the part of the dataspace they serve. Favourites are kept with the "+" in the sidebar.
  */
-export default function AllAppsPage() {
+export default function AllServicesPage() {
   const navigate = useNavigate();
   const { isFavourite } = useFavourites();
   const [filter, setFilter] = useState<FeatureCategory | 'all'>('all');
@@ -168,19 +168,19 @@ export default function AllAppsPage() {
   };
 
   return (
-    <Container maxWidth="lg" component="section" aria-labelledby="all-apps-title" sx={{ py: { xs: 6, md: 8 } }}>
+    <Container maxWidth="lg" component="section" aria-labelledby="all-services-title" sx={{ py: { xs: 6, md: 8 } }}>
       <Typography variant="overline" color="text.secondary">
         Eclipse Tractus-X Dataspace Management
       </Typography>
-      <Typography id="all-apps-title" variant="h2" component="h1" sx={{ mt: 1, mb: 2 }}>
-        All apps
+      <Typography id="all-services-title" variant="h2" component="h1" sx={{ mt: 1, mb: 2 }}>
+        All services
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 680 }}>
-        Every app of your portal in one place. Keep the ones you use most in your sidebar with the + under your
-        favourites.
+        Every service of your onboarding service provider in one place. Keep the ones you use most in your sidebar
+        with the + under your favourites.
       </Typography>
 
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 3 }} role="group" aria-label="Filter apps">
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 3 }} role="group" aria-label="Filter services">
         <Chip
           label={`All · ${features.length}`}
           onClick={() => setFilter('all')}
@@ -200,21 +200,21 @@ export default function AllAppsPage() {
         ))}
       </Stack>
 
-      <Box component="section" aria-roledescription="carousel" aria-label="Apps" sx={{ position: 'relative' }}>
+      <Box component="section" aria-roledescription="carousel" aria-label="Services" sx={{ position: 'relative' }}>
         <Stack direction="row" sx={{ alignItems: 'center', mb: 2 }}>
           <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }} aria-live="polite">
-            {shown.length} {shown.length === 1 ? 'app' : 'apps'}
+            {shown.length} {shown.length === 1 ? 'service' : 'services'}
           </Typography>
           <Tooltip title="Previous">
             <span>
-              <IconButton onClick={() => page(-1)} disabled={edges.start} aria-label="Previous apps">
+              <IconButton onClick={() => page(-1)} disabled={edges.start} aria-label="Previous services">
                 <ChevronLeftIcon />
               </IconButton>
             </span>
           </Tooltip>
           <Tooltip title="Next">
             <span>
-              <IconButton onClick={() => page(1)} disabled={edges.end} aria-label="Next apps">
+              <IconButton onClick={() => page(1)} disabled={edges.end} aria-label="Next services">
                 <ChevronRightIcon />
               </IconButton>
             </span>
