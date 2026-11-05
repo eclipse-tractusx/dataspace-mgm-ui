@@ -61,12 +61,12 @@ export default function Home() {
         <Container maxWidth="lg" sx={{ pt: { xs: 14, md: 12 }, pb: { xs: 8, md: 12 } }}>
           <Stack spacing={3} sx={{ maxWidth: 760 }}>
             <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              Eclipse Tractus-X · Onboarding service provider portal
+              Onboarding service provider portal
             </Typography>
             <Typography id="home-title" variant="h1" component="h1" sx={{ fontSize: 'clamp(2.25rem, 3vw + 1rem, 4rem)' }}>
               Welcome to the{' '}
               <Typography component="span" variant="inherit" sx={{ color: tractusx.orange, display: 'block' }}>
-                Dataspace Management UI
+                Eclipse Tractus-X Dataspace Management UI
               </Typography>
             </Typography>
             <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.85)' }}>
