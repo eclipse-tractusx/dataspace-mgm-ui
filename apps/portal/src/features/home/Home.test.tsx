@@ -33,7 +33,7 @@ import { allFeatures, features, getAllRoutes } from '../main';
 import Home from './pages/Home';
 
 describe('Home', () => {
-  it('welcomes the user, shows every service and ends with the footer', () => {
+  it('welcomes the user, explains the portal, leads to all services and ends with the footer', () => {
     render(
       <ColorModeProvider>
         <MemoryRouter>
@@ -45,8 +45,13 @@ describe('Home', () => {
     );
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome to the Eclipse Tractus-X Dataspace Management UI');
-    for (const service of ['Onboarding', 'Participant management', 'Connectors as a service', 'Wallets as a service', 'Marketplace', 'Provider network']) {
-      expect(screen.getByRole('heading', { level: 3, name: service })).toBeInTheDocument();
+    for (const step of ['Join', 'Run', 'Trust']) {
+      expect(screen.getByRole('heading', { level: 3, name: step })).toBeInTheDocument();
+    }
+    // The home page explains; it does not list the services.
+    expect(screen.queryByRole('heading', { name: 'Connectors as a service' })).toBeNull();
+    for (const link of screen.getAllByRole('link', { name: /See all services/ })) {
+      expect(link).toHaveAttribute('href', '/all-services');
     }
     expect(screen.getByRole('contentinfo')).toHaveTextContent('Contributors to the Eclipse Foundation');
   });

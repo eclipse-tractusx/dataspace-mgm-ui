@@ -24,29 +24,69 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import type { ReactElement } from 'react';
 import {
+  AppsOutlinedIcon,
   ArrowForwardIcon,
   Box,
   BrandBackdrop,
   Button,
   Container,
+  Grid,
+  HowToRegOutlinedIcon,
   OpenInNewIcon,
+  RocketLaunchOutlinedIcon,
   SpaceGlow,
   Stack,
   Typography,
+  VerifiedUserOutlinedIcon,
+  alpha,
   tractusx,
+  useTheme,
 } from '@dataspace-mgm/ui-mui';
+import { Link as RouterLink } from 'react-router-dom';
 import Footer from '../../../components/general/Footer';
-import ServiceCarousel from '../../../components/services/ServiceCarousel';
-import { features } from '../../main';
+import { ALL_SERVICES_PATH } from '../../../pages/AllServicesPage';
 
 const ARCHITECTURE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture';
-const TRACTUSX_URL = 'https://eclipse-tractusx.github.io';
 
+interface Point {
+  title: string;
+  text: string;
+  icon: ReactElement;
+}
+
+/** How taking part works, in three steps: an explanation, not a list of the services. */
+const HOW_IT_WORKS: Point[] = [
+  {
+    title: 'Join',
+    text: 'Your company registers here. Your onboarding service provider reviews the application and brings you into the dataspace.',
+    icon: <HowToRegOutlinedIcon />,
+  },
+  {
+    title: 'Run',
+    text: 'Your provider runs what you need to take part, such as connectors and wallets as a service, so you do not have to host them yourself.',
+    icon: <RocketLaunchOutlinedIcon />,
+  },
+  {
+    title: 'Trust',
+    text: 'The Core Service Provider keeps the dataspace trusted: the trusted providers, the business partner numbers and their home provider, and the discovery.',
+    icon: <VerifiedUserOutlinedIcon />,
+  },
+];
+
+/**
+ * The welcome page: what the portal is and how taking part works. It does not list the services; the button
+ * leads to All services.
+ */
 export default function Home() {
-  // Every service of the portal except Home itself, straight from the feature registry (read at render time:
-  // the registry imports this page, so it is not ready yet when this module loads).
-  const services = features.filter((item) => item.path !== '/');
+  const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
+
+  const allServicesButton = (
+    <Button component={RouterLink} to={ALL_SERVICES_PATH} color="primary" startIcon={<AppsOutlinedIcon />} endIcon={<ArrowForwardIcon />}>
+      See all services
+    </Button>
+  );
 
   return (
     <article aria-labelledby="home-title">
@@ -67,23 +107,15 @@ export default function Home() {
               dataspace that the Core Service Provider keeps trusted.
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
-              <Button
-                color="primary"
-                href={ARCHITECTURE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                endIcon={<ArrowForwardIcon />}
-              >
-                Explore the architecture
-              </Button>
+              {allServicesButton}
               <Button
                 color="secondary"
-                href={TRACTUSX_URL}
+                href={ARCHITECTURE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 endIcon={<OpenInNewIcon />}
               >
-                Visit Eclipse Tractus-X
+                Explore the architecture
               </Button>
             </Stack>
           </Stack>
@@ -95,20 +127,47 @@ export default function Home() {
         <Container
           component="section"
           maxWidth="lg"
-          aria-labelledby="services-title"
+          aria-labelledby="how-title"
           sx={{ position: 'relative', zIndex: 1, py: { xs: 8, md: 12 } }}
         >
           <Typography variant="overline" color="text.secondary">
-            Services
+            How it works
           </Typography>
-          <Typography id="services-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2 }}>
-            Onboard, manage and serve your participants
+          <Typography id="how-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2, maxWidth: 760 }}>
+            One portal between your company and the dataspace
           </Typography>
-          <Typography color="text.secondary" sx={{ mb: 5, maxWidth: 680 }}>
-            What your onboarding service provider runs for the companies it brings into the dataspace. The services
-            arrive here one module at a time.
+          <Typography color="text.secondary" sx={{ mb: 6, maxWidth: 680 }}>
+            Every onboarding service provider runs its own portal for the companies it serves. The Eclipse Tractus-X
+            Dataspace Management is that portal: open source, and the same for every provider.
           </Typography>
-          <ServiceCarousel services={services} />
+          <Grid container spacing={{ xs: 4, md: 6 }} component="ol" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+            {HOW_IT_WORKS.map((point) => (
+              <Grid key={point.title} size={{ xs: 12, md: 4 }} component="li">
+                <Stack spacing={2}>
+                  <Box
+                    aria-hidden
+                    sx={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '10px',
+                      display: 'grid',
+                      placeItems: 'center',
+                      color: iconColor,
+                      bgcolor: alpha(tractusx.orange, 0.15),
+                      boxShadow: `0 0 24px ${alpha(tractusx.orange, 0.18)}`,
+                    }}
+                  >
+                    {point.icon}
+                  </Box>
+                  <Typography component="h3" sx={{ fontWeight: 700, fontSize: 20 }}>
+                    {point.title}
+                  </Typography>
+                  <Typography color="text.secondary">{point.text}</Typography>
+                </Stack>
+              </Grid>
+            ))}
+          </Grid>
+          <Box sx={{ mt: 8 }}>{allServicesButton}</Box>
         </Container>
       </Box>
       <Footer />

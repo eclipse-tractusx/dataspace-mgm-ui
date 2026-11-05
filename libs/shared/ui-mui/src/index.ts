@@ -89,6 +89,7 @@ export { default as ManageAccountsOutlinedIcon } from '@mui/icons-material/Manag
 export { default as MoreVertIcon } from '@mui/icons-material/MoreVert';
 export { default as NotificationsOutlinedIcon } from '@mui/icons-material/NotificationsOutlined';
 export { default as PersonOutlinedIcon } from '@mui/icons-material/PersonOutlined';
+export { default as RocketLaunchOutlinedIcon } from '@mui/icons-material/RocketLaunchOutlined';
 export { default as StarBorderIcon } from '@mui/icons-material/StarBorder';
 export { default as StarIcon } from '@mui/icons-material/Star';
 export { default as StorefrontOutlinedIcon } from '@mui/icons-material/StorefrontOutlined';
@@ -104,10 +105,12 @@ export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOut
 export { default as GitHubIcon } from '@mui/icons-material/GitHub';
 export { default as GroupsOutlinedIcon } from '@mui/icons-material/GroupsOutlined';
 export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
+export { default as HowToRegOutlinedIcon } from '@mui/icons-material/HowToRegOutlined';
 export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
 export { default as InfoOutlinedIcon } from '@mui/icons-material/InfoOutlined';
 export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';
 export { default as ArrowBackIcon } from '@mui/icons-material/ArrowBack';
 export { default as OpenInNewIcon } from '@mui/icons-material/OpenInNew';
 export { default as SwapHorizOutlinedIcon } from '@mui/icons-material/SwapHorizOutlined';
+export { default as VerifiedUserOutlinedIcon } from '@mui/icons-material/VerifiedUserOutlined';
 export { default as TravelExploreOutlinedIcon } from '@mui/icons-material/TravelExploreOutlined';
