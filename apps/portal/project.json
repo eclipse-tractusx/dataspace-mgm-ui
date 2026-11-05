@@ -1,0 +1,43 @@
+{
+  "name": "portal",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/portal/src",
+  "tags": ["type:app"],
+  "implicitDependencies": ["ui-mui"],
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": { "command": "vite", "cwd": "apps/portal" }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/portal"],
+      "defaultConfiguration": "production",
+      "options": { "command": "vite build --mode production", "cwd": "apps/portal" },
+      "configurations": {
+        "production": { "command": "vite build --mode production" },
+        "development": { "command": "vite build --mode development" }
+      }
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "dependsOn": ["build"],
+      "options": { "command": "vite preview", "cwd": "apps/portal" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tsconfig.json", "cwd": "apps/portal" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run", "cwd": "apps/portal" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint apps/portal" }
+    }
+  }
+}

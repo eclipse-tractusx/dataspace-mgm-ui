@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "main",
+  "neverConnectToCloud": true,
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["default", "!{projectRoot}/**/*.test.ts", "!{projectRoot}/**/*.test.tsx", "!{projectRoot}/src/test-setup.ts"]
+  },
+  "targetDefaults": {
+    "build": { "cache": true, "inputs": ["production", "^production"] },
+    "lint": { "cache": true, "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"] },
+    "typecheck": { "cache": true, "inputs": ["default", "^default", "{workspaceRoot}/tsconfig.base.json"] },
+    "test": { "cache": true, "inputs": ["default", "^default"] }
+  }
+}
