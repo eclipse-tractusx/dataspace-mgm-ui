@@ -41,6 +41,7 @@ import {
 } from '@dataspace-mgm/ui-mui';
 import { NavLink } from 'react-router-dom';
 import { useFavourites } from '../../contexts/FavouritesContext';
+import { ALL_APPS_PATH } from '../../pages/AllAppsPage';
 import FavouritesMenu from './FavouritesMenu';
 import { NotificationsMenu, ProfileMenu, railButtonSx } from './HeaderMenus';
 
@@ -59,10 +60,11 @@ function RailSlot({ children }: { children: React.ReactNode }) {
  * Icon rail on desktop (MUI Drawer + List), fixed on the left of the shell from the header to the bottom
  * of the window; it never scrolls with the page.
  * - Top: Home and the person's favourite features, and right under the last one the "+" to edit them.
- * - Bottom left: notifications, the profile, and "All apps" as the last button.
+ * - Bottom left: notifications, the profile, and "All apps" as the last button, which opens the All apps
+ *   view in the canvas.
  * On phones and tablets the BottomBar shows the same favourites.
  */
-export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
+export default function Sidebar() {
   const { favourites } = useFavourites();
   // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
   const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
@@ -129,7 +131,16 @@ export default function Sidebar({ onOpenApps }: { onOpenApps: () => void }) {
         <NotificationsMenu placement="rail" />
         <ProfileMenu placement="rail" />
         <Tooltip title="All apps" placement="right">
-          <IconButton onClick={onOpenApps} aria-label="All apps" sx={{ ...railButtonSx, '&:hover': hover }}>
+          <IconButton
+            component={NavLink}
+            to={ALL_APPS_PATH}
+            aria-label="All apps"
+            sx={{
+              ...railButtonSx,
+              '&:hover': hover,
+              '&.active': { color: activeColor, bgcolor: alpha(tractusx.orange, 0.15) },
+            }}
+          >
             <AppsOutlinedIcon />
           </IconButton>
         </Tooltip>

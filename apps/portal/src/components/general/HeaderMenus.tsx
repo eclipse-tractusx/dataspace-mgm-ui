@@ -26,29 +26,21 @@
 
 import { useState, type MouseEvent } from 'react';
 import {
-  AppsOutlinedIcon,
   Avatar,
-  DarkModeOutlinedIcon,
   Divider,
-  GitHubIcon,
   IconButton,
-  LightModeOutlinedIcon,
   ListItemIcon,
   ListItemText,
   LoginIcon,
   Menu,
   MenuItem,
-  MoreVertIcon,
   NotificationsOutlinedIcon,
   PersonOutlinedIcon,
   Tooltip,
   Typography,
   alpha,
   tractusx,
-  useColorMode,
 } from '@dataspace-mgm/ui-mui';
-
-const SOURCE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-ui';
 
 /**
  * Where a menu button sits, which decides where its menu opens: below it in the header, above it in the
@@ -136,61 +128,6 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
             <LoginIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Sign in" secondary="Arrives with the identity module" />
-        </MenuItem>
-      </Menu>
-    </>
-  );
-}
-
-/** More options in the desktop header: all apps, theme and source code. On phones the All apps view holds them. */
-export function MoreMenu({ onOpenApps, placement = 'header' }: { onOpenApps: () => void; placement?: MenuPlacement }) {
-  const menu = useMenu();
-  const { mode, toggle } = useColorMode();
-  const nextMode = mode === 'light' ? 'dark' : 'light';
-  const run = (action: () => void) => () => {
-    menu.hide();
-    action();
-  };
-
-  return (
-    <>
-      <Tooltip title="More options">
-        <IconButton
-          onClick={menu.show}
-          aria-label="More options"
-          aria-haspopup="menu"
-          aria-expanded={menu.open}
-          aria-controls={menu.open ? `more-menu-${placement}` : undefined}
-          sx={{ color: 'text.primary', '&:hover': { color: tractusx.orange } }}
-        >
-          <MoreVertIcon />
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id={`more-menu-${placement}`}
-        anchorEl={menu.anchor}
-        open={menu.open}
-        onClose={menu.hide}
-        {...originsFor(placement)}
-      >
-        <MenuItem onClick={run(onOpenApps)}>
-          <ListItemIcon>
-            <AppsOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="All apps" />
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={run(toggle)}>
-          <ListItemIcon>
-            {mode === 'light' ? <DarkModeOutlinedIcon fontSize="small" /> : <LightModeOutlinedIcon fontSize="small" />}
-          </ListItemIcon>
-          <ListItemText primary={`Switch to ${nextMode} mode`} />
-        </MenuItem>
-        <MenuItem component="a" href={SOURCE_URL} target="_blank" rel="noopener noreferrer" onClick={menu.hide}>
-          <ListItemIcon>
-            <GitHubIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Source code" />
         </MenuItem>
       </Menu>
     </>

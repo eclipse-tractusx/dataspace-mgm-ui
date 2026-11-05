@@ -41,6 +41,7 @@ import { features } from '../../features/main';
 import AppsDialog from './AppsDialog';
 import BottomBar from './BottomBar';
 import Sidebar from './Sidebar';
+import AllAppsPage from '../../pages/AllAppsPage';
 
 const wrap = (ui: ReactElement, path = '/') =>
   render(
@@ -70,18 +71,23 @@ describe('favourites', () => {
 
 describe('Sidebar', () => {
   it('puts the plus right under the last favourite and notifications, profile and All apps at the bottom', () => {
-    wrap(<Sidebar onOpenApps={() => undefined} />);
+    wrap(<Sidebar />);
     const slots = within(screen.getByRole('list', { name: 'Favourites' })).getAllByRole('listitem');
     expect(slots).toHaveLength(features.length + 1);
     expect(within(slots[slots.length - 1]).getByRole('button', { name: 'Edit favourites' })).toBeInTheDocument();
-    const labels = within(screen.getByRole('navigation', { name: 'Features' }))
+    const nav = screen.getByRole('navigation', { name: 'Features' });
+    const labels = within(nav)
       .getAllByRole('button')
       .map((button) => button.getAttribute('aria-label'));
-    expect(labels.slice(-3)).toEqual(['Notifications', 'Profile', 'All apps']);
+    expect(labels.slice(-2)).toEqual(['Notifications', 'Profile']);
+    // All apps is the last control of the sidebar and opens the view in the canvas.
+    const allApps = within(nav).getByRole('link', { name: 'All apps' });
+    expect(allApps).toHaveAttribute('href', '/all-apps');
+    expect(within(nav).getAllByRole('link').at(-1)).toBe(allApps);
   });
 
   it('switches favourites on and off in the plus menu, which stays open', () => {
-    wrap(<Sidebar onOpenApps={() => undefined} />);
+    wrap(<Sidebar />);
     fireEvent.click(screen.getByRole('button', { name: 'Edit favourites' }));
     const menu = screen.getByRole('menu', { name: 'Favourites' });
     expect(within(menu).queryByRole('menuitemcheckbox', { name: /Home/ })).toBeNull();
@@ -113,5 +119,18 @@ describe('All apps', () => {
     }
     expect(within(dialog).getAllByText('Coming soon')).toHaveLength(features.filter((item) => item.disabled).length);
     expect(within(dialog).getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+  });
+});
+
+describe('All apps on desktop', () => {
+  it('shows every app as a card in a carousel and filters by area', () => {
+    wrap(<AllAppsPage />, '/all-apps');
+    const carousel = screen.getByRole('region', { name: 'Apps' });
+    expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
+    expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
+    expect(within(carousel).getByRole('button', { name: 'Company, coming soon' })).toBeDisabled();
+
+    fireEvent.click(within(screen.getByRole('group', { name: 'Filter apps' })).getByRole('button', { name: /^Connect/ }));
+    expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'connect').length);
   });
 });

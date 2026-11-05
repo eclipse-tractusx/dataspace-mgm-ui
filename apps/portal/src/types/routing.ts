@@ -42,10 +42,14 @@ export interface FeatureRoute {
   };
 }
 
+/** Which part of taking part in the dataspace a feature serves; groups the apps in the All apps view. */
+export type FeatureCategory = 'start' | 'discover' | 'connect' | 'exchange' | 'govern';
+
 export interface FeatureConfig {
   name: string;
   /** One sentence for the "All apps" view. */
   description: string;
+  category: FeatureCategory;
   icon: ReactElement;
   navigationPath: string;
   disabled: boolean;
@@ -55,6 +59,7 @@ export interface FeatureConfig {
 export interface NavigationItem {
   name: string;
   description: string;
+  category: FeatureCategory;
   icon: ReactElement;
   path: string;
   disabled: boolean;

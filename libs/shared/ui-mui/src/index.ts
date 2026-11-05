@@ -92,6 +92,8 @@ export { default as StorefrontOutlinedIcon } from '@mui/icons-material/Storefron
 export { default as AddIcon } from '@mui/icons-material/Add';
 export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
+export { default as ChevronLeftIcon } from '@mui/icons-material/ChevronLeft';
+export { default as ChevronRightIcon } from '@mui/icons-material/ChevronRight';
 export { default as CheckIcon } from '@mui/icons-material/Check';
 export { default as CircleIcon } from '@mui/icons-material/Circle';
 export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';

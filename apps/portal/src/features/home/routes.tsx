@@ -31,6 +31,7 @@ import Home from './pages/Home';
 export const homeFeature: FeatureConfig = {
   name: 'Home',
   description: 'Start page of the Dataspace Management.',
+  category: 'start',
   icon: <HomeOutlinedIcon />,
   navigationPath: '/',
   disabled: false,

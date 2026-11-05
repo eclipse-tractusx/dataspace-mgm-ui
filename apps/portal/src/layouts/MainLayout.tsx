@@ -162,9 +162,9 @@ export default function MainLayout() {
       >
         Skip to content
       </Link>
-      <Header onOpenApps={openApps} />
+      <Header />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        {!compact && <Sidebar onOpenApps={openApps} />}
+        {!compact && <Sidebar />}
         <Box
           ref={canvas}
           id="canvas"
@@ -177,7 +177,8 @@ export default function MainLayout() {
         </Box>
       </Box>
       {compact && <BottomBar onOpenApps={openApps} />}
-      <AppsDialog open={appsOpen} onClose={() => setAppsOpen(false)} items={features} />
+      {/* Phones open All apps full screen; desktop shows it in the canvas (/all-apps). */}
+      {compact && <AppsDialog open={appsOpen} onClose={() => setAppsOpen(false)} items={features} />}
     </Box>
   );
 }

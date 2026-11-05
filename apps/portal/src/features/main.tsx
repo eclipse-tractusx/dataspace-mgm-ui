@@ -31,16 +31,23 @@ import {
   ManageAccountsOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
-import type { FeatureConfig, NavigationItem } from '../types/routing';
+import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/routing';
 import { homeFeature } from './home/routes';
 
 /**
  * Features that are announced but not built yet: shown greyed out as "coming soon", without routes
  * (like the Status placeholder of the Industry Core Hub). Replace one by its feature folder when it arrives.
  */
-const upcoming = (name: string, description: string, icon: FeatureConfig['icon'], path: string): FeatureConfig => ({
+const upcoming = (
+  name: string,
+  description: string,
+  category: FeatureCategory,
+  icon: FeatureConfig['icon'],
+  path: string,
+): FeatureConfig => ({
   name,
   description,
+  category,
   icon,
   navigationPath: path,
   disabled: true,
@@ -50,22 +57,23 @@ const upcoming = (name: string, description: string, icon: FeatureConfig['icon']
 /**
  * Registry of the feature modules. Add a feature: create src/features/<feature>/ with
  * pages/, routes.tsx (one FeatureConfig) and index.ts, then add it to this list.
- * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All apps" view.
+ * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All apps" views.
  * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming('Onboarding', 'Register your company and follow its application.', <AppRegistrationOutlinedIcon />, '/onboarding'),
-  upcoming('Company', 'Company data, business partner number and credentials.', <BusinessOutlinedIcon />, '/company'),
-  upcoming('Users & roles', 'Invite people, assign roles and manage technical users.', <ManageAccountsOutlinedIcon />, '/users'),
-  upcoming('Connectors', 'Register and monitor the connectors of your company.', <CableOutlinedIcon />, '/connectors'),
-  upcoming('Apps', 'Find and subscribe to apps and services of the dataspace.', <StorefrontOutlinedIcon />, '/apps'),
+  upcoming('Onboarding', 'Register your company and follow its application.', 'connect', <AppRegistrationOutlinedIcon />, '/onboarding'),
+  upcoming('Company', 'Company data, business partner number and credentials.', 'connect', <BusinessOutlinedIcon />, '/company'),
+  upcoming('Users & roles', 'Invite people, assign roles and manage technical users.', 'govern', <ManageAccountsOutlinedIcon />, '/users'),
+  upcoming('Connectors', 'Register and monitor the connectors of your company.', 'exchange', <CableOutlinedIcon />, '/connectors'),
+  upcoming('Apps', 'Find and subscribe to apps and services of the dataspace.', 'discover', <StorefrontOutlinedIcon />, '/apps'),
 ];
 
 /** The navigation items of the sidebar, the bottom bar and the "All apps" view. */
 export const features: NavigationItem[] = allFeatures.map((feature) => ({
   name: feature.name,
   description: feature.description,
+  category: feature.category,
   icon: feature.icon,
   path: feature.navigationPath,
   disabled: feature.disabled,
