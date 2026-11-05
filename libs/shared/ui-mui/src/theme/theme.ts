@@ -165,8 +165,8 @@ export function createPortalTheme(mode: PaletteMode): Theme {
           label: { fontSize: '0.75rem', fontWeight: 500, '&.Mui-selected': { fontSize: '0.75rem', fontWeight: 700 } },
         },
       },
-      MuiBackdrop: { styleOverrides: { root: { backgroundColor: 'rgba(0, 0, 0, 0.7)' } } },
       MuiDialog: {
+        defaultProps: { slotProps: { backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.7)' } } } },
         styleOverrides: {
           paper: {
             backgroundColor: mode === 'dark' ? tractusx.black : tractusx.white,
