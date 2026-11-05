@@ -1,0 +1,34 @@
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+# SPDX-License-Identifier: Apache-2.0
+
+# Dependencies and build output
+node_modules/
+dist/
+tmp/
+out-tsc/
+coverage/
+.nx/cache
+.nx/workspace-data
+*.tsbuildinfo
+
+# Tests
+/test-results/
+/playwright-report/
+/blob-report/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+**/public/config.json
+
+# Eclipse Dash license tool
+org.eclipse.dash.licenses*.jar
+
+# IDEs and OS files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+.DS_Store
+npm-debug.log*
