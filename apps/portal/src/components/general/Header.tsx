@@ -28,7 +28,9 @@ import {
   AppBar,
   Box,
   Chip,
+  CircleIcon,
   DarkModeOutlinedIcon,
+  Divider,
   GitHubIcon,
   IconButton,
   LightModeOutlinedIcon,
@@ -74,9 +76,10 @@ export default function Header() {
           <Typography component="span" sx={{ fontWeight: 800, fontSize: 18, whiteSpace: 'nowrap' }}>
             Eclipse Tractus-X
           </Typography>
-          <Box
+          <Divider
+            orientation="vertical"
             aria-hidden
-            sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 24, bgcolor: palette.ui.cardBorder }}
+            sx={{ display: { xs: 'none', sm: 'block' }, height: 24, borderColor: palette.ui.cardBorder }}
           />
           <Typography
             component="span"
@@ -91,13 +94,7 @@ export default function Header() {
           variant="outlined"
           label={environment}
           aria-label={`Environment: ${environment}`}
-          icon={
-            <Box
-              component="span"
-              aria-hidden
-              sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: tractusx.green, ml: '8px !important' }}
-            />
-          }
+          icon={<CircleIcon aria-hidden sx={{ fontSize: '8px !important', color: `${tractusx.green} !important`, ml: '10px !important' }} />}
           sx={{
             display: { xs: 'none', sm: 'inline-flex' },
             textTransform: 'uppercase',

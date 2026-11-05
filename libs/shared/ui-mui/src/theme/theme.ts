@@ -110,9 +110,38 @@ export function createPortalTheme(mode: PaletteMode): Theme {
           },
         },
       },
-      MuiCardContent: { styleOverrides: { root: { padding: 28, '&:last-child': { paddingBottom: 28 } } } },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: { padding: '28px 28px 0' },
+          title: { fontWeight: 700, fontSize: '1.25rem', lineHeight: 1.3 },
+        },
+      },
+      MuiCardContent: { styleOverrides: { root: { padding: '16px 28px', '&:last-child': { paddingBottom: 28 } } } },
+      MuiCardActions: { styleOverrides: { root: { padding: '0 28px 28px' } } },
+      MuiAvatar: {
+        styleOverrides: {
+          rounded: { borderRadius: RADIUS, backgroundColor: 'rgba(250, 160, 35, 0.15)' },
+        },
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: { backgroundColor: mode === 'dark' ? tractusx.black : tractusx.white, borderRight: `1px solid ${tokens.subtleBorder}` },
+        },
+      },
+      MuiListItemButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: BUTTON_RADIUS,
+            '&.Mui-focusVisible': focusRing,
+          },
+        },
+      },
+      MuiDivider: { styleOverrides: { root: { borderColor: tokens.subtleBorder } } },
       MuiChip: {
-        styleOverrides: { root: { borderRadius: BUTTON_RADIUS / 2, fontWeight: 700 } },
+        styleOverrides: {
+          root: { borderRadius: BUTTON_RADIUS / 2, fontWeight: 700 },
+          outlined: { borderColor: tokens.cardBorder },
+        },
       },
       MuiLink: {
         defaultProps: { underline: 'hover' },

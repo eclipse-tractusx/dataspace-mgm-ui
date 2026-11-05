@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { Box, Link, Stack, TractusXLogo, Typography, tractusx, useTheme } from '@dataspace-mgm/ui-mui';
+import { Box, Divider, Grid, Link, Stack, TractusXLogo, Typography, tractusx, useTheme } from '@dataspace-mgm/ui-mui';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/general/Header';
 import Sidebar from '../components/general/Sidebar';
@@ -74,28 +74,27 @@ function Footer() {
       component="footer"
       sx={{ bgcolor: palette.ui.footer, color: tractusx.white, borderTop: '0.5px solid', borderColor: palette.ui.cardBorder }}
     >
-      <Box
-        sx={{
-          px: { xs: 3, md: 6 },
-          py: 5,
-          display: 'grid',
-          gap: 4,
-          gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: '2fr 1fr 1fr' },
-        }}
-      >
-        <Stack spacing={1.5}>
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <TractusXLogo size={32} decorative />
-            <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Eclipse Tractus-X</Typography>
+      <Grid container spacing={4} sx={{ px: { xs: 3, md: 6 }, py: 5 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={1.5}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+              <TractusXLogo size={32} decorative />
+              <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Eclipse Tractus-X</Typography>
+            </Stack>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+              Where We Build Dataspaces
+            </Typography>
           </Stack>
-          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-            Where We Build Dataspaces
-          </Typography>
-        </Stack>
-        <FooterColumn title="Eclipse Foundation" links={ECLIPSE_LINKS} />
-        <FooterColumn title="Dataspace Management" links={PROJECT_LINKS} />
-      </Box>
-      <Box sx={{ px: { xs: 3, md: 6 }, py: 2.5, borderTop: '0.5px solid rgba(255, 255, 255, 0.3)' }}>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FooterColumn title="Eclipse Foundation" links={ECLIPSE_LINKS} />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <FooterColumn title="Dataspace Management" links={PROJECT_LINKS} />
+        </Grid>
+      </Grid>
+      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.3)' }} />
+      <Box sx={{ px: { xs: 3, md: 6 }, py: 2.5 }}>
         <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
           Copyright © 2026 Contributors to the Eclipse Foundation · Apache-2.0
         </Typography>

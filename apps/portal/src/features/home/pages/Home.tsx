@@ -28,20 +28,22 @@ import type { ReactElement } from 'react';
 import {
   AdminPanelSettingsOutlinedIcon,
   ArrowForwardIcon,
-  Box,
+  Avatar,
   BrandBackdrop,
   Button,
   Card,
+  CardActions,
   CardContent,
+  CardHeader,
   Chip,
   Container,
+  Grid,
   HubOutlinedIcon,
   OpenInNewIcon,
   Stack,
   SwapHorizOutlinedIcon,
   TravelExploreOutlinedIcon,
   Typography,
-  alpha,
   tractusx,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
@@ -82,22 +84,22 @@ export default function Home() {
   const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
 
   return (
-    <Box component="article" aria-labelledby="home-title">
+    <article aria-labelledby="home-title">
       <BrandBackdrop>
         <Container maxWidth="lg" sx={{ pt: { xs: 14, md: 12 }, pb: { xs: 8, md: 12 } }}>
-          <Stack spacing={3} sx={{ maxWidth: 640 }}>
+          <Stack spacing={3} sx={{ maxWidth: 760 }}>
             <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              Eclipse Tractus-X
+              Operating Service Provider portal
             </Typography>
-            <Typography id="home-title" variant="h1" component="h1">
+            <Typography id="home-title" variant="h1" component="h1" sx={{ fontSize: 'clamp(2.25rem, 3vw + 1rem, 4rem)' }}>
               Welcome to the{' '}
-              <Box component="span" sx={{ color: tractusx.orange, display: 'block' }}>
-                Dataspace Management
-              </Box>
+              <Typography component="span" variant="inherit" sx={{ color: tractusx.orange, display: 'block' }}>
+                Eclipse Tractus-X Dataspace Management
+              </Typography>
             </Typography>
             <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.85)' }}>
-              The portal of your Operating Service Provider. Onboard your company, manage its identity and its
-              people, and connect to the dataspace that the Core Service Provider keeps trusted.
+              Onboard your company, manage its identity and its people, and connect to the dataspace that the Core
+              Service Provider keeps trusted.
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
               <Button
@@ -134,42 +136,32 @@ export default function Home() {
           Everything your company needs to take part in the dataspace. The features arrive here one module at a
           time.
         </Typography>
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 3,
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-          }}
-        >
+        <Grid container spacing={3}>
           {PILLARS.map((pillar) => (
-            <Card key={pillar.title} component="section" aria-labelledby={`pillar-${pillar.title}`}>
-              <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-                <Box
-                  aria-hidden
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: '10px',
-                    display: 'grid',
-                    placeItems: 'center',
-                    color: iconColor,
-                    bgcolor: alpha(tractusx.orange, 0.15),
-                  }}
-                >
-                  {pillar.icon}
-                </Box>
-                <Typography id={`pillar-${pillar.title}`} variant="h3" component="h3">
-                  {pillar.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
-                  {pillar.text}
-                </Typography>
-                <Chip label="Coming soon" size="small" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
-              </CardContent>
-            </Card>
+            <Grid key={pillar.title} size={{ xs: 12, sm: 6, lg: 3 }}>
+              <Card component="section" aria-labelledby={`pillar-${pillar.title}`} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <CardHeader
+                  avatar={
+                    <Avatar variant="rounded" aria-hidden sx={{ color: iconColor }}>
+                      {pillar.icon}
+                    </Avatar>
+                  }
+                  title={pillar.title}
+                  slotProps={{ title: { id: `pillar-${pillar.title}`, component: 'h3' } }}
+                />
+                <CardContent sx={{ flex: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {pillar.text}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Chip label="Coming soon" size="small" variant="outlined" />
+                </CardActions>
+              </Card>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Container>
-    </Box>
+    </article>
   );
 }

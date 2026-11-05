@@ -36,16 +36,27 @@ export { fontFamily } from './theme/typography';
 export { TractusXLogo } from './components/TractusXLogo';
 export { BrandBackdrop } from './components/BrandBackdrop';
 
-// Layout and content primitives, used as they are until a wrapper is needed.
+// MUI components, re-exported unchanged until a feature needs a Tractus-X specific wrapper.
 export { default as AppBar } from '@mui/material/AppBar';
+export { default as Avatar } from '@mui/material/Avatar';
 export { default as Box } from '@mui/material/Box';
 export { default as Button } from '@mui/material/Button';
 export { default as Card } from '@mui/material/Card';
+export { default as CardActions } from '@mui/material/CardActions';
 export { default as CardContent } from '@mui/material/CardContent';
+export { default as CardHeader } from '@mui/material/CardHeader';
 export { default as Chip } from '@mui/material/Chip';
 export { default as Container } from '@mui/material/Container';
+export { default as Divider } from '@mui/material/Divider';
+export { default as Drawer } from '@mui/material/Drawer';
+export { default as Grid } from '@mui/material/Grid';
 export { default as IconButton } from '@mui/material/IconButton';
 export { default as Link } from '@mui/material/Link';
+export { default as List } from '@mui/material/List';
+export { default as ListItem } from '@mui/material/ListItem';
+export { default as ListItemButton } from '@mui/material/ListItemButton';
+export { default as ListItemIcon } from '@mui/material/ListItemIcon';
+export { default as Paper } from '@mui/material/Paper';
 export { default as Stack } from '@mui/material/Stack';
 export { default as Toolbar } from '@mui/material/Toolbar';
 export { default as Tooltip } from '@mui/material/Tooltip';
@@ -55,6 +66,7 @@ export { alpha, useTheme, type SxProps, type Theme } from '@mui/material/styles'
 // Icons used by the apps.
 export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/AdminPanelSettingsOutlined';
 export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
+export { default as CircleIcon } from '@mui/icons-material/Circle';
 export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';
 export { default as GitHubIcon } from '@mui/icons-material/GitHub';
 export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';

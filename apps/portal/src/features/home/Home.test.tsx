@@ -41,7 +41,7 @@ describe('Home', () => {
       </ColorModeProvider>,
     );
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome to the Dataspace Management');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome to the Eclipse Tractus-X Dataspace Management');
     for (const pillar of ['Discover', 'Connect', 'Exchange', 'Govern']) {
       expect(screen.getByRole('heading', { level: 3, name: pillar })).toBeInTheDocument();
     }
