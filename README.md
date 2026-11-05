@@ -147,10 +147,17 @@ space and manage their membership. Built at the Tractus-X Hackathon II.
 Every commit is a contribution to Eclipse Tractus-X: GitHub account with two-factor authentication,
 [Eclipse Foundation account](https://accounts.eclipse.org/user/register), signed
 [ECA](https://www.eclipse.org/legal/eca/) for the email address in the `Author` field of your commits,
-GitHub account linked. Your team works on its branch `team/<n>` in the fork
-[tx-arena-events/dataspace-mgm-ui](https://github.com/tx-arena-events/dataspace-mgm-ui) and opens a pull
-request to `main` of [eclipse-tractusx/dataspace-mgm-ui](https://github.com/eclipse-tractusx/dataspace-mgm-ui)
-in each merge window. A Tractus-X committer merges.
+GitHub account linked. One team member forks this repository and adds the teammates as collaborators, the
+team works on the branch `team/<n>` of that fork and opens one pull request to `main` of
+[eclipse-tractusx/dataspace-mgm-ui](https://github.com/eclipse-tractusx/dataspace-mgm-ui) in the merge window
+at 14:45 (code freeze after it). A Tractus-X committer merges.
+
+```shell
+gh repo fork eclipse-tractusx/dataspace-mgm-ui --default-branch-only --clone   # one team member; the others: git clone <fork URL>
+cd dataspace-mgm-ui && git checkout -b team/<n> && git push -u origin team/<n>
+git clone https://github.com/tx-arena-events/portal-frontend-spec.git ../portal-frontend-spec   # read-only, next to the repository
+gh pr create --repo eclipse-tractusx/dataspace-mgm-ui --base main --head <fork-owner>:team/<n>     # at 14:45
+```
 
 ## Contributing
 
