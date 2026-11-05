@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Box,
   Link,
@@ -33,11 +33,9 @@ import {
   useTheme,
 } from '@dataspace-mgm/ui-mui';
 import { Outlet, useLocation } from 'react-router-dom';
-import ServicesDialog from '../components/general/ServicesDialog';
 import BottomBar from '../components/general/BottomBar';
 import Header from '../components/general/Header';
 import Sidebar from '../components/general/Sidebar';
-import { features } from '../features/main';
 
 /**
  * The app shell: the header stays at the top, the sidebar (desktop) on the left and the bottom bar
@@ -46,8 +44,6 @@ import { features } from '../features/main';
 export default function MainLayout() {
   const theme = useTheme();
   const compact = useMediaQuery(theme.breakpoints.down('md'));
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const openServices = () => setServicesOpen(true);
   const canvas = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
 
@@ -97,9 +93,7 @@ export default function MainLayout() {
           </Box>
         </Box>
       </Box>
-      {compact && <BottomBar onOpenServices={openServices} />}
-      {/* Phones open All services full screen; desktop shows it in the canvas (/all-services). */}
-      {compact && <ServicesDialog open={servicesOpen} onClose={() => setServicesOpen(false)} items={features} />}
+      {compact && <BottomBar />}
     </Box>
   );
 }

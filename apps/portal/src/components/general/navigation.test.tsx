@@ -38,7 +38,7 @@ import {
   toggleHidden,
 } from '../../contexts/FavouritesContext';
 import { features } from '../../features/main';
-import ServicesDialog from './ServicesDialog';
+import ServiceTiles from '../services/ServiceTiles';
 import BottomBar from './BottomBar';
 import Sidebar from './Sidebar';
 import AllServicesPage from '../../pages/AllServicesPage';
@@ -100,30 +100,38 @@ describe('Sidebar', () => {
 
 describe('Bottom bar', () => {
   it('shows Home and the first favourites, the plus, then profile and All services at the right', () => {
-    wrap(<BottomBar onOpenServices={() => undefined} />);
-    const labels = within(screen.getByRole('navigation', { name: 'Favourites' }))
+    wrap(<BottomBar />);
+    const bar = screen.getByRole('navigation', { name: 'Favourites' });
+    const labels = within(bar)
       .getAllByRole('button')
       .map((button) => button.getAttribute('aria-label'));
-    expect(labels).toHaveLength(PHONE_FAVOURITE_SLOTS + 3);
+    expect(labels).toHaveLength(PHONE_FAVOURITE_SLOTS + 2);
     expect(labels[0]).toBe('Home');
-    expect(labels.slice(-3)).toEqual(['Edit favourites', 'Profile', 'All services']);
+    expect(labels.slice(-2)).toEqual(['Edit favourites', 'Profile']);
+    expect(within(bar).getByRole('link', { name: 'All services' })).toHaveAttribute('href', '/all-services');
+  });
+
+  it('marks All services, not Home, while All services is open', () => {
+    wrap(<BottomBar />, '/all-services');
+    const bar = screen.getByRole('navigation', { name: 'Favourites' });
+    expect(within(bar).getByRole('link', { name: 'All services' })).toHaveAttribute('aria-current', 'page');
+    expect(within(bar).getByRole('button', { name: 'Home' })).not.toHaveClass('Mui-selected');
   });
 });
 
-describe('All services', () => {
-  it('shows every feature as a tile and marks the upcoming ones', () => {
-    wrap(<ServicesDialog open onClose={() => undefined} items={features} />);
-    const dialog = screen.getByRole('dialog', { name: 'All services' });
+describe('All services on phones', () => {
+  it('shows every service as a tile and marks the upcoming ones, then the settings', () => {
+    wrap(<ServiceTiles services={features} />, '/all-services');
     for (const item of features) {
-      expect(within(dialog).getByRole('button', { name: new RegExp(`^${item.name}`) })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: new RegExp(`^${item.name}`) })).toBeInTheDocument();
     }
-    expect(within(dialog).getAllByText('Coming soon')).toHaveLength(features.filter((item) => item.disabled).length);
-    expect(within(dialog).getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getAllByText('Coming soon')).toHaveLength(features.filter((item) => item.disabled).length);
+    expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument();
   });
 });
 
 describe('All services on desktop', () => {
-  it('shows every service as a card in a carousel, the description below it on demand, and filters by area', () => {
+  it('shows every service as a card in a carousel, the description and version over it on demand, and filters by area', () => {
     wrap(<AllServicesPage />, '/all-services');
     const carousel = screen.getByRole('region', { name: 'Services' });
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
@@ -131,11 +139,12 @@ describe('All services on desktop', () => {
     expect(within(carousel).getByRole('button', { name: 'Participant management, coming soon' })).toBeDisabled();
 
     const wallets = features.find((service) => service.path === '/wallets')!;
-    const info = within(carousel).getByRole('button', { name: 'About Wallets as a service' });
-    expect(info).toHaveAttribute('aria-expanded', 'false');
-    fireEvent.click(info);
-    expect(info).toHaveAttribute('aria-expanded', 'true');
-    expect(document.getElementById(info.getAttribute('aria-controls')!)).toHaveTextContent(wallets.description);
+    expect(screen.queryByText(wallets.description)).toBeNull();
+    fireEvent.click(within(carousel).getByRole('button', { name: 'About Wallets as a service' }));
+    const details = screen.getByRole('dialog', { name: 'Wallets as a service' });
+    expect(details).toHaveTextContent(wallets.description);
+    expect(within(details).getByLabelText(`Version ${wallets.version}`)).toHaveTextContent(`v${wallets.version}`);
+    fireEvent.keyDown(details, { key: 'Escape' });
 
     fireEvent.click(within(screen.getByRole('group', { name: 'Filter services' })).getByRole('button', { name: /^As a service/ }));
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.filter((app) => app.category === 'as-a-service').length);

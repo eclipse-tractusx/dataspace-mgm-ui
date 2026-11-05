@@ -30,9 +30,10 @@ import {
   Box,
   Button,
   ButtonBase,
-  Collapse,
+  Chip,
   IconButton,
   InfoOutlinedIcon,
+  Popover,
   Stack,
   StarIcon,
   Tooltip,
@@ -61,120 +62,161 @@ interface ServiceCardProps {
 }
 
 /**
- * A service as on the dataspace cards of eclipse-tractusx.github.io: a glowing square with the icon, and
- * below it the name, the area and status, and the action. The info button opens the description below the
- * card, in place.
+ * A service as on the dataspace cards of eclipse-tractusx.github.io: a glowing square with the icon (a star at
+ * the top left when it is a favourite, the info button at the top right), and below it the name, the area and
+ * status, and the action. The info button opens a small panel over the square with the description and version.
  */
 export default function ServiceCard({ service, favourite, onOpen }: ServiceCardProps) {
   const { palette } = useTheme();
   const dark = palette.mode === 'dark';
-  const [showInfo, setShowInfo] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const infoId = useId();
   const iconColor = dark ? tractusx.orange : tractusx.orangeDarkest;
   const glow = dark ? '0 0 14px rgba(255, 255, 255, 0.28)' : '0 0 14px rgba(0, 0, 0, 0.12)';
   const glowStrong = dark ? '0 0 22px rgba(255, 255, 255, 0.5)' : '0 0 22px rgba(0, 0, 0, 0.2)';
+  const status = service.disabled ? 'Coming soon' : 'Available';
 
   return (
     <Box
       component="li"
-      sx={{ flex: `0 0 ${SERVICE_CARD_WIDTH}px`, listStyle: 'none', scrollSnapAlign: 'start', display: 'grid', gap: 1.5, alignContent: 'start', position: 'relative' }}
+      sx={{ flex: `0 0 ${SERVICE_CARD_WIDTH}px`, listStyle: 'none', scrollSnapAlign: 'start', display: 'grid', gap: 1.5 }}
     >
-      {/* The square opens the service with the mouse too; for the keyboard and screen readers the button below does. */}
-      <ButtonBase
-        onClick={onOpen}
-        disabled={service.disabled}
-        tabIndex={-1}
-        aria-hidden
+      <Box
         sx={{
           position: 'relative',
-          width: '100%',
           aspectRatio: '1 / 1',
           borderRadius: '10px',
-          overflow: 'hidden',
           border: '1px solid',
-          borderColor: palette.ui.cardBorder,
+          borderColor: anchor ? alpha(tractusx.orange, 0.6) : palette.ui.cardBorder,
           // The light falls in from the top left, as on the website's cards.
           background: dark
             ? `radial-gradient(120% 120% at 0% 0%, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0) 55%), ${tractusx.gray}`
             : `radial-gradient(120% 120% at 0% 0%, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0) 55%), ${tractusx.white}`,
-          boxShadow: glow,
+          boxShadow: anchor ? glowStrong : glow,
           transition: 'box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease',
           '&:hover': { boxShadow: glowStrong, transform: 'translateY(-4px)', borderColor: alpha(tractusx.orange, 0.6) },
           '&:hover .service-orb': { opacity: 1, transform: 'scale(1.08)' },
-          '&.Mui-focusVisible': { outline: `2px solid ${tractusx.orange}`, outlineOffset: 3 },
-          '&.Mui-disabled': { pointerEvents: 'auto', cursor: 'default' },
-          '&.Mui-disabled .service-icon': { opacity: 0.55 },
           '@media (prefers-reduced-motion: reduce)': { transition: 'none', '&:hover': { transform: 'none' } },
         }}
       >
-        {/* A soft orange light behind the icon that brightens on hover. */}
-        <Box
+        {/* The square opens the service with the mouse too; for the keyboard and screen readers the button below does. */}
+        <ButtonBase
+          onClick={onOpen}
+          disabled={service.disabled}
+          tabIndex={-1}
           aria-hidden
-          className="service-orb"
           sx={{
             position: 'absolute',
-            width: '70%',
-            height: '70%',
-            borderRadius: '50%',
-            background: `radial-gradient(circle, ${alpha(tractusx.orange, dark ? 0.22 : 0.16)} 0%, transparent 65%)`,
-            opacity: 0.7,
-            transition: 'opacity 0.35s ease, transform 0.35s ease',
+            inset: 0,
+            borderRadius: '10px',
+            overflow: 'hidden',
+            '&.Mui-disabled': { pointerEvents: 'auto', cursor: 'default' },
+            '&.Mui-disabled .service-icon': { opacity: 0.55 },
           }}
-        />
+        >
+          {/* A soft orange light behind the icon that brightens on hover. */}
+          <Box
+            className="service-orb"
+            sx={{
+              position: 'absolute',
+              width: '70%',
+              height: '70%',
+              borderRadius: '50%',
+              background: `radial-gradient(circle, ${alpha(tractusx.orange, dark ? 0.22 : 0.16)} 0%, transparent 65%)`,
+              opacity: 0.7,
+              transition: 'opacity 0.35s ease, transform 0.35s ease',
+            }}
+          />
+          <Box
+            className="service-icon"
+            sx={{ position: 'relative', color: iconColor, display: 'grid', placeItems: 'center', '& svg': { fontSize: 72 } }}
+          >
+            {service.icon}
+          </Box>
+        </ButtonBase>
+
         {favourite && (
           <Tooltip title="In your sidebar">
-            <Box
-              component="span"
-              aria-hidden
-              sx={{ position: 'absolute', top: 10, left: 10, color: tractusx.orange, display: 'inline-flex' }}
-            >
-              <StarIcon fontSize="small" />
+            <Box component="span" sx={{ position: 'absolute', top: 10, left: 10, color: tractusx.orange, display: 'inline-flex' }}>
+              <StarIcon fontSize="small" aria-label="In your sidebar" />
             </Box>
           </Tooltip>
         )}
-        <Box
-          aria-hidden
-          className="service-icon"
-          sx={{ position: 'relative', color: iconColor, display: 'grid', placeItems: 'center', '& svg': { fontSize: 72 } }}
-        >
-          {service.icon}
-        </Box>
-      </ButtonBase>
 
-      <Stack direction="row" sx={{ alignItems: 'flex-start', gap: 1 }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          {/* Room for two lines, so the buttons of a row line up whatever the length of the names. */}
-          <Typography component="h3" sx={{ fontWeight: 500, fontSize: 18, lineHeight: 1.3, minHeight: '2.6em' }}>
-            {service.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {AREA_LABELS[service.category]} · {service.disabled ? 'Coming soon' : 'Available'}
-          </Typography>
-        </Box>
-        <Tooltip title={showInfo ? 'Hide details' : 'Details'}>
+        <Tooltip title="Details">
           <IconButton
             size="small"
-            onClick={() => setShowInfo((open) => !open)}
+            onClick={(event) => setAnchor(event.currentTarget)}
             aria-label={`About ${service.name}`}
-            aria-expanded={showInfo}
-            aria-controls={infoId}
-            sx={{ color: showInfo ? tractusx.orange : 'text.secondary', '&:hover': { color: tractusx.orange } }}
+            aria-haspopup="dialog"
+            aria-expanded={Boolean(anchor)}
+            aria-controls={anchor ? infoId : undefined}
+            sx={{
+              position: 'absolute',
+              top: 6,
+              right: 6,
+              color: anchor ? tractusx.orange : 'text.secondary',
+              '&:hover': { color: tractusx.orange, bgcolor: alpha(tractusx.orange, 0.1) },
+            }}
           >
             <InfoOutlinedIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-      </Stack>
 
-      {favourite && (
-        <Box component="span" id={`${infoId}-fav`} sx={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-          In your sidebar
-        </Box>
-      )}
-      <Collapse in={showInfo} id={infoId}>
-        <Typography variant="body2" color="text.secondary" sx={{ pb: 0.5 }}>
-          {service.description}
+        <Popover
+          id={infoId}
+          open={Boolean(anchor)}
+          anchorEl={anchor}
+          onClose={() => setAnchor(null)}
+          // Opens over the square, from its top right corner where the button is.
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          slotProps={{
+            paper: {
+              role: 'dialog',
+              'aria-label': service.name,
+              sx: {
+                p: 2,
+                width: SERVICE_CARD_WIDTH - 16,
+                borderRadius: '10px',
+                border: 1,
+                borderColor: palette.ui.cardBorder,
+                bgcolor: dark ? tractusx.grayButton : tractusx.white,
+                boxShadow: glowStrong,
+              },
+            },
+          }}
+        >
+          <Stack spacing={1.25}>
+            <Stack direction="row" sx={{ alignItems: 'flex-start', gap: 1 }}>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="overline" color="text.secondary">
+                  {AREA_LABELS[service.category]}
+                </Typography>
+                <Typography sx={{ fontWeight: 700, fontSize: 16, lineHeight: 1.3 }}>{service.name}</Typography>
+              </Box>
+              <Chip size="small" variant="outlined" label={`v${service.version}`} aria-label={`Version ${service.version}`} />
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              {service.description}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {status}
+              {favourite ? ' · In your sidebar' : ''}
+            </Typography>
+          </Stack>
+        </Popover>
+      </Box>
+
+      <Box>
+        {/* Room for two lines, so the buttons of a row line up whatever the length of the names. */}
+        <Typography component="h3" sx={{ fontWeight: 500, fontSize: 18, lineHeight: 1.3, minHeight: '2.6em' }}>
+          {service.name}
         </Typography>
-      </Collapse>
+        <Typography variant="body2" color="text.secondary" noWrap>
+          {AREA_LABELS[service.category]} · {status}
+        </Typography>
+      </Box>
 
       <Button
         variant="outlined"
@@ -183,7 +225,6 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
         onClick={onOpen}
         endIcon={service.disabled ? undefined : <ArrowForwardIcon />}
         aria-label={service.disabled ? `${service.name}, coming soon` : `Open ${service.name}`}
-        aria-describedby={favourite ? `${infoId}-fav` : undefined}
         sx={{ py: 1 }}
       >
         {service.disabled ? 'Coming soon' : 'Open'}

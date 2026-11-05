@@ -36,7 +36,8 @@ import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/ro
 import { homeFeature } from './home/routes';
 
 /**
- * Features that are announced but not built yet: shown greyed out as "coming soon", without routes
+ * Features that are announced but not built yet: shown greyed out as "coming soon", without routes. Their version
+ * is the API version of the backend module behind them (portal-backend-spec)
  * (like the Status placeholder of the Industry Core Hub). Replace one by its feature folder when it arrives.
  */
 const upcoming = (
@@ -45,9 +46,11 @@ const upcoming = (
   category: FeatureCategory,
   icon: FeatureConfig['icon'],
   path: string,
+  version: string,
 ): FeatureConfig => ({
   name,
   description,
+  version,
   category,
   icon,
   navigationPath: path,
@@ -69,6 +72,7 @@ export const allFeatures: FeatureConfig[] = [
     'onboarding',
     <AppRegistrationOutlinedIcon />,
     '/onboarding',
+    '0.2.0',
   ),
   upcoming(
     'Participant management',
@@ -76,6 +80,7 @@ export const allFeatures: FeatureConfig[] = [
     'participants',
     <GroupsOutlinedIcon />,
     '/participants',
+    '0.2.0',
   ),
   upcoming(
     'Connectors as a service',
@@ -83,6 +88,7 @@ export const allFeatures: FeatureConfig[] = [
     'as-a-service',
     <CableOutlinedIcon />,
     '/connectors',
+    '0.2.0',
   ),
   upcoming(
     'Wallets as a service',
@@ -90,6 +96,7 @@ export const allFeatures: FeatureConfig[] = [
     'as-a-service',
     <AccountBalanceWalletOutlinedIcon />,
     '/wallets',
+    '0.2.0',
   ),
   upcoming(
     'Marketplace',
@@ -97,6 +104,7 @@ export const allFeatures: FeatureConfig[] = [
     'as-a-service',
     <StorefrontOutlinedIcon />,
     '/marketplace',
+    '0.2.0',
   ),
   upcoming(
     'Provider network',
@@ -104,6 +112,7 @@ export const allFeatures: FeatureConfig[] = [
     'network',
     <HubOutlinedIcon />,
     '/network',
+    '0.1.0',
   ),
 ];
 
@@ -111,6 +120,7 @@ export const allFeatures: FeatureConfig[] = [
 export const features: NavigationItem[] = allFeatures.map((feature) => ({
   name: feature.name,
   description: feature.description,
+  version: feature.version,
   category: feature.category,
   icon: feature.icon,
   path: feature.navigationPath,

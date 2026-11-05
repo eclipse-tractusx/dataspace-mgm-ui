@@ -24,16 +24,19 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
+const { version } = JSON.parse(readFileSync(here('../../package.json'), 'utf8')) as { version: string };
 
 export default defineConfig({
   root: here('.'),
   cacheDir: here('../../node_modules/.vite/apps/portal'),
   plugins: [react()],
+  define: { __APP_VERSION__: JSON.stringify(version) },
   resolve: {
     alias: { '@dataspace-mgm/ui-mui': here('../../libs/shared/ui-mui/src/index.ts') },
   },

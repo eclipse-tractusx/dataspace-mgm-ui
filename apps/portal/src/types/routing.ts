@@ -49,6 +49,8 @@ export interface FeatureConfig {
   name: string;
   /** One sentence for the "All services" view. */
   description: string;
+  /** The version of the service: the portal's own for its pages, the module's API version for the others. */
+  version: string;
   category: FeatureCategory;
   icon: ReactElement;
   navigationPath: string;
@@ -59,6 +61,7 @@ export interface FeatureConfig {
 export interface NavigationItem {
   name: string;
   description: string;
+  version: string;
   category: FeatureCategory;
   icon: ReactElement;
   path: string;

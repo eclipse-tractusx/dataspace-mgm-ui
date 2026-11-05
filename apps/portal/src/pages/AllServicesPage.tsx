@@ -25,22 +25,26 @@
  ********************************************************************************/
 
 import { useState } from 'react';
-import { Box, Chip, Container, SpaceGlow, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { Box, Chip, Container, SpaceGlow, Stack, Typography, useMediaQuery, useTheme } from '@dataspace-mgm/ui-mui';
 import ServiceCarousel from '../components/services/ServiceCarousel';
+import ServiceTiles from '../components/services/ServiceTiles';
 import { AREA_LABELS } from '../components/services/ServiceCard';
 import { features } from '../features/main';
 import type { FeatureCategory } from '../types/routing';
 
-/** The desktop "All services" view lives in the canvas at this path; phones open it full screen instead. */
+/** "All services" lives in the canvas at this path, on desktop and on phones. */
 export const ALL_SERVICES_PATH = '/all-services';
 
 const AREAS = Object.keys(AREA_LABELS) as FeatureCategory[];
 
 /**
- * All services on desktop, inside the canvas: every service as a card in a carousel that scrolls sideways,
- * filtered by area. Favourites are kept with the "+" in the sidebar.
+ * All services, inside the canvas. On desktop every service is a card in a carousel that scrolls sideways,
+ * filtered by area; on phones and tablets the services and the settings are tiles, between the header and the
+ * bottom bar. Favourites are kept with the "+".
  */
 export default function AllServicesPage() {
+  const theme = useTheme();
+  const compact = useMediaQuery(theme.breakpoints.down('md'));
   const [filter, setFilter] = useState<FeatureCategory | 'all'>('all');
   const shown = features.filter((service) => filter === 'all' || service.category === filter);
   const countOf = (area: FeatureCategory) => features.filter((service) => service.category === area).length;
@@ -63,23 +67,29 @@ export default function AllServicesPage() {
         maxWidth="lg"
         component="section"
         aria-labelledby="all-services-title"
-        sx={{ position: 'relative', zIndex: 1, py: { xs: 6, md: 8 } }}
+        sx={{ position: 'relative', zIndex: 1, py: { xs: 4, md: 8 } }}
       >
-        <Typography variant="overline" color="text.secondary">
+        <Typography variant="overline" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
           Eclipse Tractus-X Dataspace Management
         </Typography>
-        <Typography id="all-services-title" variant="h2" component="h1" sx={{ mt: 1, mb: 2 }}>
+        <Typography id="all-services-title" variant="h2" component="h1" sx={{ mt: { xs: 0, sm: 1 }, mb: { xs: 3, sm: 2 } }}>
           All services
         </Typography>
-        <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 680 }}>
+        <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 680, display: { xs: 'none', sm: 'block' } }}>
           Every service of your onboarding service provider in one place. Keep the ones you use most in your sidebar
           with the + under your favourites.
         </Typography>
-        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 4 }} role="group" aria-label="Filter services">
-          {chip('all', `All · ${features.length}`)}
-          {AREAS.filter((area) => countOf(area) > 0).map((area) => chip(area, `${AREA_LABELS[area]} · ${countOf(area)}`))}
-        </Stack>
-        <ServiceCarousel services={shown} />
+        {compact ? (
+          <ServiceTiles services={features} />
+        ) : (
+          <>
+            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 4 }} role="group" aria-label="Filter services">
+              {chip('all', `All · ${features.length}`)}
+              {AREAS.filter((area) => countOf(area) > 0).map((area) => chip(area, `${AREA_LABELS[area]} · ${countOf(area)}`))}
+            </Stack>
+            <ServiceCarousel services={shown} />
+          </>
+        )}
       </Container>
     </Box>
   );
