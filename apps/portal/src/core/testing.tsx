@@ -40,6 +40,8 @@ import { GetCspRegistrationUseCase, type CspRegistrationAnemic } from '@dataspac
 import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
 import { createC1M2UseCases } from '@dataspace-mgm/c1-m2-core';
 import { createMockC1M2Ports, type MockC1M2Options } from '@dataspace-mgm/c1-m2-core/testing';
+import type { C4M1Module } from '@dataspace-mgm/c4-m1-core';
+import { createInMemoryC4M1Module, type InMemoryC4M1ModuleOptions } from '@dataspace-mgm/c4-m1-core/testing';
 import { createIdentityModule, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, RecordingRedirect } from '@dataspace-mgm/identity-core/testing';
 import { CoreModulesProvider } from './CoreModulesContext';
@@ -54,8 +56,24 @@ interface TestModulesOptions {
   participants?: Omit<InMemoryC3M1StoreOptions, 'actorId'>;
   cspRegistrations?: ReadonlyArray<CspRegistrationAnemic>;
   cspFailure?: Error;
+  /**
+   * C4-M1 (proof of concept): `true` for the module on the mockup's fixtures, the options of
+   * createInMemoryC4M1Module for other fixtures or a failure, or a module (e.g. with recording adapters).
+   * Absent: the module is not connected.
+   */
+  c4m1?: true | InMemoryC4M1ModuleOptions | C4M1Module;
   /** C1-M2 Registration (proof of concept) on its in-memory adapters; absent = `modules.c1m2` is undefined. */
   c1m2?: Pick<MockC1M2Options, 'applications' | 'existingCompanies' | 'agreements' | 'failure' | 'now'>;
+}
+
+function c4m1Module(option: TestModulesOptions['c4m1']): C4M1Module | undefined {
+  if (option === undefined) {
+   return undefined;
+  }
+  if (option === true) {
+   return createInMemoryC4M1Module();
+  }
+  return 'listCompanyCredentials' in option ? option : createInMemoryC4M1Module(option);
 }
 
 /** The core packages with in-memory adapters: pages are tested against the use cases, without HTTP. */
@@ -67,6 +85,7 @@ export function testCoreModules({
   cspRegistrations = CSP_REGISTRATIONS,
   cspFailure,
   c1m2,
+  c4m1,
 }: TestModulesOptions = {}) {
   const redirect = new RecordingRedirect();
   const companyRepository = new InMemoryCompanyRepository(companies ?? [], companyFailure ?? null);
@@ -83,6 +102,7 @@ export function testCoreModules({
       reviews: new InMemoryChangeRequestReviewRepository(store),
     }),
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
+    c4m1: c4m1Module(c4m1),
     c1m2: c1m2Ports ? createC1M2UseCases(c1m2Ports) : undefined,
   };
   return { modules, redirect, companyRepository, store, cspRepository, applicationRepository: c1m2Ports?.applications };
