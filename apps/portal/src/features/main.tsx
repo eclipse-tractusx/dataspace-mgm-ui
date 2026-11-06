@@ -122,7 +122,16 @@ export const features: NavigationEntry[] = allFeatures.map((feature) => ({
 /** A route that renders once its feature's translations are there. */
 const translated = (feature: FeatureConfig, route: FeatureRoute): FeatureRoute =>
   feature.translations
-    ? { ...route, element: <FeatureTranslationsGate translations={feature.translations}>{route.element}</FeatureTranslationsGate> }
+    ? {
+        ...route,
+        // One gate per feature (`key`): React would otherwise keep the gate of the page before, already `ready`, and
+        // render the next feature without loading its namespace (raw keys after a click in the sidebar).
+        element: (
+          <FeatureTranslationsGate key={feature.id} translations={feature.translations}>
+            {route.element}
+          </FeatureTranslationsGate>
+        ),
+      }
     : route;
 
 /** The routes of all enabled features. */
