@@ -144,7 +144,7 @@ describe('All services on desktop', () => {
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
     expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
     expect(within(carousel).getByRole('button', { name: 'Open Participant management' })).toBeEnabled();
-    expect(within(carousel).getByRole('button', { name: 'Onboarding, coming soon' })).toBeDisabled();
+    expect(within(carousel).getByRole('button', { name: 'Open Onboarding' })).toBeEnabled();
 
     // The description is not on the card: it shows in the tooltip of the info button, with the version.
     const wallets = features.find((service) => service.path === '/wallets')!;
