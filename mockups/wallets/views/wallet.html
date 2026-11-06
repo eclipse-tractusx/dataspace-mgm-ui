@@ -32,31 +32,84 @@
   <link rel="stylesheet" href="../shared/shell.css">
   <link rel="stylesheet" href="../shared/wallets.css">
   <style>
-    .wl-hero { box-shadow: var(--hero-glow); }
-    .wl-hero .wx-fields { margin-top: 28px; }
-    .wl-progress-layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; align-items: start; }
-    @media (max-width: 1099.98px) { .wl-progress-layout { grid-template-columns: 1fr; } }
-    .wl-step--external .wx-dot { border-style: dashed; }
-    .wl-link-card { display: flex; align-items: center; gap: 16px; text-decoration: none; color: inherit; }
-    .wl-link-card:hover { border-color: var(--tx-orange); }
-    .wl-link-card__main { flex: 1; min-width: 0; }
+    /* ── stack (like a phone wallet) ── */
+    .wl-wallet { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 40px; align-items: start; }
+    @media (max-width: 1099.98px) { .wl-wallet { grid-template-columns: 1fr; } }
+    .wl-stack { display: grid; gap: 0; max-width: 440px; width: 100%; }
+    .wl-front { animation: wl-rise 0.35s ease; position: relative; z-index: 4; }
+    @keyframes wl-rise { from { transform: translateY(14px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .wl-front { animation: none; } .wl-flip { transition: none !important; } }
+    .wl-peeks { display: grid; margin-top: 14px; }
+    .wl-peek { font: inherit; text-align: left; cursor: pointer; padding: 18px 22px 30px; }
+    .wl-peek + .wl-peek { margin-top: -20px; }
+    .wl-peek:hover { transform: translateY(-6px); }
+    .wl-peek:focus-visible { outline: 2px solid var(--tx-orange); outline-offset: 2px; }
+    .wl-hint { color: var(--muted); font-size: 0.8125rem; margin: 12px 0 0; text-align: center; }
+    .wl-side { display: grid; gap: 20px; }
+
+    /* ── flip pass ── */
+    .wl-flip-layout { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 40px; align-items: start; }
+    @media (max-width: 1099.98px) { .wl-flip-layout { grid-template-columns: 1fr; } }
+    .wl-flip-scene { perspective: 1600px; }
+    .wl-flip { display: grid; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+    .wl-flip.is-flipped { transform: rotateY(180deg); }
+    .wl-face { grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden; min-height: 340px; }
+    .wl-face--back { transform: rotateY(180deg); }
+    .wl-creds-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .wl-back-list { display: grid; gap: 12px; }
+    .wl-back-list > div { display: grid; gap: 4px; min-width: 0; }
+    .wl-back-list .wx-value { width: 100%; justify-content: space-between; }
+    .wl-actions { display: grid; gap: 14px; }
+    .wl-action { display: flex; align-items: center; gap: 16px; text-decoration: none; color: inherit; padding: 18px 20px; }
+    .wl-action:hover { border-color: var(--tx-orange); }
+    .wl-action__main { flex: 1; min-width: 0; }
+    .wl-turn { margin-top: 16px; }
+
+    /* ── bento ── */
+    .wl-bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(150px, auto); gap: 16px; }
+    @media (max-width: 1099.98px) { .wl-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 599.98px) { .wl-bento { grid-template-columns: 1fr; } .wl-bento > * { grid-column: auto !important; grid-row: auto !important; } }
+    .wl-tile { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: var(--radius); text-decoration: none; color: inherit; min-width: 0; }
+    .wl-tile.wx-pass { color: var(--pass-fg); }
+    a.wl-tile { transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+    a.wl-tile:hover { border-color: var(--tx-orange); box-shadow: var(--glow); }
+    .wl-tile--hero { grid-column: span 2; grid-row: span 2; justify-content: space-between; border-radius: 18px; }
+    .wl-tile--wide { grid-column: span 2; }
+    .wl-tile__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .wl-tile__label { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .wl-big { font-weight: 800; font-size: 2.25rem; line-height: 1; letter-spacing: -0.02em; }
+    .wl-round { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--tx-orange); }
+    .wl-round--success { background: var(--success-tint); color: var(--success); }
+    .wl-round--warning { background: var(--warning-tint); color: var(--warning); }
+    .wl-round--error { background: var(--error-tint); color: var(--error); }
+    .wl-round--default { background: var(--chip); color: var(--muted); }
+    .wl-did { display: flex; gap: 16px; align-items: center; }
+    .wl-did > div:not(.wx-qr) { flex: 1; min-width: 0; display: grid; gap: 6px; }
+    .wl-mini-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; margin: 0; font-size: 0.875rem; }
+    .wl-mini-kv dt { color: var(--muted); }
+    .wl-mini-kv dd { margin: 0; min-width: 0; }
+
+    /* ── classic ── */
+    .wl-classic-hero { margin-bottom: 24px; }
   </style>
 </head>
 <!-- C4-M2 7.1 GET /companies/{companyId}/wallet (getWallet, view_dataspace_wallet, scope company).
-     With the credentials summary also C4-M1 7.1 GET /companies/{companyId}/credentials (view_credentials). -->
+     The credential passes and tiles also read C4-M1 7.1 GET /companies/{companyId}/credentials (view_credentials). -->
 <body data-active="/wallets" data-view="Your dataspace wallet" data-states="active,validating,failed,no-wallet,loading,forbidden">
   <main class="tx-page" aria-labelledby="view-title">
     <div class="mock-persona" id="persona"></div>
 
     <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
     <div class="wx-markers" aria-hidden="true">
-      <span data-variant="layout:card" data-dimension="Layout" data-variant-label="One card"></span>
-      <span data-variant="layout:sections" data-variant-label="Identity + connector set-up"></span>
-      <span data-variant="layout:progress" data-variant-label="Set-up progress + details"></span>
-      <span data-variant="credentials:summary" data-dimension="Credentials on this page" data-variant-label="Status of both credentials"></span>
-      <span data-variant="credentials:link" data-variant-label="A link to the credentials only"></span>
-      <span data-variant="values:full" data-dimension="Long values (DID, addresses)" data-variant-label="In full"></span>
-      <span data-variant="values:short" data-variant-label="Shortened in the middle"></span>
+      <span data-variant="layout:stack" data-dimension="Layout" data-variant-label="Wallet with a stack of passes"></span>
+      <span data-variant="layout:flip" data-variant-label="One pass to turn over"></span>
+      <span data-variant="layout:bento" data-variant-label="Tiles (bento grid)"></span>
+      <span data-variant="layout:classic" data-variant-label="Classic cards by topic"></span>
+      <span data-variant="skin:carbon" data-dimension="Card style" data-variant-label="Carbon (black)"></span>
+      <span data-variant="skin:orange" data-variant-label="Eclipse Tractus-X orange"></span>
+      <span data-variant="skin:glass" data-variant-label="Frosted glass"></span>
+      <span data-variant="values:short" data-dimension="Long values (DID, addresses)" data-variant-label="Shortened in the middle"></span>
+      <span data-variant="values:full" data-variant-label="In full"></span>
       <span data-variant="nav:tabs" data-dimension="Navigation in the feature" data-variant-label="Tabs under the title"></span>
       <span data-variant="nav:none" data-variant-label="No tabs (links in the page)"></span>
     </div>
@@ -106,25 +159,20 @@
       const { esc } = wx;
       const data = mock.data;
       const company = data.companies[data.ids.u1];
+      const dataspace = data.installation.dataspace;
+      const accountCount = data.technicalUsers.filter((u) => u.walletAccess !== 'NONE').length;
+      let front = 'wallet';   // the pass in front of the stack
+      let flipped = false;
 
       const ctx = () => {
         const state = document.body.dataset.state;
         const w = state === 'validating' || state === 'failed' ? data.walletVariants[state] : data.wallet;
         const creds = state === 'active' ? data.companyCredentials.issued : data.companyCredentials.none;
-        return { state, w, creds, v: (k) => mock.variant(k) };
+        return { state, w, creds, v: (k) => mock.variant(k), skin: `wx-skin--${mock.variant('skin')}` };
       };
 
-      const val = (c, value, empty) => (c.v('values') === 'short' ? wx.copyable(value, { short: 16, empty }) : wx.copyable(value, { empty }));
-
-      // ── pieces ───────────────────────────────────────────────────────────
-      const head = (c) => `<div class="wx-company">
-          <div class="tx-tile" aria-hidden="true">${mock.icon('AccountBalanceWalletOutlined')}</div>
-          <div class="wx-company__main">
-            <h2 class="wx-company__name">${esc(company.name)}</h2>
-            <div class="wx-company__meta"><span>${esc(wx.labels.provider[c.w.provider])}</span><span>BPN ${esc(company.bpn)}</span></div>
-          </div>
-          ${wx.chip('walletStatus', c.w.status)}
-        </div>`;
+      const val = (c, value, empty) => wx.copyable(value, c.v('values') === 'short' ? { short: 14, empty } : { empty });
+      const cred = (c, type) => c.creds.find((x) => x.credentialType === type);
 
       const stateAlert = (c) => {
         if (c.w.status === 'VALIDATING') {
@@ -139,59 +187,174 @@
         return '';
       };
 
-      const identityFields = (c) => `
-        <div class="wx-field"><dt>DID</dt><dd>${val(c, c.w.did)}</dd></div>
-        <div class="wx-field"><dt>DID document</dt><dd>${val(c, c.w.didDocumentLocation)}</dd></div>`;
+      // ── passes ───────────────────────────────────────────────────────────
+      const walletHead = (c) => `<div class="wx-pass__head">
+          <span class="wx-pass__logo">${mock.icon('AccountBalanceWalletOutlined')}</span>
+          <span class="wx-pass__issuer">${esc(dataspace)}<small>DATASPACE WALLET</small></span>
+          ${wx.pill('walletStatus', c.w.status)}
+        </div>`;
 
-      const connectorFields = (c) => `
-        <div class="wx-field"><dt>Credential service</dt><dd>${val(c, c.w.credentialServiceUrl)}</dd></div>
-        <div class="wx-field"><dt>Directory BPN → DID</dt><dd>${val(c, c.w.bdrsUrl)}</dd></div>
-        <div class="wx-field"><dt>Token address (STS)</dt><dd>${c.w.stsTokenUrl ? val(c, c.w.stsTokenUrl) : '<span class="wx-none">One per wallet account</span>'}</dd></div>`;
+      const didFoot = (c) => `<div class="wx-pass__foot">
+          ${c.w.did ? wx.qr(c.w.did, 'QR code of the DID of your company') : ''}
+          <div style="display: grid; gap: 4px; min-width: 0">
+            <span class="wx-pass__label">DID</span>
+            ${val(c, c.w.did)}
+          </div>
+        </div>`;
 
-      const metaFields = (c) => `
-        <div class="wx-field"><dt>Provider</dt><dd>${esc(wx.labels.provider[c.w.provider])}</dd></div>
-        <div class="wx-field"><dt>Created</dt><dd>${wx.dateTime(c.w.createdAt)}</dd></div>
-        <div class="wx-field"><dt>Active since</dt><dd>${c.w.activatedAt ? wx.dateTime(c.w.activatedAt) : '<span class="wx-none">Not active yet</span>'}</dd></div>`;
+      const walletPass = (c, extra) => `<article class="wx-pass ${c.skin} ${c.w.status === 'FAILED' ? 'is-muted' : ''} ${extra || ''}" aria-label="Dataspace wallet">
+          ${walletHead(c)}
+          <div class="wx-pass__primary"><span class="wx-pass__label">Company</span><strong>${esc(company.name)}</strong></div>
+          <div class="wx-pass__fields">
+            <div><span class="wx-pass__label">BPN</span><span class="wx-mono">${esc(company.bpn)}</span></div>
+            <div><span class="wx-pass__label">Provider</span><span>${esc(wx.labels.providerShort[c.w.provider])}</span></div>
+            <div><span class="wx-pass__label">Active since</span><span>${c.w.activatedAt ? wx.date(c.w.activatedAt) : '–'}</span></div>
+          </div>
+          ${didFoot(c)}
+        </article>`;
 
-      const credentialSummary = (c) => {
-        if (c.v('credentials') === 'link') {
-          return `<a class="tx-card wl-link-card" href="credentials.html">
-              <span class="tx-tile" aria-hidden="true">${mock.icon('VerifiedUserOutlined')}</span>
-              <span class="wl-link-card__main"><span class="tx-h3" style="display: block">Credentials</span>
-                <span class="tx-muted tx-body2">The BPN credential and the membership credential in this wallet.</span></span>
-              ${mock.icon('ChevronRightOutlined')}</a>`;
+      const credHead = (cr) => `<div class="wx-pass__head">
+          <span class="wx-pass__logo">${mock.icon(wx.icons.credentialType[cr.credentialType])}</span>
+          <span class="wx-pass__issuer">${esc(wx.labels.credentialType[cr.credentialType])}<small>${wx.labels.credentialTypeTech[cr.credentialType].toUpperCase()}</small></span>
+          ${wx.pill('credentialStatus', cr.status)}
+        </div>`;
+
+      const credPass = (c, cr, extra) => `<article class="wx-pass ${c.skin} ${['FAILED', 'REVOKED', 'NONE'].includes(cr.status) ? 'is-muted' : ''} ${extra || ''}" aria-label="${esc(wx.labels.credentialType[cr.credentialType])}">
+          ${credHead(cr)}
+          <div class="wx-pass__primary">${cr.credentialType === 'BPN'
+            ? `<span class="wx-pass__label">Business partner number</span><strong class="wx-mono">${esc(company.bpn)}</strong>`
+            : `<span class="wx-pass__label">Member of</span><strong>${esc(dataspace)}</strong>`}</div>
+          <div class="wx-pass__fields">
+            <div><span class="wx-pass__label">Requested</span><span>${wx.date(cr.requestedAt)}</span></div>
+            <div><span class="wx-pass__label">${cr.revokedAt ? 'Revoked' : 'Issued'}</span><span>${wx.date(cr.revokedAt || cr.issuedAt)}</span></div>
+          </div>
+          <div class="wx-pass__foot"><span style="color: var(--pass-muted); font-size: 0.875rem">${esc(wx.labels.credentialDescription[cr.credentialType])}</span></div>
+        </article>`;
+
+      const peek = (c, key) => {
+        if (key === 'wallet') {
+          return `<button type="button" class="wx-pass ${c.skin} wl-peek" data-front="wallet" aria-label="Show the dataspace wallet">${walletHead(c)}</button>`;
         }
-        return `<section class="tx-card" aria-labelledby="h-creds">
-            <div class="wx-section__head"><h2 class="tx-h3" id="h-creds">Credentials in this wallet</h2><a class="tx-link tx-body2" href="credentials.html">Details →</a></div>
-            <div class="wx-mini">${c.creds.map((cr) => `<div class="wx-mini__row"><strong>${esc(wx.labels.credentialType[cr.credentialType])}</strong>${wx.chip('credentialStatus', cr.status)}</div>`).join('')}</div>
-          </section>`;
+        return `<button type="button" class="wx-pass ${c.skin} wl-peek" data-front="${key}" aria-label="Show the ${esc(wx.labels.credentialType[key])}">${credHead(cred(c, key))}</button>`;
       };
 
-      const accountsHint = (c) => (c.w.supportsWalletAccounts
-        ? `<p class="tx-muted tx-body2" style="margin: 16px 0 0">Your connectors sign in to the wallet with a wallet account of a technical user. <a class="tx-link" href="wallet-accounts.html">Wallet accounts →</a></p>`
-        : '');
+      const connectorList = (c) => `<dl class="wl-mini-kv">
+          <dt>Credential service</dt><dd>${val(c, c.w.credentialServiceUrl)}</dd>
+          <dt>Directory BPN → DID</dt><dd>${val(c, c.w.bdrsUrl)}</dd>
+          <dt>Token address (STS)</dt><dd>${c.w.stsTokenUrl ? val(c, c.w.stsTokenUrl) : '<span class="wx-none">One per wallet account</span>'}</dd>
+          <dt>DID document</dt><dd>${val(c, c.w.didDocumentLocation)}</dd>
+        </dl>`;
+
+      const actionTile = (href, iconName, title, sub) => `<a class="tx-card wl-action" href="${href}">
+          <span class="wl-round">${mock.icon(iconName)}</span>
+          <span class="wl-action__main"><span class="tx-h3" style="display: block; font-size: 1.0625rem">${title}</span><span class="tx-muted tx-body2">${sub}</span></span>
+          ${mock.icon('ChevronRightOutlined')}</a>`;
+
+      const issuedCount = (c) => c.creds.filter((x) => x.status === 'ISSUED').length;
+      const credSummary = (c) => (issuedCount(c) === c.creds.length ? 'Both issued' : `${issuedCount(c)} of ${c.creds.length} issued`);
 
       // ── layouts ──────────────────────────────────────────────────────────
       const layouts = {
-        card: (c) => `${stateAlert(c)}
-          <div class="tx-card wl-hero">
-            ${head(c)}
-            <dl class="wx-fields wx-fields--2">${identityFields(c)}${connectorFields(c)}</dl>
-            <hr class="wx-divider">
-            <dl class="wx-fields">${metaFields(c)}</dl>
-            ${accountsHint(c)}
-          </div>
-          <div style="margin-top: 24px">${credentialSummary(c)}</div>`,
+        stack: (c) => {
+          const keys = ['wallet', 'BPN', 'MEMBERSHIP'];
+          const side = front === 'wallet'
+            ? `<section class="tx-card" aria-labelledby="h-conn"><div class="wx-section__head"><div><h2 class="tx-h3" id="h-conn">For your connectors</h2>
+                <p class="tx-muted tx-body2">The addresses a connector of your company needs to use this wallet.</p></div></div>${connectorList(c)}</section>
+               ${actionTile('wallet-accounts.html', 'KeyOutlined', 'Wallet accounts', `${accountCount} technical users can sign in`)}`
+            : `<section class="tx-card" aria-labelledby="h-cred"><div class="wx-section__head"><h2 class="tx-h3" id="h-cred">${esc(wx.labels.credentialType[front])}</h2>${wx.chip('credentialStatus', cred(c, front).status)}</div>
+                <p style="margin: 0">${esc(wx.labels.credentialDescription[front])}</p></section>
+               ${actionTile('credentials.html', 'VerifiedUserOutlined', 'Your credentials', credSummary(c))}`;
+          return `${stateAlert(c)}<div class="wl-wallet ${c.v('skin') === 'glass' ? 'wx-ambient' : ''}">
+              <div class="wl-stack">
+                ${front === 'wallet' ? walletPass(c, 'wl-front') : credPass(c, cred(c, front), 'wl-front')}
+                <div class="wl-peeks">${keys.filter((k) => k !== front).map((k) => peek(c, k)).join('')}</div>
+                <p class="wl-hint">Select a card to bring it to the front.</p>
+              </div>
+              <aside class="wl-side">${side}</aside>
+            </div>`;
+        },
 
-        sections: (c) => `${stateAlert(c)}
-          <div class="tx-card wl-hero" style="margin-bottom: 24px">${head(c)}</div>
+        flip: (c) => `${stateAlert(c)}<div class="wl-flip-layout ${c.v('skin') === 'glass' ? 'wx-ambient' : ''}">
+            <div>
+              <div class="wl-flip-scene">
+                <div class="wl-flip ${flipped ? 'is-flipped' : ''}">
+                  <article class="wx-pass ${c.skin} wl-face ${c.w.status === 'FAILED' ? 'is-muted' : ''}" aria-hidden="${flipped}">
+                    ${walletHead(c)}
+                    <div class="wx-pass__primary"><span class="wx-pass__label">Company</span><strong>${esc(company.name)}</strong></div>
+                    <div class="wl-creds-row">${c.creds.map((cr) => `<span class="wx-pill wx-pill--${wx.toneOf('credentialStatus', cr.status)}">${esc(wx.labels.credentialTypeShort[cr.credentialType])}: ${esc(wx.labels.credentialStatus[cr.status])}</span>`).join('')}</div>
+                    <div class="wx-pass__fields">
+                      <div><span class="wx-pass__label">BPN</span><span class="wx-mono">${esc(company.bpn)}</span></div>
+                      <div><span class="wx-pass__label">Provider</span><span>${esc(wx.labels.providerShort[c.w.provider])}</span></div>
+                      <div><span class="wx-pass__label">Active since</span><span>${c.w.activatedAt ? wx.date(c.w.activatedAt) : '–'}</span></div>
+                    </div>
+                    ${didFoot(c)}
+                  </article>
+                  <article class="wx-pass ${c.skin} wl-face wl-face--back" aria-hidden="${!flipped}">
+                    <div class="wx-pass__head"><span class="wx-pass__logo">${mock.icon('CableOutlined')}</span>
+                      <span class="wx-pass__issuer">For your connectors<small>CONNECTOR SET-UP</small></span></div>
+                    <div class="wl-back-list">
+                      <div><span class="wx-pass__label">DID</span>${val(c, c.w.did)}</div>
+                      <div><span class="wx-pass__label">Credential service</span>${val(c, c.w.credentialServiceUrl)}</div>
+                      <div><span class="wx-pass__label">Directory BPN → DID</span>${val(c, c.w.bdrsUrl)}</div>
+                      <div><span class="wx-pass__label">Token address (STS)</span>${c.w.stsTokenUrl ? val(c, c.w.stsTokenUrl) : '<span>One per wallet account</span>'}</div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <button class="tx-btn tx-btn--outlined wl-turn" type="button" data-flip>${mock.icon('FlipOutlined', 'sm')}${flipped ? 'Show the front' : 'Show the connector set-up'}</button>
+            </div>
+            <div class="wl-actions">
+              <div><h2 class="tx-h3" style="margin-bottom: 6px">Your identity in ${esc(dataspace)}</h2>
+                <p class="tx-muted" style="margin: 0">Partners recognise your company by this wallet. Turn the card over for the addresses your connectors need.</p></div>
+              ${actionTile('credentials.html', 'VerifiedUserOutlined', 'Your credentials', credSummary(c))}
+              ${actionTile('wallet-accounts.html', 'KeyOutlined', 'Wallet accounts', `${accountCount} technical users can sign in`)}
+            </div>
+          </div>`,
+
+        bento: (c) => {
+          const credTile = (cr) => `<a class="tx-card wl-tile" href="credentials.html">
+              <div class="wl-tile__top"><span class="wl-round wl-round--${wx.toneOf('credentialStatus', cr.status)}">${mock.icon(wx.icons.credentialStatus[cr.status])}</span>${mock.icon('ChevronRightOutlined')}</div>
+              <span class="wl-tile__label">${esc(wx.labels.credentialTypeShort[cr.credentialType])}</span>
+              <span class="tx-h3" style="font-size: 1.125rem">${esc(wx.labels.credentialStatus[cr.status])}</span>
+              <span class="tx-muted tx-body2">${cr.issuedAt ? `since ${wx.date(cr.issuedAt)}` : esc(wx.labels.credentialType[cr.credentialType])}</span>
+            </a>`;
+          return `${stateAlert(c)}<div class="wl-bento ${c.v('skin') === 'glass' ? 'wx-ambient' : ''}">
+              <article class="wx-pass ${c.skin} wl-tile wl-tile--hero ${c.w.status === 'FAILED' ? 'is-muted' : ''}">
+                ${walletHead(c)}
+                <div class="wx-pass__primary"><span class="wx-pass__label">Company</span><strong>${esc(company.name)}</strong></div>
+                <div class="wl-creds-row">${c.creds.map((cr) => `<span class="wx-pill wx-pill--${wx.toneOf('credentialStatus', cr.status)}">${esc(wx.labels.credentialTypeShort[cr.credentialType])}: ${esc(wx.labels.credentialStatus[cr.status])}</span>`).join('')}</div>
+                <div class="wx-pass__fields">
+                  <div><span class="wx-pass__label">BPN</span><span class="wx-mono">${esc(company.bpn)}</span></div>
+                  <div><span class="wx-pass__label">Provider</span><span>${esc(wx.labels.providerShort[c.w.provider])}</span></div>
+                  <div><span class="wx-pass__label">Active since</span><span>${c.w.activatedAt ? wx.date(c.w.activatedAt) : '–'}</span></div>
+                </div>
+              </article>
+              <section class="tx-card wl-tile wl-tile--wide" aria-label="DID">
+                <span class="wl-tile__label">Your DID</span>
+                <div class="wl-did">${c.w.did ? wx.qr(c.w.did, 'QR code of the DID of your company') : ''}<div>${val(c, c.w.did)}<span class="tx-muted tx-body2">Other participants find your company by this identifier.</span></div></div>
+              </section>
+              ${credTile(cred(c, 'BPN'))}
+              ${credTile(cred(c, 'MEMBERSHIP'))}
+              <section class="tx-card wl-tile wl-tile--wide" aria-label="For your connectors">
+                <div class="wl-tile__top"><span class="wl-tile__label">For your connectors</span>${mock.icon('CableOutlined')}</div>
+                ${connectorList(c)}
+              </section>
+              <a class="tx-card wl-tile" href="wallet-accounts.html">
+                <div class="wl-tile__top"><span class="wl-round">${mock.icon('KeyOutlined')}</span>${mock.icon('ChevronRightOutlined')}</div>
+                <span class="wl-big">${accountCount}</span>
+                <span class="tx-muted tx-body2">Wallet accounts of technical users</span>
+              </a>
+              <section class="tx-card wl-tile" aria-label="Dates">
+                <span class="wl-tile__label">Timeline</span>
+                <dl class="wl-mini-kv"><dt>Created</dt><dd>${wx.date(c.w.createdAt)}</dd><dt>Active</dt><dd>${c.w.activatedAt ? wx.date(c.w.activatedAt) : '–'}</dd></dl>
+              </section>
+            </div>`;
+        },
+
+        classic: (c) => `${stateAlert(c)}
+          <div class="wl-classic-hero">${walletPass(c)}</div>
           <div class="wx-split">
             <div class="wx-sections">
-              <section class="tx-card" aria-labelledby="h-identity">
-                <div class="wx-section__head"><div><h2 class="tx-h3" id="h-identity">Identity in the dataspace</h2>
-                  <p class="tx-muted tx-body2">Other participants find your company by this DID.</p></div></div>
-                <dl class="wx-fields wx-fields--1">${identityFields(c)}</dl>
-              </section>
               <section class="tx-card" aria-labelledby="h-connector">
                 <div class="wx-section__head"><div><h2 class="tx-h3" id="h-connector">For your connectors</h2>
                   <p class="tx-muted tx-body2">The addresses a connector of your company needs to use this wallet.</p></div></div>
@@ -205,59 +368,43 @@
               </section>
             </div>
             <aside class="wx-aside">
-              ${credentialSummary(c)}
+              <section class="tx-card wx-card-sm" aria-labelledby="h-creds">
+                <div class="wx-section__head"><h2 class="tx-h3" id="h-creds">Credentials</h2><a class="tx-link tx-body2" href="credentials.html">Details →</a></div>
+                <div class="wx-mini">${c.creds.map((cr) => `<div class="wx-mini__row"><strong>${esc(wx.labels.credentialTypeShort[cr.credentialType])}</strong>${wx.chip('credentialStatus', cr.status)}</div>`).join('')}</div>
+              </section>
               <section class="tx-card wx-card-sm" aria-labelledby="h-about">
                 <div class="wx-section__head"><h2 class="tx-h3" id="h-about">About this wallet</h2></div>
                 <dl class="wx-kv">
-                  <dt>Provider</dt><dd>${esc(wx.labels.providerShort[c.w.provider])}</dd>
-                  <dt>Status</dt><dd>${wx.chip('walletStatus', c.w.status)}</dd>
+                  <dt>Provider</dt><dd>${esc(wx.labels.provider[c.w.provider])}</dd>
                   <dt>Created</dt><dd>${wx.date(c.w.createdAt)}</dd>
-                  <dt>Active since</dt><dd>${wx.date(c.w.activatedAt)}</dd>
                   <dt>Wallet accounts</dt><dd>${c.w.supportsWalletAccounts ? 'Supported' : 'Not supported'}</dd>
                 </dl>
               </section>
             </aside>
           </div>`,
-
-        progress: (c) => {
-          const active = c.w.status === 'ACTIVE';
-          const failed = c.w.status === 'FAILED';
-          const issued = c.creds.every((cr) => cr.status === 'ISSUED');
-          const step = (cls, iconName, title, meta) => `<li class="${cls}"><span class="wx-dot">${mock.icon(iconName)}</span><div><div class="wx-progress__title">${title}</div><div class="wx-progress__meta">${meta}</div></div></li>`;
-          return `${stateAlert(c)}
-            <div class="tx-card wl-hero" style="margin-bottom: 24px">${head(c)}</div>
-            <div class="wl-progress-layout">
-              <section class="tx-card" aria-labelledby="h-progress">
-                <div class="wx-section__head"><h2 class="tx-h3" id="h-progress">Set-up</h2></div>
-                <ol class="wx-progress">
-                  ${step('is-done', 'CheckOutlined', 'Wallet created', `${esc(wx.labels.providerShort[c.w.provider])} · ${wx.dateTime(c.w.createdAt)}`)}
-                  ${step(active ? 'is-done' : failed ? 'is-failed' : 'is-current', active ? 'CheckOutlined' : failed ? 'CloseOutlined' : 'HourglassTopOutlined', 'DID document checked', active ? wx.dateTime(c.w.activatedAt) : failed ? esc(wx.labels.walletFailure[c.w.failureReason]) : 'Running')}
-                  ${step(`wl-step--external ${active ? 'is-done' : ''}`, active ? 'CheckOutlined' : 'HorizontalRuleOutlined', 'DID entered in the directory BPN → DID', 'CSP Connection (C3-M2)')}
-                  ${step(`wl-step--external ${issued ? 'is-done' : ''}`, issued ? 'CheckOutlined' : 'HorizontalRuleOutlined', 'Credentials issued', `Credentials (C4-M1) · <a class="tx-link" href="credentials.html">Details</a>`)}
-                </ol>
-              </section>
-              <section class="tx-card" aria-labelledby="h-details">
-                <div class="wx-section__head"><h2 class="tx-h3" id="h-details">Details</h2></div>
-                <dl class="wx-fields wx-fields--1">${identityFields(c)}${connectorFields(c)}</dl>
-                ${accountsHint(c)}
-              </section>
-            </div>
-            <div style="margin-top: 24px">${credentialSummary(c)}</div>`;
-        },
       };
 
       function render() {
         const c = ctx();
-        const personKey = c.state === 'forbidden' ? 'max' : 'erika';
-        document.getElementById('persona').innerHTML = wx.persona(personKey);
+        document.getElementById('persona').innerHTML = wx.persona(c.state === 'forbidden' ? 'max' : 'erika');
         document.getElementById('feature-tabs').innerHTML = c.v('nav') === 'tabs' ? wx.tabs('wallet.html') : '';
         if (['active', 'validating', 'failed'].includes(c.state)) {
           document.getElementById('content').innerHTML = layouts[c.v('layout')](c);
         }
       }
 
+      mock.on('click', '[data-front]', (_e, el) => { front = el.dataset.front; render(); });
+      mock.on('click', '[data-flip]', () => {
+        flipped = !flipped;
+        const card = document.querySelector('.wl-flip');
+        if (card) {
+          card.classList.toggle('is-flipped', flipped);
+          card.querySelectorAll('.wl-face').forEach((face, i) => face.setAttribute('aria-hidden', String(i === 0 ? flipped : !flipped)));
+          document.querySelector('[data-flip]').innerHTML = `${mock.icon('FlipOutlined', 'sm')}${flipped ? 'Show the front' : 'Show the connector set-up'}`;
+        }
+      });
       mock.on('click', '[data-state-button]', () => setTimeout(render));
-      mock.onConfigure(render);
+      mock.onConfigure(() => { flipped = false; render(); });
       render();
     })();
   </script>

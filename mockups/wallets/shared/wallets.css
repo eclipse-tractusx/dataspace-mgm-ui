@@ -275,3 +275,74 @@ dialog.tx-dialog h2 { margin-bottom: 8px; }
 .wx-feature-tabs { margin: -8px 0 28px; overflow-x: auto; }
 .wx-feature-tabs a.tx-tab { display: inline-block; text-decoration: none; }
 .wx-nowrap { white-space: nowrap; }
+
+/* ── passes: wallet and credentials as cards, like a phone wallet ──────── */
+/* The skin sets the look of a pass; only tokens, mixed with color-mix(). Never orange and green in one gradient. */
+.wx-skin--carbon {
+  --pass-bg: linear-gradient(145deg, color-mix(in srgb, var(--tx-gray) 60%, var(--tx-black)) 0%, var(--tx-black) 72%);
+  --pass-fg: var(--tx-white); --pass-muted: color-mix(in srgb, var(--tx-white) 60%, transparent);
+  --pass-accent: var(--tx-orange); --pass-border: color-mix(in srgb, var(--tx-white) 14%, transparent);
+  --pass-line: color-mix(in srgb, var(--tx-white) 12%, transparent);
+}
+.wx-skin--orange {
+  --pass-bg: linear-gradient(145deg, var(--tx-orange) 0%, color-mix(in srgb, var(--tx-orange) 58%, var(--tx-black)) 100%);
+  --pass-fg: var(--tx-black); --pass-muted: color-mix(in srgb, var(--tx-black) 62%, transparent);
+  --pass-accent: var(--tx-black); --pass-border: transparent;
+  --pass-line: color-mix(in srgb, var(--tx-black) 16%, transparent);
+}
+.wx-skin--glass {
+  --pass-bg: color-mix(in srgb, var(--surface) 68%, transparent);
+  --pass-fg: var(--text); --pass-muted: var(--muted);
+  --pass-accent: var(--tx-orange); --pass-border: var(--card-border); --pass-line: var(--subtle-border);
+}
+.wx-pass {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: 18px;
+  padding: 22px 24px; border-radius: 18px; color: var(--pass-fg); background: var(--pass-bg); border: 1px solid var(--pass-border);
+  box-shadow: 0 22px 44px -24px color-mix(in srgb, var(--tx-black) 80%, transparent);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
+}
+.wx-skin--glass.wx-pass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+/* the soft light in the corner of every pass */
+.wx-pass::after {
+  content: ""; position: absolute; z-index: -1; right: -80px; top: -90px; width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--pass-accent) 32%, transparent) 0%, transparent 68%);
+}
+.wx-skin--orange.wx-pass::after { background: radial-gradient(circle, color-mix(in srgb, var(--tx-white) 30%, transparent) 0%, transparent 68%); }
+.wx-pass.is-muted { filter: saturate(0.35); opacity: 0.85; }
+.wx-pass__head { display: flex; align-items: center; gap: 12px; }
+.wx-pass__logo { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; flex: 0 0 auto; color: var(--pass-accent); background: color-mix(in srgb, var(--pass-fg) 10%, transparent); }
+.wx-pass__issuer { flex: 1; min-width: 0; font-weight: 700; font-size: 0.9375rem; line-height: 1.2; }
+.wx-pass__issuer small { display: block; font-weight: 500; font-size: 0.75rem; color: var(--pass-muted); letter-spacing: 0.04em; }
+.wx-pill { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 13px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; background: color-mix(in srgb, var(--pill, var(--pass-fg)) 18%, transparent); color: var(--pass-fg); }
+.wx-pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--pill, var(--pass-fg)); }
+.wx-pill--success { --pill: var(--success); }
+.wx-pill--warning { --pill: var(--warning); }
+.wx-pill--error { --pill: var(--error); }
+.wx-pill--info { --pill: var(--info); }
+.wx-pill--default { --pill: var(--pass-muted); }
+.wx-pass__label { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pass-muted); }
+.wx-pass__primary { display: grid; gap: 4px; }
+.wx-pass__primary strong { font-weight: 800; font-size: 1.5rem; line-height: 1.15; letter-spacing: -0.01em; }
+.wx-pass__fields { display: flex; flex-wrap: wrap; gap: 14px 36px; }
+.wx-pass__fields > div { display: grid; gap: 3px; align-content: start; min-width: 0; }
+.wx-pass__fields span:last-child { font-weight: 600; font-size: 0.9375rem; overflow-wrap: anywhere; }
+.wx-pass__foot { display: flex; align-items: center; gap: 16px; padding-top: 16px; border-top: 1px dashed var(--pass-line); }
+.wx-pass__foot .wx-mono { font-size: 0.8125rem; color: var(--pass-fg); }
+.wx-pass__fields .wx-mono { word-break: normal; white-space: nowrap; }
+.wx-pass .wx-copy { color: var(--pass-muted); }
+.wx-pass .wx-copy:hover { color: var(--pass-fg); background: color-mix(in srgb, var(--pass-fg) 10%, transparent); }
+.wx-pass .tx-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.wx-pass-btn { font: inherit; font-size: 0.8125rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: var(--button-radius); border: 1px solid var(--pass-line); background: color-mix(in srgb, var(--pass-fg) 8%, transparent); color: var(--pass-fg); cursor: pointer; text-decoration: none; }
+.wx-pass-btn:hover { background: color-mix(in srgb, var(--pass-fg) 14%, transparent); }
+
+/* a drawn QR code of a value (a mockup of the code, not a real one) */
+.wx-qr { display: grid; grid-template-columns: repeat(25, 1fr); width: 84px; aspect-ratio: 1; padding: 6px; background: var(--tx-white); border-radius: 8px; flex: 0 0 auto; }
+.wx-qr i { display: block; }
+.wx-qr i.on { background: var(--tx-black); }
+
+/* soft light behind glass passes */
+.wx-ambient { position: relative; isolation: isolate; }
+.wx-ambient::before {
+  content: ""; position: absolute; z-index: -1; inset: 8% 20% auto 0; height: 340px; border-radius: 50%; filter: blur(60px);
+  background: radial-gradient(circle, color-mix(in srgb, var(--tx-orange) 28%, transparent) 0%, transparent 70%);
+}

@@ -86,6 +86,11 @@
           that the dataspace wallet of her company is ready, and to copy the DID and the addresses an IT colleague needs to
           set up a connector. It is the landing page of the feature for people of a company and links to the views 2 and 3.
           The navigation inside the feature (tabs or not) is decided here and applies to the views 2 and 3 too.</p>
+        <p>The screen shows the wallet like a phone wallet: the dataspace wallet and its two credentials are passes. Four
+          layouts to compare: a <strong>stack of passes</strong> (select a pass to bring it to the front, its details beside
+          it), <strong>one pass to turn over</strong> (front: identity and credentials; back: the connector set-up),
+          <strong>tiles</strong> (a bento grid with one tile per topic) and the <strong>classic</strong> cards by topic. The
+          card style (carbon, Eclipse Tractus-X orange, frosted glass) applies to every layout.</p>
         <div class="hub-cards">
           <a class="hub-card" href="views/wallet.html">
             <span class="hub-card__frame"><iframe src="views/wallet.html" title="Preview of Your dataspace wallet" loading="lazy" tabindex="-1"></iframe></span>
@@ -97,7 +102,7 @@
             <h3 class="hub-h">Data from the spec</h3>
             <ul class="hub-data">
               <li><code>GET /api/c4-m2/companies/{companyId}/wallet</code> (<code>getWallet</code>, <code>view_dataspace_wallet</code>, scope <code>company</code>) → <code>Wallet</code>: <code>provider</code> (<code>CSP</code>), <code>status</code> (<code>REQUESTED</code>, <code>VALIDATING</code>, <code>ACTIVE</code>, <code>FAILED</code>), <code>did</code>, <code>didDocumentLocation</code>, <code>credentialServiceUrl</code>, <code>bdrsUrl</code>, <code>stsTokenUrl</code> (IdentityHub only), <code>supportsWalletAccounts</code>, <code>failureReason</code>, <code>createdAt</code>, <code>activatedAt</code>.</li>
-              <li>With "Status of both credentials": also <code>GET /api/c4-m1/companies/{companyId}/credentials</code> (view 2).</li>
+              <li>The credential passes and tiles also read <code>GET /api/c4-m1/companies/{companyId}/credentials</code> (view 2). The number of wallet accounts comes from the C2-M3 list (view 3).</li>
               <li>The company name and BPN in the header come from C3-M1 <code>GET /companies/{companyId}</code>; <code>Wallet</code> has neither.</li>
               <li>States: <code>validating</code> and <code>failed</code> (<code>failureReason</code> <code>DID_NOT_RESOLVABLE</code>) are results of the same call; <code>no-wallet</code> = 404 <code>urn:c4-m2:problem:not-found</code> (no row yet); <code>forbidden</code> = 403 for Max (Member).</li>
             </ul>
@@ -105,7 +110,8 @@
           <div>
             <h3 class="hub-h">Open questions</h3>
             <ul class="hub-open">
-              <li data-open>C4-M2: the layout "Set-up progress" needs the state of the directory entry (C3-M2 <code>register-did</code>) and of the credentials (C4-M1). Is a combined status of the onboarding steps for the company planned (Process Orchestration), or does this layout drop?</li>
+              <li data-open>The QR code of the DID on the pass: useful (a partner scans the DID), or only decoration? A real code needs a QR library in <code>libs/shared/ui-mui</code> (a new dependency with a Dash review).</li>
+              <li data-open>Card style: one style for every company, or a style per OSP from the branding of <code>GET /config</code>?</li>
               <li data-open>C4-M2: <code>Wallet</code> returns no <code>bpn</code>, although the table has it. Add it, so the page needs no second call to C3-M1 for the header?</li>
               <li data-open>C2-M5: <code>view_dataspace_wallet</code> is a proposal for <code>IT Admin</code> and <code>Company Admin</code> (6.8). Should a <code>Member</code> see the DID and the addresses (they are public anyway)?</li>
               <li data-open>Live updates: <code>VALIDATING</code> becomes <code>ACTIVE</code> in the background (6.10). Which SSE event does the UI subscribe to (<code>DataspaceWalletCreated</code> is an outbox event for modules)?</li>
@@ -138,6 +144,7 @@
               <li><code>GET /api/c4-m1/companies/{companyId}/credentials</code> (<code>listCompanyCredentials</code>, <code>view_credentials</code>, scope <code>company</code>) → <code>CredentialStatusView[]</code>: <code>credentialType</code> (<code>BPN</code>, <code>MEMBERSHIP</code>), <code>status</code> (<code>NONE</code>, <code>REQUESTED</code>, <code>ISSUED</code>, <code>FAILED</code>, <code>CANCELLED</code>, <code>REVOCATION_PENDING</code>, <code>REVOKED</code>), <code>requestedAt</code>, <code>issuedAt</code>, <code>revokedAt</code>. No messages of the issuer, no route (7.1).</li>
               <li>The states are the results of the same call: <code>issued</code>, <code>being-issued</code> (membership <code>REQUESTED</code>), <code>failed</code>, <code>revoked</code> (company deactivated, membership <code>REVOKED</code>, BPN stays), <code>not-requested</code> (both <code>NONE</code>); <code>forbidden</code> = 403 for Max.</li>
               <li>The texts that explain a credential ("Proves the business partner number…") are UI texts (i18n), not from the API.</li>
+              <li>The layout "Passes" draws each credential as a pass of the phone wallet, like the passes of view 1 (BPN credential carbon, membership credential orange).</li>
             </ul>
           </div>
           <div>

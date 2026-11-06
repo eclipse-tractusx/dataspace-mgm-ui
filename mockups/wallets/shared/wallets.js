@@ -138,6 +138,35 @@
     },
     shortId(id) { return id ? `${id.slice(0, 8)}…` : '–'; },
 
+    /** A drawn QR code of a value (a mockup; the portal would draw the real code with a library in ui-mui). */
+    qr(value, label) {
+      const n = 25;
+      let h = 0;
+      for (const c of String(value)) { h = (h * 31 + c.charCodeAt(0)) >>> 0; }
+      const corners = [[0, 0], [n - 7, 0], [0, n - 7]];
+      const cells = [];
+      for (let y = 0; y < n; y += 1) {
+        for (let x = 0; x < n; x += 1) {
+          const corner = corners.find(([fx, fy]) => x >= fx - 1 && x <= fx + 7 && y >= fy - 1 && y <= fy + 7);
+          let on;
+          if (corner) {
+            const lx = x - corner[0];
+            const ly = y - corner[1];
+            on = lx >= 0 && ly >= 0 && lx <= 6 && ly <= 6 && (lx === 0 || ly === 0 || lx === 6 || ly === 6 || (lx > 1 && lx < 5 && ly > 1 && ly < 5));
+          } else {
+            h = (h * 1103515245 + 12345) >>> 0;
+            on = (h >>> 16) % 2 === 0;
+          }
+          cells.push(`<i class="${on ? 'on' : ''}"></i>`);
+        }
+      }
+      return `<div class="wx-qr" role="img" aria-label="${esc(label || 'QR code')}">${cells.join('')}</div>`;
+    },
+    /** A status pill on a pass: wx.pill('credentialStatus', 'ISSUED'). */
+    pill(kind, value) {
+      return `<span class="wx-pill wx-pill--${tone[kind][value] || 'default'}">${esc(labels[kind][value] || value)}</span>`;
+    },
+
     /** The person the screen is seen as: a note of the mockup. */
     persona(key, extra) {
       const p = mock.data.persons[key];
