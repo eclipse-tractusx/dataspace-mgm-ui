@@ -45,6 +45,8 @@ interface CredentialPassProps {
   bpn: string | null;
   skin: PassSkin;
   explain?: CredentialExplain;
+  /** The heading level of the credential's name, the one that fits the page (default h2, under the page's h1). */
+  headingLevel?: 'h2' | 'h3' | 'h4';
 }
 
 const LABEL_SX = { fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--pass-muted)' } as const;
@@ -82,7 +84,7 @@ function useStatusLine(credential: CredentialStatusAnemic): string {
  * A credential of the company as a pass, like a card in a phone wallet: the logo slot of its dataspace, the name with
  * what it is for, its status, the primary field (BPN, or the dataspace it is a member of), the dates and a sentence.
  */
-export function CredentialPass({ credential, bpn, skin, explain = 'info' }: CredentialPassProps) {
+export function CredentialPass({ credential, bpn, skin, explain = 'info', headingLevel = 'h2' }: CredentialPassProps) {
   const { t } = useTranslation(WALLETS_NS);
   const time = useTimeTexts();
   const statusLine = useStatusLine(credential);
@@ -95,18 +97,23 @@ export function CredentialPass({ credential, bpn, skin, explain = 'info' }: Cred
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <DataspaceLogo dataspace={credential.dataspace} />
         <Box sx={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: '0.9375rem', lineHeight: 1.2 }}>
-          <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-            <Typography component="h3" sx={{ font: 'inherit' }}>
+          {/* Name and info button in one text flow: when the name wraps, the button follows its last word. */}
+          <div>
+            <Typography component={headingLevel} sx={{ font: 'inherit', display: 'inline' }}>
               {name}
             </Typography>
             {explain === 'info' && (
               <Tooltip title={description} enterTouchDelay={0}>
-                <IconButton size="small" aria-label={t('pass.whatIs', { name })} sx={{ p: '2px', color: 'var(--pass-muted)', '&:hover': { color: 'var(--pass-fg)' } }}>
+                <IconButton
+                  size="small"
+                  aria-label={t('pass.whatIs', { name })}
+                  sx={{ p: '2px', ml: '4px', verticalAlign: 'text-bottom', color: 'var(--pass-muted)', '&:hover': { color: 'var(--pass-fg)' } }}
+                >
                   <InfoOutlinedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             )}
-          </Box>
+          </div>
           <Box component="small" sx={{ display: 'block', fontWeight: 500, fontSize: '0.75rem', color: 'var(--pass-muted)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
             {credential.dataspace.name}
           </Box>

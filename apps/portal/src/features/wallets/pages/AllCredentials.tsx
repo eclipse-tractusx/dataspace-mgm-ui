@@ -102,7 +102,7 @@ export default function AllCredentials() {
       const queue = state.attention.items;
       body = (
         <>
-          {queue.length > 0 && <AttentionQueue items={queue} />}
+          {queue.length > 0 && <AttentionQueue items={queue} total={state.attention.total} />}
           {queue.length > 0 && (
             <Typography variant="h2" sx={{ fontSize: '1.375rem', fontWeight: 700, mb: 2 }}>
               {t('allCredentials.all')}

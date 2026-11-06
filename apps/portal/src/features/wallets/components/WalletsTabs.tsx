@@ -47,7 +47,8 @@ export function WalletsTabs() {
 
   return (
     <Box component="nav" aria-label={t('tabs.label')} sx={{ mt: -1, mb: 3.5, borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs value={active ?? false} variant="scrollable" scrollButtons={false} aria-label={t('tabs.label')}>
+      {/* The <nav> carries the name; the links keep aria-current for the page they open. */}
+      <Tabs value={active ?? false} variant="scrollable" scrollButtons={false}>
       {tabs.map((tab) => (
         <Tab
           key={tab.path}

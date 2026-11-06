@@ -70,6 +70,8 @@ interface RecordingOptions {
   companyCredentialFailure?: Error;
   credentials?: ReadonlyArray<CredentialDetailAnemic>;
   credentialFailure?: Error;
+  /** Thrown by `listCredentials` only (the queue and the counts still answer), e.g. a 400 for the filters. */
+  listFailure?: Error;
   /** Another adapter behind confirmRevocation (e.g. one where the credential changed meanwhile). */
   confirmWith?: InMemoryCredentialRepository;
 }
@@ -83,7 +85,9 @@ export function recordingC4M1(options: RecordingOptions = {}) {
   const credentialRepository = new InMemoryCredentialRepository(options.credentials ?? CREDENTIALS_OF_ALL_COMPANIES, options.credentialFailure ?? null);
   const module: C4M1Module = {
     listCompanyCredentials: new ListCompanyCredentialsUseCase(companyRepository),
-    listCredentials: new ListCredentialsUseCase(credentialRepository),
+    listCredentials: new ListCredentialsUseCase(
+      options.listFailure ? new InMemoryCredentialRepository(CREDENTIALS_OF_ALL_COMPANIES, options.listFailure) : credentialRepository,
+    ),
     countCredentialsByStatus: new CountCredentialsByStatusUseCase(credentialRepository),
     getCredential: new GetCredentialUseCase(credentialRepository),
     confirmRevocation: new ConfirmRevocationUseCase(options.confirmWith ?? credentialRepository),

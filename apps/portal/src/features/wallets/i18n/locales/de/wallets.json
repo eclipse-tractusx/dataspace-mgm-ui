@@ -116,6 +116,7 @@
     "invalid": "Der Onboarding-Service-Provider hat die Filter nicht angenommen (HTTP 400).",
     "needsAttention": "Braucht Aufmerksamkeit",
     "attentionItem": "{{credential}} von {{company}}",
+    "attentionShown": "{{shown}} von {{total}} werden angezeigt.",
     "all": "Alle Nachweise"
   },
   "note": {
@@ -126,6 +127,7 @@
   "filters": {
     "label": "Filter",
     "openOnly": "Länger als {{hours}} Std. offen",
+    "openOnlyExcludes": "Schalten Sie „Länger als {{hours}} Std. offen“ aus, um nach Status zu filtern.",
     "credentialType": "Nachweisart",
     "allCredentialTypes": "Alle Nachweisarten"
   },
@@ -198,7 +200,7 @@
     "count": "{{length}} / {{max}}",
     "cancel": "Abbrechen",
     "done": "Widerruf bestätigt",
-    "conflict": "Der Nachweis wartet nicht mehr auf einen Widerruf (HTTP 409). Laden Sie ihn neu, um seinen Status zu sehen.",
+    "conflict": "Der Nachweis wartet nicht mehr auf einen Widerruf (HTTP 409). Die Seite zeigt jetzt seinen aktuellen Status.",
     "forbidden": "Sie dürfen keine Widerrufe bestätigen (HTTP 403). Dafür ist die Rolle OSP Admin nötig."
   },
   "validation": {

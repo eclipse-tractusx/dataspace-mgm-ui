@@ -30,8 +30,8 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useCompanyLine } from '../hooks/useCompanyLine';
 import { useConfirmRevocation } from '../hooks/useConfirmRevocation';
+import { useBackToList } from '../hooks/useListReturn';
 import { WALLETS_NS } from '../i18n';
-import { WALLETS_PATHS } from '../paths';
 import { ConfirmRevocationDialog } from './ConfirmRevocationDialog';
 import { CredentialFacts } from './CredentialFacts';
 import { CredentialStatusAlert } from './CredentialStatusAlert';
@@ -47,7 +47,8 @@ interface CredentialViewProps {
 /**
  * A credential found: cards by topic (facts, issuer and holder, life cycle). "Confirm revocation" sits in the page
  * header while the status is REVOCATION_PENDING (the field of the API; the API decides with 409), and opens the
- * dialog; `?confirm=1` (the button of the "Needs attention" card) opens it right away.
+ * dialog; `?confirm=1` (the button of the "Needs attention" card) opens it right away. The back link keeps the
+ * filters of the list the credential was opened from.
  */
 export function CredentialView({ credential, confirm }: CredentialViewProps) {
   const { t } = useTranslation(WALLETS_NS);
@@ -55,12 +56,13 @@ export function CredentialView({ credential, confirm }: CredentialViewProps) {
   const pending = credential.status === 'REVOCATION_PENDING';
   const form = useConfirmRevocation(confirm, pending && search.has('confirm'));
   const company = useCompanyLine(credential);
+  const backTo = useBackToList();
 
   return (
     <WalletsPage
       overline={company}
       title={t(`credentialType.${credential.credentialType}`)}
-      back={{ to: WALLETS_PATHS.allCredentials, label: t('credential.back') }}
+      back={{ to: backTo, label: t('credential.back') }}
       tabs={false}
       actions={
         pending && (
@@ -76,7 +78,8 @@ export function CredentialView({ credential, confirm }: CredentialViewProps) {
         <IssuerHolderCard credential={credential} />
         <LifeCycleTimeline credential={credential} />
       </Box>
-      {pending && <ConfirmRevocationDialog credential={credential} form={form} />}
+      {/* Stays open after a 409 although the credential read again is no longer pending, to show the answer. */}
+      {(pending || form.open) && <ConfirmRevocationDialog credential={credential} form={form} />}
       <Snackbar open={form.done} autoHideDuration={4000} onClose={form.dismissDone} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
         <Alert severity="success" variant="filled" onClose={form.dismissDone}>
           {t('confirm.done')}

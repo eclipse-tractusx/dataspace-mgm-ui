@@ -116,6 +116,7 @@
     "invalid": "The onboarding service provider did not accept the filters (HTTP 400).",
     "needsAttention": "Needs attention",
     "attentionItem": "{{credential}} of {{company}}",
+    "attentionShown": "Showing {{shown}} of {{total}}.",
     "all": "All credentials"
   },
   "note": {
@@ -126,6 +127,7 @@
   "filters": {
     "label": "Filters",
     "openOnly": "Open for more than {{hours}} h",
+    "openOnlyExcludes": "Turn off \"Open for more than {{hours}} h\" to filter by status.",
     "credentialType": "Credential type",
     "allCredentialTypes": "All credential types"
   },
@@ -198,7 +200,7 @@
     "count": "{{length}} / {{max}}",
     "cancel": "Cancel",
     "done": "Revocation confirmed",
-    "conflict": "The credential is no longer waiting for a revocation (HTTP 409). Reload it to see its status.",
+    "conflict": "The credential is no longer waiting for a revocation (HTTP 409). The page now shows its current status.",
     "forbidden": "You may not confirm revocations (HTTP 403). This needs the role OSP Admin."
   },
   "validation": {

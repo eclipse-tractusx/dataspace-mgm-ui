@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import type { CredentialStatus, CredentialType } from '@dataspace-mgm/c4-m1-core';
+import { CREDENTIAL_TYPES, type CredentialStatus, type CredentialType } from '@dataspace-mgm/c4-m1-core';
 
 /** The filters of "All credentials", as the person sets them. UI state only; the API filters. */
 export interface CredentialFilters {
@@ -43,3 +43,34 @@ export const FILTER_STATUSES: ReadonlyArray<CredentialStatus> = ['REQUESTED', 'F
 
 /** Rows per page of the table (the API allows 1 to 100). */
 export const CREDENTIALS_PAGE_SIZE = 10;
+
+/**
+ * The filters in the address (`?status=FAILED&credentialType=BPN&open=1&page=2`, page one-based), so they survive the
+ * trip to a credential and back. Unknown values are dropped; the API checks the query anyway.
+ */
+export function filtersFromSearch(search: URLSearchParams): CredentialFilters {
+  const credentialType = search.get('credentialType');
+  const page = Number.parseInt(search.get('page') ?? '', 10);
+  return {
+    status: FILTER_STATUSES.filter((status) => search.getAll('status').includes(status)),
+    credentialType: CREDENTIAL_TYPES.find((type) => type === credentialType) ?? null,
+    openOnly: search.get('open') === '1',
+    page: Number.isInteger(page) && page > 1 ? page - 1 : 0,
+  };
+}
+
+/** The address part of `filters`; the defaults are left out. */
+export function filtersToSearch(filters: CredentialFilters): URLSearchParams {
+  const search = new URLSearchParams();
+  filters.status.forEach((status) => search.append('status', status));
+  if (filters.credentialType) {
+    search.set('credentialType', filters.credentialType);
+  }
+  if (filters.openOnly) {
+    search.set('open', '1');
+  }
+  if (filters.page > 0) {
+    search.set('page', String(filters.page + 1));
+  }
+  return search;
+}

@@ -28,6 +28,7 @@ import type { CredentialPageAnemic } from '@dataspace-mgm/c4-m1-core';
 import { Box, Button, Card, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, tractusx } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useListLinkState } from '../hooks/useListReturn';
 import { useTimeTexts } from '../hooks/useTimeTexts';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
@@ -45,12 +46,13 @@ export function CredentialTable({ page, onPage }: CredentialTableProps) {
   const { t } = useTranslation(WALLETS_NS);
   const time = useTimeTexts();
   const navigate = useNavigate();
+  const state = useListLinkState();
   const pages = Math.max(1, Math.ceil(page.total / page.size));
 
   return (
     <Card sx={{ py: 1, '&:hover': { boxShadow: 'none' } }}>
       <TableContainer>
-        <Table aria-label={t('allCredentials.all')}>
+        <Table aria-label={t('allCredentials.all')} sx={{ '& td': { py: 1.75 }, '& th': { py: 1.5 } }}>
           <TableHead>
             <TableRow>
               {(['company', 'credential', 'status', 'route', 'changed'] as const).map((column) => (
@@ -67,11 +69,11 @@ export function CredentialTable({ page, onPage }: CredentialTableProps) {
                 <TableRow
                   key={credential.id}
                   hover
-                  onClick={(event) => !(event.target as HTMLElement).closest('a') && navigate(to)}
+                  onClick={(event) => !(event.target as HTMLElement).closest('a') && navigate(to, { state })}
                   sx={{ cursor: 'pointer', '&.MuiTableRow-hover:hover': { bgcolor: alpha(tractusx.orange, 0.08) } }}
                 >
                   <TableCell>
-                    <Link component={RouterLink} to={to} sx={{ display: 'block' }}>
+                    <Link component={RouterLink} to={to} state={state} sx={{ display: 'block' }}>
                       <CompanyName credential={credential} />
                     </Link>
                   </TableCell>
