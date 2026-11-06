@@ -61,9 +61,6 @@
     "page": "Page {{page}} of {{pages}}"
   },
   "details": {
-    "show_one": "Show details ({{count}})",
-    "show_other": "Show details ({{count}})",
-    "hide": "Hide details",
     "yes": "Yes",
     "no": "No",
     "fields": {

@@ -24,8 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useId, useState } from 'react';
-import { Box, Button, Collapse, Typography } from '@dataspace-mgm/ui-mui';
+import { Box, Typography } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { NOTIFICATIONS_NS } from '../i18n';
 
@@ -56,60 +55,43 @@ function DetailValue({ value }: { value: unknown }) {
 }
 
 /**
- * The content of a notification (IDs and business values of the event, README 6.2), folded by default: one labelled
- * line per field. Labels are i18n keys `details.fields.<field>`; a field without one gets a readable fallback.
+ * The content of a notification (IDs and business values of the event, README 6.2): one labelled line per field. Labels
+ * are i18n keys `details.fields.<field>`; a field without one gets a readable fallback.
  */
 export function NotificationDetails({ content }: { content: Readonly<Record<string, unknown>> }) {
   const { t } = useTranslation(NOTIFICATIONS_NS);
-  const [open, setOpen] = useState(false);
-  const id = useId();
   const fields = Object.entries(content).filter(([, value]) => value !== null && value !== undefined && value !== '');
   if (fields.length === 0) {
     return null;
   }
   return (
-    <Box sx={{ mt: 0.5 }}>
-      <Button
-        size="small"
-        variant="text"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen(!open)}
-        sx={{ px: 0, py: 0, minWidth: 0, textTransform: 'none', fontWeight: 500 }}
-      >
-        {open ? t('details.hide') : t('details.show', { count: fields.length })}
-      </Button>
-      <Collapse in={open} unmountOnExit>
-        <Box
-          id={id}
-          component="dl"
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'max-content minmax(0, 1fr)',
-            columnGap: 2,
-            rowGap: 0.25,
-            m: 0,
-            mt: 0.5,
-            px: 1.5,
-            py: 1,
-            borderRadius: '8px',
-            bgcolor: 'action.hover',
-            fontSize: '0.8125rem',
-            lineHeight: 1.6,
-          }}
-        >
-          {fields.map(([name, value]) => (
-            <Box key={name} sx={{ display: 'contents' }}>
-              <Typography component="dt" color="text.secondary" sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
-                {t(`details.fields.${name}`, { defaultValue: readableField(name) })}
-              </Typography>
-              <Typography component="dd" sx={{ m: 0, fontSize: 'inherit', lineHeight: 'inherit' }}>
-                <DetailValue value={value} />
-              </Typography>
-            </Box>
-          ))}
+    <Box
+      component="dl"
+      aria-label={t('details.label')}
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'max-content minmax(0, 1fr)',
+        columnGap: 3,
+        rowGap: 0.75,
+        m: 0,
+        px: 2,
+        py: 1.5,
+        borderRadius: '8px',
+        bgcolor: 'action.hover',
+        fontSize: '0.875rem',
+        lineHeight: 1.6,
+      }}
+    >
+      {fields.map(([name, value]) => (
+        <Box key={name} sx={{ display: 'contents' }}>
+          <Typography component="dt" color="text.secondary" sx={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+            {t(`details.fields.${name}`, { defaultValue: readableField(name) })}
+          </Typography>
+          <Typography component="dd" sx={{ m: 0, fontSize: 'inherit', lineHeight: 'inherit' }}>
+            <DetailValue value={value} />
+          </Typography>
         </Box>
-      </Collapse>
+      ))}
     </Box>
   );
 }
