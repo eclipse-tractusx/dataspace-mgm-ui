@@ -34,6 +34,7 @@ import {
 } from '@dataspace-mgm/c1-m2-core/testing';
 import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
 import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
+import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
 import { createIdentityModule, type RedirectPort, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
@@ -42,19 +43,47 @@ import type { CoreModules } from './container';
 export const DEFAULT_MOCK_PERSON = 'pia';
 
 /**
- * The test persons of mock mode, by their key in the backend test data (testdata/persons-<osp>.json). VITE_MOCK_PERSON
- * picks one; a key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
+ * The test persons of mock mode, by their key in test data or a feature-specific alias. VITE_MOCK_PERSON picks one; a
+ * key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
  */
 export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: PIA_SESSION,
-  /** Applicants without a company (C1-M2 Registration): Erika (EBW), Max, Hans (DOCUMENTS), Lieschen. */
+  /** Applicants and OSP staff for C1-M2 Registration. */
   erika: ERIKA_SESSION,
   max: MAX_SESSION,
   hans: HANS_SESSION,
   lieschen: LIESCHEN_SESSION,
-  /** OSP staff without a company: Rolf is OSP Reviewer, Otto OSP Admin. */
   rolf: ROLF_SESSION,
   otto: OTTO_SESSION,
+  /** C4-M1 credentials test persons, kept separate where C1-M2 uses the same names for different identities. */
+  'wallets-erika': {
+    user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
+    companyId: 'c0000001-0000-4000-8000-000000000001',
+    bpn: 'BPNLIUK2REMLK3F4',
+    permissions: ['view_credentials'],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-max': {
+    user: { id: '5a1c0002-0000-4000-8000-000000000002', name: 'Max Mustermann', username: 'max' },
+    companyId: 'c0000001-0000-4000-8000-000000000001',
+    bpn: 'BPNLIUK2REMLK3F4',
+    permissions: [],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-otto': {
+    user: { id: '5a1c0012-0000-4000-8000-000000000012', name: 'Otto Normalverbraucher', username: 'otto' },
+    companyId: null,
+    bpn: null,
+    permissions: ['manage_credentials'],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-rolf': {
+    user: { id: 'bbede0f3-fbc4-433b-b7ca-1982e8724912', name: 'Rolf Prüfer', username: 'rolf' },
+    companyId: null,
+    bpn: null,
+    permissions: [],
+    csrfToken: 'csrf-test',
+  },
 };
 
 /** Mock mode has no BFF: "sign in" reloads the page, which starts a new mock session. */
@@ -80,6 +109,11 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       redirect: new ReloadRedirect(),
     }),
     c3m1: { getOwnCompany: new GetOwnCompanyUseCase(new InMemoryCompanyRepository([OSP_A_COMPANY])) },
+    // Proof of concept: the fixtures of mockups/wallets/. Beispiel Maschinenbau GmbH holds the credentials of Catena-X
+    // and of a second dataspace (state two-dataspaces), so the logo slot of the passes shows two dataspaces.
+    c4m1: createInMemoryC4M1Module({
+      companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
+    }),
     c1m2: createMockC1M2Module(session),
   };
 }
