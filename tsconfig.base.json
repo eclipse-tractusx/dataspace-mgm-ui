@@ -42,7 +42,9 @@
       "@dataspace-mgm/c11-m1-core": ["./packages/c11-m1-core/src/index.ts"],
       "@dataspace-mgm/c11-m1-core/testing": ["./packages/c11-m1-core/src/testing.ts"],
       "@dataspace-mgm/c4-m1-core/testing": ["./packages/c4-m1-core/src/testing.ts"],
-      "@dataspace-mgm/c4-m1-core": ["./packages/c4-m1-core/src/index.ts"]
+      "@dataspace-mgm/c4-m1-core": ["./packages/c4-m1-core/src/index.ts"],
+      "@dataspace-mgm/c4-m2-core/testing": ["./packages/c4-m2-core/src/testing.ts"],
+      "@dataspace-mgm/c4-m2-core": ["./packages/c4-m2-core/src/index.ts"]
     }
   }
 }
