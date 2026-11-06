@@ -61,7 +61,7 @@ export function CredentialStack({ credentials, bpn }: { credentials: ReadonlyArr
             '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
           }}
         >
-          <CredentialPass credential={front} bpn={bpn} skin="carbon" explain="text" />
+          <CredentialPass credential={front} bpn={bpn} skin="carbon" explain="text" headingLevel="h3" />
         </Box>
         {others.length > 0 && (
           <Box sx={{ display: 'grid', mt: '14px' }}>

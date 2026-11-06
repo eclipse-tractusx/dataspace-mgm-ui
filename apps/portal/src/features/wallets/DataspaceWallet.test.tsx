@@ -74,6 +74,8 @@ describe('Wallets as a service: your dataspace wallet (C4-M2 getWallet)', () => 
     expect(within(stack).getByRole('link', { name: 'Details →' })).toHaveAttribute('href', '/wallets/credentials');
     expect(within(front()).getByRole('article', { name: 'BPN credential of Catena-X' })).toBeInTheDocument();
     expect(within(front()).getByRole('img', { name: 'Catena-X' })).toHaveTextContent('CX');
+    // The section heading "Credentials" is an h2, so the name of the pass in front is an h3.
+    expect(within(front()).getByRole('heading', { level: 3, name: 'BPN credential' })).toBeInTheDocument();
     expect(within(stack).getByText('Select a card to bring it to the front.')).toBeInTheDocument();
 
     fireEvent.click(within(stack).getByRole('button', { name: 'Show the Membership credential of Semiconductor dataspace' }));
