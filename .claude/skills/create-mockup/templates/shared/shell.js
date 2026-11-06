@@ -161,7 +161,9 @@
   }
 
   function describe() {
-    return Object.keys(dimensions).map((key) => `${key}=${chosen[key]}`).join(' · ');
+    const combination = Object.keys(dimensions).map((key) => `${key}=${chosen[key]}`).join(' · ');
+    const suggestion = document.querySelector('[data-config-suggestion]')?.value.trim();
+    return suggestion ? `${combination}\nSuggestion: ${suggestion}` : combination;
   }
 
   function setState(next) {
@@ -194,9 +196,13 @@
           <div class="mock-config__values">${dimensions[key].values.map((v) =>
             `<button type="button" data-choose="${key}:${v.value}">${v.label}</button>`).join('')}</div>
         </div>`).join('')}
+      <label class="mock-config__suggestion">Suggestions (optional)
+        <textarea data-config-suggestion rows="3" placeholder="Suggest a change or add context"></textarea>
+      </label>
       <div class="mock-config__foot"><code data-combination></code><button type="button" data-copy-combination>Copy</button></div>`;
     body.appendChild(panel);
     body.classList.add('mock-config-open');
+    panel.querySelector('[data-config-suggestion]').addEventListener('input', apply);
     panel.addEventListener('click', (event) => {
       const button = event.target.closest('[data-choose]');
       if (button) { const [key, value] = button.dataset.choose.split(':'); choose(key, value); }
