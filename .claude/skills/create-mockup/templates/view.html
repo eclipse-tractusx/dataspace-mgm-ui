@@ -40,15 +40,23 @@
     <div class="tx-overline">{{FEATURE_TITLE}}</div>
     <h1 class="tx-title" id="view-title">{{VIEW_TITLE}}</h1>
 
-    <!-- Replace this starter with the screen. Every value shown comes from window.MOCK_DATA (shared/data.js). -->
+    <!-- Replace this starter with the screen. Every value shown comes from window.MOCK_DATA (shared/data.js).
+         Configurator (default): give each part of the screen that could look different two or three alternatives,
+         data-variant="<dimension>:<value>". The configurator panel combines them; the hub records the chosen one. -->
     <section data-show-state="loaded" data-todo>
-      <div class="tx-card">
+      <div class="tx-card" data-variant="layout:card" data-dimension="Layout" data-variant-label="One card">
         <div class="tx-row tx-row--between">
-          <h2 class="tx-h3">Signed in as <span id="person-name"></span></h2>
-          <button class="tx-btn" type="button" data-action="primary"><span data-icon="Add"></span>Primary action</button>
+          <h2 class="tx-h3">Signed in as <span data-person-name></span></h2>
+          <button class="tx-btn" type="button" data-action="primary" data-variant="action:header" data-dimension="Primary action" data-variant-label="In the header"><span data-icon="Add"></span>Primary action</button>
         </div>
         <p class="tx-muted">The screen of {{VIEW_TITLE}} goes here: what the person sees, in the order they need it.</p>
+        <div class="tx-row" data-variant="action:footer" data-variant-label="Below the content">
+          <button class="tx-btn" type="button" data-action="primary"><span data-icon="Add"></span>Primary action</button>
+        </div>
       </div>
+      <ul class="tx-list" data-variant="layout:list" data-variant-label="A list">
+        <li><span class="tx-tile" data-icon="PersonOutlined"></span><span>Signed in as <strong data-person-name></strong></span></li>
+      </ul>
     </section>
 
     <section data-show-state="empty">
@@ -83,7 +91,7 @@
     (function () {
       'use strict';
       const person = mock.data.persons.pia;
-      document.getElementById('person-name').textContent = person.name;
+      document.querySelectorAll('[data-person-name]').forEach((el) => { el.textContent = person.name; });
       mock.on('click', '[data-action="primary"]', () => mock.toast('Done'));
     })();
   </script>

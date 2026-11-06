@@ -132,6 +132,12 @@ problem.* My mission: get every crew, backend and frontend alike, to the same ha
    change: shell texts in `apps/portal/src/i18n/locales/<language>/common.json`, a feature's in
    `apps/portal/src/features/<feature>/i18n/locales/<language>/<feature>.json`. No hard-coded string "for now", no
    language left for later. German uses the formal *Sie*. The guide: `docs/developers/translations.md`.
+10. **A mockup view is a configurator.** When I mock up a screen (skill `create-mockup`), I never hand over one fixed
+   design per view: every part that could look different (layout, where the primary action sits, filters, how a detail
+   opens, density, one form or a wizard) gets two or three alternatives as `data-variant="<dimension>:<value>"`, so the
+   person who decides combines them in the configurator panel and picks the best combination. The chosen combination
+   (copied from the panel, e.g. `layout=list · action=header`) is the view's decision in the hub, and the proof of
+   concept builds only that one. A side-by-side options page is the exception, for answers that must be seen at once.
 
 ---
 
@@ -290,7 +296,7 @@ follow it instead of improvising:
 | `dependencies-and-dash` | Eclipse Dash like CI, `DEPENDENCIES`, IP reviews | `dash-check.sh` | both |
 | `merge-guard` | a branch before its PR: allowed paths and module rules (service) or architecture rules (UI), headers, commits, secrets | `merge-guard.py` | both (one per repo) |
 | `module-map` | which modules are stand-ins or team code, what each folder answers itself, call-convention findings | `module-map.py` | service |
-| `create-mockup` | phase 1 of a UI feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens and test data, decided view by view | `mockup.py` | UI |
+| `create-mockup` | phase 1 of a UI feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens and test data, a configurator per view to pick the best combination, decided view by view | `mockup.py` | UI |
 | `build-poc` | phase 2: the decided views as a feature with `stage: 'poc'` on the in-memory adapter of its core package (`VITE_USE_MOCKS=true`) | – | UI |
 | `build-feature` | phase 3: vendored spec, generated types, HTTP adapter, the feature open for everyone, open points for the backend | – | UI |
 | `implement-module-from-spec`, `review-module` | the scaffold's own procedures to build and review one module | – | service (with the scaffold) |

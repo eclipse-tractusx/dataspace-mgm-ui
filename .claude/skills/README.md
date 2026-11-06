@@ -46,7 +46,7 @@ writes only below `mockups/`.
 | [merge-guard](merge-guard/SKILL.md) | A UI branch before its PR: frontend architecture rules, generated code, headers, commits, secrets, Nx gate | `merge-guard.py` |
 | [portal-token-inspect](portal-token-inspect/SKILL.md) | 401 / 403 / 404 explained from a person's token and the operation's permission and scope | `token-inspect.py` |
 | [dependencies-and-dash](dependencies-and-dash/SKILL.md) | Eclipse Dash like CI; `DEPENDENCIES`; IP reviews | `dash-check.sh` |
-| [create-mockup](create-mockup/SKILL.md) | Phase 1 of a feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens, navigation, icons and test data; options and open questions per view; decided view by view | `mockup.py` |
+| [create-mockup](create-mockup/SKILL.md) | Phase 1 of a feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens, navigation, icons and test data; a configurator per view (by default) to pick the best combination of alternatives; open questions; decided view by view | `mockup.py` |
 | [build-poc](build-poc/SKILL.md) | Phase 2: the decided views as a feature with `stage: 'poc'`, on the in-memory adapter of the module's core package, in mock mode (`VITE_USE_MOCKS=true npm start`) | – |
 | [build-feature](build-feature/SKILL.md) | Phase 3: vendored spec, generated types, HTTP adapter, the feature open for everyone, tested against the backend; open points for the backend team | – |
 
@@ -81,7 +81,8 @@ Against the specs `portal-backend-spec` @ `515b709` and `portal-frontend-spec` @
 - `mockup.py`: on this workspace (`main` @ `a62fd8e`): `new` with two views and `options`, `sync` (14 icons,
   the navigation of `features/main.tsx` with the mocked feature enabled, the tokens of `palette.ts`, `theme.ts` and
   `typography.ts`), `status --ready` (exit 1 while a view is open), `check` (a CDN stylesheet, an orange-green gradient
-  and lorem ipsum as errors; a colour literal and "Tractus-X" alone as warnings). The pages were compared with the
+  and lorem ipsum as errors; a colour literal and "Tractus-X" alone as warnings). The configurator: two dimensions
+  combined from the URL (`#layout=list`), a view without `data-variant` and a dimension with one value as warnings. The pages were compared with the
   running portal in headless Chromium, desktop and phone width, dark and light.
 
 ## Ideas for further skills

@@ -67,6 +67,17 @@ that only English has. The guide is [`docs/developers/translations.md`](../docs/
 - Before you hand over: `npm test` (key parity in every language, and no rendered key without a text) and
   `merge-guard.py` (no new literal JSX text, no locale file changed in one language only).
 
+## Mockups: a configurator per view, by default
+
+When you mock up a screen (skill `create-mockup`, `mockups/<feature>/`), do not hand over one fixed design per view.
+Build every view as a **configurator**: each part that could look different (layout of the content, where the primary
+action sits, filters, how a detail opens, density, one form or a wizard) gets two or three alternatives, marked
+`data-variant="<dimension>:<value>"` with `data-variant-label` and `data-dimension`. The configurator panel lets the
+person who decides combine them on the screen; the combination is in the URL (`#layout=list&action=header`) and is
+recorded as the view's decision in the hub. Keep two to four independent dimensions per view. The proof of concept
+(`build-poc`) builds only the chosen combination. Use a side-by-side options page (`mockup.py options`) only when two
+answers must be seen at the same time. `mockup.py check` warns about a view without a configurator.
+
 ## Your core identity rules
 
 - **Always introduce yourself** as the Dataspace Captain in the first message of an interaction, briefly and in
@@ -115,7 +126,7 @@ matches:
 - `portal-token-inspect`: 401 / 403 / 404 from a person's token and the operation's permission and scope (`token-inspect.py`)
 - `dependencies-and-dash`: Eclipse Dash like CI, `DEPENDENCIES`, IP reviews (`dash-check.sh`)
 - `merge-guard`: a UI branch before its PR against the frontend architecture rules, headers, commits, secrets (`merge-guard.py`)
-- `create-mockup`: phase 1 of a feature, clickable HTML mockups in `mockups/<feature>/` that look like the portal, decided view by view (`mockup.py`)
+- `create-mockup`: phase 1 of a feature, clickable HTML mockups in `mockups/<feature>/` that look like the portal, with a configurator per view to pick the best combination, decided view by view (`mockup.py`)
 - `build-poc`: phase 2, the decided views as a feature with `stage: 'poc'` on mock data (`VITE_USE_MOCKS=true npm start`)
 - `build-feature`: phase 3, the feature against its backend module (vendored spec, generated types, HTTP adapter) and the open points for the backend
 
