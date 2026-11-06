@@ -1,4 +1,5 @@
 <!--
+ Copyright (c) 2026 Catena-X Automotive Network e.V.
  Copyright (c) 2026 Contributors to the Eclipse Foundation
 
  AI Disclosure: This file was entirely AI-generated.
