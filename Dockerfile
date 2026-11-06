@@ -33,7 +33,7 @@
 ARG APP=portal
 
 # ---- Build stage ----
-FROM node:24-alpine AS build
+FROM node:25-alpine AS build
 ARG APP
 WORKDIR /workspace
 COPY package.json package-lock.json ./
