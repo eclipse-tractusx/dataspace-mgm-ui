@@ -1,0 +1,99 @@
+{
+  "overline": "Posteingang",
+  "title": "Benachrichtigungen",
+  "loading": "Ihre Benachrichtigungen werden geladen…",
+  "signInPrompt": "Melden Sie sich an, um Ihre Benachrichtigungen zu sehen.",
+  "signIn": "Anmelden",
+  "failed": "Ihre Benachrichtigungen konnten nicht geladen werden: {{message}}",
+  "failedWithStatus": "Ihre Benachrichtigungen konnten nicht geladen werden ({{status}}): {{message}}",
+  "live": "Live",
+  "connecting": "Verbinde…",
+  "summary_one": "{{unread}} ungelesen von {{count}}",
+  "summary_other": "{{unread}} ungelesen von {{count}}",
+  "summaryTotal_one": "{{count}} Benachrichtigung",
+  "summaryTotal_other": "{{count}} Benachrichtigungen",
+  "listLabel": "Ihre Benachrichtigungen",
+  "views": {
+    "label": "Anzeigen",
+    "all": "Alle",
+    "unread": "Ungelesen",
+    "tasks": "Aufgaben",
+    "info": "Informationen"
+  },
+  "empty": {
+    "all": "Sie haben keine Benachrichtigungen.",
+    "unread": "Sie haben keine ungelesenen Benachrichtigungen.",
+    "tasks": "Sie haben keine Aufgaben.",
+    "info": "Sie haben keine Informationen."
+  },
+  "read": "Gelesen",
+  "unread": "Ungelesen",
+  "new": "Neu",
+  "forStaff": "Für OSP-Mitarbeitende",
+  "topic": {
+    "INFO": "Information",
+    "ACTION": "Aufgabe"
+  },
+  "task": {
+    "open": "Offen",
+    "done": "Erledigt"
+  },
+  "actions": {
+    "markRead": "Als gelesen markieren",
+    "markUnread": "Als ungelesen markieren",
+    "hide": "Ausblenden",
+    "labelFor": "Aktionen für {{title}}"
+  },
+  "outcome": {
+    "changed": {
+      "read": "Als gelesen markiert.",
+      "unread": "Als ungelesen markiert.",
+      "hide": "Die Benachrichtigung ist ausgeblendet."
+    },
+    "notFound": "Diese Benachrichtigung ist nicht mehr in Ihrem Posteingang.",
+    "taskOpen": "Eine offene Aufgabe kann nicht ausgeblendet werden. Sie schließt sich, sobald der zugehörige Schritt erledigt ist.",
+    "notAvailable": "Noch nicht verfügbar: Das Benachrichtigungsmodul bietet diese Aktion noch nicht an (501).",
+    "failed": "Das hat nicht geklappt ({{status}}). Bitte versuchen Sie es erneut."
+  },
+  "paging": {
+    "previous": "Zurück",
+    "next": "Weiter",
+    "page": "Seite {{page}} von {{pages}}"
+  },
+  "details": {
+    "yes": "Ja",
+    "no": "Nein",
+    "fields": {
+      "applicationId": "Antrag",
+      "companyId": "Unternehmen",
+      "kind": "Art",
+      "existingCompany": "Bestehendes Unternehmen",
+      "applicantSub": "Antragsteller",
+      "reason": "Grund",
+      "changeRequestId": "Änderungsantrag",
+      "offerId": "Angebot",
+      "offerType": "Angebotsart",
+      "offerSubscriptionId": "Abonnement",
+      "customerCompanyId": "Kundenunternehmen",
+      "providerCompanyId": "Anbieterunternehmen",
+      "instanceKind": "Instanz",
+      "instanceUrl": "Adresse der Instanz",
+      "appId": "App",
+      "roles": "Rollen",
+      "technicalUserId": "Technischer Benutzer",
+      "credentialType": "Nachweis",
+      "connectorId": "Connector",
+      "endpoint": "Endpunkt",
+      "processId": "Prozess",
+      "flowKey": "Ablauf",
+      "stepKey": "Schritt",
+      "errorType": "Fehler",
+      "subjectType": "Gegenstand",
+      "subjectId": "ID des Gegenstands",
+      "bpn": "Business Partner Number"
+    },
+    "label": "Details",
+    "none": "Keine weiteren Details."
+  },
+  "backToList": "Zurück zur Liste"
+}

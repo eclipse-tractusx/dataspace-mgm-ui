@@ -1,0 +1,99 @@
+{
+  "overline": "Inbox",
+  "title": "Notifications",
+  "loading": "Loading your notifications…",
+  "signInPrompt": "Sign in to see your notifications.",
+  "signIn": "Sign in",
+  "failed": "Your notifications could not be loaded: {{message}}",
+  "failedWithStatus": "Your notifications could not be loaded ({{status}}): {{message}}",
+  "live": "Live",
+  "connecting": "Connecting…",
+  "summary_one": "{{unread}} unread of {{count}}",
+  "summary_other": "{{unread}} unread of {{count}}",
+  "summaryTotal_one": "{{count}} notification",
+  "summaryTotal_other": "{{count}} notifications",
+  "listLabel": "Your notifications",
+  "views": {
+    "label": "Show",
+    "all": "All",
+    "unread": "Unread",
+    "tasks": "Tasks",
+    "info": "Information"
+  },
+  "empty": {
+    "all": "You have no notifications.",
+    "unread": "You have no unread notifications.",
+    "tasks": "You have no tasks.",
+    "info": "You have no information."
+  },
+  "read": "Read",
+  "unread": "Unread",
+  "new": "New",
+  "forStaff": "For OSP staff",
+  "topic": {
+    "INFO": "Information",
+    "ACTION": "Task"
+  },
+  "task": {
+    "open": "Open",
+    "done": "Done"
+  },
+  "actions": {
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "hide": "Hide",
+    "labelFor": "Actions for {{title}}"
+  },
+  "outcome": {
+    "changed": {
+      "read": "Marked as read.",
+      "unread": "Marked as unread.",
+      "hide": "The notification is hidden."
+    },
+    "notFound": "This notification is no longer in your inbox.",
+    "taskOpen": "An open task cannot be hidden. It closes by itself when the matching step is done.",
+    "notAvailable": "Not available yet: the notifications module does not offer this operation yet (501).",
+    "failed": "That did not work ({{status}}). Please try again."
+  },
+  "paging": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{pages}}"
+  },
+  "details": {
+    "yes": "Yes",
+    "no": "No",
+    "fields": {
+      "applicationId": "Application",
+      "companyId": "Company",
+      "kind": "Kind",
+      "existingCompany": "Existing company",
+      "applicantSub": "Applicant",
+      "reason": "Reason",
+      "changeRequestId": "Change request",
+      "offerId": "Offer",
+      "offerType": "Offer type",
+      "offerSubscriptionId": "Subscription",
+      "customerCompanyId": "Customer company",
+      "providerCompanyId": "Provider company",
+      "instanceKind": "Instance",
+      "instanceUrl": "Instance address",
+      "appId": "App",
+      "roles": "Roles",
+      "technicalUserId": "Technical user",
+      "credentialType": "Credential",
+      "connectorId": "Connector",
+      "endpoint": "Endpoint",
+      "processId": "Process",
+      "flowKey": "Flow",
+      "stepKey": "Step",
+      "errorType": "Error",
+      "subjectType": "Subject",
+      "subjectId": "Subject ID",
+      "bpn": "Business partner number"
+    },
+    "label": "Details",
+    "none": "No further details."
+  },
+  "backToList": "Back to the list"
+}

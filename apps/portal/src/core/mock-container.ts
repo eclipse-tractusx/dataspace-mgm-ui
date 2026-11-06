@@ -32,6 +32,8 @@ import {
   OTTO_SESSION,
   ROLF_SESSION,
 } from '@dataspace-mgm/c1-m2-core/testing';
+import { createC11M1ModuleFrom } from '@dataspace-mgm/c11-m1-core';
+import { InMemoryInboxEventSource, InMemoryNotificationRepository, MOCK_INBOX } from '@dataspace-mgm/c11-m1-core/testing';
 import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
 import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
 import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
@@ -115,5 +117,6 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
     }),
     c1m2: createMockC1M2Module(session),
+    c11m1: createC11M1ModuleFrom(new InMemoryNotificationRepository(session ? MOCK_INBOX : []), new InMemoryInboxEventSource()),
   };
 }
