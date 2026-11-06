@@ -1,0 +1,305 @@
+openapi: 3.1.0
+info:
+  title: C11-M1 Notifications
+  version: 0.2.0
+  description: |
+    Inbox of a person in the portal of the OSP. Notifications are created by the module
+    from the events of the other modules (README 6.2); there is no operation to create them.
+
+    - Calls carry a token of the Portal IAM; required permission in `x-permission`,
+      scope in `x-permission-scope` (FRAMEWORK 4.3).
+    - Errors as Problem Details (RFC 9457), identifiers in README section 12.
+    - `GET /notifications/events` is a Server-Sent Events stream for the UI (README 7.6):
+      `Content-Type: text/event-stream`, events `notification-created`, `notification-done`,
+      `resync`. The token is sent in the `Authorization` header, never in the URL.
+servers:
+  - url: /api/c11-m1
+security:
+  - portalIam: []
+tags:
+  - name: Company
+    description: Own notifications of a person, with or without a company (scope own, FRAMEWORK 4.1)
+
+paths:
+  /notifications:
+    get:
+      tags: [Company]
+      operationId: listNotifications
+      summary: Own notifications
+      description: README 7.1. Personal notifications and staff notifications of the own permissions; hidden ones are left out.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - { name: topic, in: query, schema: { $ref: '#/components/schemas/Topic' } }
+        - { name: type, in: query, schema: { type: string } }
+        - { name: read, in: query, schema: { type: boolean } }
+        - { name: done, in: query, schema: { type: boolean } }
+        - { name: createdSince, in: query, schema: { type: string, format: date-time } }
+        - { name: sort, in: query, schema: { type: string, enum: [createdAt.desc, createdAt.asc], default: createdAt.desc } }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Page of notifications
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPage' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /notifications/count:
+    get:
+      tags: [Company]
+      operationId: countNotifications
+      summary: Counters of the own inbox
+      description: README 7.2.
+      x-permission: view_notifications
+      x-permission-scope: own
+      responses:
+        '200':
+          description: Counters
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationCount' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /notifications/events:
+    get:
+      tags: [Company]
+      operationId: streamNotificationEvents
+      summary: Live changes of the own inbox (Server-Sent Events)
+      description: |
+        README 7.6. Without `Last-Event-ID` only new events; with an `id` the module no longer
+        keeps, `resync` first.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - name: Last-Event-ID
+          in: header
+          required: false
+          description: '`id` of the last event the client received; the browser sends it on reconnect (README 7.6).'
+          schema: { type: string, maxLength: 64 }
+      responses:
+        '200':
+          description: |
+            Event stream (README 7.6). Each message has `id`, `event` and one `data` line with a
+            JSON object; the schema below describes the `data` object per event name
+            (`notification-created`: NotificationCreated, `notification-done`: NotificationDone,
+            `resync`: empty object), not the whole body. Comment lines `: keep-alive` every
+            `SSE_HEARTBEAT_SECONDS`.
+          content:
+            text/event-stream:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/NotificationCreated'
+                  - $ref: '#/components/schemas/NotificationDone'
+                  - { type: object, additionalProperties: false, description: '`data` of `resync`' }
+              example: |
+                retry: 3000
+
+                id: 7
+                event: notification-created
+                data: {"notificationId":"3c6b1f2a-8d4e-4a5b-9c7d-0e1f2a3b4c5d","type":"PROCESS_STEP_FAILED","topic":"ACTION","forStaff":true,"done":false,"createdAt":"2026-11-06T09:31:00Z"}
+
+                id: 8
+                event: notification-done
+                data: {"notificationId":"3c6b1f2a-8d4e-4a5b-9c7d-0e1f2a3b4c5d","doneAt":"2026-11-06T09:40:00Z"}
+
+                : keep-alive
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /notifications/{notificationId}:
+    get:
+      tags: [Company]
+      operationId: getNotification
+      summary: One own notification
+      description: README 7.3.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '200':
+          description: The notification
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Notification' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /notifications/{notificationId}/read:
+    post:
+      tags: [Company]
+      operationId: markRead
+      summary: Mark as read
+      description: README 7.4. Idempotent.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '204': { description: Marked }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /notifications/{notificationId}/unread:
+    post:
+      tags: [Company]
+      operationId: markUnread
+      summary: Mark as unread
+      description: README 7.4. Idempotent.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '204': { description: Marked }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /notifications/{notificationId}/hide:
+    post:
+      tags: [Company]
+      operationId: hideNotification
+      summary: Hide for the calling person
+      description: README 7.5. Not for an open task.
+      x-permission: view_notifications
+      x-permission-scope: own
+      parameters:
+        - $ref: '#/components/parameters/NotificationId'
+      responses:
+        '204': { description: Hidden }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+components:
+  securitySchemes:
+    portalIam:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token of the Portal IAM of the OSP
+  parameters:
+    NotificationId:
+      name: notificationId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
+    Size:
+      name: size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+  responses:
+    Problem:
+      description: Problem Details (README section 12)
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    Topic:
+      type: string
+      enum: [INFO, ACTION]
+    NotificationType:
+      type: string
+      description: README 6.2.
+      enum:
+        - APPLICATION_SUBMITTED
+        - REVIEW_CASE_OPENED
+        - APPLICATION_DECLINED
+        - APPLICATION_COMPLETED
+        - CHANGE_REQUEST_OPENED
+        - OFFER_REVIEW_REQUESTED
+        - OFFER_APPROVED
+        - OFFER_DECLINED
+        - SUBSCRIPTION_REQUESTED
+        - SUBSCRIPTION_ACTIVATED
+        - SUBSCRIPTION_DECLINED
+        - SUBSCRIPTION_URL_CHANGED
+        - APP_ROLES_ADDED
+        - TECHNICAL_USER_WALLET_READY
+        - TECHNICAL_USER_WALLET_FAILED
+        - CREDENTIAL_REVOKED
+        - CONNECTOR_REGISTERED
+        - PROCESS_STEP_FAILED
+    Notification:
+      type: object
+      required: [notificationId, type, topic, content, read, createdAt]
+      properties:
+        notificationId: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/NotificationType' }
+        topic: { $ref: '#/components/schemas/Topic' }
+        companyId: { type: [string, 'null'], format: uuid }
+        subjectType: { type: [string, 'null'], examples: [OFFER] }
+        subjectId: { type: [string, 'null'], format: uuid }
+        content:
+          type: object
+          description: 'Fields of `data` of the event (CloudEvent, FRAMEWORK 6): IDs and business values, no names.'
+          additionalProperties: true
+        forStaff:
+          type: boolean
+          description: '`true` for a staff notification (addressed to a permission).'
+        read: { type: boolean }
+        done:
+          type: [boolean, 'null']
+          description: Tasks only.
+        createdAt: { type: string, format: date-time }
+        doneAt: { type: [string, 'null'], format: date-time }
+    NotificationCreated:
+      type: object
+      description: '`data` of the stream event `notification-created` (README 7.6); no `content`.'
+      required: [notificationId, type, topic, forStaff, createdAt]
+      properties:
+        notificationId: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/NotificationType' }
+        topic: { $ref: '#/components/schemas/Topic' }
+        forStaff: { type: boolean }
+        done:
+          type: [boolean, 'null']
+          description: Tasks only; `true` if the task was created as done (README 6.2).
+        createdAt: { type: string, format: date-time }
+    NotificationDone:
+      type: object
+      description: '`data` of the stream event `notification-done` (README 7.6).'
+      required: [notificationId, doneAt]
+      properties:
+        notificationId: { type: string, format: uuid }
+        doneAt: { type: string, format: date-time }
+    NotificationPage:
+      type: object
+      required: [items, page, size, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Notification' }
+        page: { type: integer }
+        size: { type: integer }
+        total: { type: integer }
+    NotificationCount:
+      type: object
+      required: [total, unread, openTasks, unreadInfo]
+      properties:
+        total: { type: integer }
+        unread: { type: integer }
+        openTasks: { type: integer }
+        unreadInfo: { type: integer }
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
