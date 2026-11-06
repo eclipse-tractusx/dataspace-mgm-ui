@@ -54,10 +54,10 @@ import { MOCK_PERSONS } from '../../core/mock-container';
 import { TestCoreModules, testCoreModules } from '../../core/testing';
 import { walletsFeature } from './routes';
 
-export const ERIKA = MOCK_PERSONS.erika;
-export const MAX = MOCK_PERSONS.max;
-export const OTTO = MOCK_PERSONS.otto;
-export const ROLF = MOCK_PERSONS.rolf;
+export const ERIKA = MOCK_PERSONS['wallets-erika'];
+export const MAX = MOCK_PERSONS['wallets-max'];
+export const OTTO = MOCK_PERSONS['wallets-otto'];
+export const ROLF = MOCK_PERSONS['wallets-rolf'];
 
 /** "Now" of the mockup for the page (relative times) and the adapters (open orders, revocation time). */
 export function atFixturesNow() {

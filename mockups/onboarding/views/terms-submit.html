@@ -1,0 +1,298 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · Roles, terms and submission — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .ts-terms { list-style: none; margin: 0; padding: 0; }
+    .ts-terms li { display: flex; gap: 16px; align-items: center; padding: 16px 0; }
+    .ts-terms li + li { border-top: 1px solid var(--subtle-border); }
+    .ts-terms .ts-term-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .ts-accepted { color: var(--success); display: inline-flex; gap: 6px; align-items: center; font-size: 0.875rem; }
+    .ts-open { color: var(--muted); font-size: 0.875rem; }
+    @media (max-width: 899.98px) { .ts-terms li { flex-wrap: wrap; } .ts-terms li > .tx-btn { margin-left: 68px; } }
+    /* Full-screen document viewer. */
+    dialog.ts-viewer { width: 100vw; height: 100vh; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--text); }
+    dialog.ts-viewer[open] { display: flex; flex-direction: column; }
+    dialog.ts-viewer::backdrop { background: var(--backdrop); }
+    .ts-viewer__head, .ts-viewer__foot { display: flex; gap: 16px; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--card-border); flex-wrap: wrap; }
+    .ts-viewer__foot { border-bottom: 0; border-top: 1px solid var(--card-border); }
+    .ts-viewer__lang { display: flex; gap: 8px; align-items: center; }
+    .ts-viewer__lang .tx-select { width: auto; padding: 10px 12px; }
+    .ts-viewer__doc { flex: 1 1 auto; overflow-y: auto; background: var(--surface); padding: 24px 16px; }
+    .ts-page { background: var(--tx-white); color: var(--tx-black); width: min(794px, 100%); min-height: 1050px; margin: 0 auto 24px; padding: 56px 64px; box-shadow: var(--glow); font-size: 0.9375rem; line-height: 1.6; }
+    .ts-page h1 { font-size: 1.5rem; margin: 0 0 4px; }
+    .ts-page h2 { font-size: 1.0625rem; margin: 28px 0 8px; }
+    .ts-page__meta { display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.7; margin-bottom: 32px; }
+    @media (max-width: 899.98px) { .ts-page { padding: 32px 20px; min-height: 0; } }
+    .ts-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ts-chip { font: inherit; cursor: pointer; height: 36px; padding: 0 14px; border-radius: var(--chip-radius); border: 1px solid var(--card-border); background: transparent; color: inherit; display: inline-flex; align-items: center; gap: 6px; }
+    .ts-chip[aria-pressed="true"] { background: var(--accent-tint); border-color: var(--tx-orange); }
+  </style>
+</head>
+<!-- Erika Mustermann, application CREATED (path EBW). Roles are changed with PATCH, the required terms come from
+     GET /agreements?companyRole=…, POST …/submit sends the consents. States = results of submitApplication. -->
+<body data-active="/onboarding" data-view="Roles, terms and submission" data-states="loaded,consents-incomplete,attestation-expired,documents-incomplete,submitted,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">Roles, terms and submission</h1>
+    <ol class="tx-steps" data-show-state="loaded consents-incomplete attestation-expired documents-incomplete loading error">
+      <li class="tx-step tx-step--done"><span class="tx-step__n">1</span>Application</li>
+      <li class="tx-step tx-step--done"><span class="tx-step__n">2</span>Proof</li>
+      <li class="tx-step tx-step--done"><span class="tx-step__n">3</span>Company data</li>
+      <li class="tx-step" aria-current="step"><span class="tx-step__n">4</span>Roles and terms</li>
+      <li class="tx-step"><span class="tx-step__n">5</span>Submit</li>
+    </ol>
+
+    <section class="tx-stack" data-show-state="submitted">
+      <div class="tx-card tx-card--hero tx-stack">
+        <span class="tx-tile" data-icon="CheckCircleOutlined"></span>
+        <h2 class="tx-h2">Application submitted</h2>
+        <p>OSP staff of OSP A now review the application of <strong data-company></strong>. You get a notification when they have decided.</p>
+        <div class="ob-actions ob-actions--start"><a class="tx-btn" href="my-application.html">Show my application</a></div>
+      </div>
+    </section>
+
+    <div class="ob-split" id="split" data-show-state="loaded consents-incomplete attestation-expired documents-incomplete">
+      <div class="tx-stack">
+        <div class="tx-alert tx-alert--warning" role="alert" data-show-state="consents-incomplete">
+          <span data-icon="ErrorOutlineOutlined"></span>
+          <div><div><strong>The terms of use of the OSP changed.</strong> Please read version 1.1 and accept it again.</div>
+            <code data-problem="consents"></code> · missing: <code>osp-terms 1.1</code></div>
+        </div>
+        <div class="tx-alert tx-alert--warning" role="alert" data-show-state="attestation-expired">
+          <span data-icon="ErrorOutlineOutlined"></span>
+          <div><div><strong>Your verification with the Business Wallet is too old.</strong> Verify again to submit; your data stays.</div>
+            <code data-problem="expired"></code></div>
+          <button class="tx-btn tx-btn--outlined tx-alert__action" type="button" data-reverify><span data-icon="AccountBalanceWalletOutlined"></span>Verify again</button>
+        </div>
+        <div class="tx-alert tx-alert--warning" role="alert" data-show-state="documents-incomplete">
+          <span data-icon="ErrorOutlineOutlined"></span>
+          <div><div><strong>Something is missing for the review.</strong> Upload a commercial register extract and confirm that you may represent the company.</div>
+            <code data-problem="documents"></code> · <code>COMMERCIAL_REGISTER_EXTRACT</code>, <code>representationDeclarationMissing</code></div>
+          <a class="tx-btn tx-btn--outlined tx-alert__action" href="documents.html">Documents</a>
+        </div>
+
+        <!-- Summary: above the roles, at the side, or none. -->
+        <div class="tx-card tx-stack" data-variant="summary:top" data-dimension="Summary" data-variant-label="Above the roles">
+          <h2 class="tx-h3">Your application</h2><div class="tx-fields" data-summary></div>
+        </div>
+        <span hidden data-variant="summary:none" data-variant-label="None"></span>
+
+        <!-- Company roles: checkboxes, selectable cards, or chips. -->
+        <div class="tx-card tx-stack">
+          <h2 class="tx-h3">Company roles</h2>
+          <p class="tx-muted tx-body2">What your company will do in the dataspace. The terms below follow from the roles.</p>
+          <ul class="ob-radios" data-variant="roles:checkboxes" data-dimension="Company roles" data-variant-label="Checkboxes" data-roles-check></ul>
+          <div class="ob-choices" data-variant="roles:cards" data-variant-label="Cards" data-roles-cards></div>
+          <div class="ts-chips" data-variant="roles:chips" data-variant-label="Chips" data-roles-chips></div>
+        </div>
+
+        <!-- Terms (decided): one row per document with its icon and an Open button; the viewer accepts it. -->
+        <div class="tx-card tx-stack">
+          <h2 class="tx-h3">Terms</h2>
+          <p class="tx-muted tx-body2">Open each document and read it to the end to accept it. You consent personally, in the language you read it in.</p>
+          <ul class="ts-terms" data-terms></ul>
+        </div>
+
+        <div class="tx-card" data-declaration hidden>
+          <label class="ob-check"><input type="checkbox"><span>I declare that I may represent <strong data-company></strong> and file this application for it.</span></label>
+        </div>
+
+        <div class="ob-actions">
+          <a class="tx-btn tx-btn--outlined" href="company-data.html">Back</a>
+          <span class="tx-muted tx-body2" data-submit-hint></span>
+          <button class="tx-btn" type="button" data-submit><span data-icon="SendOutlined"></span>Submit application</button>
+        </div>
+      </div>
+      <aside class="tx-card tx-stack" data-variant="summary:side" data-variant-label="At the side">
+        <h2 class="tx-h3">Your application</h2><div class="tx-stack" data-summary></div>
+      </aside>
+    </div>
+
+    <section data-show-state="loading" role="status"><div class="tx-row"><span class="tx-spinner"></span><span>Submitting…</span></div></section>
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert"><span data-icon="ErrorOutlineOutlined"></span>
+        <div><div>The application could not be submitted (HTTP 502). Nothing was changed; try again.</div><code data-problem="upstream"></code></div></div>
+    </section>
+    <dialog class="ts-viewer" id="viewer" aria-labelledby="viewer-title">
+      <header class="ts-viewer__head">
+        <div><h2 class="tx-h3" id="viewer-title" data-viewer-title></h2><span class="tx-muted tx-body2" data-viewer-meta></span></div>
+        <div class="ts-viewer__lang"><label class="tx-label" for="viewer-lang">Language</label><select class="tx-select" id="viewer-lang" data-viewer-lang></select></div>
+      </header>
+      <div class="ts-viewer__doc" data-viewer-doc tabindex="0" aria-label="Document"></div>
+      <footer class="ts-viewer__foot">
+        <span class="tx-muted tx-body2" data-viewer-hint></span>
+        <div class="tx-row">
+          <button class="tx-btn tx-btn--outlined" type="button" data-viewer-cancel>Cancel</button>
+          <button class="tx-btn" type="button" data-viewer-accept disabled><span data-icon="Check"></span>Accept</button>
+        </div>
+      </footer>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const c1m2 = mock.data.c1m2;
+      const L = c1m2.labels;
+      const documentsPath = location.hash.includes('path=documents');
+      const app = documentsPath ? c1m2.hansApplication : c1m2.erikaApplication;
+      let roles = [...app.companyRoles];
+      document.querySelectorAll('[data-company]').forEach((el) => { el.textContent = app.companyData.legalName; });
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      document.querySelector('[data-declaration]').hidden = !documentsPath;
+
+      // The required terms are what GET /agreements returns for the roles; the page does not compute them.
+      const agreementsFor = (selected) => c1m2.agreements.filter((t) => t.scope === 'ALL' || t.companyRoles.some((r) => selected.includes(r)));
+      const party = (t) => (t.party === 'OSP' ? 'OSP A' : 'Dataspace');
+      const LANGUAGE = { de: 'Deutsch', en: 'English' };
+      // Consents given so far, by "agreementKey@version": the language read (ConsentInput.language).
+      const accepted = {};
+      // In "consents-incomplete" a new version of osp-terms is active (README 13 case 21): it needs a new consent.
+      const currentTerms = () => agreementsFor(roles).map((t) => (document.body.dataset.state === 'consents-incomplete' && t.agreementKey === 'osp-terms'
+        ? { ...t, version: '1.1', documentUrls: { de: 'https://osp-a.example.org/terms/osp-terms-1.1-de.pdf', en: 'https://osp-a.example.org/terms/osp-terms-1.1-en.pdf' } } : t));
+      const keyOf = (t) => `${t.agreementKey}@${t.version}`;
+
+      // Sample pages in place of the PDF of documentUrls[lang] (the mockup loads nothing from the network).
+      const TEXT = {
+        en: { by: { OSP: 'OSP A', DATASPACE: 'the operator of the dataspace' }, version: 'Version', page: 'Page', of: 'of', sections: [
+          ['Scope', 'These terms govern how your company uses the services that {by} provides, and they apply to every person who acts for your company.', 'They apply from the approval of the application and for as long as your company takes part in the dataspace.'],
+          ['Parties', 'The parties are {by} and the company named in the application. The person who accepts these terms confirms that they may act for the company.', 'The company names a Company Admin, who manages the persons and technical users of the company.'],
+          ['Use of the services', 'Your company uses the services only for its own business purposes and in line with the rules of the dataspace.', 'It does not give access to persons who do not act for it, and it keeps its credentials safe.'],
+          ['Data and confidentiality', 'Data that companies exchange in the dataspace stays under the control of the company that provides it.', '{by} processes personal data only as far as it needs to run the services, and it keeps business data confidential.'],
+          ['Obligations of the company', 'Your company keeps its company data up to date and tells {by} without delay when it changes.', 'It reports security incidents that may affect other participants within 24 hours.'],
+          ['Liability', '{by} is liable for intent and gross negligence. For slight negligence it is liable only for the breach of essential obligations.', 'The liability for the loss of data is limited to the effort needed to restore it from backups.'],
+          ['Changes to these terms', '{by} may publish a new version of these terms. Your company is informed about it in advance.', 'Where a new version requires it, the persons of your company are asked to consent again.'],
+          ['Term and termination', 'Your company can end its participation at any time. {by} can end it for good cause, in particular for a serious breach of these terms.', 'At the end, the company is deactivated and its access is withdrawn.'],
+          ['Final provisions', 'The law of the Federal Republic of Germany applies. Should a provision be invalid, the other provisions remain in force.', 'This document is the complete agreement on its subject.'],
+        ] },
+        de: { by: { OSP: 'OSP A', DATASPACE: 'der Betreiber des Datenraums' }, version: 'Version', page: 'Seite', of: 'von', sections: [
+          ['Geltungsbereich', 'Diese Bedingungen regeln, wie Ihr Unternehmen die Dienste nutzt, die {by} bereitstellt, und gelten für jede Person, die für Ihr Unternehmen handelt.', 'Sie gelten ab der Genehmigung des Antrags und solange Ihr Unternehmen am Datenraum teilnimmt.'],
+          ['Parteien', 'Parteien sind {by} und das im Antrag genannte Unternehmen. Wer diese Bedingungen annimmt, bestätigt, für das Unternehmen handeln zu dürfen.', 'Das Unternehmen benennt einen Company Admin, der die Personen und technischen Nutzer des Unternehmens verwaltet.'],
+          ['Nutzung der Dienste', 'Ihr Unternehmen nutzt die Dienste nur für eigene geschäftliche Zwecke und im Einklang mit den Regeln des Datenraums.', 'Es gibt keinen Personen Zugang, die nicht für es handeln, und bewahrt seine Zugangsdaten sicher auf.'],
+          ['Daten und Vertraulichkeit', 'Daten, die Unternehmen im Datenraum austauschen, bleiben unter der Kontrolle des Unternehmens, das sie bereitstellt.', '{by} verarbeitet personenbezogene Daten nur, soweit es für den Betrieb der Dienste nötig ist, und behandelt Geschäftsdaten vertraulich.'],
+          ['Pflichten des Unternehmens', 'Ihr Unternehmen hält seine Unternehmensdaten aktuell und teilt Änderungen {by} unverzüglich mit.', 'Es meldet Sicherheitsvorfälle, die andere Teilnehmer betreffen können, innerhalb von 24 Stunden.'],
+          ['Haftung', '{by} haftet für Vorsatz und grobe Fahrlässigkeit. Bei leichter Fahrlässigkeit haftet es nur für die Verletzung wesentlicher Pflichten.', 'Die Haftung für Datenverlust ist auf den Aufwand begrenzt, die Daten aus Sicherungen wiederherzustellen.'],
+          ['Änderungen dieser Bedingungen', '{by} kann eine neue Version dieser Bedingungen veröffentlichen. Ihr Unternehmen wird vorab informiert.', 'Wenn eine neue Version es erfordert, werden die Personen Ihres Unternehmens erneut um Zustimmung gebeten.'],
+          ['Laufzeit und Kündigung', 'Ihr Unternehmen kann seine Teilnahme jederzeit beenden. {by} kann sie aus wichtigem Grund beenden, insbesondere bei einem schweren Verstoß gegen diese Bedingungen.', 'Am Ende wird das Unternehmen deaktiviert und sein Zugang entzogen.'],
+          ['Schlussbestimmungen', 'Es gilt das Recht der Bundesrepublik Deutschland. Sollte eine Bestimmung unwirksam sein, bleiben die übrigen Bestimmungen wirksam.', 'Dieses Dokument ist die vollständige Vereinbarung zu seinem Gegenstand.'],
+        ] },
+      };
+      function pages(t, lang) {
+        const x = TEXT[lang];
+        const by = x.by[t.party];
+        const fill = (text) => text.replace(/\{by\}/g, by).replace(/(^|[.!?]\s+)(\p{Ll})/gu, (m, before, c) => before + c.toUpperCase());
+        const chunks = [x.sections.slice(0, 3), x.sections.slice(3, 6), x.sections.slice(6)];
+        return chunks.map((sections, n) => `<article class="ts-page">
+          <div class="ts-page__meta"><span>${t.title} · ${x.version} ${t.version}</span><span>${x.page} ${n + 1} ${x.of} ${chunks.length}</span></div>
+          ${n === 0 ? `<h1>${t.title}</h1><p>${x.version} ${t.version} · ${fill(by)}</p>` : ''}
+          ${sections.map(([h, p1, p2], i) => `<h2>${n * 3 + i + 1}. ${h}</h2><p>${fill(p1)}</p><p>${fill(p2)}</p>`).join('')}
+        </article>`).join('');
+      }
+
+      // The viewer: Accept is enabled only after the document was scrolled to its end, in the language shown.
+      const viewer = document.getElementById('viewer');
+      const doc = viewer.querySelector('[data-viewer-doc]');
+      const accept = viewer.querySelector('[data-viewer-accept]');
+      const langSelect = viewer.querySelector('[data-viewer-lang]');
+      let open = null;
+      function showDocument() {
+        doc.innerHTML = pages(open, langSelect.value);
+        doc.scrollTop = 0;
+        accept.disabled = true;
+        viewer.querySelector('[data-viewer-hint]').textContent = 'Scroll to the end of the document to accept it.';
+        checkEnd();
+      }
+      function checkEnd() {
+        if (doc.scrollTop + doc.clientHeight >= doc.scrollHeight - 4) {
+          accept.disabled = false;
+          viewer.querySelector('[data-viewer-hint]').textContent = `You read the ${LANGUAGE[langSelect.value]} version to the end.`;
+        }
+      }
+      doc.addEventListener('scroll', checkEnd);
+      mock.on('click', '[data-open-term]', (e, el) => {
+        open = currentTerms().find((t) => keyOf(t) === el.dataset.openTerm);
+        const languages = Object.keys(open.documentUrls);
+        langSelect.innerHTML = languages.map((l) => `<option value="${l}">${LANGUAGE[l]}</option>`).join('');
+        langSelect.value = accepted[keyOf(open)] || (languages.includes('en') ? 'en' : languages[0]);
+        langSelect.disabled = languages.length < 2;
+        viewer.querySelector('[data-viewer-title]').textContent = open.title;
+        viewer.querySelector('[data-viewer-meta]').textContent = `${party(open)} · version ${open.version}${languages.length < 2 ? ` · only in ${LANGUAGE[languages[0]]}` : ''}`;
+        viewer.showModal();
+        showDocument();
+      });
+      langSelect.addEventListener('change', showDocument);
+      mock.on('click', '[data-viewer-cancel]', () => viewer.close());
+      mock.on('click', '[data-viewer-accept]', () => {
+        accepted[keyOf(open)] = langSelect.value;
+        viewer.close();
+        render();
+        mock.toast(`${open.title} accepted (${LANGUAGE[langSelect.value]})`);
+      });
+
+      function render() {
+        mock.render('[data-roles-check]', c1m2.companyRoles, (r) => `<li><label><input type="checkbox" value="${r.role}" ${roles.includes(r.role) ? 'checked' : ''} data-role><span><strong>${r.name}</strong><br><span class="tx-muted tx-body2">${r.description}</span></span></label></li>`);
+        mock.render('[data-roles-cards]', c1m2.companyRoles, (r) => `<button class="ob-choice" type="button" aria-pressed="${roles.includes(r.role)}" data-role-toggle="${r.role}"><span><strong>${r.name}</strong><span class="tx-muted tx-body2">${r.description}</span></span></button>`);
+        mock.render('[data-roles-chips]', c1m2.companyRoles, (r) => `<button class="ts-chip" type="button" aria-pressed="${roles.includes(r.role)}" data-role-toggle="${r.role}">${roles.includes(r.role) ? mock.icon('Check', 'sm') : ''}${r.name}</button>`);
+        const terms = currentTerms();
+        mock.render('[data-terms]', terms, (t) => `<li><span class="tx-tile">${mock.icon('DescriptionOutlined')}</span>
+          <span class="ts-term-text"><strong>${t.title}</strong><span class="tx-muted tx-body2">${party(t)} · version ${t.version}</span>
+            ${accepted[keyOf(t)] ? `<span class="ts-accepted">${mock.icon('CheckCircleOutlined', 'sm')}Accepted · ${LANGUAGE[accepted[keyOf(t)]]}</span>` : '<span class="ts-open">Not accepted yet</span>'}</span>
+          <button class="tx-btn tx-btn--outlined" type="button" data-open-term="${keyOf(t)}"><span>Open</span></button></li>`);
+        const missing = terms.filter((t) => !accepted[keyOf(t)]).length;
+        document.querySelector('[data-submit]').disabled = missing > 0;
+        document.querySelector('[data-submit-hint]').textContent = missing ? `Accept ${missing === 1 ? 'one more document' : `${missing} more documents`} to submit.` : '';
+        const summary = [
+          ['Company', app.companyData.legalName],
+          ['Proven with', L.verification[app.verification]],
+          ['Kind', L.kind[app.kind]],
+          ['Roles', roles.map((r) => c1m2.companyRoles.find((x) => x.role === r).name).join(', ') || '–'],
+        ];
+        document.querySelectorAll('[data-summary]').forEach((el) => { el.innerHTML = summary.map(([k, v]) => `<div><span class="tx-label">${k}</span>${v}</div>`).join(''); });
+        document.getElementById('split').classList.toggle('ob-split', mock.variant('summary') === 'side');
+      }
+      const toggle = (role) => { roles = roles.includes(role) ? roles.filter((r) => r !== role) : [...roles, role]; render(); mock.toast('Roles saved; the terms were updated'); };
+      mock.on('change', '[data-role]', (e, el) => toggle(el.value));
+      mock.on('click', '[data-role-toggle]', (e, el) => toggle(el.dataset.roleToggle));
+      mock.on('click', '[data-submit]', () => { mock.setState('loading'); setTimeout(() => mock.setState('submitted'), 900); });
+      mock.on('click', '[data-reverify]', () => { mock.toast('Verified again with the Business Wallet'); mock.setState('loaded'); });
+      document.addEventListener('click', (e) => { if (e.target.closest('[data-state-button]')) { setTimeout(render); } });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

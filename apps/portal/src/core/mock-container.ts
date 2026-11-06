@@ -23,6 +23,15 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import {
+  createMockC1M2Module,
+  ERIKA_SESSION,
+  HANS_SESSION,
+  LIESCHEN_SESSION,
+  MAX_SESSION,
+  OTTO_SESSION,
+  ROLF_SESSION,
+} from '@dataspace-mgm/c1-m2-core/testing';
 import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
 import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
 import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
@@ -34,37 +43,41 @@ import type { CoreModules } from './container';
 export const DEFAULT_MOCK_PERSON = 'pia';
 
 /**
- * The test persons of mock mode, by their key in the backend test data (testdata/persons-<osp>.json). VITE_MOCK_PERSON
- * picks one; a key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
+ * The test persons of mock mode, by their key in test data or a feature-specific alias. VITE_MOCK_PERSON picks one; a
+ * key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
  */
 export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: PIA_SESSION,
-  /** Erika Mustermann, Company Admin of Beispiel Maschinenbau GmbH (FRAMEWORK 7a; C4-M1 test person P1). */
-  erika: {
+  /** Applicants and OSP staff for C1-M2 Registration. */
+  erika: ERIKA_SESSION,
+  max: MAX_SESSION,
+  hans: HANS_SESSION,
+  lieschen: LIESCHEN_SESSION,
+  rolf: ROLF_SESSION,
+  otto: OTTO_SESSION,
+  /** C4-M1 credentials test persons, kept separate where C1-M2 uses the same names for different identities. */
+  'wallets-erika': {
     user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
     companyId: 'c0000001-0000-4000-8000-000000000001',
     bpn: 'BPNLIUK2REMLK3F4',
     permissions: ['view_credentials'],
     csrfToken: 'csrf-test',
   },
-  /** Max Mustermann, Member of Beispiel Maschinenbau GmbH, without a permission of C4-M1 (P4). */
-  max: {
+  'wallets-max': {
     user: { id: '5a1c0002-0000-4000-8000-000000000002', name: 'Max Mustermann', username: 'max' },
     companyId: 'c0000001-0000-4000-8000-000000000001',
     bpn: 'BPNLIUK2REMLK3F4',
     permissions: [],
     csrfToken: 'csrf-test',
   },
-  /** Otto Normalverbraucher, OSP Admin, staff of the OSP without a company (C4-M1 P2). */
-  otto: {
+  'wallets-otto': {
     user: { id: '5a1c0012-0000-4000-8000-000000000012', name: 'Otto Normalverbraucher', username: 'otto' },
     companyId: null,
     bpn: null,
     permissions: ['manage_credentials'],
     csrfToken: 'csrf-test',
   },
-  /** Rolf Prüfer, OSP Reviewer, without manage_credentials. */
-  rolf: {
+  'wallets-rolf': {
     user: { id: 'bbede0f3-fbc4-433b-b7ca-1982e8724912', name: 'Rolf Prüfer', username: 'rolf' },
     companyId: null,
     bpn: null,
@@ -101,5 +114,6 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     c4m1: createInMemoryC4M1Module({
       companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
     }),
+    c1m2: createMockC1M2Module(session),
   };
 }

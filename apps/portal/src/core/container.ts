@@ -24,6 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import type { C1M2Module } from '@dataspace-mgm/c1-m2-core';
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
 import type { C4M1Module } from '@dataspace-mgm/c4-m1-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
@@ -39,6 +40,11 @@ export interface CoreModules {
    * in-memory adapters. Pages treat a missing module as "not connected". Required here once its HTTP adapter exists.
    */
   c4m1?: C4M1Module;
+  /**
+   * C1-M2 Registration, proof of concept: no HTTP adapter yet, wired only in mock-container.ts. Pages check that it is
+   * there (undefined outside mock mode); it becomes required here with createC1M2Module (skill build-feature).
+   */
+  c1m2?: C1M2Module;
 }
 
 /**

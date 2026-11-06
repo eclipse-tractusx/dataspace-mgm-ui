@@ -95,6 +95,13 @@ export { default as Toolbar } from '@mui/material/Toolbar';
 export { default as Tooltip } from '@mui/material/Tooltip';
 export { default as Typography } from '@mui/material/Typography';
 export { default as useMediaQuery } from '@mui/material/useMediaQuery';
+// Added for the onboarding proof of concept (C1-M2 Registration).
+export { default as Accordion } from '@mui/material/Accordion';
+export { default as AccordionDetails } from '@mui/material/AccordionDetails';
+export { default as AccordionSummary } from '@mui/material/AccordionSummary';
+export { default as Checkbox } from '@mui/material/Checkbox';
+export { default as FormControlLabel } from '@mui/material/FormControlLabel';
+export { default as FormGroup } from '@mui/material/FormGroup';
 export { alpha, useTheme, type SxProps, type Theme } from '@mui/material/styles';
 
 // Icons used by the apps.
@@ -142,9 +149,21 @@ export { default as ChevronRightOutlinedIcon } from '@mui/icons-material/Chevron
 export { default as ContentCopyOutlinedIcon } from '@mui/icons-material/ContentCopyOutlined';
 export { default as ErrorOutlineOutlinedIcon } from '@mui/icons-material/ErrorOutlineOutlined';
 export { default as HourglassTopOutlinedIcon } from '@mui/icons-material/HourglassTopOutlined';
-export { default as LockOutlinedIcon } from '@mui/icons-material/LockOutlined';
 export { default as PendingActionsOutlinedIcon } from '@mui/icons-material/PendingActionsOutlined';
 export { default as ScheduleOutlinedIcon } from '@mui/icons-material/ScheduleOutlined';
 export { default as SearchOffOutlinedIcon } from '@mui/icons-material/SearchOffOutlined';
 export { default as TaskAltOutlinedIcon } from '@mui/icons-material/TaskAltOutlined';
 export { default as WarningAmberOutlinedIcon } from '@mui/icons-material/WarningAmberOutlined';
+// Icons added for the onboarding proof of concept (C1-M2 Registration).
+export { default as AddBusinessOutlinedIcon } from '@mui/icons-material/AddBusinessOutlined';
+export { default as AutorenewOutlinedIcon } from '@mui/icons-material/AutorenewOutlined';
+export { default as CheckCircleOutlinedIcon } from '@mui/icons-material/CheckCircleOutlined';
+export { default as DeleteOutlinedIcon } from '@mui/icons-material/DeleteOutlined';
+export { default as DescriptionOutlinedIcon } from '@mui/icons-material/DescriptionOutlined';
+export { default as EditOutlinedIcon } from '@mui/icons-material/EditOutlined';
+export { default as ExpandMoreIcon } from '@mui/icons-material/ExpandMore';
+export { default as HelpOutlineOutlinedIcon } from '@mui/icons-material/HelpOutlineOutlined';
+export { default as LockOutlinedIcon } from '@mui/icons-material/LockOutlined';
+export { default as ScheduleIcon } from '@mui/icons-material/Schedule';
+export { default as SendOutlinedIcon } from '@mui/icons-material/SendOutlined';
+export { default as UploadFileOutlinedIcon } from '@mui/icons-material/UploadFileOutlined';

@@ -90,6 +90,10 @@
       "name": "Onboarding",
       "description": "Register companies, review their applications and bring them into the dataspace."
     },
+    "onboarding-review": {
+      "name": "Application review",
+      "description": "Review, approve or decline the registration applications of companies."
+    },
     "participants": {
       "name": "Participant management",
       "description": "Company data, business partner numbers, users and technical users of every participant."

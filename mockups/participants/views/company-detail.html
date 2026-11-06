@@ -1,0 +1,430 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Company — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .cd-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .cd-title-row .tx-title { margin: 0; }
+    .cd-meta { display: flex; gap: 8px 16px; flex-wrap: wrap; align-items: center; color: var(--muted); margin-top: 10px; }
+    .cd-alerts { display: grid; gap: 12px; margin-bottom: 24px; }
+    .cd-cspline { display: flex; gap: 12px 20px; align-items: center; flex-wrap: wrap; padding: 12px 16px; border: 1px solid var(--subtle-border); border-radius: var(--radius); margin-bottom: 24px; font-size: 0.9375rem; }
+    .cd-cspline__label { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .cd-cspline a { margin-left: auto; }
+    .cd-roles { list-style: none; margin: 0; padding: 0; }
+    .cd-roles li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--subtle-border); flex-wrap: wrap; }
+    .cd-roles li:last-child { border-bottom: 0; }
+    .cd-edit { border-color: var(--tx-orange); box-shadow: var(--hero-glow); }
+    .cd-edit-bar { display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .cd-id-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto; gap: 8px; align-items: center; }
+    .cd-id-row .tx-input, .cd-id-row .tx-select { padding: 10px 12px; }
+    @media (max-width: 599.98px) { .cd-id-row { grid-template-columns: 1fr auto; } .cd-id-row > :first-child { grid-column: 1 / -1; } }
+    .cd-dialog { max-width: min(720px, calc(100vw - 32px)); }
+    .cd-dialog .tx-dialog__body { max-height: 70vh; overflow-y: auto; outline: none; }
+    .cd-consequences { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 0.9375rem; }
+  </style>
+</head>
+<!-- C3-M1 7.11 GET /osp/companies/{companyId} (view_companies), 7.12 PATCH correction and 7.13 POST deactivate
+     (manage_companies); C3-M2 7.1 GET /api/c3-m2/companies/{companyId} (view_csp_registration). -->
+<body data-active="/participants" data-view="Company" data-states="loaded,read-only,inactive,loading,not-found,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="layout:sections" data-dimension="Layout" data-variant-label="Sections + side panel"></span>
+      <span data-variant="layout:tabs" data-variant-label="Tabs"></span>
+      <span data-variant="actions:header" data-dimension="Staff actions" data-variant-label="Buttons in the header"></span>
+      <span data-variant="actions:menu" data-variant-label="A “More actions” menu"></span>
+      <span data-variant="correct:dialog" data-dimension="Correct the data" data-variant-label="In a dialog"></span>
+      <span data-variant="correct:inplace" data-variant-label="Edit mode in place"></span>
+      <span data-variant="csp:side" data-dimension="Status at the CSP" data-variant-label="Side panel"></span>
+      <span data-variant="csp:section" data-variant-label="Own section"></span>
+      <span data-variant="csp:line" data-variant-label="One line + link"></span>
+    </div>
+
+    <a class="px-back" href="companies.html"><span data-icon="ArrowBack" data-size="sm"></span>Companies</a>
+
+    <section data-show-state="loaded read-only inactive error" id="content"></section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the company">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading the company…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="not-found">
+      <div class="tx-alert tx-alert--warning" role="alert">
+        <span data-icon="WarningAmberOutlined"></span>
+        <div>
+          <div>There is no company with this ID at OSP A.</div>
+          <code>urn:c3-m1:problem:not-found</code>
+        </div>
+        <a class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" href="companies.html">All companies</a>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog cd-dialog" id="correct-dialog" aria-labelledby="correct-dialog-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="correct-dialog-title">Correct the company data</h2>
+        <p class="tx-muted" style="margin: 0 0 20px">The correction is stored with your reason in the audit log.</p>
+        <div id="correct-dialog-form"></div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-save-correction>Save correction</button>
+      </div>
+    </dialog>
+
+    <dialog class="tx-dialog" id="deactivate-dialog" aria-labelledby="deactivate-title">
+      <div class="tx-dialog__body px-form">
+        <h2 class="tx-h3" id="deactivate-title">Deactivate the company?</h2>
+        <p style="margin: 0"><strong id="deactivate-name"></strong> stays in the dataspace records, but for as long as it is deactivated:</p>
+        <ul class="cd-consequences">
+          <li>its people keep their accounts but lose the company, its portal roles and app roles;</li>
+          <li>its technical users are deactivated, not deleted;</li>
+          <li>its membership credential is revoked; the BPN credential stays;</li>
+          <li>its membership in the dataspace is deregistered at the CSP;</li>
+          <li>its data can no longer be changed. Its dataspace wallet remains.</li>
+        </ul>
+        <p class="tx-muted tx-body2" style="margin: 0">A person with a mandate can apply for reactivation.</p>
+        <div>
+          <label class="tx-label" for="deactivate-reason">Reason</label>
+          <textarea class="tx-textarea" id="deactivate-reason" rows="3" maxlength="500"></textarea>
+          <div class="tx-help" id="deactivate-help">Required, up to 500 characters. Only in the audit log; the company does not see it.</div>
+        </div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn tx-btn--danger" type="button" data-confirm-deactivate>Deactivate company</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc, labels } = px;
+      const data = mock.data;
+      let company = JSON.parse(JSON.stringify(data.companies[data.ids.u1]));
+      const csp = data.cspRegistrations[company.id];
+      let editing = false;
+      let menuOpen = false;
+      let tab = 'overview';
+
+      const view = () => {
+        const state = document.body.dataset.state;
+        const personKey = state === 'read-only' ? 'rolf' : 'otto';
+        const perms = data.permissions[personKey];
+        const c = state === 'inactive'
+          ? { ...company, status: 'INACTIVE', deactivationReason: 'MANUAL', deactivatedAt: '2026-11-06T08:40:00Z' }
+          : company;
+        // Shown by permission from GET /me (allowed). Shown by status (ACTIVE / REQUESTED): open question, needs a flag.
+        const manage = perms.includes('manage_companies');
+        return {
+          state, personKey, c,
+          canCorrect: manage && ['ACTIVE', 'REQUESTED'].includes(c.status),
+          canDeactivate: manage && c.status === 'ACTIVE',
+          showCsp: perms.includes('view_csp_registration'),
+          v: (k) => mock.variant(k),
+        };
+      };
+
+      // ── header and actions ───────────────────────────────────────────────
+      const actions = (ctx) => {
+        if (!ctx.canCorrect && !ctx.canDeactivate) { return ''; }
+        if (ctx.v('actions') === 'menu') {
+          return `<div class="px-menu-wrap"><button class="tx-btn tx-btn--outlined" type="button" data-toggle-menu aria-expanded="${menuOpen}">${mock.icon('MoreVert')}More actions</button>
+            ${menuOpen ? `<ul class="px-menu" role="menu">
+              ${ctx.canCorrect ? `<li><button type="button" role="menuitem" data-correct>${mock.icon('EditOutlined', 'sm')}Correct data</button></li>` : ''}
+              ${ctx.showCsp ? `<li><button type="button" role="menuitem" data-href="csp-registration.html">${mock.icon('HubOutlined', 'sm')}Status at the CSP</button></li>` : ''}
+              ${ctx.canDeactivate ? `<li><button type="button" role="menuitem" class="px-danger" data-deactivate>${mock.icon('BlockOutlined', 'sm')}Deactivate company</button></li>` : ''}
+            </ul>` : ''}</div>`;
+        }
+        return `${ctx.canCorrect ? `<button class="tx-btn tx-btn--outlined" type="button" data-correct>${mock.icon('EditOutlined')}Correct data</button>` : ''}
+          ${ctx.canDeactivate ? `<button class="tx-btn tx-btn--secondary" type="button" data-deactivate>${mock.icon('BlockOutlined')}Deactivate</button>` : ''}`;
+      };
+
+      const header = (ctx) => `<div class="px-head">
+        <div>
+          <div class="tx-overline">Participant management · Company</div>
+          <div class="cd-title-row"><h1 class="tx-title" id="view-title">${esc(ctx.c.name)}</h1>${px.chip('companyStatus', ctx.c.status)}</div>
+          <div class="cd-meta"><span class="px-mono">${esc(ctx.c.bpn || 'No BPN yet')}</span>${px.coreSource(ctx.c.coreDataSource)}<span>${esc(ctx.c.dataspaceName)}</span></div>
+        </div>
+        <div class="px-head__actions">${actions(ctx)}</div>
+      </div>`;
+
+      const alerts = (ctx) => {
+        const list = [];
+        if (ctx.state === 'error') {
+          list.push(`<div class="tx-alert tx-alert--error" role="alert">${mock.icon('ErrorOutlineOutlined')}<div>
+            <div>The correction was not saved (HTTP 409): the country cannot change after the BPN was assigned.</div>
+            <code>urn:c3-m1:problem:field-locked</code> <span class="tx-muted tx-body2">fields: countryCode</span></div></div>`);
+        }
+        if (ctx.c.status === 'INACTIVE') {
+          list.push(`<div class="tx-alert tx-alert--warning">${mock.icon('BlockOutlined')}<div>
+            <strong>Deactivated ${px.dateTime(ctx.c.deactivatedAt)}</strong> · ${esc(labels.deactivationReason[ctx.c.deactivationReason])}.
+            The data cannot be corrected while the company is deactivated.</div></div>`);
+        }
+        const open = data.changeRequests.find((cr) => cr.id === ctx.c.openChangeRequestId);
+        if (open) {
+          list.push(`<div class="tx-alert tx-alert--info">${mock.icon('PendingActionsOutlined')}<div>
+            Open change request since ${px.date(open.createdAt)}: ${esc(px.changeSummary(open.changes, ctx.c))}, with ${open.documents.length} supporting document${open.documents.length === 1 ? '' : 's'}.</div>
+            <a class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" href="change-request-review.html">Review</a></div>`);
+        }
+        return list.length ? `<div class="cd-alerts">${list.join('')}</div>` : '';
+      };
+
+      // ── read-only blocks ─────────────────────────────────────────────────
+      const coreFields = (ctx) => `<dl class="px-fields px-fields--2">
+        <div class="px-field"><dt>Legal name</dt><dd>${esc(ctx.c.name)}</dd></div>
+        <div class="px-field"><dt>Short name</dt><dd>${ctx.c.shortName ? esc(ctx.c.shortName) : '<span class="px-none">No short name</span>'}</dd></div>
+        <div class="px-field"><dt>Address</dt><dd>${px.address(ctx.c.address)}</dd></div>
+        <div class="px-field"><dt>Core data</dt><dd>${px.coreSource(ctx.c.coreDataSource)}
+          <div class="tx-muted tx-body2" style="margin-top: 4px">Verified ${px.dateTime(ctx.c.coreDataVerifiedAt)}</div>
+          ${ctx.c.verificationRef ? `<div class="tx-muted tx-body2">Verification <span class="px-mono">${esc(px.shortId(ctx.c.verificationRef))}</span></div>` : ''}</dd></div>
+      </dl>`;
+
+      const coreCard = (ctx) => {
+        if (editing && ctx.v('correct') === 'inplace') {
+          return `<section class="tx-card cd-edit" aria-labelledby="h-core-edit">
+            <div class="px-section__head"><div><h2 class="tx-h3" id="h-core-edit">Correct the company data</h2>
+              <p class="tx-muted tx-body2">The correction is stored with your reason in the audit log.</p></div></div>
+            ${form(ctx)}
+            <div class="cd-edit-bar"><button class="tx-btn tx-btn--outlined" type="button" data-cancel-correction>Cancel</button>
+              <button class="tx-btn" type="button" data-save-correction>Save correction</button></div>
+          </section>`;
+        }
+        return `<section class="tx-card" aria-labelledby="h-core">
+          <div class="px-section__head"><h2 class="tx-h3" id="h-core">Core data</h2>
+            ${ctx.canCorrect && ctx.v('correct') === 'inplace' ? `<button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-correct>${mock.icon('EditOutlined', 'sm')}Correct</button>` : ''}</div>
+          ${coreFields(ctx)}
+        </section>`;
+      };
+
+      const idsCard = (ctx) => `<section class="tx-card" aria-labelledby="h-ids"><div class="px-section__head"><h2 class="tx-h3" id="h-ids">Identifiers</h2></div>${px.identifiers(ctx.c.identifiers)}</section>`;
+
+      const rolesCard = (ctx) => `<section class="tx-card" aria-labelledby="h-roles"><div class="px-section__head"><h2 class="tx-h3" id="h-roles">Company roles</h2></div>
+        <ul class="cd-roles">${ctx.c.companyRoles.map((r) => `<li><span>${esc(labels.role[r.companyRole] || r.companyRole)}</span>
+          <span class="tx-row"><span class="tx-muted tx-body2">${r.activatedAt ? `since ${px.date(r.activatedAt)}` : ''}</span>${px.chip('roleStatus', r.status)}</span></li>`).join('')}</ul></section>`;
+
+      const shortCopy = (id) => `<span class="px-value"><span class="px-mono" title="${esc(id)}">${esc(px.shortId(id))}</span><button class="px-copy" type="button" data-copy="${esc(id)}" title="Copy">${mock.icon('ContentCopyOutlined', 'sm')}</button></span>`;
+
+      const recordCard = (ctx) => `<section class="tx-card" aria-labelledby="h-record"><div class="px-section__head"><h2 class="tx-h3" id="h-record">Record</h2></div>
+        <dl class="px-kv">
+          <dt>Company ID</dt><dd>${shortCopy(ctx.c.id)}</dd>
+          <dt>Application</dt><dd>${ctx.c.applicationId ? shortCopy(ctx.c.applicationId) : '<span class="px-none">Seed data</span>'}</dd>
+          <dt>Created</dt><dd>${px.dateTime(ctx.c.createdAt)}</dd>
+          <dt>BPN assigned</dt><dd>${px.dateTime(ctx.c.bpnAssignedAt)}</dd>
+          <dt>Activated</dt><dd>${px.dateTime(ctx.c.activatedAt)}</dd>
+          <dt>Last change</dt><dd>${px.dateTime(ctx.c.changedAt)}</dd>
+          ${ctx.c.deactivatedAt ? `<dt>Deactivated</dt><dd>${px.dateTime(ctx.c.deactivatedAt)} · ${esc(labels.deactivationReason[ctx.c.deactivationReason])}</dd>` : ''}
+          ${ctx.c.reactivatedAt ? `<dt>Reactivated</dt><dd>${px.dateTime(ctx.c.reactivatedAt)}</dd>` : ''}
+          ${ctx.c.rejectedAt ? `<dt>Rejected</dt><dd>${px.dateTime(ctx.c.rejectedAt)}</dd>` : ''}
+        </dl></section>`;
+
+      // ── C3-M2: status of the company at the CSP ──────────────────────────
+      const cspKv = () => `<dl class="px-kv">
+        <dt>Registration</dt><dd>${px.chip('cspStatus', csp.status)}</dd>
+        <dt>BPN</dt><dd>${px.copyable(csp.bpn)}</dd>
+        <dt>DID</dt><dd>${csp.did ? `<span class="px-mono">${esc(csp.did)}</span>` : '<span class="px-none">Not registered</span>'}</dd>
+        <dt>Membership</dt><dd>${px.chip('membership', csp.membership)}</dd>
+        <dt>Registered</dt><dd>${px.dateTime(csp.registeredAt)}</dd>
+        <dt>Last update</dt><dd>${px.dateTime(csp.updatedAt)}</dd>
+      </dl>`;
+      const cspCard = (cls) => `<section class="tx-card ${cls || ''}" aria-labelledby="h-csp">
+        <div class="px-section__head"><div><h2 class="tx-h3" id="h-csp">At the CSP</h2><p class="tx-muted tx-body2">The core service provider knows the company by its BPN, with OSP A as home OSP.</p></div></div>
+        ${cspKv()}
+        <div style="margin-top: 16px"><a class="tx-link" href="csp-registration.html">Details of the registration →</a></div></section>`;
+      const cspLine = () => `<div class="cd-cspline"><span class="cd-cspline__label">At the CSP</span>${px.chip('cspStatus', csp.status)}${px.chip('membership', csp.membership)}
+        <span class="tx-muted">${csp.did ? 'DID registered' : 'No DID registered'} · updated ${px.date(csp.updatedAt)}</span>
+        <a class="tx-link" href="csp-registration.html">Details →</a></div>`;
+
+      // ── correction form (the same fields in the dialog and in place) ─────
+      function form(ctx) {
+        const a = ctx.c.address;
+        const ebw = ctx.c.coreDataSource === 'EBW';
+        const declared = ctx.c.identifiers.filter((i) => i.source === 'DECLARED');
+        const fromWallet = ctx.c.identifiers.filter((i) => i.source === 'BUSINESS_WALLET');
+        const input = (key, label, value, cls, max) => `<div class="${cls || ''}"><label class="tx-label" for="f-${key}">${label}</label>
+          <input class="tx-input" id="f-${key}" data-field="${key}" value="${esc(value || '')}"${max ? ` maxlength="${max}"` : ''}></div>`;
+        const types = Object.entries(labels.identifierType).filter(([t]) => !fromWallet.some((i) => i.type === t));
+        const idRow = (i, n) => `<div class="cd-id-row"><select class="tx-select" aria-label="Type of identifier ${n + 1}">${types.map(([t, l]) => `<option value="${t}"${t === i.type ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
+          <input class="tx-input px-mono" value="${esc(i.value)}" aria-label="Value of identifier ${n + 1}">
+          <button class="px-copy" type="button" title="Remove" data-remove-id>${mock.icon('DeleteOutlined', 'sm')}</button></div>`;
+        return `<div class="px-form">
+          ${ebw ? `<div class="tx-alert tx-alert--warning">${mock.icon('WarningAmberOutlined')}<div>The core data of this company comes from its Business Wallet.
+            If you change the legal name or the address, the source becomes “Checked by the onboarding service provider” and the link to the verification is removed.</div></div>` : ''}
+          <div class="px-form-grid">
+            ${input('name', 'Legal name', ctx.c.name, 'px-span-4', 160)}
+            ${input('shortName', 'Short name', ctx.c.shortName, 'px-span-2', 100)}
+            ${input('street', 'Street', a.street, 'px-span-4', 255)}
+            ${input('houseNumber', 'House number', a.houseNumber, 'px-span-2', 50)}
+            ${input('addressAddition', 'Address addition', a.addressAddition)}
+            ${input('postalCode', 'Postal code', a.postalCode, 'px-span-2', 12)}
+            ${input('city', 'City', a.city, 'px-span-4', 255)}
+            ${input('region', 'Region', a.region, 'px-span-2', 3)}
+            <div class="px-span-4"><label class="tx-label" for="f-country">Country</label>
+              <input class="tx-input" id="f-country" value="${esc(px.country(a.countryCode))} (${esc(a.countryCode)})" readonly>
+              <div class="px-locked">${mock.icon('LockOutlined')}Locked: the CSP knows the company with this country since the BPN was assigned.</div></div>
+          </div>
+          <div><div class="tx-label">Identifiers</div>
+            ${fromWallet.length ? `<div class="tx-help" style="margin: 0 0 8px">From the Business Wallet, changed only by a new verification:</div>${px.identifiers(fromWallet)}` : ''}
+            <div class="tx-help" style="margin: 12px 0 8px">Declared identifiers (the complete new list):</div>
+            <div class="px-form" style="gap: 8px" id="declared-ids">${declared.map(idRow).join('')}</div>
+            <button class="tx-btn tx-btn--text tx-btn--sm" type="button" style="margin-top: 8px" data-add-id>${mock.icon('Add', 'sm')}Add identifier</button></div>
+          <div><label class="tx-label" for="f-reason">Reason</label>
+            <textarea class="tx-textarea" id="f-reason" rows="3" maxlength="500" placeholder="For example: hint from the application review, register extract of 05 Nov 2026"></textarea>
+            <div class="tx-help" id="f-reason-help">Required, up to 500 characters. Stored in the audit log.</div></div>
+        </div>`;
+      }
+
+      // ── layouts ──────────────────────────────────────────────────────────
+      const layouts = {
+        sections: (ctx) => {
+          const side = ctx.showCsp && ctx.v('csp') === 'side';
+          const main = `<div class="px-sections">${coreCard(ctx)}${idsCard(ctx)}${ctx.showCsp && ctx.v('csp') === 'section' ? cspCard() : ''}${side ? '' : rolesCard(ctx)}${side ? '' : recordCard(ctx)}</div>`;
+          const aside = side ? `<aside class="px-aside">${cspCard('px-card-sm')}${rolesCard(ctx)}${recordCard(ctx)}</aside>` : '';
+          return side ? `<div class="px-split">${main}${aside}</div>` : main;
+        },
+        tabs: (ctx) => {
+          const tabs = [['overview', 'Overview'], ['roles', 'Company roles'], ['record', 'Record']];
+          if (ctx.showCsp && ctx.v('csp') === 'section') { tabs.push(['csp', 'At the CSP']); }
+          if (!tabs.some(([k]) => k === tab)) { tab = 'overview'; }
+          const panels = {
+            overview: () => `<div class="px-sections">${coreCard(ctx)}${idsCard(ctx)}</div>`,
+            roles: () => rolesCard(ctx),
+            record: () => recordCard(ctx),
+            csp: () => cspCard(),
+          };
+          const body = `<div class="tx-tabs" role="tablist">${tabs.map(([k, l]) => `<button class="tx-tab" role="tab" type="button" data-tab="${k}" aria-selected="${tab === k}">${l}</button>`).join('')}</div>
+            <div role="tabpanel">${panels[tab]()}</div>`;
+          return ctx.showCsp && ctx.v('csp') === 'side' ? `<div class="px-split"><div>${body}</div><aside class="px-aside">${cspCard('px-card-sm')}</aside></div>` : body;
+        },
+      };
+
+      function render() {
+        const ctx = view();
+        if (!ctx.canCorrect) { editing = false; }
+        document.getElementById('persona').innerHTML = px.persona(ctx.personKey, ctx.personKey === 'rolf' ? 'no manage_companies, no view_csp_registration' : '');
+        document.getElementById('content').innerHTML = `${header(ctx)}${alerts(ctx)}${ctx.showCsp && ctx.v('csp') === 'line' ? cspLine() : ''}${layouts[ctx.v('layout')](ctx)}`;
+      }
+
+      function openCorrection() {
+        menuOpen = false;
+        if (mock.variant('correct') === 'dialog') {
+          render();
+          document.getElementById('correct-dialog-form').innerHTML = form(view());
+          document.getElementById('correct-dialog').showModal();
+        } else {
+          editing = true;
+          tab = 'overview';
+          render();
+          document.getElementById('f-name').focus();
+        }
+      }
+
+      function saveCorrection() {
+        const reason = document.getElementById('f-reason');
+        if (!reason.value.trim()) {
+          const help = document.getElementById('f-reason-help');
+          help.textContent = 'Say why you correct the data (required).';
+          help.classList.add('tx-help--error');
+          reason.focus();
+          return;
+        }
+        const get = (k) => document.querySelector(`[data-field="${k}"]`).value.trim() || null;
+        const next = { street: get('street'), houseNumber: get('houseNumber'), addressAddition: get('addressAddition'), postalCode: get('postalCode'), city: get('city'), region: get('region') };
+        const coreChanged = get('name') !== company.name || Object.entries(next).some(([k, v]) => v !== company.address[k]);
+        company = { ...company, name: get('name') || company.name, shortName: get('shortName'), address: { ...company.address, ...next }, changedAt: '2026-11-06T09:30:00Z' };
+        if (coreChanged) {
+          company = { ...company, coreDataSource: 'MANUAL', verificationRef: null, coreDataVerifiedAt: '2026-11-06T09:30:00Z' };
+        }
+        const dialog = document.getElementById('correct-dialog');
+        if (dialog.open) { dialog.close(); }
+        editing = false;
+        render();
+        mock.toast(coreChanged ? 'Correction saved. The core data is now checked by the OSP.' : 'Correction saved');
+      }
+
+      mock.on('click', '[data-correct]', openCorrection);
+      mock.on('click', '[data-cancel-correction]', () => { editing = false; render(); });
+      mock.on('click', '[data-save-correction]', saveCorrection);
+      mock.on('click', '[data-add-id]', (_e, el) => {
+        const list = el.parentElement.querySelector('#declared-ids');
+        const row = document.createElement('div');
+        row.className = 'cd-id-row';
+        row.innerHTML = `<select class="tx-select" aria-label="Type of the new identifier">${Object.entries(labels.identifierType).filter(([t]) => !['EBWOID', 'EUID'].includes(t)).map(([t, l]) => `<option value="${t}">${esc(l)}</option>`).join('')}</select>
+          <input class="tx-input px-mono" aria-label="Value of the new identifier"><button class="px-copy" type="button" title="Remove" data-remove-id>${mock.icon('DeleteOutlined', 'sm')}</button>`;
+        list.appendChild(row);
+        row.querySelector('input').focus();
+      });
+      mock.on('click', '[data-remove-id]', (_e, el) => el.closest('.cd-id-row').remove());
+      mock.on('click', '[data-toggle-menu]', () => { menuOpen = !menuOpen; render(); });
+      mock.on('click', '[data-href]', (_e, el) => { location.href = el.dataset.href; });
+      document.addEventListener('click', (event) => {
+        if (menuOpen && !event.target.closest('.px-menu-wrap')) { menuOpen = false; render(); }
+      });
+      mock.on('click', '[data-deactivate]', () => {
+        menuOpen = false;
+        render();
+        document.getElementById('deactivate-name').textContent = company.name;
+        document.getElementById('deactivate-reason').value = '';
+        document.getElementById('deactivate-dialog').showModal();
+      });
+      mock.on('click', '[data-confirm-deactivate]', () => {
+        const reason = document.getElementById('deactivate-reason');
+        if (!reason.value.trim()) {
+          const help = document.getElementById('deactivate-help');
+          help.textContent = 'Say why the company is deactivated (required).';
+          help.classList.add('tx-help--error');
+          reason.focus();
+          return;
+        }
+        document.getElementById('deactivate-dialog').close();
+        mock.setState('inactive');
+        render();
+        mock.toast('Company deactivated');
+      });
+      mock.on('click', '[data-tab]', (_e, el) => { tab = el.dataset.tab; render(); });
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(() => { editing = false; menuOpen = false; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

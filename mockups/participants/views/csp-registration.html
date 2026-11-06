@@ -1,0 +1,238 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · CSP registration — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .csp-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .csp-title-row .tx-title { margin: 0; }
+    .csp-block { display: grid; gap: 24px; }
+    .csp-context { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .csp-context__main { flex: 1; min-width: 220px; }
+    .csp-context__name { font-weight: 700; font-size: 1.125rem; }
+    .csp-id { color: var(--muted); font-size: 0.875rem; }
+    .csp-check { list-style: none; margin: 0; padding: 0; }
+    .csp-check li { display: grid; grid-template-columns: 28px 1fr auto; gap: 14px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--subtle-border); }
+    .csp-check li:last-child { border-bottom: 0; }
+    .csp-check__icon { padding-top: 2px; }
+    .csp-check__icon.is-yes { color: var(--success); }
+    .csp-check__icon.is-no { color: var(--muted); }
+    .csp-check__icon.is-wait { color: var(--warning); }
+    .csp-check__icon.is-bad { color: var(--error); }
+    .csp-check__title { font-weight: 600; }
+    .csp-help { color: var(--muted); font-size: 0.875rem; margin-top: 2px; }
+    @media (max-width: 599.98px) { .csp-check li { grid-template-columns: 28px 1fr; } .csp-check li > :last-child { grid-column: 2; } }
+    .csp-note { font-size: 0.875rem; color: var(--muted); }
+  </style>
+</head>
+<!-- C3-M2 7.1 GET /api/c3-m2/companies/{companyId} (getCspRegistration, view_csp_registration, scope osp). -->
+<body data-active="/participants" data-view="CSP registration" data-states="registered,pending,failed,transferred-away,not-found,forbidden">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="display:steps" data-dimension="Show the registration as" data-variant-label="Progress steps"></span>
+      <span data-variant="display:fields" data-variant-label="Fields with help"></span>
+      <span data-variant="display:checklist" data-variant-label="Checklist"></span>
+      <span data-variant="status:banner" data-dimension="Status" data-variant-label="Banner with explanation"></span>
+      <span data-variant="status:chip" data-variant-label="Chip next to the title"></span>
+      <span data-variant="context:company" data-dimension="Company context" data-variant-label="Company card from C3-M1"></span>
+      <span data-variant="context:none" data-variant-label="Only the registration"></span>
+    </div>
+
+    <a class="px-back" href="company-detail.html"><span data-icon="ArrowBack" data-size="sm"></span>Company</a>
+
+    <section data-show-state="registered pending failed transferred-away" id="content"></section>
+
+    <section data-show-state="not-found">
+      <div class="px-head"><div><div class="tx-overline">Participant management · Core service provider</div><h1 class="tx-title">CSP registration</h1></div></div>
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="HubOutlined"></div>
+        <h2 class="tx-h3">Not registered at the CSP yet</h2>
+        <p>Ohne Zustimmung GmbH has no registration at the core service provider. The registration starts after the application is approved.</p>
+        <code>urn:c3-m2:problem:not-found</code>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="px-head"><div><div class="tx-overline">Participant management · Core service provider</div><h1 class="tx-title">CSP registration</h1></div></div>
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>Only the OSP Admin sees the registration at the CSP (HTTP 403).</div>
+          <code>urn:c3-m2:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc, labels } = px;
+      const data = mock.data;
+      const ds = data.installation.dataspace;
+      const osp = data.installation.name;
+
+      // One registration per state of the state switcher; the C3-M1 company as it is at that moment.
+      function scenario(state) {
+        const u1 = data.companies[data.ids.u1];
+        const u2 = data.companies[data.ids.u2];
+        const u4 = data.companies[data.ids.u4];
+        switch (state) {
+          case 'pending':
+            return { reg: data.cspVariants.pending, company: { ...u2, status: 'REQUESTED', bpn: null } };
+          case 'failed':
+            return { reg: data.cspVariants.failed, company: { ...u4, status: 'REQUESTED', bpn: null } };
+          case 'transferred-away':
+            return { reg: data.cspVariants.transferredAway, company: { ...u2, status: 'INACTIVE', deactivationReason: 'TRANSFERRED' } };
+          default:
+            return { reg: data.cspRegistrations[u1.id], company: u1 };
+        }
+      }
+
+      // The three parts of a registration, read from the fields of CspRegistration (display only, no next step).
+      function parts(reg) {
+        const registered = reg.status === 'REGISTERED' || reg.status === 'TRANSFERRED_AWAY';
+        return [
+          {
+            key: 'bpn', title: 'Registered at the CSP',
+            state: { REGISTERED: 'yes', TRANSFERRED_AWAY: 'yes', PENDING: 'wait', FAILED: 'bad' }[reg.status],
+            value: reg.bpn ? `<span class="px-mono">${esc(reg.bpn)}</span>` : '<span class="px-none">No BPN yet</span>',
+            help: 'The CSP assigns or confirms the business partner number (BPN) and enters the home OSP of the company.',
+            meta: reg.status === 'FAILED' ? esc(labels.failureReason[reg.failureReason] || reg.failureReason)
+              : reg.status === 'PENDING' ? `Waiting for the CSP since ${px.dateTime(reg.updatedAt)}`
+                : `Registered ${px.dateTime(reg.registeredAt)}`,
+          },
+          {
+            key: 'did', title: 'DID in the BPN → DID directory',
+            state: reg.did ? 'yes' : 'no',
+            value: reg.did ? `<span class="px-mono">${esc(reg.did)}</span>` : '<span class="px-none">Not registered</span>',
+            help: 'Partners find the dataspace wallet of the company from its BPN.',
+            meta: reg.did ? 'Entered at the CSP' : (registered ? 'Entered after the dataspace wallet exists' : 'Needs the registration first'),
+          },
+          {
+            key: 'membership', title: `Member of ${ds}`,
+            state: reg.membership === 'REGISTERED' ? 'yes' : 'no',
+            value: px.chip('membership', reg.membership),
+            help: 'Only members are named in the discovery of the CSP; their connectors can be found.',
+            meta: reg.status === 'TRANSFERRED_AWAY' ? 'Now managed by the new home OSP' : { REGISTERED: 'Registered at the CSP', DEREGISTERED: 'Deregistered at the CSP', NONE: 'Not registered at the CSP' }[reg.membership],
+          },
+        ];
+      }
+
+      const icons = {
+        yes: () => mock.icon('CheckCircleOutlined'),
+        no: () => mock.icon('RadioButtonUnchecked'),
+        wait: () => mock.icon('HourglassEmptyOutlined'),
+        bad: () => mock.icon('CancelOutlined'),
+      };
+      const dotClass = { yes: 'is-done', no: '', wait: 'is-current', bad: 'is-failed' };
+
+      const banner = (reg, company) => {
+        const text = {
+          REGISTERED: [`${ds} knows ${esc(company.name)} by ${esc(reg.bpn)}`, `${osp} is its home OSP. Only ${osp} may change the company at the CSP.`, 'success', () => mock.icon('CloudDoneOutlined')],
+          PENDING: ['The CSP is processing the registration', 'The BPN arrives when the CSP confirms the registration. The company stays Requested until then.', 'warning', () => mock.icon('SyncOutlined')],
+          FAILED: ['The CSP rejected the registration', `${esc(labels.failureReason[reg.failureReason] || reg.failureReason)} The company stays Requested without a BPN.`, 'error', () => mock.icon('ErrorOutlineOutlined')],
+          TRANSFERRED_AWAY: ['The company moved to another OSP', `The CSP reported the transfer ${px.dateTime(reg.updatedAt)}. The BPN stays the same; ${osp} no longer manages the company.`, 'default', () => mock.icon('SwapHorizOutlined')],
+        }[reg.status];
+        return `<div class="px-banner px-banner--${text[2]}">
+          <div class="tx-tile">${text[3]()}</div>
+          <div class="px-banner__main"><div class="px-banner__title">${text[0]}</div><div class="tx-muted">${text[1]}</div></div>
+          ${px.chip('cspStatus', reg.status)}</div>`;
+      };
+
+      const contextCard = (company) => `<div class="tx-card px-card-sm"><div class="csp-context">
+        <div class="tx-tile" aria-hidden="true">${mock.icon('BusinessOutlined')}</div>
+        <div class="csp-context__main"><div class="csp-context__name">${esc(company.name)}</div>
+          <div class="csp-id">${px.addressOneLine(company.address)}</div></div>
+        <div class="tx-row">${px.chip('companyStatus', company.status)}<a class="tx-btn tx-btn--text tx-btn--sm" href="company-detail.html">Open company</a></div>
+      </div></div>`;
+
+      const steps = (reg) => `<section class="tx-card" aria-labelledby="h-reg"><div class="px-section__head"><h2 class="tx-h3" id="h-reg">Registration</h2></div>
+        <ol class="px-progress">${parts(reg).map((p) => `<li class="${dotClass[p.state]}">
+          <span class="px-dot">${icons[p.state]()}</span>
+          <div><div class="px-progress__title">${p.title}</div><div style="margin: 4px 0">${p.value}</div>
+            <div class="px-progress__meta">${p.meta}</div><div class="csp-help">${p.help}</div></div></li>`).join('')}</ol></section>`;
+
+      const fields = (reg) => `<section class="tx-card" aria-labelledby="h-reg"><div class="px-section__head"><h2 class="tx-h3" id="h-reg">Registration</h2></div>
+        <dl class="px-fields px-fields--2">
+          <div class="px-field"><dt>Status</dt><dd>${px.chip('cspStatus', reg.status)}<div class="csp-help">Registration of the company in the company identifier service of the CSP.</div></dd></div>
+          <div class="px-field"><dt>Business partner number</dt><dd>${px.copyable(reg.bpn)}<div class="csp-help">Assigned or confirmed by the CSP, never set by hand.</div></dd></div>
+          <div class="px-field"><dt>Home OSP</dt><dd>${reg.status === 'REGISTERED' ? `${osp} (this installation)` : '<span class="px-none">Not returned by the API</span>'}<div class="csp-help">Exactly one OSP manages a company at the CSP.</div></dd></div>
+          <div class="px-field"><dt>DID</dt><dd>${reg.did ? `<span class="px-mono">${esc(reg.did)}</span>` : '<span class="px-none">Not registered</span>'}<div class="csp-help">Entry in the BPN → DID directory: partners find the dataspace wallet.</div></dd></div>
+          <div class="px-field"><dt>Membership in ${ds}</dt><dd>${px.chip('membership', reg.membership)}<div class="csp-help">Members are named in the discovery of the CSP.</div></dd></div>
+          ${reg.failureReason ? `<div class="px-field"><dt>Reason of the CSP</dt><dd>${esc(labels.failureReason[reg.failureReason] || reg.failureReason)}<div class="csp-help"><code>${esc(reg.failureReason)}</code></div></dd></div>` : ''}
+          <div class="px-field"><dt>Registered</dt><dd>${px.dateTime(reg.registeredAt)}</dd></div>
+          <div class="px-field"><dt>Last update</dt><dd>${px.dateTime(reg.updatedAt)}</dd></div>
+        </dl></section>`;
+
+      const checklist = (reg) => `<section class="tx-card" aria-labelledby="h-reg"><div class="px-section__head"><h2 class="tx-h3" id="h-reg">Registration</h2>
+          <span class="tx-muted tx-body2">Last update ${px.dateTime(reg.updatedAt)}</span></div>
+        <ul class="csp-check">${parts(reg).map((p) => `<li>
+          <span class="csp-check__icon is-${p.state}">${icons[p.state]()}</span>
+          <div><div class="csp-check__title">${p.title}</div><div class="csp-help">${p.help}</div><div class="csp-help">${p.meta}</div></div>
+          <div>${p.value}</div></li>`).join('')}</ul></section>`;
+
+      function render() {
+        const state = document.body.dataset.state;
+        document.getElementById('persona').innerHTML = px.persona(state === 'forbidden' ? 'rolf' : 'otto');
+        if (['not-found', 'forbidden'].includes(state)) { return; }
+        const { reg, company } = scenario(state);
+        const chip = mock.variant('status') === 'chip' ? px.chip('cspStatus', reg.status) : '';
+        const display = { steps, fields, checklist }[mock.variant('display')];
+        document.getElementById('content').innerHTML = `
+          <div class="px-head"><div>
+            <div class="tx-overline">Participant management · Core service provider</div>
+            <div class="csp-title-row"><h1 class="tx-title" id="view-title">CSP registration</h1>${chip}</div>
+            <p class="px-sub">${mock.variant('context') === 'none' ? `Company <span class="px-mono">${esc(px.shortId(reg.companyId))}</span> at the core service provider of ${ds}` : `How the core service provider of ${ds} knows ${esc(company.name)}`}</p>
+          </div></div>
+          <div class="csp-block">
+            ${mock.variant('context') === 'company' ? contextCard(company) : ''}
+            ${mock.variant('status') === 'banner' ? banner(reg, company) : ''}
+            ${display(reg)}
+            <p class="csp-note">The status is read from the CSP connection of ${osp}. The steps run on their own after the approval of the application; there is nothing to start here.</p>
+          </div>`;
+      }
+
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

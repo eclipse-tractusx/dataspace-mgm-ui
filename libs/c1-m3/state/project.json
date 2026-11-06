@@ -1,0 +1,27 @@
+{
+  "name": "c1-m3-state",
+  "projectType": "library",
+  "sourceRoot": "libs/c1-m3/state/src",
+  "tags": ["type:state", "scope:c1-m3"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p libs/c1-m3/state/tsconfig.json"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint libs/c1-m3/state"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --passWithNoTests",
+        "cwd": "libs/c1-m3/state"
+      }
+    }
+  }
+}
