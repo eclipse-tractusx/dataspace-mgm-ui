@@ -150,6 +150,7 @@ Proposals are proposals: the backend team decides the contract, and the UI follo
 | Snake_case or `/api/<name>` paths from the frontend architecture | The vendored spec wins: camelCase, `/api/<module id>` (`contract-seam`) |
 | A 422 handler | Validation is 400 Problem Details with `urn:<module>:problem:<name>` |
 | The page changed while connecting | Only the adapter, the mapper, the wiring and the POC guard change |
+| A new error or state of the real backend shown as raw text | A key in the feature's namespace, in every supported language; Problem Details `type` mapped to a key |
 | Tested only as Pia | Every result state, with the persons that produce it |
 | Mock mode broken after the switch | `mock-container.ts` keeps the in-memory wiring; run it once more |
 
@@ -159,5 +160,6 @@ Proposals are proposals: the backend team decides the contract, and the UI follo
 - [ ] The HTTP adapter and mapper are tested with the wire format; `create<Module>Module` is wired in `container.ts`
 - [ ] `stage: 'poc'` and the hook's POC guard are gone; mock mode still works
 - [ ] Every result state was seen against the running backend with the right test person
+- [ ] Every text the connection added (errors, states) is a key with its text in every supported language
 - [ ] Lint, typecheck, test, build, `check-api`, `ui-calls` and `merge-guard --strict` are green
 - [ ] The remaining open points are with the backend team, prioritised P0, P1, P2

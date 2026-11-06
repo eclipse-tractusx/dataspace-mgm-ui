@@ -104,23 +104,29 @@ package if the module already has one.
 
 ### 4. The feature module
 
-1. `routes.tsx`: the `FeatureConfig` of the `upcoming(...)` entry, now with `disabled: false`, `stage: 'poc'` and a
-   route per page (`meta.title` = the view title). In `features/main.tsx` replace the `upcoming(...)` call by the
-   import.
-2. `hooks/use<Thing>.ts`: reads the session (`useSession()`), calls the use case through `useCoreModules()`, returns a
+1. `routes.tsx`: the `FeatureConfig` of the `upcoming(...)` entry (same `id`), now with `disabled: false`,
+   `stage: 'poc'`, `translations: <feature>Translations` and a route per page (`meta.title` = the i18n key of the view
+   title). In `features/main.tsx` replace the `upcoming(...)` call by the import.
+2. `i18n/`: copy `features/participants/i18n/` and rename it (namespace = the feature folder). Every text of the
+   mockup becomes a key in `locales/en/<feature>.json` **and** in every other supported language
+   (`locales/de/<feature>.json`, formal *Sie*) in the same commit; the feature's name and description stay
+   `features.<id>` in `src/i18n/locales/*/common.json`, updated in every language if the mockup changed them. Guide:
+   `docs/developers/translations.md`.
+3. `hooks/use<Thing>.ts`: reads the session (`useSession()`), calls the use case through `useCoreModules()`, returns a
    state union (`loading`, `signed-out`, then the use case's results). The module is optional while it is a POC:
-   `if (!c1m3) return { status: 'failed', error: { status: null, problemType: null, message: 'Not connected yet.' } }`.
+   `if (!c1m3) return { status: 'not-connected' }`, and the page shows a translated text for it.
    Pages never call a use case or `fetch` themselves.
-3. `pages/` and `components/`: reproduce the mockup. Everything visual comes from `@dataspace-mgm/ui-mui` (a missing
+4. `pages/` and `components/`: reproduce the mockup. Everything visual comes from `@dataspace-mgm/ui-mui` (a missing
    MUI component or icon is re-exported there, never imported from `@mui/*`); colours from the theme
    (`palette.ui.*`, `tractusx.*`, `alpha(tractusx.orange, 0.15)`), never hex. The mockup's `tx-*` blocks map to MUI:
    `tx-card` → `Card`, `tx-btn` → `Button` (variants `contained`, `outlined`, `color="secondary"`), `tx-chip` →
    `Chip`, `tx-status--*` → `Chip variant="outlined" color=…`, `tx-alert--*` → `Alert severity=…`, `tx-label` +
    value → the `Field` pattern of `CompanyProfile.tsx`, `tx-table` → a `Table` (re-export it), `dialog.tx-dialog` →
    `Dialog`.
-4. Every state of the mockup is a branch of the page (`switch (state.status)`), with the same texts. No strings
-   that decide anything; texts as constants in the feature until the portal has i18n.
-5. Accessible as the existing pages: headings in order, `aria-label` on icon buttons, `role="status"` while loading.
+5. Every state of the mockup is a branch of the page (`switch (state.status)`), with the same texts. No strings
+   that decide anything, and no string in the JSX: `const { t } = useTranslation(<FEATURE>_NS)` and `t('key')` for
+   every text, `aria-label`, `title`, chip and alert, values by interpolation, API values (status, roles) as keys.
+6. Accessible as the existing pages: headings in order, `aria-label` on icon buttons, `role="status"` while loading.
 
 ### 5. Prove it
 
@@ -130,7 +136,9 @@ package if the module already has one.
 2. Put the page and the mockup side by side at desktop and phone width, dark and light: same order, same words, same
    states, same actions. Every difference is either fixed or written into the hub as a decision.
 3. Tests: each use case with the in-memory adapter, each page per state with `TestCoreModules` (like
-   `CompanyProfile.test.tsx`), and the registry (`features/main.test.tsx`) still green. `npm start` without mock mode
+   `CompanyProfile.test.tsx`, which loads its namespace in `beforeAll`), and the registry (`features/main.test.tsx`)
+   still green. The tests fail on a rendered key without a text and on a language that misses a key.
+   Switch the language in the header once and look at every view in German too. `npm start` without mock mode
    still shows the feature as "coming soon".
 4. Gates: `npm run lint && npm run typecheck && npm test && npm run build`, then
    `.claude/skills/merge-guard/scripts/merge-guard.py --strict`.
@@ -154,6 +162,7 @@ Pull request: `feat(<feature>): proof of concept on mock data`, with screenshots
 | Fixtures with fields the spec does not have, unnoticed | Name fields like the schema; every other field is an open point in the README |
 | A page that imports the in-memory adapter or `@dataspace-mgm/<module>-core/testing` | Only `mock-container.ts` and tests import `testing` |
 | Logic in the component ("approve if I am not the first approver") | A flag in the anemic, from the API; the rule stays in the backend |
+| A string in the JSX, or a text only in English | A key in `i18n/locales/en` and in every other language, in the same commit |
 | `stage: 'poc'` forgotten | the feature would open on production builds with no module behind it |
 | One big page component | One component per visual zone of the mockup; logic in the hook |
 | Adding the module to `createCoreModules` with a fake | The real container gets the module only with its HTTP adapter (phase 3) |
@@ -163,5 +172,6 @@ Pull request: `feat(<feature>): proof of concept on mock data`, with screenshots
 - [ ] Every decided view of the mockup is a page; every state of it renders
 - [ ] `VITE_USE_MOCKS=true npm start` shows the feature with the mockup's data; without mock mode it is "coming soon"
 - [ ] Every operation is a use case of `packages/<module>-core` with a test per outcome
+- [ ] Every text is an i18n key of the feature's namespace, with its text in every supported language
 - [ ] Pages are tested per state; lint, typecheck, test, build and `merge-guard --strict` are green
 - [ ] The core package README has the use cases and the open points for the backend

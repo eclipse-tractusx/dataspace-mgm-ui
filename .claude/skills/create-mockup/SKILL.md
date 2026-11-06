@@ -117,7 +117,9 @@ Never edit the three generated files; change the portal and run `sync`. The othe
   `mock.setState('empty')`, `mock.toast('Saved')`, `mock.date(iso)`, `mock.icon('Name')`. Keep it plain and short:
   this code is thrown away.
 - Real words only: the persons, companies, BPNs and IDs of `data.js`, the field labels the page will have. No
-  "Item 1", no lorem ipsum, no invented companies.
+  "Item 1", no lorem ipsum, no invented companies. Write the texts in English, short and plain: in phase 2 each one
+  becomes an i18n key with a text in every supported language (`docs/developers/translations.md`), so keep them
+  free of values glued into sentences ("3 services", not "3" + " services").
 
 ### 4. Options for what is undecided
 
