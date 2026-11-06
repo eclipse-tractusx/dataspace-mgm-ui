@@ -1,0 +1,304 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · Company data — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .cd-verified { display: flex; gap: 16px; align-items: flex-start; }
+    .cd-ids { display: flex; gap: 12px; align-items: flex-end; }
+    .cd-ids > :first-child { flex: 0 0 220px; }
+    .cd-ids > :nth-child(2) { flex: 1 1 auto; }
+    @media (max-width: 899.98px) { .cd-ids { flex-wrap: wrap; } .cd-ids > :first-child { flex-basis: 100%; } }
+    .cd-lock { color: var(--muted); font-size: 0.8125rem; display: inline-flex; gap: 4px; align-items: center; }
+  </style>
+</head>
+<!-- After the wallet step (EBW: Erika Mustermann, application CREATED) or straight from the start (DOCUMENTS: Hans
+     Beispiel, before the application exists). States = results of PATCH /applications/{id} and POST /applications. -->
+<body data-active="/onboarding" data-view="Company data" data-states="ebw,documents,mismatch,validation,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">Company data</h1>
+    <ol class="tx-steps">
+      <li class="tx-step tx-step--done"><span class="tx-step__n">1</span>Application</li>
+      <li class="tx-step tx-step--done"><span class="tx-step__n">2</span>Proof</li>
+      <li class="tx-step" aria-current="step"><span class="tx-step__n">3</span>Company data</li>
+      <li class="tx-step"><span class="tx-step__n">4</span>Roles and terms</li>
+      <li class="tx-step"><span class="tx-step__n">5</span>Submit</li>
+    </ol>
+
+    <!-- ── path EBW: data from the attestation, compared ─────────────────────────── -->
+    <section class="tx-stack" data-show-state="ebw mismatch validation">
+      <div class="tx-alert tx-alert--warning" role="alert" data-show-state="mismatch">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div><strong>The EUID differs from your company's Business Wallet.</strong> EBWOID, EUID and country must be
+            the values of the wallet; your change was not saved.</div>
+          <code data-problem="mismatch"></code> · fields: <code>EUID</code>
+        </div>
+      </div>
+      <div class="tx-alert tx-alert--error" role="alert" data-show-state="validation">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div><strong>Some data cannot be saved.</strong></div>
+          <ul><li><code>companyData.identifiers</code>: Identifier type LEI_CODE is not allowed for US.</li></ul>
+          <code data-problem="validation"></code>
+        </div>
+      </div>
+
+      <div class="tx-card cd-verified">
+        <span class="tx-tile" data-icon="VerifiedUserOutlined"></span>
+        <div class="tx-stack">
+          <div class="tx-row tx-row--between">
+            <h2 class="tx-h3">Verified with the Business Wallet</h2>
+            <span class="tx-chip tx-status tx-status--success" data-representation></span>
+          </div>
+          <div class="tx-fields" data-attestation></div>
+        </div>
+      </div>
+
+      <!-- How the comparison shows: a badge per field, a table of its own, or only the differences. -->
+      <div class="tx-alert tx-alert--info" data-variant="comparison:differences" data-dimension="Comparison" data-variant-label="Only differences">
+        <span data-icon="InfoOutlined"></span><div data-differences></div>
+      </div>
+      <span hidden data-variant="comparison:badges" data-variant-label="Badge per field"></span>
+      <div class="tx-card tx-stack" data-variant="comparison:table" data-variant-label="Table of its own">
+        <h2 class="tx-h3">Comparison with the Business Wallet</h2>
+        <div class="tx-table-wrap"><table class="tx-table"><thead><tr><th>Field</th><th>Result</th></tr></thead><tbody data-comparison-rows></tbody></table></div>
+      </div>
+
+      <!-- Changing data: an edit button that opens a form, fields always editable, or a dialog. -->
+      <div class="tx-card tx-stack" data-variant="editing:button" data-dimension="Changing data" data-variant-label="Edit button, switches to a form">
+        <div class="tx-row tx-row--between"><h2 class="tx-h3">Your company</h2><button class="tx-btn tx-btn--outlined" type="button" data-edit-inplace><span data-icon="EditOutlined"></span>Edit</button></div>
+        <dl class="ob-dl" data-company-dl data-inplace-view></dl>
+        <form class="tx-stack" data-inplace-form hidden><div class="ob-form" data-company-form></div>
+          <div class="ob-actions"><button class="tx-btn tx-btn--outlined" type="button" data-cancel-inplace>Cancel</button><button class="tx-btn" type="button" data-save>Save</button></div></form>
+      </div>
+      <div class="tx-card tx-stack" data-variant="editing:inline" data-variant-label="Always editable">
+        <h2 class="tx-h3">Your company</h2>
+        <p class="tx-muted tx-body2">Leave a field as it is to keep the value of the wallet.</p>
+        <div class="ob-form" data-company-form></div>
+        <div class="ob-actions"><button class="tx-btn tx-btn--outlined" type="button" data-save>Save changes</button></div>
+      </div>
+      <div class="tx-card tx-stack" data-variant="editing:dialog" data-variant-label="Edit in a dialog">
+        <div class="tx-row tx-row--between"><h2 class="tx-h3">Your company</h2><button class="tx-btn tx-btn--outlined" type="button" data-edit-dialog><span data-icon="EditOutlined"></span>Edit</button></div>
+        <dl class="ob-dl" data-company-dl></dl>
+      </div>
+
+      <div class="ob-actions">
+        <a class="tx-btn tx-btn--outlined" href="start.html">Back</a>
+        <a class="tx-btn" href="terms-submit.html"><span data-icon="ArrowForward"></span>Continue</a>
+      </div>
+    </section>
+
+    <!-- ── path DOCUMENTS: the person enters everything; the application is created on continue ─────────────── -->
+    <section class="tx-card tx-stack" data-show-state="documents">
+      <h2 class="tx-h3">Your company</h2>
+      <p class="tx-muted tx-body2">Enter the data as in the commercial register. OSP staff compare it with the documents you upload next.</p>
+      <div class="ob-form">
+        <div class="ob-span"><label class="tx-label" for="d-legal">Legal name</label><input class="tx-input" id="d-legal" data-hans="legalName"></div>
+        <div><label class="tx-label" for="d-short">Short name (optional)</label><input class="tx-input" id="d-short"></div>
+        <div><label class="tx-label" for="d-country">Country</label><select class="tx-select" id="d-country" data-countries></select></div>
+        <div><label class="tx-label" for="d-street">Street</label><input class="tx-input" id="d-street" data-hans="streetName"></div>
+        <div><label class="tx-label" for="d-number">House number</label><input class="tx-input" id="d-number" data-hans="streetNumber"></div>
+        <div><label class="tx-label" for="d-postal">Postal code</label><input class="tx-input" id="d-postal" data-hans="postalCode"></div>
+        <div><label class="tx-label" for="d-city">City</label><input class="tx-input" id="d-city" data-hans="city"></div>
+        <div><label class="tx-label" for="d-region">Region (optional)</label><input class="tx-input" id="d-region" data-hans="region"></div>
+      </div>
+      <h3 class="tx-h3">Identifiers</h3>
+      <div class="tx-stack" data-hans-ids></div>
+      <div><button class="tx-btn tx-btn--text" type="button" data-add-id><span data-icon="Add"></span>Add identifier</button></div>
+      <div class="ob-actions">
+        <a class="tx-btn tx-btn--outlined" href="start.html">Back</a>
+        <a class="tx-btn" href="documents.html"><span data-icon="ArrowForward"></span>Create application and continue</a>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status">
+      <div class="tx-row"><span class="tx-spinner"></span><span>Loading your application…</span></div>
+    </section>
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div><div>Your application could not be loaded (HTTP 502).</div><code data-problem="upstream"></code></div>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog" id="edit-dialog" aria-labelledby="edit-title">
+      <div class="tx-dialog__body tx-stack">
+        <h2 class="tx-h3" id="edit-title">Edit company data</h2>
+        <div class="ob-form" data-company-form></div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-save>Save</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const c1m2 = mock.data.c1m2;
+      const L = c1m2.labels;
+      const app = JSON.parse(JSON.stringify(c1m2.erikaApplication));
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      if (location.hash.includes('path=documents')) { mock.setState('documents'); }
+
+      const result = (field) => (app.comparison.find((c) => c.field === field) || {}).result;
+      // field: a comparison field (LEGAL_NAME …), or 'APPLICANT' for a value that is never in the wallet.
+      const sourceBadge = (r) => {
+        const cls = { MATCH: 'ob-badge--match', MISMATCH: 'ob-badge--mismatch', NOT_IN_ATTESTATION: 'ob-badge--unproven' }[r] || '';
+        const ico = { FROM_ATTESTATION: mock.icon('AccountBalanceWalletOutlined', 'sm'), MATCH: mock.icon('CheckCircleOutlined', 'sm'),
+          MISMATCH: mock.icon('ErrorOutlineOutlined', 'sm'), NOT_IN_ATTESTATION: mock.icon('HelpOutlineOutlined', 'sm'), APPLICANT: mock.icon('EditOutlined', 'sm') }[r];
+        return `<span class="ob-source ${cls}">${ico}${L.comparisonOwn[r]}</span>`;
+      };
+      const badge = (field) => {
+        const r = field === 'APPLICANT' ? 'APPLICANT' : result(field);
+        if (!r || mock.variant('comparison') !== 'badges') { return ''; }
+        return sourceBadge(r);
+      };
+      const a = () => app.companyData.address;
+      const country = (code) => (c1m2.countries.find((c) => c.code === code) || { name: code }).name;
+      const rows = () => [
+        ['Legal name', app.companyData.legalName, 'LEGAL_NAME'],
+        ['Short name', app.companyData.shortName || '–', app.companyData.shortName ? 'APPLICANT' : null],
+        ['Street', [a().streetName, a().streetNumber].filter(Boolean).join(' '), 'STREET'],
+        ['Postal code', a().postalCode || '–', 'POSTAL_CODE'],
+        ['City', a().city, 'CITY'],
+        ['Country', country(a().countryCode), 'COUNTRY'],
+        ...app.companyData.identifiers.map((i) => [L.identifier[i.type], `<span class="ob-mono">${i.value}</span>`, i.source === 'ATTESTATION' ? i.type : 'APPLICANT']),
+      ];
+
+      function render() {
+        const att = app.attestation;
+        document.querySelector('[data-representation]').textContent = att.representation.confirmed ? 'Representation confirmed' : 'Representation not confirmed';
+        document.querySelector('[data-attestation]').innerHTML = [
+          ['Representative', `${att.person.givenName} ${att.person.familyName}`],
+          ['Role', `${att.representation.role}, until ${mock.date(att.representation.validUntil)}`],
+          ['Verified on', mock.date(att.verifiedAt)],
+          ['Valid until', mock.date(att.expiresAt)],
+        ].map(([k, v]) => `<div><span class="tx-label">${k}</span>${v}</div>`).join('');
+        mock.render('[data-comparison-rows]', app.comparison, (c) => `<tr><td>${L.field[c.field]}</td><td>${sourceBadge(c.result)}</td></tr>`);
+        const odd = app.comparison.filter((c) => c.result === 'MISMATCH' || c.result === 'NOT_IN_ATTESTATION');
+        document.querySelector('[data-differences]').innerHTML = odd.length
+          ? `<strong>Not proven by the wallet:</strong> ${odd.map((c) => `${L.field[c.field]} (${L.comparisonOwn[c.result].toLowerCase()})`).join(', ')}. OSP staff check these fields.`
+          : 'All data comes from or matches your company\'s Business Wallet.';
+        document.querySelectorAll('[data-company-dl]').forEach((dl) => {
+          dl.innerHTML = rows().map(([k, v, f]) => `<dt>${k}</dt><dd>${v}</dd><dd class="ob-dl__note">${f ? badge(f) : ''}</dd>`).join('');
+        });
+        document.querySelectorAll('[data-company-form]').forEach((form, n) => {
+          const locked = (label, value) => `<div><label class="tx-label">${label}</label><input class="tx-input" value="${value}" readonly aria-readonly="true"><span class="cd-lock">${mock.icon('LockOutlined', 'sm')}From the wallet, cannot be changed</span></div>`;
+          const field = (id, label, value) => `<div><label class="tx-label" for="${id}-${n}">${label}</label><input class="tx-input" id="${id}-${n}" value="${value || ''}" data-field="${id}">${badge({ legal: 'LEGAL_NAME', short: value ? 'APPLICANT' : '', street: 'STREET', postal: 'POSTAL_CODE', city: 'CITY' }[id] || (id.startsWith('id-') ? 'APPLICANT' : ''))}</div>`;
+          form.innerHTML = [
+            `<div class="ob-span">${field('legal', 'Legal name', app.companyData.legalName).slice(5)}`,
+            field('short', 'Short name', app.companyData.shortName),
+            locked('Country', country(a().countryCode)),
+            field('street', 'Street', a().streetName), field('number', 'House number', a().streetNumber),
+            field('postal', 'Postal code', a().postalCode), field('city', 'City', a().city),
+            ...app.companyData.identifiers.map((i) => (i.source === 'ATTESTATION' ? locked(L.identifier[i.type], i.value) : field(`id-${i.type}`, L.identifier[i.type], i.value))),
+          ].join('');
+        });
+      }
+      // DOCUMENTS form, prefilled with Beispiel Logistik GmbH (Hans Beispiel).
+      const hans = c1m2.hansApplication.companyData;
+      document.querySelectorAll('[data-hans]').forEach((el) => { el.value = el.dataset.hans === 'legalName' ? hans.legalName : (hans.address[el.dataset.hans] || ''); });
+      document.querySelector('[data-countries]').innerHTML = c1m2.countries.map((c) => `<option value="${c.code}" ${c.code === 'DE' ? 'selected' : ''}>${c.name}</option>`).join('');
+      const types = c1m2.identifierTypesDE.filter((t) => t.type !== 'EBWOID');
+      const idRow = (i, n) => `<div class="cd-ids"><div><label class="tx-label" for="t-${n}">Type</label><select class="tx-select" id="t-${n}">${types.map((t) => `<option ${t.type === i.type ? 'selected' : ''}>${t.name}</option>`).join('')}</select></div>
+        <div><label class="tx-label" for="v-${n}">Value</label><input class="tx-input ob-mono" id="v-${n}" value="${i.value}"><p class="tx-help">Format: <code>${(types.find((t) => t.type === i.type) || {}).pattern || ''}</code></p></div>
+        <button class="tx-btn tx-btn--text" type="button" aria-label="Remove identifier" data-remove-id>${mock.icon('DeleteOutlined')}</button></div>`;
+      let ids = hans.identifiers.map((i) => ({ ...i }));
+      const renderIds = () => mock.render('[data-hans-ids]', ids, idRow);
+      mock.on('click', '[data-add-id]', () => { ids.push({ type: 'LEI_CODE', value: '' }); renderIds(); });
+      mock.on('click', '[data-remove-id]', (e, el) => { ids.splice([...document.querySelectorAll('[data-remove-id]')].indexOf(el), 1); renderIds(); });
+      renderIds();
+
+      // Edit button: the read-only view switches to the form; Save and Cancel switch back (Cancel drops the input).
+      function editInPlace(editing) {
+        document.querySelector('[data-inplace-form]').hidden = !editing;
+        document.querySelector('[data-inplace-view]').hidden = editing;
+        document.querySelector('[data-edit-inplace]').hidden = editing;
+        if (editing) { document.querySelector('[data-inplace-form] [data-field="legal"]').focus(); }
+      }
+      mock.on('click', '[data-edit-inplace]', () => editInPlace(true));
+      mock.on('click', '[data-cancel-inplace]', () => { render(); editInPlace(false); });
+      mock.on('click', '[data-edit-dialog]', () => document.getElementById('edit-dialog').showModal());
+      mock.on('click', '[data-close]', () => document.getElementById('edit-dialog').close());
+      // What the wallet confirmed (all fields came from it at creation). The API does not return these values to the
+      // applicant; the mockup keeps them only to compare again the way the backend does (README 6.5).
+      const wallet = { legalName: app.companyData.legalName, street: 'Musterstraße 1', postalCode: '70569', city: 'Stuttgart' };
+      const same = (x, y) => (x || '').normalize('NFKC').trim().replace(/\s+/g, ' ').toUpperCase().toLowerCase()
+        === (y || '').normalize('NFKC').trim().replace(/\s+/g, ' ').toUpperCase().toLowerCase();
+      const setResult = (field, r) => { app.comparison.find((c) => c.field === field).result = r; };
+      mock.on('click', '[data-save]', (e, el) => {
+        const box = el.closest('form, .tx-card, dialog');
+        const value = (id) => { const input = box.querySelector(`[data-field="${id}"]`); return input ? input.value.trim() : null; };
+        const changed = [];
+        if (value('legal') !== null && value('legal') !== app.companyData.legalName) {
+          app.companyData.legalName = value('legal');
+          setResult('LEGAL_NAME', same(value('legal'), wallet.legalName) ? 'MATCH' : 'MISMATCH');
+          changed.push('legal name');
+        }
+        if (value('short') !== null && value('short') !== (app.companyData.shortName || '')) {
+          app.companyData.shortName = value('short') || null;
+          changed.push('short name');
+        }
+        const address = { streetName: value('street'), streetNumber: value('number'), postalCode: value('postal'), city: value('city') };
+        const old = app.companyData.address;
+        if (address.city !== null && ['streetName', 'streetNumber', 'postalCode', 'city'].some((k) => (address[k] || '') !== (old[k] || ''))) {
+          // PATCH replaces the address as a whole: every part is now the person's and is compared; an empty postal code
+          // is taken from the wallet again.
+          app.companyData.address = { ...old, ...address, streetNumber: address.streetNumber || null, postalCode: address.postalCode || wallet.postalCode };
+          setResult('STREET', same([address.streetName, address.streetNumber].filter(Boolean).join(' '), wallet.street) ? 'MATCH' : 'MISMATCH');
+          setResult('POSTAL_CODE', !address.postalCode ? 'FROM_ATTESTATION' : (same(address.postalCode, wallet.postalCode) ? 'MATCH' : 'MISMATCH'));
+          setResult('CITY', same(address.city, wallet.city) ? 'MATCH' : 'MISMATCH');
+          changed.push('address');
+        }
+        app.companyData.identifiers.filter((i) => i.source === 'APPLICANT').forEach((i) => {
+          const v = value(`id-${i.type}`);
+          if (v !== null && v !== i.value) { i.value = v; changed.push(L.identifier[i.type]); }
+        });
+        editInPlace(false);
+        const dialog = document.getElementById('edit-dialog');
+        if (dialog.open) { dialog.close(); }
+        render();
+        mock.toast(changed.length ? `Saved: ${changed.join(', ')}. Compared with the wallet again.` : 'Nothing changed.');
+      });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

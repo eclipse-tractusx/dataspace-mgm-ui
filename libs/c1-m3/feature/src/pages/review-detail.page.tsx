@@ -68,7 +68,7 @@ export default function ReviewDetailPage() {
         },
       }}
     >
-      <Button component={RouterLink} to="/onboarding" sx={{ mb: 2 }}>
+      <Button component={RouterLink} to="/onboarding/reviews" sx={{ mb: 2 }}>
         {t('back')}
       </Button>
       <ReviewToolbar />

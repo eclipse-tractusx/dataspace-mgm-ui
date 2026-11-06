@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "nx serve portal",
+    "start:mock": "VITE_USE_MOCKS=true VITE_MOCK_PERSON=erika npm start",
     "build": "nx build portal",
     "lint": "nx run-many -t lint",
     "typecheck": "nx run-many -t typecheck",

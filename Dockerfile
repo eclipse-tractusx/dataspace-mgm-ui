@@ -43,8 +43,12 @@ RUN npx nx build "${APP}" --configuration=production \
     && mkdir -p /out \
     && cp -R "dist/apps/${APP}/." /out/
 
-# ---- Runtime stage: nginx-unprivileged, as-is (TRG 4.02); runs as user 101 (TRG 4.03) ----
+# ---- Runtime stage: nginx-unprivileged (TRG 4.02); runs as user 101 (TRG 4.03) ----
 FROM nginxinc/nginx-unprivileged:1.30-alpine
+# The base image is rebuilt only now and then: take the security fixes Alpine has published since, so the released
+# image passes Trivy (CRITICAL/HIGH in brotli, curl, expat and zlib on 6 Nov 2026).
+USER root
+RUN apk upgrade --no-cache
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /out /usr/share/nginx/html
 # config.json is mounted at runtime into /usr/share/nginx/html/config, never baked in

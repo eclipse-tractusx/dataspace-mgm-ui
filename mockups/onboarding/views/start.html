@@ -1,0 +1,320 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · Start application — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .st-hero { display: flex; gap: 20px; align-items: flex-start; }
+    .st-hero .tx-chip { align-self: flex-start; }
+    .st-wallet-steps { margin: 16px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .st-fields { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 899.98px) { .st-fields { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<!-- Erika Mustermann (applicant, no company, no application) starts here from the Onboarding item.
+     Step 1 asks what she wants to do (ApplicationCreate.kind and the reference), step 2 how she proves the company
+     (ApplicationCreate.verification). States = results of POST /applications (createApplication). -->
+<body data-active="/onboarding" data-view="Start application" data-states="loaded,open-application,account-bound,documents-disabled,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">Start application</h1>
+
+    <div class="ob-flow" id="flow">
+      <!-- Progress: steps on top, at the side, or only a counter. -->
+      <ol class="tx-steps" data-variant="progress:top" data-dimension="Progress" data-variant-label="Steps on top">
+        <li class="tx-step" data-step="1"><span class="tx-step__n">1</span>Application</li>
+        <li class="tx-step" data-step="2"><span class="tx-step__n">2</span>Proof</li>
+        <li class="tx-step"><span class="tx-step__n">3</span>Company data</li>
+        <li class="tx-step"><span class="tx-step__n">4</span>Roles and terms</li>
+        <li class="tx-step"><span class="tx-step__n">5</span>Submit</li>
+      </ol>
+      <ol class="ob-sidesteps" data-variant="progress:side" data-variant-label="Steps at the side">
+        <li data-step="1"><span class="tx-step__n">1</span><span>Application</span></li>
+        <li data-step="2"><span class="tx-step__n">2</span><span>Proof</span></li>
+        <li><span class="tx-step__n">3</span><span>Company data</span></li>
+        <li><span class="tx-step__n">4</span><span>Roles and terms</span></li>
+        <li><span class="tx-step__n">5</span><span>Submit</span></li>
+      </ol>
+      <p class="tx-overline" data-variant="progress:counter" data-variant-label="Step counter only" data-counter></p>
+
+      <div class="tx-stack">
+        <p class="tx-muted">Signed in as <strong data-person-name></strong>. You file the application for your company
+          personally; after the approval you become its Company Admin.</p>
+
+        <!-- ── step 1: what the person wants to do (stays visible) ───────────────────────── -->
+        <section class="tx-stack" data-show-state="loaded account-bound documents-disabled">
+          <div class="tx-card ob-question">
+            <h2 class="tx-h3">What do you want to do?</h2>
+            <div class="ob-choices">
+              <button class="ob-choice" type="button" data-goal="new">
+                <span class="tx-tile" data-icon="AddBusinessOutlined"></span>
+                <span><strong>Register a new company</strong><span class="tx-muted tx-body2">Your company is not yet in the dataspace.</span></span>
+              </button>
+              <button class="ob-choice" type="button" data-goal="existing">
+                <span class="tx-tile" data-icon="BusinessOutlined"></span>
+                <span><strong>My company is already in the dataspace</strong><span class="tx-muted tx-body2">It was deactivated at OSP A, or it is with another OSP today.</span></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tx-card ob-question" data-existing hidden>
+            <h2 class="tx-h3">What happened to your company?</h2>
+            <div class="ob-choices">
+              <button class="ob-choice" type="button" data-kind="REACTIVATION">
+                <span class="tx-tile" data-icon="AutorenewOutlined"></span>
+                <span><strong>Reactivate it at OSP A</strong><span class="tx-muted tx-body2">The company was deactivated at OSP A and comes back.</span></span>
+              </button>
+              <button class="ob-choice" type="button" data-kind="TRANSFER">
+                <span class="tx-tile" data-icon="SwapHorizOutlined"></span>
+                <span><strong>Move it from another OSP</strong><span class="tx-muted tx-body2">The company is with another OSP today and moves to OSP A.</span></span>
+              </button>
+            </div>
+
+            <div class="st-fields" data-kind-fields="REACTIVATION" hidden>
+              <div>
+                <label class="tx-label" for="bpn-reactivation">Business partner number (BPN)</label>
+                <input class="tx-input ob-mono" id="bpn-reactivation" value="BPNL00000000003C" autocomplete="off">
+                <p class="tx-help">Required: the BPN of the company at OSP A, for example BPNL00000000003C (Beispiel Werkzeugbau GmbH).</p>
+              </div>
+            </div>
+            <div class="st-fields" data-kind-fields="TRANSFER" hidden>
+              <div>
+                <label class="tx-label" for="from-osp">From which OSP?</label>
+                <select class="tx-select" id="from-osp" data-osps></select>
+                <p class="tx-help">The OSP your company is registered with today.</p>
+              </div>
+              <div data-other-osp hidden>
+                <label class="tx-label" for="other-osp">Name of the OSP</label>
+                <input class="tx-input" id="other-osp" autocomplete="off">
+              </div>
+              <div>
+                <label class="tx-label" for="bpn-transfer">Business partner number (BPN), if it was at OSP A before</label>
+                <input class="tx-input ob-mono" id="bpn-transfer" autocomplete="off" placeholder="BPNL…">
+                <p class="tx-help">Only if your company moved away from OSP A and now comes back, for example BPNL00000000004D (Beispiel Gießerei GmbH).</p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ── step 2: how the person proves the company, below step 1 once it is answered ───── -->
+        <section class="tx-stack" data-show-state="loaded account-bound documents-disabled" data-proof>
+          <div class="tx-alert tx-alert--warning" role="alert" data-show-state="account-bound">
+            <span data-icon="ErrorOutlineOutlined"></span>
+            <div>
+              <div><strong>Your account already belongs to a company.</strong> An account can register only one
+                company. Sign in with another account to register a new one.</div>
+              <code data-problem="accountBound"></code>
+            </div>
+          </div>
+          <div class="tx-alert tx-alert--warning" role="alert" data-show-state="documents-disabled">
+            <span data-icon="ErrorOutlineOutlined"></span>
+            <div>
+              <div><strong>This OSP accepts applications only with a Business Wallet.</strong> Choose the Business
+                Wallet to continue.</div>
+              <code>urn:c1-m2:problem:documents-disabled</code>
+            </div>
+          </div>
+
+
+          <!-- How the company is proven: two tiles, a radio list, or the Business Wallet recommended. -->
+          <div class="tx-card ob-question" data-variant="choice:tiles" data-dimension="Choice of the path" data-variant-label="Two tiles">
+            <h2 class="tx-h3">How do you prove your company?</h2>
+            <div class="ob-choices">
+              <button class="ob-choice" type="button" data-path="EBW" aria-pressed="true">
+                <span class="tx-tile" data-icon="AccountBalanceWalletOutlined"></span>
+                <span><strong>With the Business Wallet</strong><span class="tx-muted tx-body2">Your company's wallet confirms its data and that you may represent it. Fastest; the data is filled in for you.</span></span>
+              </button>
+              <button class="ob-choice" type="button" data-path="DOCUMENTS" aria-pressed="false">
+                <span class="tx-tile" data-icon="DescriptionOutlined"></span>
+                <span><strong>With supporting documents</strong><span class="tx-muted tx-body2">You enter the company data and upload a commercial register extract. OSP staff check it by hand.</span></span>
+              </button>
+            </div>
+          </div>
+          <div class="tx-card ob-question" data-variant="choice:radios" data-variant-label="Radio list">
+            <h2 class="tx-h3">How do you prove your company?</h2>
+            <ul class="ob-radios">
+              <li><label><input type="radio" name="path" value="EBW" checked data-path-radio><span><strong>With the Business Wallet</strong><br><span class="tx-muted tx-body2">The data is filled in from the wallet.</span></span></label></li>
+              <li><label><input type="radio" name="path" value="DOCUMENTS" data-path-radio><span><strong>With supporting documents</strong><br><span class="tx-muted tx-body2">Enter the data and upload a commercial register extract.</span></span></label></li>
+            </ul>
+          </div>
+          <div class="tx-card tx-card--hero ob-question" data-variant="choice:hero" data-variant-label="Wallet recommended">
+            <div class="st-hero">
+              <span class="tx-tile" data-icon="AccountBalanceWalletOutlined"></span>
+              <div class="tx-stack">
+                <span class="tx-chip tx-status tx-status--success">Recommended</span>
+                <h2 class="tx-h3">Prove your company with its Business Wallet</h2>
+                <p class="tx-muted">The wallet confirms the company's data and your right to represent it. The data is filled in for you.</p>
+              </div>
+            </div>
+            <button class="tx-btn tx-btn--text" type="button" data-path-link="DOCUMENTS"><span data-icon="DescriptionOutlined"></span>No Business Wallet? Use supporting documents</button>
+          </div>
+
+          <div class="tx-alert tx-alert--info">
+            <span data-icon="InfoOutlined"></span>
+            <div data-needs></div>
+          </div>
+
+          <div class="ob-actions">
+            <button class="tx-btn" type="button" data-continue><span data-icon="ArrowForward"></span><span data-continue-label>Continue with the Business Wallet</span></button>
+          </div>
+        </section>
+
+        <section data-show-state="open-application">
+          <div class="tx-card tx-stack">
+            <div class="tx-alert tx-alert--info" role="status">
+              <span data-icon="InfoOutlined"></span>
+              <div>
+                <div><strong>You already have an application in progress.</strong> A person can have one open application at a time.</div>
+                <code data-problem="openApplication"></code> · <span class="ob-mono" data-existing-id></span>
+              </div>
+            </div>
+            <div class="ob-actions ob-actions--start">
+              <a class="tx-btn" href="my-application.html"><span data-icon="ArrowForward"></span>Continue your application</a>
+            </div>
+          </div>
+        </section>
+
+        <section data-show-state="loading" role="status">
+          <div class="tx-row"><span class="tx-spinner"></span><span>Creating your application…</span></div>
+        </section>
+
+        <section data-show-state="error">
+          <div class="tx-alert tx-alert--error" role="alert">
+            <span data-icon="ErrorOutlineOutlined"></span>
+            <div>
+              <div>The application could not be created (HTTP 502). Try again in a few minutes.</div>
+              <code data-problem="upstream"></code>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <dialog class="tx-dialog" id="wallet" aria-labelledby="wallet-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="wallet-title">Verify with your Business Wallet</h2>
+        <p class="tx-muted">The EBW-Connector of OSP A asks your wallets for:</p>
+        <ol class="st-wallet-steps">
+          <li>your personal ID (PID) in your EUDI Wallet,</li>
+          <li>your mandate to represent the company,</li>
+          <li>the company's legal person ID (LPID) in its Business Wallet.</li>
+        </ol>
+        <div class="tx-row" data-wallet-progress hidden><span class="tx-spinner"></span><span>Waiting for your wallet…</span></div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-open-wallet><span data-icon="AccountBalanceWalletOutlined"></span>Open wallet</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const d = mock.data;
+      const c1m2 = d.c1m2;
+      let step = 1;
+      let goal = null;      // 'new' | 'existing' (the page's own question, not sent)
+      let kind = null;      // ApplicationCreate.kind
+      let path = 'EBW';     // ApplicationCreate.verification
+      document.querySelectorAll('[data-person-name]').forEach((el) => { el.textContent = d.persons.erika.name; });
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      document.querySelector('[data-existing-id]').textContent = c1m2.erikaApplication.id;
+      document.querySelector('[data-osps]').innerHTML = [...c1m2.otherOsps.map((o) => `<option value="${o.ospId}">${o.name}</option>`), '<option value="other">Another OSP</option>'].join('');
+
+      function needs() {
+        return path === 'EBW'
+          ? '<strong>You need</strong>: your EUDI Wallet with your personal ID, a mandate for the company, and the company\'s Business Wallet.'
+          : '<strong>You need</strong>: the company\'s legal name, address and an identifier (for example the VAT ID), and a commercial register extract as PDF, PNG or JPEG.';
+      }
+      function render() {
+        const ready = goal === 'new' || (goal === 'existing' && kind !== null);
+        step = ready ? 2 : 1;
+        document.querySelector('[data-proof]').classList.toggle('ob-off', !ready);
+        document.querySelectorAll('[data-step]').forEach((el) => {
+          const n = Number(el.dataset.step);
+          el.classList.toggle('tx-step--done', n < step);
+          if (n === step) { el.setAttribute('aria-current', 'step'); } else { el.removeAttribute('aria-current'); }
+        });
+        document.querySelector('[data-counter]').textContent = `Step ${step} of 5`;
+        document.querySelectorAll('[data-goal]').forEach((el) => el.setAttribute('aria-pressed', String(el.dataset.goal === goal)));
+        document.querySelector('[data-existing]').hidden = goal !== 'existing';
+        document.querySelectorAll('[data-kind]').forEach((el) => el.setAttribute('aria-pressed', String(el.dataset.kind === kind)));
+        document.querySelectorAll('[data-kind-fields]').forEach((el) => { el.hidden = el.dataset.kindFields !== kind; });
+        document.querySelector('[data-other-osp]').hidden = document.getElementById('from-osp').value !== 'other';
+        document.querySelectorAll('[data-path]').forEach((el) => el.setAttribute('aria-pressed', String(el.dataset.path === path)));
+        document.querySelectorAll('[data-path-radio]').forEach((el) => { el.checked = el.value === path; });
+        document.querySelector('[data-needs]').innerHTML = needs();
+        document.querySelector('[data-continue-label]').textContent = path === 'EBW' ? 'Continue with the Business Wallet' : 'Continue with supporting documents';
+        document.getElementById('flow').classList.toggle('ob-flow--side', mock.variant('progress') === 'side');
+      }
+      // A new company goes straight on to the proof; an existing one first says what happened to it.
+      mock.on('click', '[data-goal]', (e, el) => {
+        goal = el.dataset.goal;
+        kind = goal === 'new' ? 'ONBOARDING' : null;
+        render();
+        revealProof();
+      });
+      mock.on('click', '[data-kind]', (e, el) => { kind = el.dataset.kind; render(); revealProof(); });
+      mock.on('change', '#from-osp', render);
+      // Bring the proof question into view when it appears; the answered cards stay above it.
+      function revealProof() {
+        const proof = document.querySelector('[data-proof]');
+        if (!proof.classList.contains('ob-off')) { proof.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+      }
+      mock.on('click', '[data-path]', (e, el) => { path = el.dataset.path; render(); });
+      mock.on('click', '[data-path-link]', (e, el) => { path = el.dataset.pathLink; render(); mock.toast('Supporting documents chosen'); });
+      mock.on('change', '[data-path-radio]', (e, el) => { path = el.value; render(); });
+      mock.on('click', '[data-continue]', () => {
+        if (path === 'DOCUMENTS') { location.href = 'company-data.html#path=documents'; return; }
+        document.getElementById('wallet').showModal();
+      });
+      mock.on('click', '[data-close]', () => document.getElementById('wallet').close());
+      mock.on('click', '[data-open-wallet]', () => {
+        document.querySelector('[data-wallet-progress]').hidden = false;
+        setTimeout(() => { location.href = 'company-data.html#path=ebw'; }, 1200);
+      });
+      // The error states of POST /applications belong to step 2.
+      document.addEventListener('click', (e) => {
+        const button = e.target.closest('[data-state-button]');
+        if (button && ['account-bound', 'documents-disabled'].includes(button.dataset.stateButton)) { goal = goal || 'new'; kind = kind || 'ONBOARDING'; render(); }
+      });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

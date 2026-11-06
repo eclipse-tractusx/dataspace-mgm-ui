@@ -42,7 +42,7 @@ export default function ReviewRoutes() {
       <Routes>
         <Route element={<ReviewWorkspace />}>
           <Route index element={<ReviewsPage />} />
-          <Route path="reviews/:reviewCaseId" element={<ReviewDetailPage />} />
+          <Route path=":reviewCaseId" element={<ReviewDetailPage />} />
         </Route>
       </Routes>
     </Suspense>
