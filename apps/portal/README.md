@@ -34,6 +34,8 @@ in-memory adapter with the test data of its `testing` entry point ([src/core/moc
 and the environment chip in the header says **mock data**. `VITE_MOCK_PERSON=<key>` signs in another test person of
 `MOCK_PERSONS` (default `pia`; an unknown key such as `none` starts signed out). Both can also go into
 `apps/portal/.env.local`. Vite replaces the switch at build time, so a build without it contains no mock code.
+The C4-M1 credential personas use `wallets-erika`, `wallets-max`, `wallets-otto` and `wallets-rolf`; the unprefixed
+personas are used by C1-M2 Registration.
 
 Runtime configuration comes from `/config.json` (see [docs/architecture](../../docs/architecture/README.md)). Without it
 the defaults of [src/config/index.ts](src/config/index.ts) apply. For a local override copy

@@ -26,7 +26,7 @@
 import { mockAttestation } from '@dataspace-mgm/c1-m2-core/testing';
 import { describe, expect, it } from 'vitest';
 import { MOCK_MODE } from './mock-mode';
-import { createMockCoreModules } from './mock-container';
+import { MOCK_PERSONS, createMockCoreModules } from './mock-container';
 
 describe('mock mode', () => {
   it('is off unless VITE_USE_MOCKS is "true"', () => {
@@ -40,6 +40,22 @@ describe('mock mode', () => {
 
     const result = await modules.c3m1.getOwnCompany.execute(session?.companyId ?? null);
     expect(result).toMatchObject({ status: 'found', company: { name: 'OSP A Beispiel GmbH', bpn: 'BPNL00000000OSPA' } });
+  });
+
+  it('signs in the test persons of Wallets as a service with the permissions of C4-M1', async () => {
+    const signIn = async (person: string) => (await createMockCoreModules(person).identity.getCurrentSession.execute())!;
+    expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials'] });
+    expect(await signIn('wallets-max')).toMatchObject({ user: { name: 'Max Mustermann' }, companyId: MOCK_PERSONS['wallets-erika'].companyId, permissions: [] });
+    expect(await signIn('wallets-otto')).toMatchObject({ user: { name: 'Otto Normalverbraucher' }, companyId: null, permissions: ['manage_credentials'] });
+    expect(await signIn('wallets-rolf')).toMatchObject({ user: { name: 'Rolf Prüfer' }, companyId: null, permissions: [] });
+  });
+
+  it('serves the credentials of C4-M1 from the fixtures of the mockup (proof of concept)', async () => {
+    const { c4m1 } = createMockCoreModules('wallets-erika');
+    const own = await c4m1?.listCompanyCredentials.execute(MOCK_PERSONS['wallets-erika'].companyId);
+    expect(own?.status === 'found' && own.credentials.map((credential) => credential.dataspace.mark)).toEqual(['CX', 'CX', 'SC']);
+    const all = await c4m1?.listCredentials.execute({ page: 0, size: 20 });
+    expect(all?.status === 'found' && all.page.total).toBe(16);
   });
 
   it('starts signed out for a person key it does not know', async () => {
