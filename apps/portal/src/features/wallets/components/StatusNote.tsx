@@ -37,19 +37,19 @@ export function StatusNote({ credential }: { credential: CredentialDetailAnemic 
   switch (credential.status) {
     case 'FAILED':
       return credential.failureReason ? (
-        <Typography variant="body2" color="error" sx={{ mt: 0.5 }}>
+        <Typography variant="body2" color="error" sx={{ mt: 0.25 }}>
           {credential.failureReason}
         </Typography>
       ) : null;
     case 'REVOCATION_PENDING':
       return (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontSize: '0.8125rem' }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: '0.8125rem' }}>
           {t('note.revokeByHand')}
         </Typography>
       );
     case 'REQUESTED':
       return credential.requestedAt ? (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, fontSize: '0.8125rem' }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, fontSize: '0.8125rem' }}>
           {credential.attempt > 1
             ? t('note.openForAttempt', { duration: time.duration(credential.requestedAt), attempt: credential.attempt })
             : t('note.openFor', { duration: time.duration(credential.requestedAt) })}

@@ -44,6 +44,7 @@ export function StatusPill({ tone, label }: { tone: StatusTone; label: string })
         fontSize: '0.75rem',
         fontWeight: 700,
         whiteSpace: 'nowrap',
+        flexShrink: 0,
         color: 'var(--pass-fg)',
         bgcolor: `color-mix(in srgb, ${dot} 18%, transparent)`,
         '&::before': { content: '""', width: 8, height: 8, borderRadius: '50%', bgcolor: dot },

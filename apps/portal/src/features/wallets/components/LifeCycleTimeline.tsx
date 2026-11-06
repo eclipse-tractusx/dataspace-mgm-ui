@@ -77,7 +77,7 @@ export function LifeCycleTimeline({ credential }: { credential: CredentialDetail
               gridTemplateColumns: '20px 1fr',
               gap: 2,
               position: 'relative',
-              pb: index < all.length - 1 ? 3 : 0,
+              pb: 3,
               '&::before':
                 index < all.length - 1
                   ? { content: '""', position: 'absolute', left: 9, top: 22, bottom: 0, width: 2, bgcolor: 'divider' }

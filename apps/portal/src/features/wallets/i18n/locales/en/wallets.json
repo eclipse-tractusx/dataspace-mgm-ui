@@ -3,7 +3,9 @@
   "tabs": {
     "label": "Wallets as a service",
     "credentials": "Credentials",
-    "allCredentials": "Credentials of all companies"
+    "allCredentials": "Credentials of all companies",
+    "wallet": "Dataspace wallet",
+    "walletAccounts": "Wallet accounts"
   },
   "common": {
     "signInPrompt": "Sign in to see the wallets and credentials.",
@@ -116,6 +118,7 @@
     "invalid": "The onboarding service provider did not accept the filters (HTTP 400).",
     "needsAttention": "Needs attention",
     "attentionItem": "{{credential}} of {{company}}",
+    "attentionShown": "Showing {{shown}} of {{total}}.",
     "all": "All credentials"
   },
   "note": {
@@ -126,6 +129,7 @@
   "filters": {
     "label": "Filters",
     "openOnly": "Open for more than {{hours}} h",
+    "openOnlyExcludes": "Turn off \"Open for more than {{hours}} h\" to filter by status.",
     "credentialType": "Credential type",
     "allCredentialTypes": "All credential types"
   },
@@ -198,12 +202,162 @@
     "count": "{{length}} / {{max}}",
     "cancel": "Cancel",
     "done": "Revocation confirmed",
-    "conflict": "The credential is no longer waiting for a revocation (HTTP 409). Reload it to see its status.",
+    "conflict": "The credential is no longer waiting for a revocation (HTTP 409). The page now shows its current status.",
     "forbidden": "You may not confirm revocations (HTTP 403). This needs the role OSP Admin."
   },
   "validation": {
     "revocationNoteRequired": "Enter a note of 1 to 500 characters.",
     "revocationNoteTooLong": "The note may have at most 500 characters.",
     "revocationNoteRejected": "The onboarding service provider did not accept the note (HTTP 400)."
+  },
+  "walletStatus": {
+    "REQUESTED": "Being created",
+    "VALIDATING": "Checking the DID",
+    "ACTIVE": "Active",
+    "FAILED": "Failed"
+  },
+  "walletFailure": {
+    "PROVIDER_TIMEOUT": "The provider did not answer in time.",
+    "DID_MISMATCH": "The provider returned a DID that does not belong to your company.",
+    "INVALID_DID_DOCUMENT": "The DID document of the wallet is not valid.",
+    "DID_NOT_RESOLVABLE": "The DID document of the wallet could not be found."
+  },
+  "walletProviderShort": {
+    "CSP": "CSP wallet",
+    "SAP_DIV": "SAP DIV",
+    "IDENTITY_HUB": "IdentityHub",
+    "BRING_YOUR_OWN": "Own wallet"
+  },
+  "wallet": {
+    "title": "Your dataspace wallet",
+    "loading": "Loading your dataspace wallet…",
+    "noAccess": "You may not see the dataspace wallet of your company. Ask your Company Admin for the role IT Admin.",
+    "forbidden": "You may not see the dataspace wallet of your company (HTTP 403). Ask your Company Admin for the role IT Admin.",
+    "noCompany": "Your account is not bound to a company. A dataspace wallet belongs to a company of the dataspace.",
+    "failed": "The dataspace wallet could not be loaded: {{message}}",
+    "failedWithStatus": "The dataspace wallet could not be loaded (HTTP {{status}}): {{message}}",
+    "noWallet": {
+      "title": "Your company has no dataspace wallet yet",
+      "text": "The onboarding service provider creates it during onboarding, as soon as your company has its business partner number. You do not need to do anything."
+    },
+    "alert": {
+      "validating": "<strong>Your wallet is being checked.</strong> The DID document is resolved and checked. Your connectors can use the wallet as soon as it is active.",
+      "failed": "<strong>Your wallet could not be set up.</strong> {{reason}} Your onboarding service provider can start a new attempt.",
+      "failureCode": "Reason code: {{reason}}"
+    },
+    "pass": {
+      "label": "Dataspace wallet",
+      "kind": "Dataspace wallet",
+      "company": "Company",
+      "bpn": "BPN",
+      "provider": "Provider",
+      "activeSince": "Active since",
+      "did": "DID",
+      "qr": "QR code of the DID of your company"
+    },
+    "connectors": {
+      "title": "For your connectors",
+      "lead": "The addresses a connector of your company needs to use this wallet.",
+      "credentialService": "Credential service",
+      "bdrs": "Directory BPN → DID",
+      "sts": "Token address (STS)",
+      "stsPerAccount": "One per wallet account",
+      "didDocument": "DID document"
+    },
+    "accountsLink": {
+      "title": "Wallet accounts",
+      "count_one": "{{count}} technical user can sign in",
+      "count_other": "{{count}} technical users can sign in",
+      "unknown": "The technical users that sign in to the wallet"
+    },
+    "credentials": {
+      "title": "Credentials",
+      "loading": "Loading the credentials…",
+      "allIssued": "All issued",
+      "someIssued": "{{issued}} of {{total}} issued",
+      "details": "Details →",
+      "show": "Show the {{name}} of {{dataspace}}",
+      "hint": "Select a card to bring it to the front.",
+      "empty": "There are no credentials of your company in this wallet yet."
+    }
+  },
+  "accountStatus": {
+    "REQUESTED": "Being created",
+    "ACTIVE": "Active",
+    "FAILED": "Failed",
+    "DELETING": "Being deleted",
+    "DELETED": "Deleted"
+  },
+  "credentialsState": {
+    "NONE": "No access data",
+    "AVAILABLE": "Ready to retrieve",
+    "RETRIEVED": "Retrieved",
+    "EXPIRED": "Expired"
+  },
+  "walletAccounts": {
+    "title": "Wallet accounts",
+    "lead": "A connector of your company signs in to your dataspace wallet with the wallet account of its technical user. The access data of a wallet account can be retrieved <strong>once</strong>; enter them into the connector right away.",
+    "loading": "Loading the wallet accounts…",
+    "noAccess": "You may not see the wallet accounts of your company. Ask your Company Admin for the role IT Admin.",
+    "forbidden": "You may not see the wallet accounts of your company (HTTP 403). Ask your Company Admin for the role IT Admin.",
+    "noCompany": "Your account is not bound to a company. Wallet accounts belong to the technical users of a company.",
+    "failed": "The wallet accounts could not be loaded: {{message}}",
+    "failedWithStatus": "The wallet accounts could not be loaded (HTTP {{status}}): {{message}}",
+    "listLabel": "Technical users with wallet access",
+    "noDescription": "Technical user of your company",
+    "noAccount": "No wallet account",
+    "noAccountText": "This technical user has no wallet account yet. Your onboarding service provider creates it.",
+    "fields": {
+      "clientId": "Client ID in the portal",
+      "wallet": "Wallet",
+      "accessData": "Access data",
+      "retrievableUntil": "Retrievable until",
+      "created": "Created",
+      "walletAccountRef": "Wallet account"
+    },
+    "stateText": {
+      "AVAILABLE": "Ready to retrieve until {{date}}.",
+      "RETRIEVED": "Retrieved. If they are lost, delete the technical user and create it again.",
+      "EXPIRED": "Not retrieved in time and deleted. Delete the technical user and create it again.",
+      "NONE": "No access data while the account is not active."
+    },
+    "retrieve": "Retrieve access data",
+    "confirm": {
+      "title": "Retrieve the access data?",
+      "text": "The token address, client ID and client secret of {{name}} for your dataspace wallet.",
+      "once": "They are shown <strong>only once</strong>. After that, nobody can retrieve them again, also not your onboarding service provider.",
+      "cancel": "Cancel",
+      "retrieveNow": "Retrieve now"
+    },
+    "access": {
+      "title": "Access data of the wallet account",
+      "once": "Shown only once. Copy them into the connector now.",
+      "tokenUrl": "Token address (STS)",
+      "clientId": "Client ID",
+      "secret": "Client secret",
+      "did": "DID of your company",
+      "credentialService": "Credential service",
+      "show": "Show the client secret",
+      "hide": "Hide the client secret",
+      "copy": "Copy {{label}}",
+      "done": "I have entered them"
+    },
+    "problem": {
+      "already-retrieved": "Another person of your company retrieved the access data of {{name}} a moment ago (HTTP 410).",
+      "expired": "The access data of {{name}} were not retrieved in time and are deleted (HTTP 410).",
+      "no-credentials": "The wallet account of {{name}} has no access data to retrieve (HTTP 409).",
+      "invalid-state": "The wallet account of {{name}} is not active (HTTP 409).",
+      "forbidden": "You may not retrieve access data of wallet accounts (HTTP 403). Ask your Company Admin for the role IT Admin.",
+      "not-found": "{{name}} has no wallet account at your onboarding service provider (HTTP 404).",
+      "failed": "The access data of {{name}} could not be retrieved: {{message}}",
+      "failedWithStatus": "The access data of {{name}} could not be retrieved (HTTP {{status}}): {{message}}"
+    },
+    "empty": {
+      "title": "No technical user with wallet access",
+      "text": "Create a technical user with the role for wallet access in Technical users. Its wallet account then appears here.",
+      "technicalUsers": "Technical users",
+      "comingSoon": "Technical users (C2-M3), coming soon"
+    },
+    "listLocked": "Enter the access data into the connector first. Then you can choose another technical user."
   }
 }

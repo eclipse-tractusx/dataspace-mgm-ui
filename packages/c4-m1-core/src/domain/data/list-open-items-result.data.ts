@@ -26,6 +26,7 @@
 
 import type { CredentialDetailAnemic } from '../anemics/credential-detail.anemic';
 import type { C4M1Failed, C4M1Forbidden } from './c4-m1-outcome.data';
+import type { CredentialQuery } from './credential-query.data';
 
 export interface ListOpenItemsFound {
   status: 'found';
@@ -37,6 +38,11 @@ export interface ListOpenItemsFound {
   requestedBefore: string;
   /** The age in hours behind `requestedBefore`, for the text "open for more than {{hours}} h". */
   openOrderHours: number;
+  /**
+   * The filter of the open orders the queue used (`status` REQUESTED with `requestedBefore`), for the list "Open for
+   * more than X h": the UI spreads it into its `listCredentials` query and does not build it (open point 12).
+   */
+  openOrders: Readonly<Pick<CredentialQuery, 'status' | 'requestedBefore'>>;
 }
 
 export type ListOpenItemsResult = ListOpenItemsFound | C4M1Forbidden | C4M1Failed;

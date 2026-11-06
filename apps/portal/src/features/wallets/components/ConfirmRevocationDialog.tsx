@@ -68,6 +68,8 @@ function ConfirmProblem({ problem }: { problem: NonNullable<ConfirmRevocationFor
   }
 }
 
+const NOTE_ID = 'revocation-note';
+
 /** "Confirm the revocation": a note (1 to 500 characters, no names of people), sent with C4-M1 `confirmRevocation`. */
 export function ConfirmRevocationDialog({ credential, form }: { credential: CredentialDetailAnemic; form: ConfirmRevocationForm }) {
   const { t } = useTranslation(WALLETS_NS);
@@ -86,8 +88,11 @@ export function ConfirmRevocationDialog({ credential, form }: { credential: Cred
           </Typography>
           {form.problem && <ConfirmProblem problem={form.problem} />}
           <Box>
+            <Typography component="label" htmlFor={NOTE_ID} sx={{ display: 'block', fontWeight: 600, fontSize: '0.875rem', mb: 0.75 }}>
+              {t('confirm.noteLabel')}
+            </Typography>
             <TextField
-              label={t('confirm.noteLabel')}
+              id={NOTE_ID}
               placeholder={t('confirm.notePlaceholder')}
               value={form.note}
               onChange={(event) => form.setNote(event.target.value)}
@@ -95,18 +100,21 @@ export function ConfirmRevocationDialog({ credential, form }: { credential: Cred
               minRows={4}
               fullWidth
               error={Boolean(localError)}
-              helperText={localError ?? t('confirm.noteHelp')}
-              slotProps={{ htmlInput: { maxLength: REVOCATION_NOTE_MAX_LENGTH } }}
-              sx={{ mt: 1 }}
+              helperText={
+                <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                  <span>{localError ?? t('confirm.noteHelp')}</span>
+                  <Box component="span" sx={{ flexShrink: 0, color: 'text.secondary' }}>
+                    {t('confirm.count', { length: form.note.length, max: REVOCATION_NOTE_MAX_LENGTH })}
+                  </Box>
+                </Box>
+              }
+              slotProps={{ htmlInput: { maxLength: REVOCATION_NOTE_MAX_LENGTH }, formHelperText: { sx: { mx: 0 } } }}
             />
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', fontSize: '0.8125rem' }}>
-              {t('confirm.count', { length: form.note.length, max: REVOCATION_NOTE_MAX_LENGTH })}
-            </Typography>
           </Box>
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
-        <Button variant="outlined" onClick={form.close}>
+        <Button variant="outlined" onClick={form.close} disabled={form.submitting}>
           {t('confirm.cancel')}
         </Button>
         <Button onClick={() => void form.submit()} disabled={form.submitting}>

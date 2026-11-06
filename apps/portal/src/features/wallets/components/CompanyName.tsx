@@ -26,14 +26,21 @@
 
 import type { CredentialDetailAnemic } from '@dataspace-mgm/c4-m1-core';
 import { Box } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
+import { WALLETS_NS } from '../i18n';
 import { MONO } from '../utils/mono';
 
-/** The company of a credential: its name with the BPN below, or only the BPN when C3-M1 has no name. */
+/** The company of a credential: its name with the BPN below, only the BPN when C3-M1 has no name, else "Not known yet". */
 export function CompanyName({ credential, inline = false }: { credential: CredentialDetailAnemic; inline?: boolean }) {
+  const { t } = useTranslation(WALLETS_NS);
   if (!credential.companyName) {
-    return (
+    return credential.bpn ? (
       <Box component="span" sx={{ fontFamily: MONO, fontWeight: inline ? 400 : 600 }}>
         {credential.bpn}
+      </Box>
+    ) : (
+      <Box component="span" sx={{ fontWeight: inline ? 400 : 600 }}>
+        {t('common.notKnown')}
       </Box>
     );
   }
@@ -42,10 +49,12 @@ export function CompanyName({ credential, inline = false }: { credential: Creden
       <Box component="span" sx={{ display: inline ? 'inline' : 'block', fontWeight: inline ? 400 : 600 }}>
         {credential.companyName}
       </Box>
-      {inline && ' '}
-      <Box component="span" sx={{ display: inline ? 'inline' : 'block', fontFamily: MONO, fontSize: '0.8125rem', color: 'text.secondary' }}>
-        {credential.bpn}
-      </Box>
+      {inline && credential.bpn && ' '}
+      {credential.bpn && (
+        <Box component="span" sx={{ display: inline ? 'inline' : 'block', fontFamily: MONO, fontSize: '0.8125rem', color: 'text.secondary' }}>
+          {credential.bpn}
+        </Box>
+      )}
     </>
   );
 }

@@ -29,7 +29,7 @@ import type { CredentialDetailAnemic } from '../../domain/anemics/credential-det
 import { CREDENTIAL_PAGE_MAX_SIZE } from '../../domain/data/credential-page-limits.data';
 import type { CredentialQuery } from '../../domain/data/credential-query.data';
 import type { ListOpenItemsOptions } from '../../domain/data/list-open-items-options.data';
-import type { ListOpenItemsResult } from '../../domain/data/list-open-items-result.data';
+import type { ListOpenItemsFound, ListOpenItemsResult } from '../../domain/data/list-open-items-result.data';
 import { DEFAULT_OPEN_ORDER_HOURS } from '../../domain/data/open-order-hours.data';
 import type { CredentialRepository } from '../../domain/repositories/credential.repository';
 import { C4M1_HTTP_STATUS } from '../constants/c4-m1-http-status.constant';
@@ -55,18 +55,19 @@ export class ListOpenItemsUseCase {
 
   public async execute(): Promise<ListOpenItemsResult> {
     const requestedBefore = new Date(this.clock().getTime() - this.openOrderHours * HOUR_MS).toISOString();
+    const openOrders: ListOpenItemsFound['openOrders'] = { status: ['REQUESTED'], requestedBefore };
     const page = { page: 0, size: CREDENTIAL_PAGE_MAX_SIZE };
     const queries: CredentialQuery[] = [
       { ...page, status: ['FAILED'] },
       { ...page, status: ['REVOCATION_PENDING'] },
-      { ...page, status: ['REQUESTED'], requestedBefore },
+      { ...page, ...openOrders },
     ];
     try {
       const pages = await Promise.all(queries.map((query) => this.credentials.listCredentials(query)));
       const items: CredentialDetailAnemic[] = pages.flatMap((result) => result.items);
       items.sort((a, b) => Date.parse(b.changedAt) - Date.parse(a.changedAt));
       const total = pages.reduce((sum, result) => sum + result.total, 0);
-      return { status: 'found', items, total, requestedBefore, openOrderHours: this.openOrderHours };
+      return { status: 'found', items, total, requestedBefore, openOrderHours: this.openOrderHours, openOrders };
     } catch (failure) {
       const error = CoreHttpErrorFactory.from(failure);
       if (error.status === C4M1_HTTP_STATUS.FORBIDDEN) {

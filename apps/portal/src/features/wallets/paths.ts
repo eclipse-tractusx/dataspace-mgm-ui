@@ -26,8 +26,10 @@
 
 /** The routes of the feature (routes.tsx), for links and navigation. */
 export const WALLETS_PATHS = {
+  /** The dataspace wallet (C4-M2) for a person with view_dataspace_wallet, else it opens the first tab. */
   landing: '/wallets',
   credentials: '/wallets/credentials',
   allCredentials: '/wallets/all-credentials',
   credential: (credentialId: string) => `/wallets/all-credentials/${encodeURIComponent(credentialId)}`,
+  walletAccounts: '/wallets/wallet-accounts',
 } as const;

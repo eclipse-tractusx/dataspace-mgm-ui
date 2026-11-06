@@ -57,13 +57,16 @@ interface PassSurfaceProps {
   label: string;
   children: ReactNode;
   sx?: SxProps<Theme>;
+  /** A button (e.g. the peeking header of a pass in a stack) instead of an article; `label` is its name. */
+  onClick?: () => void;
 }
 
 /** The card of a pass, like a card in a phone wallet: radius 18 px, the skin's background and a soft corner light. */
-export function PassSurface({ skin, muted = false, label, children, sx }: PassSurfaceProps) {
+export function PassSurface({ skin, muted = false, label, children, sx, onClick }: PassSurfaceProps) {
+  const button = onClick ? { component: 'button' as const, type: 'button' as const, onClick } : { component: 'article' as const };
   return (
     <Box
-      component="article"
+      {...button}
       aria-label={label}
       sx={[
         {
