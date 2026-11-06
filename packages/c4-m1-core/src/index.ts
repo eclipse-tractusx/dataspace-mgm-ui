@@ -46,7 +46,7 @@ export type { GetCredentialResult } from './domain/data/get-credential-result.da
 export type { ListCompanyCredentialsResult } from './domain/data/list-company-credentials-result.data';
 export type { ListCredentialsResult } from './domain/data/list-credentials-result.data';
 export type { ListOpenItemsOptions } from './domain/data/list-open-items-options.data';
-export type { ListOpenItemsResult } from './domain/data/list-open-items-result.data';
+export type { ListOpenItemsFound, ListOpenItemsResult } from './domain/data/list-open-items-result.data';
 export type { RevocationNoteErrorKey, RevocationNoteValidation } from './domain/data/revocation-note-validation.data';
 export type { CompanyCredentialRepository } from './domain/repositories/company-credential.repository';
 export type { CredentialRepository } from './domain/repositories/credential.repository';
