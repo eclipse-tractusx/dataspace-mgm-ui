@@ -23,6 +23,15 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import {
+  createMockC1M2Module,
+  ERIKA_SESSION,
+  HANS_SESSION,
+  LIESCHEN_SESSION,
+  MAX_SESSION,
+  OTTO_SESSION,
+  ROLF_SESSION,
+} from '@dataspace-mgm/c1-m2-core/testing';
 import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
 import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
 import { createIdentityModule, type RedirectPort, type SessionAnemic } from '@dataspace-mgm/identity-core';
@@ -38,6 +47,14 @@ export const DEFAULT_MOCK_PERSON = 'pia';
  */
 export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: PIA_SESSION,
+  /** Applicants without a company (C1-M2 Registration): Erika (EBW), Max, Hans (DOCUMENTS), Lieschen. */
+  erika: ERIKA_SESSION,
+  max: MAX_SESSION,
+  hans: HANS_SESSION,
+  lieschen: LIESCHEN_SESSION,
+  /** OSP staff without a company: Rolf is OSP Reviewer, Otto OSP Admin. */
+  rolf: ROLF_SESSION,
+  otto: OTTO_SESSION,
 };
 
 /** Mock mode has no BFF: "sign in" reloads the page, which starts a new mock session. */
@@ -63,5 +80,6 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       redirect: new ReloadRedirect(),
     }),
     c3m1: { getOwnCompany: new GetOwnCompanyUseCase(new InMemoryCompanyRepository([OSP_A_COMPANY])) },
+    c1m2: createMockC1M2Module(session),
   };
 }

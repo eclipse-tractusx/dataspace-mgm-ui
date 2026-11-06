@@ -22,7 +22,9 @@
       "@dataspace-mgm/identity-core": ["./packages/identity-core/src/index.ts"],
       "@dataspace-mgm/identity-core/testing": ["./packages/identity-core/src/testing.ts"],
       "@dataspace-mgm/c3-m1-core": ["./packages/c3-m1-core/src/index.ts"],
-      "@dataspace-mgm/c3-m1-core/testing": ["./packages/c3-m1-core/src/testing.ts"]
+      "@dataspace-mgm/c3-m1-core/testing": ["./packages/c3-m1-core/src/testing.ts"],
+      "@dataspace-mgm/c1-m2-core": ["./packages/c1-m2-core/src/index.ts"],
+      "@dataspace-mgm/c1-m2-core/testing": ["./packages/c1-m2-core/src/testing.ts"]
     }
   }
 }

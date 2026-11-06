@@ -39,4 +39,6 @@ export const workspaceAliases = [
   { find: '@dataspace-mgm/identity-core', replacement: at('./packages/identity-core/src/index.ts') },
   { find: '@dataspace-mgm/c3-m1-core/testing', replacement: at('./packages/c3-m1-core/src/testing.ts') },
   { find: '@dataspace-mgm/c3-m1-core', replacement: at('./packages/c3-m1-core/src/index.ts') },
+  { find: '@dataspace-mgm/c1-m2-core/testing', replacement: at('./packages/c1-m2-core/src/testing.ts') },
+  { find: '@dataspace-mgm/c1-m2-core', replacement: at('./packages/c1-m2-core/src/index.ts') },
 ];

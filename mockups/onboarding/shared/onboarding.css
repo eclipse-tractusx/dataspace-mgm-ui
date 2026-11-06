@@ -1,0 +1,110 @@
+/********************************************************************************
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * AI Disclosure: This file was entirely AI-generated.
+ * The AI-generated portions are made available under CC0-1.0 and not subject
+ * to the project's license. The human contributor has reviewed and verified
+ * that the code is correct.
+ *
+ * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ * Assisted-By: Claude Code (claude-opus-5-5)
+ ********************************************************************************/
+
+/* Building blocks shared by the onboarding views. Colours, radii and fonts only from tokens.css. */
+
+/* The application flow: steps on top or at the side of the content. */
+.ob-flow { display: grid; gap: 32px; }
+.ob-flow > .tx-steps, .ob-flow > .tx-overline { margin-bottom: 0; }
+.ob-flow--side { grid-template-columns: 240px minmax(0, 1fr); align-items: start; }
+@media (max-width: 899.98px) { .ob-flow--side { grid-template-columns: 1fr; } }
+.ob-sidesteps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; }
+.ob-sidesteps li { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: var(--radius); color: var(--muted); }
+.ob-sidesteps li[aria-current="step"] { background: var(--accent-tint); color: var(--text); font-weight: 700; }
+.ob-sidesteps .tx-step__n { flex: 0 0 auto; }
+@media (max-width: 899.98px) { .ob-sidesteps { flex-direction: row; overflow-x: auto; position: static; } .ob-sidesteps li span:last-child { display: none; } .ob-sidesteps li[aria-current="step"] span:last-child { display: inline; } }
+
+/* Selectable tiles and radio rows. */
+.ob-choices { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.ob-choice { display: flex; gap: 16px; align-items: flex-start; text-align: left; font: inherit; color: inherit; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px; }
+.ob-choice:hover { box-shadow: var(--glow); }
+.ob-choice[aria-pressed="true"], .ob-choice[aria-checked="true"] { border-color: var(--tx-orange); box-shadow: inset 0 0 0 1px var(--tx-orange); }
+.ob-choice strong { display: block; margin-bottom: 4px; }
+.ob-radios { list-style: none; margin: 0; padding: 0; border: 1px solid var(--card-border); border-radius: var(--radius); }
+.ob-radios li + li { border-top: 1px solid var(--subtle-border); }
+.ob-radios label { display: flex; gap: 12px; align-items: flex-start; padding: 16px 20px; cursor: pointer; }
+.ob-radios input { margin-top: 4px; accent-color: var(--tx-orange); }
+.ob-check { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.ob-check input { margin-top: 4px; accent-color: var(--tx-orange); width: 18px; height: 18px; flex: 0 0 auto; }
+
+/* A question of the flow, and the buttons at its end. */
+.ob-question { display: flex; flex-direction: column; gap: 16px; }
+.ob-actions { display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; margin-top: 8px; }
+.ob-actions--start { justify-content: flex-start; }
+
+/* Read-only data with its source. */
+.ob-dl { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) auto; gap: 0; margin: 0; }
+.ob-dl > * { padding: 12px 0; border-bottom: 1px solid var(--subtle-border); margin: 0; }
+.ob-dl dt { color: var(--muted); font-size: 0.9375rem; }
+.ob-dl dd { font-weight: 500; }
+.ob-dl .ob-dl__note { text-align: right; }
+@media (max-width: 899.98px) { .ob-dl { grid-template-columns: 1fr; } .ob-dl > * { border-bottom: 0; padding: 4px 0; } .ob-dl dt { padding-top: 12px; } .ob-dl .ob-dl__note { text-align: left; border-bottom: 1px solid var(--subtle-border); padding-bottom: 12px; } }
+.ob-source { font-size: 0.8125rem; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.ob-badge--match { color: var(--success); }
+.ob-badge--mismatch { color: var(--warning); }
+.ob-badge--unproven { color: var(--info); }
+.ob-mono { font-family: var(--mono); font-size: 0.875rem; }
+
+/* Form grid. */
+.ob-form { display: grid; gap: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ob-form .ob-span { grid-column: 1 / -1; }
+@media (max-width: 899.98px) { .ob-form { grid-template-columns: 1fr; } }
+
+/* Drawer and detail panels. */
+.ob-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100vw); background: var(--surface); border-left: 1px solid var(--card-border);
+  box-shadow: var(--hero-glow); padding: 28px; overflow-y: auto; z-index: 40; display: flex; flex-direction: column; gap: 20px; }
+.ob-split { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
+@media (max-width: 1199.98px) { .ob-split { grid-template-columns: 1fr; } }
+
+/* Status timeline. */
+.ob-timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.ob-timeline li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; padding-bottom: 20px; position: relative; }
+.ob-timeline li::before { content: ""; position: absolute; left: 15px; top: 32px; bottom: 0; width: 1px; background: var(--card-border); }
+.ob-timeline li:last-child::before { display: none; }
+.ob-timeline .ob-dot { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--card-border); color: var(--muted); }
+.ob-timeline li[data-done] .ob-dot { background: var(--accent-tint); border-color: transparent; color: var(--tx-orange); }
+.ob-timeline li[data-current] .ob-dot { background: var(--tx-orange); border-color: var(--tx-orange); color: var(--tx-black); }
+.ob-timeline li[data-failed] .ob-dot { background: var(--error-tint); border-color: transparent; color: var(--error); }
+
+/* Upload area. */
+.ob-drop { border: 1px dashed var(--input-border); border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.ob-drop:hover { border-color: var(--tx-orange); }
+.ob-slot { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+
+.ob-hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+details.ob-section { border: 1px solid var(--card-border); border-radius: var(--radius); padding: 0 20px; }
+details.ob-section > summary { cursor: pointer; padding: 18px 0; font-weight: 700; }
+details.ob-section[open] > summary { border-bottom: 1px solid var(--subtle-border); margin-bottom: 16px; }
+details.ob-section > *:last-child { margin-bottom: 20px; }
+
+/* Phones: an alert's action goes below its text. */
+@media (max-width: 899.98px) { .tx-alert { flex-wrap: wrap; } .tx-alert__action { margin-left: 0; } }
+
+/* A step of a flow inside one view that is not the current one (the shell owns the `hidden` attribute of sections). */
+.ob-off { display: none !important; }
+
+/* A text button inside a question sits at the start, not stretched across the card. */
+.ob-question > .tx-btn { align-self: flex-start; }

@@ -26,7 +26,6 @@
 
 import {
   AccountBalanceWalletOutlinedIcon,
-  AppRegistrationOutlinedIcon,
   CableOutlinedIcon,
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
@@ -35,6 +34,7 @@ import { MOCK_MODE } from '../core/mock-mode';
 import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
 import { homeFeature } from './home/routes';
+import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
 
 /**
@@ -76,7 +76,7 @@ const upcoming = (
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
+  onboardingFeature,
   participantsFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
   upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),
