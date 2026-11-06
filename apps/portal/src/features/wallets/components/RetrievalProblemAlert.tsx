@@ -28,7 +28,6 @@ import { C4M2_PROBLEM } from '@dataspace-mgm/c4-m2-core';
 import { useTranslation } from 'react-i18next';
 import type { RetrievalProblem } from '../hooks/useRetrieveAccessData';
 import { WALLETS_NS } from '../i18n';
-import { PageFailedAlert } from './PageFailedAlert';
 import { ProblemAlert } from './ProblemAlert';
 
 const PROBLEM_TYPE: Readonly<Record<Exclude<RetrievalProblem['status'], 'failed'>, string>> = {
@@ -44,7 +43,14 @@ const PROBLEM_TYPE: Readonly<Record<Exclude<RetrievalProblem['status'], 'failed'
 export function RetrievalProblemAlert({ problem, name }: { problem: RetrievalProblem; name: string }) {
   const { t } = useTranslation(WALLETS_NS);
   if (problem.status === 'failed') {
-    return <PageFailedAlert page="walletAccounts" error={problem.error} />;
+    const { error } = problem;
+    return (
+      <ProblemAlert severity="error" problemType={error.problemType}>
+        {error.status
+          ? t('walletAccounts.problem.failedWithStatus', { name, status: error.status, message: error.message })
+          : t('walletAccounts.problem.failed', { name, message: error.message })}
+      </ProblemAlert>
+    );
   }
   return (
     <ProblemAlert severity={problem.status === 'forbidden' ? 'error' : 'warning'} problemType={PROBLEM_TYPE[problem.status]}>

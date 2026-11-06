@@ -242,7 +242,8 @@
     },
     "alert": {
       "validating": "<strong>Your wallet is being checked.</strong> The DID document is resolved and checked. Your connectors can use the wallet as soon as it is active.",
-      "failed": "<strong>Your wallet could not be set up.</strong> {{reason}} Your onboarding service provider can start a new attempt."
+      "failed": "<strong>Your wallet could not be set up.</strong> {{reason}} Your onboarding service provider can start a new attempt.",
+      "failureCode": "Reason code: {{reason}}"
     },
     "pass": {
       "label": "Dataspace wallet",
@@ -276,7 +277,8 @@
       "someIssued": "{{issued}} of {{total}} issued",
       "details": "Details →",
       "show": "Show the {{name}} of {{dataspace}}",
-      "hint": "Select a card to bring it to the front."
+      "hint": "Select a card to bring it to the front.",
+      "empty": "There are no credentials of your company in this wallet yet."
     }
   },
   "accountStatus": {
@@ -346,13 +348,16 @@
       "no-credentials": "The wallet account of {{name}} has no access data to retrieve (HTTP 409).",
       "invalid-state": "The wallet account of {{name}} is not active (HTTP 409).",
       "forbidden": "You may not retrieve access data of wallet accounts (HTTP 403). Ask your Company Admin for the role IT Admin.",
-      "not-found": "{{name}} has no wallet account at your onboarding service provider (HTTP 404)."
+      "not-found": "{{name}} has no wallet account at your onboarding service provider (HTTP 404).",
+      "failed": "The access data of {{name}} could not be retrieved: {{message}}",
+      "failedWithStatus": "The access data of {{name}} could not be retrieved (HTTP {{status}}): {{message}}"
     },
     "empty": {
       "title": "No technical user with wallet access",
       "text": "Create a technical user with the role for wallet access in Technical users. Its wallet account then appears here.",
       "technicalUsers": "Technical users",
       "comingSoon": "Technical users (C2-M3), coming soon"
-    }
+    },
+    "listLocked": "Enter the access data into the connector first. Then you can choose another technical user."
   }
 }

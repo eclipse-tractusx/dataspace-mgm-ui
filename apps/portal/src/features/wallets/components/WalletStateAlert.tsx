@@ -49,7 +49,7 @@ export function WalletStateAlert({ wallet }: { wallet: WalletAnemic }) {
         </div>
         {wallet.failureReason && (
           <Box component="code" sx={{ display: 'block', fontFamily: MONO, fontSize: '0.8125rem', mt: 0.5 }}>
-            {`failureReason: ${wallet.failureReason}`}
+            {t('wallet.alert.failureCode', { reason: wallet.failureReason })}
           </Box>
         )}
       </Alert>

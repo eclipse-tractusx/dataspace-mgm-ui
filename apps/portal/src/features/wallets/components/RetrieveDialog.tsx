@@ -24,6 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import { useState } from 'react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@dataspace-mgm/ui-mui';
 import { Trans, useTranslation } from 'react-i18next';
 import { WALLETS_NS } from '../i18n';
@@ -38,11 +39,16 @@ interface RetrieveDialogProps {
 /** Asks before the retrieval, because the access data are shown only once. */
 export function RetrieveDialog({ name, onCancel, onConfirm }: RetrieveDialogProps) {
   const { t } = useTranslation(WALLETS_NS);
+  // The last name stays in the text while the dialog fades out (the page sets `name` to null on close).
+  const [shown, setShown] = useState(name);
+  if (name !== null && name !== shown) {
+    setShown(name);
+  }
   return (
     <Dialog open={name !== null} onClose={onCancel} aria-labelledby="retrieve-title" fullWidth maxWidth="sm">
       <DialogTitle id="retrieve-title">{t('walletAccounts.confirm.title')}</DialogTitle>
       <DialogContent sx={{ display: 'grid', gap: 2 }}>
-        <DialogContentText>{t('walletAccounts.confirm.text', { name: name ?? '' })}</DialogContentText>
+        <DialogContentText>{t('walletAccounts.confirm.text', { name: name ?? shown ?? '' })}</DialogContentText>
         <Alert severity="warning">
           <Trans t={t} i18nKey="walletAccounts.confirm.once" components={{ strong: <strong /> }} />
         </Alert>

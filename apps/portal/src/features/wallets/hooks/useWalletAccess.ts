@@ -47,7 +47,7 @@ export function useWalletAccess(permission: WalletsPermission): WalletAccess {
         return { status: 'not-connected' };
       }
       if (!session.session.permissions.includes(permission)) {
-        return { status: 'no-access' };
+        return { status: 'no-access', withoutCompany: session.session.companyId === null };
       }
       return { status: 'ready', session: session.session, c4m2 };
   }

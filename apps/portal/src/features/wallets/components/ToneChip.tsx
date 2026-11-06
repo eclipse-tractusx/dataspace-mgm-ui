@@ -27,15 +27,14 @@
 import { Chip } from '@dataspace-mgm/ui-mui';
 import type { StatusTone } from '../utils/statusTone';
 
-/** A status as a small outlined chip in the colour of its tone (display only). */
+/** A status as an outlined chip in the colour of its tone, 32 px high like the mockup's tx-status (display only). */
 export function ToneChip({ tone, label }: { tone: StatusTone; label: string }) {
   return (
     <Chip
       label={label}
-      size="small"
       variant="outlined"
       color={tone}
-      sx={{ borderColor: 'currentColor', fontWeight: 600, ...(tone === 'default' && { color: 'text.secondary' }) }}
+      sx={{ borderColor: 'currentColor', fontWeight: 700, ...(tone === 'default' && { color: 'text.secondary' }) }}
     />
   );
 }

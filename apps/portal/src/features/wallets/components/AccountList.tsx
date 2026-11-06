@@ -25,7 +25,7 @@
  ********************************************************************************/
 
 import type { WalletAccountItem } from '@dataspace-mgm/c4-m2-core';
-import { Box, Card, alpha, tractusx } from '@dataspace-mgm/ui-mui';
+import { Box, Card, Typography, alpha, tractusx } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { WALLETS_NS } from '../i18n';
 import { MONO } from '../utils/mono';
@@ -36,21 +36,26 @@ interface AccountListProps {
   items: ReadonlyArray<WalletAccountItem>;
   selectedId: string;
   onSelect: (technicalUserId: string) => void;
+  /** The access data of the selected one are retrieved or shown: the others cannot be chosen until they are entered. */
+  locked?: boolean;
 }
 
 /** The technical users with wallet access: name, client ID and the state of the access data; the selected one framed. */
-export function AccountList({ items, selectedId, onSelect }: AccountListProps) {
+export function AccountList({ items, selectedId, onSelect, locked = false }: AccountListProps) {
   const { t } = useTranslation(WALLETS_NS);
   return (
     <Card component="nav" aria-label={t('walletAccounts.listLabel')} sx={{ p: 1, display: 'grid', gap: 0.5, '&:hover': { boxShadow: 'none' } }}>
       {items.map(({ technicalUser, account }) => {
         const selected = technicalUser.id === selectedId;
+        const disabled = locked && !selected;
         return (
           <Box
             key={technicalUser.id}
             component="button"
             type="button"
             aria-current={selected ? 'true' : undefined}
+            disabled={disabled}
+            aria-describedby={disabled ? 'wallet-accounts-locked' : undefined}
             onClick={() => onSelect(technicalUser.id)}
             sx={{
               font: 'inherit',
@@ -65,6 +70,7 @@ export function AccountList({ items, selectedId, onSelect }: AccountListProps) {
               bgcolor: selected ? alpha(tractusx.orange, 0.1) : 'transparent',
               cursor: 'pointer',
               '&:hover': { bgcolor: alpha(tractusx.orange, 0.08) },
+              '&:disabled': { cursor: 'default', opacity: 0.55, bgcolor: 'transparent' },
               '&:focus-visible': { outline: `2px solid ${tractusx.orange}`, outlineOffset: '2px' },
             }}
           >
@@ -84,6 +90,11 @@ export function AccountList({ items, selectedId, onSelect }: AccountListProps) {
           </Box>
         );
       })}
+      {locked && (
+        <Typography id="wallet-accounts-locked" color="text.secondary" sx={{ fontSize: '0.8125rem', p: '8px 14px 4px' }}>
+          {t('walletAccounts.listLocked')}
+        </Typography>
+      )}
     </Card>
   );
 }

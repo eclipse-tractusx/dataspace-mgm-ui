@@ -79,7 +79,7 @@ export function AccountDetail({ item, onRetrieve, retrieving, children }: Accoun
         </Field>
         <Field label={t('walletAccounts.fields.created')}>{account ? time.dateTime(account.createdAt) : t('common.none')}</Field>
         <Field label={t('walletAccounts.fields.walletAccountRef')}>
-          <CopyValue value={account?.walletAccountRef ?? null} />
+          <CopyValue value={account?.walletAccountRef ?? null} short={8} />
         </Field>
       </Fields>
 

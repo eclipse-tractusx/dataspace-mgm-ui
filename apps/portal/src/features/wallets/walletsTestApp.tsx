@@ -54,6 +54,7 @@ import {
   type C4M2Module,
   type TechnicalUserRefAnemic,
   type WalletAccountAnemic,
+  type WalletAccountRepository,
   type WalletAnemic,
 } from '@dataspace-mgm/c4-m2-core';
 import {
@@ -125,6 +126,8 @@ interface RecordingC4M2Options {
   technicalUsers?: ReadonlyArray<TechnicalUserRefAnemic>;
   technicalUserFailure?: Error;
   walletAccounts?: ReadonlyArray<WalletAccountAnemic>;
+  /** Another adapter behind getWalletAccount and the retrieval (e.g. one that answers late, or fails after it). */
+  accounts?: (inner: InMemoryWalletAccountRepository) => WalletAccountRepository;
 }
 
 /** C4-M2 on in-memory adapters whose calls the test can read (the access data of sa201 can be retrieved once). */
@@ -135,10 +138,11 @@ export function recordingC4M2(options: RecordingC4M2Options = {}) {
     options.technicalUserFailure ?? null,
   );
   const accountRepository = new InMemoryWalletAccountRepository(options.walletAccounts ?? BEISPIEL_MASCHINENBAU_WALLET_ACCOUNTS, [WALLET_ACCOUNT_CREDENTIALS]);
+  const accounts = options.accounts ? options.accounts(accountRepository) : accountRepository;
   const module: C4M2Module = {
     getOwnWallet: new GetOwnWalletUseCase(walletRepository),
-    listWalletAccounts: new ListWalletAccountsUseCase(directory, accountRepository),
-    retrieveWalletAccountCredentials: new RetrieveWalletAccountCredentialsUseCase(accountRepository),
+    listWalletAccounts: new ListWalletAccountsUseCase(directory, accounts),
+    retrieveWalletAccountCredentials: new RetrieveWalletAccountCredentialsUseCase(accounts),
   };
   return { module, accountRepository };
 }

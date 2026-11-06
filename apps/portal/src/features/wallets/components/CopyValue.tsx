@@ -30,8 +30,15 @@ import { useTranslation } from 'react-i18next';
 import { WALLETS_NS } from '../i18n';
 import { MONO } from '../utils/mono';
 
+interface CopyValueProps {
+  value: string | null;
+  empty?: string;
+  /** Shows the first and last `short` characters around an ellipsis; the title and the copy keep the full value. */
+  short?: number;
+}
+
 /** An identifier in monospace with a copy button; an absent value reads `empty`. */
-export function CopyValue({ value, empty }: { value: string | null; empty?: string }) {
+export function CopyValue({ value, empty, short }: CopyValueProps) {
   const { t } = useTranslation(WALLETS_NS);
   const [copied, setCopied] = useState(false);
   if (!value) {
@@ -41,6 +48,7 @@ export function CopyValue({ value, empty }: { value: string | null; empty?: stri
       </Box>
     );
   }
+  const shown = short && value.length > short * 2 + 1 ? `${value.slice(0, short)}…${value.slice(-short)}` : value;
   const copy = () => {
     navigator.clipboard?.writeText(value).then(
       () => setCopied(true),
@@ -49,8 +57,8 @@ export function CopyValue({ value, empty }: { value: string | null; empty?: stri
   };
   return (
     <Box component="span" sx={{ display: 'inline-flex', alignItems: 'flex-start', gap: 1, maxWidth: '100%' }}>
-      <Box component="span" sx={{ fontFamily: MONO, fontSize: '0.9375rem', letterSpacing: '0.02em', wordBreak: 'break-all' }}>
-        {value}
+      <Box component="span" sx={{ fontFamily: MONO, fontSize: '0.9375rem', letterSpacing: '0.02em', wordBreak: 'break-all' }} title={shown === value ? undefined : value}>
+        {shown}
       </Box>
       <Tooltip title={copied ? t('common.copied') : t('common.copy')} onClose={() => setCopied(false)}>
         <IconButton size="small" aria-label={t('common.copyValue', { value })} onClick={copy} sx={{ p: '2px', color: 'text.secondary' }}>

@@ -24,9 +24,15 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { EDC_CONNECTOR_PRODUCTION, SUPPLIER_DATA_INTEGRATION, WALLET_ACCOUNT_CREDENTIALS } from '@dataspace-mgm/c4-m2-core/testing';
+import type { WalletAccountCredentialsAnemic, WalletAccountRepository } from '@dataspace-mgm/c4-m2-core';
+import {
+  EDC_CONNECTOR_PRODUCTION,
+  SUPPLIER_DATA_INTEGRATION,
+  WALLET_ACCOUNT_CREDENTIALS,
+  type InMemoryWalletAccountRepository,
+} from '@dataspace-mgm/c4-m2-core/testing';
 import { CoreHttpException } from '@dataspace-mgm/core-http';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { walletsTranslations } from './i18n';
 import { ERIKA, MAX, OTTO, atFixturesNow, recordingC4M2, showWallets } from './walletsTestApp';
@@ -39,6 +45,14 @@ const PATH = '/wallets/wallet-accounts';
 const list = () => screen.findByRole('navigation', { name: 'Technical users with wallet access' });
 const detail = () => screen.getByRole('region', { name: /^EDC connector/ });
 const secret = WALLET_ACCOUNT_CREDENTIALS.clientSecret;
+
+/** The accounts of the fixtures, with another answer of the retrieval. */
+const retrievalAnswers =
+  (retrieveCredentials: WalletAccountRepository['retrieveCredentials']) =>
+  (inner: InMemoryWalletAccountRepository): WalletAccountRepository => ({
+    getWalletAccount: (technicalUserId) => inner.getWalletAccount(technicalUserId),
+    retrieveCredentials,
+  });
 
 async function retrieveNow() {
   fireEvent.click(await screen.findByRole('button', { name: 'Retrieve access data' }));
@@ -61,7 +75,9 @@ describe('Wallets as a service: wallet accounts (C4-M2 getWalletAccount, retriev
     expect(within(account).getByText('Connector of the plant in Stuttgart')).toBeInTheDocument();
     expect(within(account).getByText('Dataspace wallet of the CSP')).toBeInTheDocument();
     expect(within(account).getByText('05 Dec 2026, 08:12')).toBeInTheDocument();
-    expect(within(account).getByText('b7a10001-0000-4000-8000-000000000001')).toBeInTheDocument();
+    // The wallet account reference is cut in the middle, as in the mockup; the title and the copy keep it in full.
+    expect(within(account).getByText('b7a10001…00000001')).toHaveAttribute('title', 'b7a10001-0000-4000-8000-000000000001');
+    expect(within(account).getByRole('button', { name: 'Copy b7a10001-0000-4000-8000-000000000001' })).toBeInTheDocument();
     expect(within(account).getByText('Ready to retrieve until 05 Dec 2026.')).toBeInTheDocument();
     expect(within(account).getByRole('button', { name: 'Retrieve access data' })).toBeInTheDocument();
     expect(screen.getByText(/can be retrieved/)).toHaveTextContent('The access data of a wallet account can be retrieved once;');
@@ -139,7 +155,10 @@ describe('Wallets as a service: wallet accounts (C4-M2 getWalletAccount, retriev
   it('shows an empty card when no technical user has wallet access', async () => {
     showWallets(PATH, { session: ERIKA, c4m2: recordingC4M2({ technicalUsers: [SUPPLIER_DATA_INTEGRATION] }).module });
     expect(await screen.findByRole('heading', { name: 'No technical user with wallet access' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Technical users' })).toBeDisabled();
+    const button = screen.getByRole('button', { name: 'Technical users' });
+    expect(button).toBeDisabled();
+    // A disabled button shows no tooltip, so the hint is a visible caption it points to.
+    expect(button).toHaveAccessibleDescription('Technical users (C2-M3), coming soon');
   });
 
   it('shows a 403 with its Problem Details type', async () => {
@@ -158,6 +177,78 @@ describe('Wallets as a service: wallet accounts (C4-M2 getWalletAccount, retriev
   it('tells a person without a company', async () => {
     showWallets(PATH, { session: { ...OTTO, permissions: ['view_dataspace_wallet'] }, c4m2: recordingC4M2().module });
     expect(await screen.findByText(/Wallet accounts belong to the technical users of a company/)).toBeInTheDocument();
+  });
+
+  it.each([
+    ['expired', 410, 'urn:c4-m2:problem:credentials-expired', 'Warning', 'The access data of EDC connector production were not retrieved in time and are deleted (HTTP 410).'],
+    ['no-credentials', 409, 'urn:c4-m2:problem:no-credentials', 'Warning', 'The wallet account of EDC connector production has no access data to retrieve (HTTP 409).'],
+    ['invalid-state', 409, 'urn:c4-m2:problem:invalid-state', 'Warning', 'The wallet account of EDC connector production is not active (HTTP 409).'],
+    ['forbidden', 403, 'urn:c4-m2:problem:forbidden', 'Error', 'You may not retrieve access data of wallet accounts (HTTP 403). Ask your Company Admin for the role IT Admin.'],
+    ['failed', 500, 'urn:c4-m2:problem:internal', 'Error', 'The access data of EDC connector production could not be retrieved (HTTP 500): broken'],
+    ['failed', 409, 'urn:c4-m2:problem:wallet-not-active', 'Error', 'The access data of EDC connector production could not be retrieved (HTTP 409): broken'],
+  ])('says %s (HTTP %i) with the Problem Details type of the retrieval', async (_status, httpStatus, problemType, severity, text) => {
+    const failing = retrievalAnswers(() => Promise.reject(new CoreHttpException(httpStatus, problemType, 'broken')));
+    showWallets(PATH, { session: ERIKA, c4m2: recordingC4M2({ accounts: failing }).module });
+    await retrieveNow();
+    const alert = (await screen.findByText(text)).closest('[role="alert"]') as HTMLElement;
+    expect(within(alert).getByText(problemType)).toBeInTheDocument();
+    expect(alert).toHaveClass(`MuiAlert-color${severity}`);
+    expect(screen.queryByRole('region', { name: 'Access data of the wallet account' })).not.toBeInTheDocument();
+  });
+
+  it('says not-found (HTTP 404) when the technical user has no wallet account meanwhile', async () => {
+    showWallets(PATH, { session: ERIKA, c4m2: recordingC4M2({ accounts: retrievalAnswers(() => Promise.resolve(null)) }).module });
+    await retrieveNow();
+    expect(await screen.findByText('EDC connector production has no wallet account at your onboarding service provider (HTTP 404).')).toBeInTheDocument();
+    expect(screen.getByText('urn:c4-m2:problem:not-found')).toBeInTheDocument();
+  });
+
+  it('keeps the person on the technical user while the access data are retrieved and shown', async () => {
+    let answer: (credentials: WalletAccountCredentialsAnemic) => void = () => undefined;
+    const late = retrievalAnswers(() => new Promise((resolve) => (answer = resolve)));
+    showWallets(PATH, { session: ERIKA, c4m2: recordingC4M2({ accounts: late }).module });
+    await retrieveNow();
+    const other = within(await list()).getByRole('button', { name: /EDC connector test/ });
+    await waitFor(() => expect(other).toBeDisabled());
+    expect(other).toHaveAccessibleDescription('Enter the access data into the connector first. Then you can choose another technical user.');
+    fireEvent.click(other);
+    expect(within(detail()).getByRole('heading', { name: 'EDC connector production' })).toBeInTheDocument();
+
+    await act(async () => answer(WALLET_ACCOUNT_CREDENTIALS));
+    const panel = await screen.findByRole('region', { name: 'Access data of the wallet account' });
+    expect(within(panel).getByText(WALLET_ACCOUNT_CREDENTIALS.tokenUrl)).toBeInTheDocument();
+    expect(other).toBeDisabled();
+
+    fireEvent.click(within(panel).getByRole('button', { name: 'I have entered them' }));
+    expect(other).toBeEnabled();
+    fireEvent.click(other);
+    expect(within(detail()).getByRole('heading', { name: 'EDC connector test' })).toBeInTheDocument();
+  });
+
+  it('keeps the access data on the screen when the list cannot be loaded again after the retrieval', async () => {
+    let retrieved = false;
+    const flaky = (inner: InMemoryWalletAccountRepository): WalletAccountRepository => ({
+      getWalletAccount: (technicalUserId) =>
+        retrieved ? Promise.reject(new CoreHttpException(503, 'urn:c4-m2:problem:unavailable', 'try later')) : inner.getWalletAccount(technicalUserId),
+      retrieveCredentials: async (technicalUserId) => {
+        const credentials = await inner.retrieveCredentials(technicalUserId);
+        retrieved = true;
+        return credentials;
+      },
+    });
+    showWallets(PATH, { session: ERIKA, c4m2: recordingC4M2({ accounts: flaky }).module });
+    await retrieveNow();
+    expect(await screen.findByText('The wallet accounts could not be loaded (HTTP 503): try later')).toBeInTheDocument();
+    const panel = screen.getByRole('region', { name: 'Access data of the wallet account' });
+    expect(within(panel).getByText(WALLET_ACCOUNT_CREDENTIALS.clientId)).toBeInTheDocument();
+    fireEvent.click(within(panel).getByRole('button', { name: 'I have entered them' }));
+    expect(screen.queryByRole('region', { name: 'Access data of the wallet account' })).not.toBeInTheDocument();
+  });
+
+  it('tells a person of no company without view_dataspace_wallet that wallet accounts belong to a company', async () => {
+    showWallets(PATH, { session: OTTO, c4m2: recordingC4M2().module });
+    expect(await screen.findByText(/Wallet accounts belong to the technical users of a company/)).toBeInTheDocument();
+    expect(screen.queryByText(/Ask your Company Admin/)).not.toBeInTheDocument();
   });
 
   it('hides the page from a person without view_dataspace_wallet', async () => {

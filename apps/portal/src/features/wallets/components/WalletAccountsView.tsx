@@ -25,9 +25,9 @@
  ********************************************************************************/
 
 import { useState } from 'react';
-import type { C4M2Module, WalletAccountItem } from '@dataspace-mgm/c4-m2-core';
+import type { WalletAccountItem } from '@dataspace-mgm/c4-m2-core';
 import { Box } from '@dataspace-mgm/ui-mui';
-import { useRetrieveAccessData } from '../hooks/useRetrieveAccessData';
+import type { Retrieval } from '../hooks/useRetrieveAccessData';
 import { AccessDataPanel } from './AccessDataPanel';
 import { AccountDetail } from './AccountDetail';
 import { AccountList } from './AccountList';
@@ -37,17 +37,16 @@ import { RetrieveDialog } from './RetrieveDialog';
 interface WalletAccountsViewProps {
   items: ReadonlyArray<WalletAccountItem>;
   mayRetrieve: boolean;
-  c4m2: C4M2Module;
-  reload: () => void;
+  /** The retrieval, held by the page (useRetrieveAccessData). */
+  retrieval: Retrieval;
 }
 
 /**
  * List and detail of the wallet accounts: the technical users on the left, the selected one on the right with the
  * retrieval (ask first, then the access data inline below the detail).
  */
-export function WalletAccountsView({ items, mayRetrieve, c4m2, reload }: WalletAccountsViewProps) {
-  const [selectedId, setSelectedId] = useState(items[0]?.technicalUser.id ?? '');
-  const retrieval = useRetrieveAccessData(c4m2, reload);
+export function WalletAccountsView({ items, mayRetrieve, retrieval }: WalletAccountsViewProps) {
+  const [selectedId, setSelectedId] = useState(retrieval.state.phase !== 'idle' ? retrieval.state.technicalUserId : (items[0]?.technicalUser.id ?? ''));
   const item = items.find((entry) => entry.technicalUser.id === selectedId) ?? items[0];
   if (!item) {
     return null;
@@ -59,6 +58,10 @@ export function WalletAccountsView({ items, mayRetrieve, c4m2, reload }: WalletA
   const pending = state.phase === 'confirm' ? items.find((entry) => entry.technicalUser.id === state.technicalUserId) : undefined;
 
   const select = (technicalUserId: string) => {
+    // While the access data are retrieved or shown, the list stays on this technical user (AccountList `locked`).
+    if (retrieval.locked) {
+      return;
+    }
     setSelectedId(technicalUserId);
     if (state.phase !== 'idle') {
       retrieval.done();
@@ -67,7 +70,7 @@ export function WalletAccountsView({ items, mayRetrieve, c4m2, reload }: WalletA
 
   return (
     <Box sx={{ display: 'grid', gap: 3, alignItems: 'start', gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: '340px minmax(0, 1fr)' } }}>
-      <AccountList items={items} selectedId={item.technicalUser.id} onSelect={select} />
+      <AccountList items={items} selectedId={item.technicalUser.id} onSelect={select} locked={retrieval.locked} />
       <AccountDetail
         item={item}
         retrieving={forItem?.phase === 'retrieving'}

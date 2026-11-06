@@ -242,7 +242,8 @@
     },
     "alert": {
       "validating": "<strong>Ihre Wallet wird geprüft.</strong> Das DID-Dokument wird aufgelöst und geprüft. Ihre Konnektoren können die Wallet nutzen, sobald sie aktiv ist.",
-      "failed": "<strong>Ihre Wallet konnte nicht eingerichtet werden.</strong> {{reason}} Ihr Onboarding-Service-Provider kann einen neuen Versuch starten."
+      "failed": "<strong>Ihre Wallet konnte nicht eingerichtet werden.</strong> {{reason}} Ihr Onboarding-Service-Provider kann einen neuen Versuch starten.",
+      "failureCode": "Fehlercode: {{reason}}"
     },
     "pass": {
       "label": "Datenraum-Wallet",
@@ -276,7 +277,8 @@
       "someIssued": "{{issued}} von {{total}} ausgestellt",
       "details": "Details →",
       "show": "{{name}} von {{dataspace}} anzeigen",
-      "hint": "Wählen Sie eine Karte, um sie nach vorn zu holen."
+      "hint": "Wählen Sie eine Karte, um sie nach vorn zu holen.",
+      "empty": "In dieser Wallet gibt es noch keine Nachweise Ihres Unternehmens."
     }
   },
   "accountStatus": {
@@ -346,13 +348,16 @@
       "no-credentials": "Das Wallet-Konto von {{name}} hat keine Zugangsdaten zum Abrufen (HTTP 409).",
       "invalid-state": "Das Wallet-Konto von {{name}} ist nicht aktiv (HTTP 409).",
       "forbidden": "Sie dürfen keine Zugangsdaten von Wallet-Konten abrufen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
-      "not-found": "{{name}} hat kein Wallet-Konto bei Ihrem Onboarding-Service-Provider (HTTP 404)."
+      "not-found": "{{name}} hat kein Wallet-Konto bei Ihrem Onboarding-Service-Provider (HTTP 404).",
+      "failed": "Die Zugangsdaten von {{name}} konnten nicht abgerufen werden: {{message}}",
+      "failedWithStatus": "Die Zugangsdaten von {{name}} konnten nicht abgerufen werden (HTTP {{status}}): {{message}}"
     },
     "empty": {
       "title": "Kein technischer Benutzer mit Wallet-Zugang",
       "text": "Legen Sie unter Technische Benutzer einen technischen Benutzer mit der Rolle für den Wallet-Zugang an. Sein Wallet-Konto erscheint dann hier.",
       "technicalUsers": "Technische Benutzer",
       "comingSoon": "Technische Benutzer (C2-M3), bald verfügbar"
-    }
+    },
+    "listLocked": "Übernehmen Sie zuerst die Zugangsdaten in den Konnektor. Danach können Sie einen anderen technischen Benutzer wählen."
   }
 }

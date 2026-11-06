@@ -36,13 +36,15 @@ interface BlockedStateProps {
   loadingLabel: string;
   /** The page's text for a person without its permission. */
   noAccess: string;
+  /** The text for a person without the permission who belongs to no company (`withoutCompany`), if the page has one. */
+  noCompany?: string;
   /** Where sign-in returns to. */
   returnTo: string;
   loadingBlocks?: number;
 }
 
 /** What a page shows before it has data: loading, sign in, no session, module not connected, no access. */
-export function BlockedState({ state, loadingLabel, noAccess, returnTo, loadingBlocks }: BlockedStateProps) {
+export function BlockedState({ state, loadingLabel, noAccess, noCompany, returnTo, loadingBlocks }: BlockedStateProps) {
   const { t } = useTranslation(WALLETS_NS);
   const { identity } = useCoreModules();
   switch (state.status) {
@@ -68,7 +70,7 @@ export function BlockedState({ state, loadingLabel, noAccess, returnTo, loadingB
     default:
       return (
         <Alert severity="info" icon={<LockOutlinedIcon />}>
-          {noAccess}
+          {state.withoutCompany && noCompany ? noCompany : noAccess}
         </Alert>
       );
   }

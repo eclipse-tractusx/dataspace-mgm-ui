@@ -47,6 +47,10 @@ export function WalletCredentials({ credentials, bpn }: { credentials: Exclude<W
     case 'found': {
       const issued = credentials.credentials.filter((credential) => credential.status === 'ISSUED').length;
       const total = credentials.credentials.length;
+      if (total === 0) {
+        body = <Typography color="text.secondary">{t('wallet.credentials.empty')}</Typography>;
+        break;
+      }
       summary = issued === total ? t('wallet.credentials.allIssued') : t('wallet.credentials.someIssued', { issued, total });
       body = <CredentialStack credentials={credentials.credentials} bpn={bpn} />;
       break;

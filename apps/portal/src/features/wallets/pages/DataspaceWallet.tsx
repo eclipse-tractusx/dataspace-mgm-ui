@@ -61,7 +61,9 @@ export default function DataspaceWallet() {
     case 'not-connected':
     case 'no-access':
       body = (
-        <BlockedState state={state} loadingLabel={t('wallet.loading')} noAccess={t('wallet.noAccess')} returnTo={WALLETS_PATHS.landing} loadingBlocks={2} />
+        <BlockedState state={state} loadingLabel={t('wallet.loading')} noAccess={t('wallet.noAccess')}
+          noCompany={t('wallet.noCompany')}
+          returnTo={WALLETS_PATHS.landing} loadingBlocks={2} />
       );
       break;
     case 'forbidden':

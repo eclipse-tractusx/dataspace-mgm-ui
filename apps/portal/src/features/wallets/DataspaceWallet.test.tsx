@@ -78,11 +78,22 @@ describe('Wallets as a service: your dataspace wallet (C4-M2 getWallet)', () => 
     expect(within(front()).getByRole('heading', { level: 3, name: 'BPN credential' })).toBeInTheDocument();
     expect(within(stack).getByText('Select a card to bring it to the front.')).toBeInTheDocument();
 
+    expect(front()).not.toHaveFocus();
     fireEvent.click(within(stack).getByRole('button', { name: 'Show the Membership credential of Semiconductor dataspace' }));
     expect(within(front()).getByRole('article', { name: 'Membership credential of Semiconductor dataspace' })).toBeInTheDocument();
+    // The clicked header is gone: the focus moves to the pass that came to the front.
+    expect(front()).toHaveFocus();
     expect(within(front()).getByRole('img', { name: 'Semiconductor dataspace' })).toHaveTextContent('SC');
     expect(within(stack).getByRole('button', { name: 'Show the BPN credential of Catena-X' })).toBeInTheDocument();
     expect(within(stack).queryByRole('button', { name: 'Show the Membership credential of Semiconductor dataspace' })).not.toBeInTheDocument();
+  });
+
+  it('says so when the company has no credentials, without a summary', async () => {
+    showWallet({ c4m1: recordingC4M1({ companyCredentials: [] }).module });
+    const stack = await screen.findByRole('region', { name: 'Credentials' });
+    expect(await within(stack).findByText('There are no credentials of your company in this wallet yet.')).toBeInTheDocument();
+    expect(within(stack).queryByText('All issued')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('front-pass')).not.toBeInTheDocument();
   });
 
   it('counts the issued credentials in the summary', async () => {
@@ -112,7 +123,7 @@ describe('Wallets as a service: your dataspace wallet (C4-M2 getWallet)', () => 
     showWallet({ c4m2: recordingC4M2({ wallets: [BEISPIEL_MASCHINENBAU_WALLET_FAILED] }).module });
     const alert = await screen.findByRole('alert');
     expect(alert).toHaveTextContent('Your wallet could not be set up. The DID document of the wallet could not be found.');
-    expect(within(alert).getByText('failureReason: DID_NOT_RESOLVABLE')).toBeInTheDocument();
+    expect(within(alert).getByText('Reason code: DID_NOT_RESOLVABLE')).toBeInTheDocument();
   });
 
   it('shows an empty card when the company has no wallet yet (404)', async () => {

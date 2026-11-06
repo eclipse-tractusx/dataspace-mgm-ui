@@ -42,9 +42,13 @@ export function NoAccountsCard() {
       <Typography color="text.secondary" sx={{ maxWidth: 560 }}>
         {t('walletAccounts.empty.text')}
       </Typography>
-      <Button variant="outlined" disabled title={t('walletAccounts.empty.comingSoon')}>
+      {/* A disabled button gets no focus or hover, so the hint is a visible caption it points to. */}
+      <Button variant="outlined" disabled aria-describedby="wallet-accounts-coming-soon">
         {t('walletAccounts.empty.technicalUsers')}
       </Button>
+      <Typography id="wallet-accounts-coming-soon" variant="caption" color="text.secondary">
+        {t('walletAccounts.empty.comingSoon')}
+      </Typography>
     </Card>
   );
 }

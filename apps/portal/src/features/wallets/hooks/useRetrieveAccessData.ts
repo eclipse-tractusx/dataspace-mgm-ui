@@ -24,16 +24,17 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useState } from 'react';
-import type { C4M2Module, RetrieveWalletAccountCredentialsResult, WalletAccountCredentialsAnemic } from '@dataspace-mgm/c4-m2-core';
+import { useEffect, useRef, useState } from 'react';
+import type { RetrieveWalletAccountCredentialsResult, WalletAccountCredentialsAnemic } from '@dataspace-mgm/c4-m2-core';
+import { useCoreModules } from '../../../core/CoreModulesContext';
 
 /** An answer of the retrieval other than the access data, shown under the account. */
 export type RetrievalProblem = Exclude<RetrieveWalletAccountCredentialsResult, { status: 'retrieved' }>;
 
 /**
  * The retrieval of the access data of one wallet account: ask first (they are shown once), retrieve, show them inline
- * until the person has entered them. The access data live only in this component state: never in Redux, the URL,
- * storage or logs.
+ * until the person has entered them. The access data live only in this hook's state: never in Redux, the URL,
+ * storage or logs. The page holds it, outside the switch over the list, so a reload of the list cannot drop them.
  */
 export type RetrievalState =
   | { phase: 'idle' }
@@ -44,6 +45,8 @@ export type RetrievalState =
 
 export interface Retrieval {
   state: RetrievalState;
+  /** While the access data are retrieved or shown, the person stays on this technical user (they are shown once). */
+  locked: boolean;
   /** Opens the confirmation for the technical user. */
   ask: (technicalUserId: string) => void;
   cancel: () => void;
@@ -53,28 +56,46 @@ export interface Retrieval {
   done: () => void;
 }
 
-export function useRetrieveAccessData(c4m2: C4M2Module | null, onDone: () => void): Retrieval {
+export function useRetrieveAccessData(onDone: () => void): Retrieval {
+  const { c4m2 } = useCoreModules();
   const [state, setState] = useState<RetrievalState>({ phase: 'idle' });
+  // Every step starts a new request; the answer of an older one is dropped instead of overwriting a newer state.
+  const request = useRef(0);
+  const latestOnDone = useRef(onDone);
+  useEffect(() => {
+    latestOnDone.current = onDone;
+  }, [onDone]);
+
+  const go = (next: RetrievalState) => {
+    request.current += 1;
+    setState(next);
+  };
   const confirm = () => {
+    // Without C4-M2 the page shows "not connected" and never asks.
     if (state.phase !== 'confirm' || !c4m2) {
       return;
     }
     const { technicalUserId } = state;
-    setState({ phase: 'retrieving', technicalUserId });
+    go({ phase: 'retrieving', technicalUserId });
+    const id = request.current;
     c4m2.retrieveWalletAccountCredentials.execute(technicalUserId).then((result) => {
+      if (id !== request.current) {
+        return;
+      }
       setState(
         result.status === 'retrieved'
           ? { phase: 'revealed', technicalUserId, credentials: result.credentials }
           : { phase: 'problem', technicalUserId, problem: result },
       );
-      onDone();
+      latestOnDone.current();
     });
   };
   return {
     state,
-    ask: (technicalUserId) => setState({ phase: 'confirm', technicalUserId }),
-    cancel: () => setState({ phase: 'idle' }),
+    locked: state.phase === 'retrieving' || state.phase === 'revealed',
+    ask: (technicalUserId) => go({ phase: 'confirm', technicalUserId }),
+    cancel: () => go({ phase: 'idle' }),
     confirm,
-    done: () => setState({ phase: 'idle' }),
+    done: () => go({ phase: 'idle' }),
   };
 }

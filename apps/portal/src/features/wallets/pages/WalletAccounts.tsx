@@ -26,17 +26,21 @@
 
 import type { ReactNode } from 'react';
 import { C4M2_PROBLEM } from '@dataspace-mgm/c4-m2-core';
-import { Alert, Typography } from '@dataspace-mgm/ui-mui';
+import { Alert, Box, Typography } from '@dataspace-mgm/ui-mui';
 import { Trans, useTranslation } from 'react-i18next';
+import { AccessDataPanel } from '../components/AccessDataPanel';
 import { BlockedState } from '../components/BlockedState';
 import { NoAccountsCard } from '../components/NoAccountsCard';
 import { PageFailedAlert } from '../components/PageFailedAlert';
 import { ProblemAlert } from '../components/ProblemAlert';
 import { WalletAccountsView } from '../components/WalletAccountsView';
 import { WalletsPage } from '../components/WalletsPage';
+import { useRetrieveAccessData } from '../hooks/useRetrieveAccessData';
 import { useWalletAccounts } from '../hooks/useWalletAccounts';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
+
+const NO_RELOAD = () => undefined;
 
 /**
  * "Wallet accounts" (C4-M2 `getWalletAccount`, `retrieveWalletAccountCredentials`): the technical users with wallet
@@ -45,6 +49,11 @@ import { WALLETS_PATHS } from '../paths';
 export default function WalletAccounts() {
   const { t } = useTranslation(WALLETS_NS);
   const state = useWalletAccounts();
+  // Held here, outside the switch: the access data are shown once and must survive whatever the reload returns.
+  const retrieval = useRetrieveAccessData(state.status === 'found' ? state.reload : NO_RELOAD);
+  const revealed = retrieval.state.phase === 'revealed' ? retrieval.state : null;
+  const revealedInList =
+    revealed !== null && state.status === 'found' && state.items.some((entry) => entry.technicalUser.id === revealed.technicalUserId);
 
   let body: ReactNode;
   switch (state.status) {
@@ -54,7 +63,9 @@ export default function WalletAccounts() {
     case 'not-connected':
     case 'no-access':
       body = (
-        <BlockedState state={state} loadingLabel={t('walletAccounts.loading')} noAccess={t('walletAccounts.noAccess')} returnTo={WALLETS_PATHS.walletAccounts} loadingBlocks={2} />
+        <BlockedState state={state} loadingLabel={t('walletAccounts.loading')} noAccess={t('walletAccounts.noAccess')}
+          noCompany={t('walletAccounts.noCompany')}
+          returnTo={WALLETS_PATHS.walletAccounts} loadingBlocks={2} />
       );
       break;
     case 'forbidden':
@@ -76,13 +87,18 @@ export default function WalletAccounts() {
           <Typography color="text.secondary" sx={{ maxWidth: 760, mb: 3.5 }}>
             <Trans t={t} i18nKey="walletAccounts.lead" components={{ strong: <strong /> }} />
           </Typography>
-          {state.items.length ? <WalletAccountsView items={state.items} mayRetrieve={state.mayRetrieve} c4m2={state.c4m2} reload={state.reload} /> : <NoAccountsCard />}
+          {state.items.length ? <WalletAccountsView items={state.items} mayRetrieve={state.mayRetrieve} retrieval={retrieval} /> : <NoAccountsCard />}
         </>
       );
   }
 
   return (
     <WalletsPage overline={t('overline')} title={t('walletAccounts.title')}>
+      {revealed && !revealedInList && (
+        <Box sx={{ mb: 3 }}>
+          <AccessDataPanel credentials={revealed.credentials} onDone={retrieval.done} />
+        </Box>
+      )}
       {body}
     </WalletsPage>
   );

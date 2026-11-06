@@ -37,7 +37,6 @@ export type WalletAccountsState =
       items: ReadonlyArray<WalletAccountItem>;
       /** The session has retrieve_wallet_credentials (hides the button only; the API checks it again). */
       mayRetrieve: boolean;
-      c4m2: C4M2Module;
       /** Loads the list again, e.g. after a retrieval changed `credentialsState`. */
       reload: () => void;
     }
@@ -82,7 +81,6 @@ export function useWalletAccounts(): WalletAccountsState {
     status: 'found',
     items: shown.items,
     mayRetrieve: access.session.permissions.includes(WALLETS_PERMISSIONS.retrieveWalletCredentials),
-    c4m2: access.c4m2,
     reload,
   };
 }
