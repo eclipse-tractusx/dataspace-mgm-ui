@@ -1,0 +1,209 @@
+{
+  "overline": "Wallets as a service",
+  "tabs": {
+    "label": "Wallets as a service",
+    "credentials": "Credentials",
+    "allCredentials": "Credentials of all companies"
+  },
+  "common": {
+    "signInPrompt": "Sign in to see the wallets and credentials.",
+    "signIn": "Sign in",
+    "sessionFailed": "Your session could not be read: {{message}}",
+    "notConnected": "Wallets as a service is not connected to its backend in this installation yet.",
+    "failed": "The credentials could not be loaded: {{message}}",
+    "failedWithStatus": "The credentials could not be loaded (HTTP {{status}}): {{message}}",
+    "none": "–",
+    "notKnown": "Not known yet",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyValue": "Copy {{value}}"
+  },
+  "landing": {
+    "title": "Wallets as a service",
+    "loading": "Opening Wallets as a service…",
+    "noAccess": "You may not see the credentials or wallets. Ask your Company Admin for the role IT Admin."
+  },
+  "credentialType": {
+    "BPN": "BPN credential",
+    "MEMBERSHIP": "Membership credential"
+  },
+  "credentialTypeShort": {
+    "BPN": "BPN",
+    "MEMBERSHIP": "Membership"
+  },
+  "credentialTypeTech": {
+    "BPN": "BpnCredential",
+    "MEMBERSHIP": "MembershipCredential"
+  },
+  "credentialDescription": {
+    "BPN": "Proves the business partner number of your company to the connectors of your partners.",
+    "MEMBERSHIP": "Proves that your company is a member of the dataspace. Connectors share data only with members."
+  },
+  "credentialStatus": {
+    "NONE": "Not requested yet",
+    "REQUESTED": "Being issued",
+    "ISSUED": "Issued",
+    "FAILED": "Failed",
+    "CANCELLED": "Cancelled",
+    "REVOCATION_PENDING": "Revocation pending",
+    "REVOKED": "Revoked"
+  },
+  "route": {
+    "CREDENTIAL_ISSUER": "Credential Issuer",
+    "ISSUER_SERVICE": "IssuerService",
+    "CSP_ISSUER": "CSP issuer",
+    "STUB": "Stand-in"
+  },
+  "walletProvider": {
+    "CSP": "Dataspace wallet of the CSP",
+    "SAP_DIV": "SAP DIV",
+    "IDENTITY_HUB": "IdentityHub of your onboarding service provider",
+    "BRING_YOUR_OWN": "Own wallet",
+    "STUB": "Stand-in"
+  },
+  "revocationReason": {
+    "COMPANY_DEACTIVATED": "Company deactivated",
+    "OTHER": "Other reason"
+  },
+  "ago": {
+    "minutes_one": "{{count}} min ago",
+    "minutes_other": "{{count}} min ago",
+    "hours_one": "{{count}} h ago",
+    "hours_other": "{{count}} h ago",
+    "days_one": "{{count}} day ago",
+    "days_other": "{{count}} days ago"
+  },
+  "duration": {
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "hours_one": "{{count}} h",
+    "hours_other": "{{count}} h",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days"
+  },
+  "pass": {
+    "label": "{{name}} of {{dataspace}}",
+    "whatIs": "What is the {{name}}?",
+    "bpn": "Business partner number",
+    "memberOf": "Member of",
+    "requested": "Requested",
+    "issued": "Issued",
+    "revoked": "Revoked",
+    "statusLine": {
+      "NONE": "Requested during onboarding, after your dataspace wallet is set up.",
+      "REQUESTED": "Requested {{ago}}. The issuer puts it into your wallet; this usually takes a few minutes.",
+      "ISSUED": "In your wallet since {{dateTime}}.",
+      "FAILED": "The issuer could not issue it. Your onboarding service provider can start a new attempt.",
+      "CANCELLED": "The request was cancelled.",
+      "REVOCATION_PENDING": "Your onboarding service provider is revoking it.",
+      "REVOKED": "Revoked on {{dateTime}}. Connectors no longer accept it."
+    }
+  },
+  "yourCredentials": {
+    "title": "Your credentials",
+    "loading": "Loading your credentials…",
+    "noAccess": "You may not see the credentials of your company. Ask your Company Admin for the role IT Admin.",
+    "forbidden": "You may not see the credentials of your company (HTTP 403). Ask your Company Admin for the role IT Admin.",
+    "noCompany": "Your account is not bound to a company. The credentials belong to the companies of the dataspace.",
+    "notFound": "The credentials of your company were not found at your onboarding service provider."
+  },
+  "allCredentials": {
+    "title": "Credentials of all companies",
+    "lead": "The BPN and membership credentials this onboarding service provider has triggered, newest change first.",
+    "loading": "Loading the credentials…",
+    "noAccess": "You may not see the credentials of the companies. This needs the role OSP Admin.",
+    "forbidden": "You may not see the credentials of the companies (HTTP 403). This needs the role OSP Admin.",
+    "invalid": "The onboarding service provider did not accept the filters (HTTP 400).",
+    "needsAttention": "Needs attention",
+    "attentionItem": "{{credential}} of {{company}}",
+    "all": "All credentials"
+  },
+  "note": {
+    "revokeByHand": "Revoke at the Credential Issuer by hand, then confirm",
+    "openFor": "for {{duration}}",
+    "openForAttempt": "for {{duration}} · attempt {{attempt}}"
+  },
+  "filters": {
+    "label": "Filters",
+    "openOnly": "Open for more than {{hours}} h",
+    "credentialType": "Credential type",
+    "allCredentialTypes": "All credential types"
+  },
+  "table": {
+    "company": "Company",
+    "credential": "Credential",
+    "status": "Status",
+    "route": "Route",
+    "changed": "Changed"
+  },
+  "pager": {
+    "label": "Pages",
+    "total_one": "{{count}} credential",
+    "total_other": "{{count}} credentials",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{pages}}"
+  },
+  "noResults": {
+    "title": "No credential matches the filters",
+    "text": "Change or reset the filters.",
+    "reset": "Reset filters"
+  },
+  "credential": {
+    "title": "Credential",
+    "back": "Credentials of all companies",
+    "loading": "Loading the credential…",
+    "notFound": "This credential does not exist at this onboarding service provider.",
+    "companyLine": "{{name}} · {{bpn}}",
+    "alert": {
+      "failedTitle": "Message of the issuer",
+      "failedNext": "Process Orchestration sends only this credential again on its next attempt.",
+      "pending": "<strong>Revoke this credential at the Credential Issuer by hand.</strong> The route {{route}} cannot revoke it by itself. Then confirm the revocation here.",
+      "waiting": "Waiting for the status report of the issuer since {{dateTime}} (attempt {{attempt}})."
+    },
+    "facts": {
+      "status": "Status",
+      "credentialType": "Credential type",
+      "company": "Company",
+      "attempt": "Attempt",
+      "revocationReason": "Reason for the revocation"
+    },
+    "issuer": {
+      "title": "Issuer and holder",
+      "route": "Route",
+      "issuer": "Issuer",
+      "ospIssuer": "Credential Issuer of this OSP (no DID for this route)",
+      "wallet": "Wallet of the holder",
+      "holderDid": "DID of the holder",
+      "order": "Order at the route",
+      "noOrder": "None for this route",
+      "id": "Credential ID"
+    },
+    "lifeCycle": {
+      "title": "Life cycle",
+      "requested": "Requested (attempt {{attempt}})",
+      "failed": "Failed",
+      "issued": "Issued",
+      "pending": "Revocation pending",
+      "revoked": "Revoked"
+    }
+  },
+  "confirm": {
+    "button": "Confirm revocation",
+    "title": "Confirm the revocation",
+    "lead": "Only after you revoked the {{credential}} of {{company}} at the Credential Issuer.",
+    "noteLabel": "Note on the revocation",
+    "notePlaceholder": "When and where it was revoked, for example the ticket",
+    "noteHelp": "Stored in the history of the credential. No names of people.",
+    "count": "{{length}} / {{max}}",
+    "cancel": "Cancel",
+    "done": "Revocation confirmed",
+    "conflict": "The credential is no longer waiting for a revocation (HTTP 409). Reload it to see its status.",
+    "forbidden": "You may not confirm revocations (HTTP 403). This needs the role OSP Admin."
+  },
+  "validation": {
+    "revocationNoteRequired": "Enter a note of 1 to 500 characters.",
+    "revocationNoteTooLong": "The note may have at most 500 characters.",
+    "revocationNoteRejected": "The onboarding service provider did not accept the note (HTTP 400)."
+  }
+}

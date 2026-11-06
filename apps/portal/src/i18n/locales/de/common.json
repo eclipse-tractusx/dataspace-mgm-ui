@@ -54,9 +54,41 @@
   },
   "notifications": {
     "label": "Benachrichtigungen",
+    "labelUnread_one": "Benachrichtigungen, {{count}} ungelesen",
+    "labelUnread_other": "Benachrichtigungen, {{count}} ungelesen",
     "nothingNew": "Nichts Neues",
-    "inbox": "Ihr Posteingang",
-    "inboxPending": "Kommt mit dem Benachrichtigungsmodul"
+    "live_one": "Live · {{count}} ungelesen",
+    "live_other": "Live · {{count}} ungelesen",
+    "connecting": "Verbinde…",
+    "signedOut": "Nicht angemeldet",
+    "signInToSee": "Melden Sie sich an, um Ihre Benachrichtigungen zu sehen",
+    "loading": "Benachrichtigungen werden geladen…",
+    "loadFailed": "Die Benachrichtigungen konnten nicht geladen werden",
+    "taskOpen": "Aufgabe offen",
+    "taskDone": "Aufgabe erledigt",
+    "justNow": "Neu",
+    "unknownType": "Benachrichtigung ({{type}})",
+    "types": {
+      "APPLICATION_SUBMITTED": "Ihr Antrag wurde eingereicht",
+      "REVIEW_CASE_OPENED": "Neuer Antrag zur Prüfung",
+      "APPLICATION_DECLINED": "Ihr Antrag wurde abgelehnt",
+      "APPLICATION_COMPLETED": "Ihr Unternehmen ist registriert",
+      "CHANGE_REQUEST_OPENED": "Änderung von Unternehmensdaten zur Prüfung",
+      "OFFER_REVIEW_REQUESTED": "Neues Angebot zur Prüfung",
+      "OFFER_APPROVED": "Ihr Angebot wurde freigegeben",
+      "OFFER_DECLINED": "Ihr Angebot wurde abgelehnt",
+      "SUBSCRIPTION_REQUESTED": "Neue Abonnementanfrage",
+      "SUBSCRIPTION_ACTIVATED": "Abonnement aktiviert",
+      "SUBSCRIPTION_DECLINED": "Abonnement abgelehnt",
+      "SUBSCRIPTION_URL_CHANGED": "Adresse eines Abonnements geändert",
+      "APP_ROLES_ADDED": "Neue Rollen für eine App",
+      "TECHNICAL_USER_WALLET_READY": "Wallet eines technischen Benutzers ist bereit",
+      "TECHNICAL_USER_WALLET_FAILED": "Wallet eines technischen Benutzers konnte nicht erstellt werden",
+      "CREDENTIAL_REVOKED": "Ein Nachweis wurde widerrufen",
+      "CONNECTOR_REGISTERED": "Connector registriert",
+      "PROCESS_STEP_FAILED": "Ein Prozessschritt ist fehlgeschlagen"
+    },
+    "showAll": "Alle Benachrichtigungen anzeigen"
   },
   "services": {
     "carousel": "Services",
@@ -95,6 +127,10 @@
     "home": {
       "name": "Startseite",
       "description": "Startseite des Dataspace Managements."
+    },
+    "notifications": {
+      "name": "Benachrichtigungen",
+      "description": "Ihr Posteingang: Informationen und Aufgaben aus allen Diensten, live."
     },
     "onboarding": {
       "name": "Onboarding",
