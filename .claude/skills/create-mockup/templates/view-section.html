@@ -1,0 +1,55 @@
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+      <section class="hub-view" id="view-{{VIEW_SLUG}}" data-view="{{VIEW_SLUG}}" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">{{N}}</span>
+          <h2 class="tx-h2">{{VIEW_TITLE}}</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p data-todo>Who opens this screen, what they want to get done, and where they come from.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/{{VIEW_SLUG}}.html">
+            <span class="hub-card__frame"><iframe src="views/{{VIEW_SLUG}}.html" title="Preview of {{VIEW_TITLE}}" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li data-todo>Each value on the screen, with its operation: <code>GET /api/{{MODULE}}/…</code>
+                (<code>operationId</code>, <code>x-permission</code>, scope) and the schema field.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open data-todo>A question for the person who decides, or for the backend team (then name the module).</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>

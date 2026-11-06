@@ -28,14 +28,14 @@ import { useState } from 'react';
 import { Box, Chip, Container, SpaceGlow, Stack, Typography, useMediaQuery, useTheme } from '@dataspace-mgm/ui-mui';
 import ServiceCarousel from '../components/services/ServiceCarousel';
 import ServiceTiles from '../components/services/ServiceTiles';
-import { AREA_LABELS } from '../components/services/ServiceCard';
-import { features } from '../features/main';
+import { useTranslation } from 'react-i18next';
+import { AREAS } from '../components/services/ServiceCard';
+import { features as entries } from '../features/main';
+import { useNavigationItems } from '../i18n/useNavigationItems';
 import type { FeatureCategory } from '../types/routing';
 
 /** "All services" lives in the canvas at this path, on desktop and on phones. */
 export const ALL_SERVICES_PATH = '/all-services';
-
-const AREAS = Object.keys(AREA_LABELS) as FeatureCategory[];
 
 /**
  * All services, inside the canvas. On desktop every service is a card in a carousel that scrolls sideways,
@@ -43,6 +43,8 @@ const AREAS = Object.keys(AREA_LABELS) as FeatureCategory[];
  * bottom bar. Favourites are kept with the "+".
  */
 export default function AllServicesPage() {
+  const { t } = useTranslation();
+  const features = useNavigationItems(entries);
   const theme = useTheme();
   const compact = useMediaQuery(theme.breakpoints.down('md'));
   const [filter, setFilter] = useState<FeatureCategory | 'all'>('all');
@@ -70,22 +72,21 @@ export default function AllServicesPage() {
         sx={{ position: 'relative', zIndex: 1, py: { xs: 4, md: 8 } }}
       >
         <Typography variant="overline" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-          Eclipse Tractus-X Dataspace Management
+          {t('allServices.overline')}
         </Typography>
         <Typography id="all-services-title" variant="h2" component="h1" sx={{ mt: { xs: 0, sm: 1 }, mb: { xs: 3, sm: 2 } }}>
-          All services
+          {t('allServices.title')}
         </Typography>
         <Typography color="text.secondary" sx={{ mb: 4, maxWidth: 680, display: { xs: 'none', sm: 'block' } }}>
-          Every service of your onboarding service provider in one place. Keep the ones you use most in your sidebar
-          with the + under your favourites.
+          {t('allServices.intro')}
         </Typography>
         {compact ? (
           <ServiceTiles services={features} />
         ) : (
           <>
-            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 4 }} role="group" aria-label="Filter services">
-              {chip('all', `All · ${features.length}`)}
-              {AREAS.filter((area) => countOf(area) > 0).map((area) => chip(area, `${AREA_LABELS[area]} · ${countOf(area)}`))}
+            <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', mb: 4 }} role="group" aria-label={t('allServices.filter')}>
+              {chip('all', t('allServices.all', { count: features.length }))}
+              {AREAS.filter((area) => countOf(area) > 0).map((area) => chip(area, t('allServices.area', { area: t(`areas.${area}`), count: countOf(area) })))}
             </Stack>
             <ServiceCarousel services={shown} />
           </>

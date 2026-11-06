@@ -31,25 +31,34 @@ import {
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
-import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/routing';
+import { MOCK_MODE } from '../core/mock-mode';
+import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
+import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
 import { homeFeature } from './home/routes';
 import { participantsFeature } from './participants/routes';
 
 /**
+ * Whether a feature can be opened: not disabled, and a proof of concept (`stage: 'poc'`) only in mock mode, because it
+ * runs on mock data only. A closed feature shows as "coming soon" and has no routes.
+ */
+export function isOpen(feature: FeatureConfig, mockMode: boolean = MOCK_MODE): boolean {
+  return !feature.disabled && (feature.stage !== 'poc' || mockMode);
+}
+
+/**
  * Features that are announced but not built yet: shown greyed out as "coming soon", without routes. Their version
  * is the API version of the backend module behind them (portal-backend-spec)
- * (like the Status placeholder of the Industry Core Hub). Replace one by its feature folder when it arrives.
+ * (like the Status placeholder of the Industry Core Hub). Their name and description are `features.<id>` in the
+ * shell's common.json. Replace one by its feature folder when it arrives.
  */
 const upcoming = (
-  name: string,
-  description: string,
+  id: string,
   category: FeatureCategory,
   icon: FeatureConfig['icon'],
   path: string,
   version: string,
 ): FeatureConfig => ({
-  name,
-  description,
+  id,
   version,
   category,
   icon,
@@ -60,67 +69,40 @@ const upcoming = (
 
 /**
  * Registry of the feature modules. Add a feature: create src/features/<feature>/ with
- * pages/, routes.tsx (one FeatureConfig) and index.ts, then add it to this list.
+ * pages/, i18n/ (its namespace), routes.tsx (one FeatureConfig) and index.ts, add `features.<id>` to the shell's
+ * common.json in every language, then add it to this list.
  * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All services" views.
  * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming(
-    'Onboarding',
-    'Register companies, review their applications and bring them into the dataspace.',
-    'onboarding',
-    <AppRegistrationOutlinedIcon />,
-    '/onboarding',
-    '0.2.0',
-  ),
+  upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
   participantsFeature,
-  upcoming(
-    'Connectors as a service',
-    'Run and monitor dataspace connectors for your participants, so they do not have to host their own.',
-    'as-a-service',
-    <CableOutlinedIcon />,
-    '/connectors',
-    '0.2.0',
-  ),
-  upcoming(
-    'Wallets as a service',
-    'Provide dataspace wallets for your participants and manage their credentials.',
-    'as-a-service',
-    <AccountBalanceWalletOutlinedIcon />,
-    '/wallets',
-    '0.2.0',
-  ),
-  upcoming(
-    'Marketplace',
-    'Offer apps and services to the participants and manage their subscriptions.',
-    'as-a-service',
-    <StorefrontOutlinedIcon />,
-    '/marketplace',
-    '0.2.0',
-  ),
-  upcoming(
-    'Provider network',
-    'Work with other onboarding service providers: find the home provider of a participant and exchange trust.',
-    'network',
-    <HubOutlinedIcon />,
-    '/network',
-    '0.1.0',
-  ),
+  upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
+  upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),
+  upcoming('marketplace', 'as-a-service', <StorefrontOutlinedIcon />, '/marketplace', '0.2.0'),
+  upcoming('network', 'network', <HubOutlinedIcon />, '/network', '0.1.0'),
 ];
 
-/** The navigation items of the sidebar, the bottom bar and the "All services" view. */
-export const features: NavigationItem[] = allFeatures.map((feature) => ({
-  name: feature.name,
-  description: feature.description,
+/** The features of the sidebar, the bottom bar and the "All services" view, before translation. */
+export const features: NavigationEntry[] = allFeatures.map((feature) => ({
+  id: feature.id,
   version: feature.version,
   category: feature.category,
   icon: feature.icon,
   path: feature.navigationPath,
-  disabled: feature.disabled,
+  disabled: !isOpen(feature),
 }));
 
+/** A route that renders once its feature's translations are there. */
+const translated = (feature: FeatureConfig, route: FeatureRoute): FeatureRoute =>
+  feature.translations
+    ? { ...route, element: <FeatureTranslationsGate translations={feature.translations}>{route.element}</FeatureTranslationsGate> }
+    : route;
+
 /** The routes of all enabled features. */
-export function getAllRoutes() {
-  return allFeatures.filter((feature) => !feature.disabled).flatMap((feature) => feature.routes);
+export function getAllRoutes(): FeatureRoute[] {
+  return allFeatures
+    .filter((feature) => isOpen(feature))
+    .flatMap((feature) => feature.routes.map((route) => translated(feature, route)));
 }

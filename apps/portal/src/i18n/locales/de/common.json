@@ -1,0 +1,132 @@
+{
+  "brand": {
+    "tractusx": "Eclipse Tractus-X",
+    "product": "Dataspace Management"
+  },
+  "app": {
+    "homeLink": "Eclipse Tractus-X Dataspace Management, Startseite",
+    "skipToContent": "Zum Inhalt springen",
+    "loading": "Wird geladen…"
+  },
+  "header": {
+    "environment": "Umgebung: {{environment}}",
+    "switchToDark": "Zum dunklen Modus wechseln",
+    "switchToLight": "Zum hellen Modus wechseln"
+  },
+  "language": {
+    "label": "Sprache",
+    "menu": "Sprache wählen"
+  },
+  "navigation": {
+    "features": "Funktionen",
+    "favourites": "Favoriten",
+    "allServices": "Alle Services",
+    "comingSoon": "Demnächst",
+    "itemComingSoon": "{{name}} (demnächst)",
+    "itemComingSoonLabel": "{{name}}, demnächst"
+  },
+  "favourites": {
+    "title": "Favoriten",
+    "edit": "Favoriten bearbeiten",
+    "add": "{{name}} zu den Favoriten hinzufügen",
+    "hintSidebar": "Schalten Sie die Services ein, die Sie in Ihrer Seitenleiste haben möchten.",
+    "hintBar": "Die ersten fünf stehen in Ihrer Leiste. Die Startseite ist immer dabei."
+  },
+  "profile": {
+    "label": "Profil",
+    "guest": "Gast",
+    "noCompany": "Noch kein Unternehmen",
+    "checking": "Sitzung wird geprüft…",
+    "signedOut": "Nicht angemeldet",
+    "myProfile": "Mein Profil",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden"
+  },
+  "notifications": {
+    "label": "Benachrichtigungen",
+    "nothingNew": "Nichts Neues",
+    "inbox": "Ihr Posteingang",
+    "inboxPending": "Kommt mit dem Benachrichtigungsmodul"
+  },
+  "services": {
+    "carousel": "Services",
+    "count_one": "{{count}} Service",
+    "count_other": "{{count}} Services",
+    "previous": "Vorherige Services",
+    "next": "Nächste Services",
+    "open": "Öffnen",
+    "openService": "{{name}} öffnen",
+    "about": "Über {{name}}",
+    "version": "v{{version}}",
+    "inSidebar": "In Ihrer Seitenleiste",
+    "available": "Verfügbar",
+    "heading": "Services",
+    "settings": "Einstellungen",
+    "darkMode": "Dunkler Modus",
+    "lightMode": "Heller Modus",
+    "sourceCode": "Quellcode"
+  },
+  "areas": {
+    "start": "Start",
+    "onboarding": "Onboarding",
+    "participants": "Teilnehmer",
+    "as-a-service": "As a Service",
+    "network": "Netzwerk"
+  },
+  "allServices": {
+    "overline": "Eclipse Tractus-X Dataspace Management",
+    "title": "Alle Services",
+    "intro": "Alle Services Ihres Onboarding-Service-Providers an einem Ort. Behalten Sie die meistgenutzten mit dem + unter Ihren Favoriten in Ihrer Seitenleiste.",
+    "filter": "Services filtern",
+    "all": "Alle · {{count}}",
+    "area": "{{area}} · {{count}}"
+  },
+  "features": {
+    "home": {
+      "name": "Startseite",
+      "description": "Startseite des Dataspace Managements."
+    },
+    "onboarding": {
+      "name": "Onboarding",
+      "description": "Unternehmen registrieren, ihre Anträge prüfen und sie in den Datenraum aufnehmen."
+    },
+    "participants": {
+      "name": "Teilnehmerverwaltung",
+      "description": "Unternehmensdaten, Business Partner Numbers, Benutzer und technische Benutzer aller Teilnehmer."
+    },
+    "connectors": {
+      "name": "Connectors as a Service",
+      "description": "Datenraum-Connectors für Ihre Teilnehmer betreiben und überwachen, damit sie keine eigenen hosten müssen."
+    },
+    "wallets": {
+      "name": "Wallets as a Service",
+      "description": "Datenraum-Wallets für Ihre Teilnehmer bereitstellen und ihre Nachweise verwalten."
+    },
+    "marketplace": {
+      "name": "Marktplatz",
+      "description": "Apps und Services für die Teilnehmer anbieten und ihre Abonnements verwalten."
+    },
+    "network": {
+      "name": "Provider-Netzwerk",
+      "description": "Mit anderen Onboarding-Service-Providern zusammenarbeiten: den Heimat-Provider eines Teilnehmers finden und Vertrauen austauschen."
+    }
+  },
+  "footer": {
+    "tagline": "Where We Build Dataspaces",
+    "eclipseFoundation": "Eclipse Foundation",
+    "about": "Über",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen",
+    "compliance": "Compliance",
+    "legal": "Rechtliche Informationen",
+    "sourceCode": "Quellcode",
+    "architecture": "Architektur",
+    "copyright": "Copyright © 2026 Contributors to the Eclipse Foundation · Apache-2.0"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Seite nicht gefunden",
+    "text": "Die gesuchte Seite gibt es nicht, oder ihre Funktion ist noch nicht verfügbar.",
+    "back": "Zurück zur Startseite"
+  }
+}

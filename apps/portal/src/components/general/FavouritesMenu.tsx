@@ -40,6 +40,7 @@ import {
   alpha,
   tractusx,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { activePath, useFavourites } from '../../contexts/FavouritesContext';
 import { railButtonSx } from './HeaderMenus';
@@ -54,6 +55,7 @@ export type FavouritesPlacement = 'rail' | 'bar';
  * on screen belongs to a service that is not a favourite, the "+" is marked and offers to add it.
  */
 export default function FavouritesMenu({ placement }: { placement: FavouritesPlacement }) {
+  const { t } = useTranslation();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const { candidates, isFavourite, toggle } = useFavourites();
   const { pathname } = useLocation();
@@ -65,7 +67,7 @@ export default function FavouritesMenu({ placement }: { placement: FavouritesPla
     candidates.map((app) => app.path),
   );
   const suggested = candidates.find((app) => app.path === currentPath && !isFavourite(app.path));
-  const label = suggested ? `Add ${suggested.name} to favourites` : 'Edit favourites';
+  const label = suggested ? t('favourites.add', { name: suggested.name }) : t('favourites.edit');
 
   const button = (
     <IconButton
@@ -102,14 +104,12 @@ export default function FavouritesMenu({ placement }: { placement: FavouritesPla
         onClose={() => setAnchor(null)}
         anchorOrigin={rail ? { vertical: 'top', horizontal: 'right' } : { vertical: 'top', horizontal: 'center' }}
         transformOrigin={rail ? { vertical: 'top', horizontal: 'left' } : { vertical: 'bottom', horizontal: 'center' }}
-        slotProps={{ list: { 'aria-label': 'Favourites' } }}
+        slotProps={{ list: { 'aria-label': t('favourites.title') } }}
       >
         <Box sx={{ px: 2, pt: 1, pb: 1.5 }}>
-          <Typography sx={{ fontWeight: 700 }}>Favourites</Typography>
+          <Typography sx={{ fontWeight: 700 }}>{t('favourites.title')}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {rail
-              ? 'Switch on the services you want in your sidebar.'
-              : 'The first five are in your bar. Home is always there.'}
+            {rail ? t('favourites.hintSidebar') : t('favourites.hintBar')}
           </Typography>
         </Box>
         {candidates.map((app) => {
@@ -126,7 +126,7 @@ export default function FavouritesMenu({ placement }: { placement: FavouritesPla
               sx={isSuggested ? { boxShadow: `inset 3px 0 0 ${tractusx.orange}` } : undefined}
             >
               <ListItemIcon sx={{ color: favourite ? tractusx.orange : 'text.secondary' }}>{app.icon}</ListItemIcon>
-              <ListItemText primary={app.name} secondary={app.disabled ? 'Coming soon' : undefined} />
+              <ListItemText primary={app.name} secondary={app.disabled ? t('navigation.comingSoon') : undefined} />
               {rail ? (
                 <Switch
                   edge="end"

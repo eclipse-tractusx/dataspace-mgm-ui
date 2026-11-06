@@ -27,15 +27,16 @@
 # Dataspace Captain skills
 
 Agent skills for building the Eclipse Tractus-X Dataspace Management product. Each skill is a folder with a `SKILL.md`
-(the procedure, loaded on demand by Claude Code and GitHub Copilot from `.claude/skills/`) and a `scripts/` folder with
-portable, tested scripts (`python3` 3.10+ with PyYAML, `bash`; macOS and Linux). The
+(the procedure, loaded on demand by Claude Code and GitHub Copilot from `.claude/skills/`) and, where a step can be
+automated, a `scripts/` folder with portable, tested scripts (`python3` 3.10+ with PyYAML, `bash`; macOS and Linux). The
 [Dataspace Captain agent](../agents/dataspace-captain.md) routes matching tasks to them.
 
 User documentation: [how to use the Captain](../../docs/developers/dataspace-captain/README.md).
 
 Scripts run from anywhere inside the repository and read the specs that `portal-spec-sources` finds (`spec/`,
 `SPEC_DIR`, a sibling checkout, or the cache filled by `spec-src.py sync`). They are read-only on the repository; only
-`dash-check.sh --write` replaces `DEPENDENCIES`, and `merge-guard.py --run` runs the repository's own tests.
+`dash-check.sh --write` replaces `DEPENDENCIES`, `merge-guard.py --run` runs the repository's own tests, and `mockup.py`
+writes only below `mockups/`.
 
 | Skill | Use it for | Script |
 |---|---|---|
@@ -45,6 +46,23 @@ Scripts run from anywhere inside the repository and read the specs that `portal-
 | [merge-guard](merge-guard/SKILL.md) | A UI branch before its PR: frontend architecture rules, generated code, headers, commits, secrets, Nx gate | `merge-guard.py` |
 | [portal-token-inspect](portal-token-inspect/SKILL.md) | 401 / 403 / 404 explained from a person's token and the operation's permission and scope | `token-inspect.py` |
 | [dependencies-and-dash](dependencies-and-dash/SKILL.md) | Eclipse Dash like CI; `DEPENDENCIES`; IP reviews | `dash-check.sh` |
+| [create-mockup](create-mockup/SKILL.md) | Phase 1 of a feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens, navigation, icons and test data; a configurator per view (by default) to pick the best combination of alternatives; open questions; decided view by view | `mockup.py` |
+| [build-poc](build-poc/SKILL.md) | Phase 2: the decided views as a feature with `stage: 'poc'`, on the in-memory adapter of the module's core package, in mock mode (`VITE_USE_MOCKS=true npm start`) | – |
+| [build-feature](build-feature/SKILL.md) | Phase 3: vendored spec, generated types, HTTP adapter, the feature open for everyone, tested against the backend; open points for the backend team | – |
+
+## From an idea to a feature: mockup, proof of concept, feature
+
+```text
+create-mockup                    build-poc                              build-feature
+mockups/<feature>/  ──decided──▶ features/<feature> (stage: 'poc')  ──▶ features/<feature> (open)
+HTML, test data                  core package on the in-memory adapter   + HTTP adapter, generated types
+mockup.py status --ready         VITE_USE_MOCKS=true npm start           npm start + backend (dev BFF)
+```
+
+Each phase answers its own question (what the person sees and does; how the portal builds it; what the backend
+provides) and ends with something that can be reviewed and merged: the mockup, the closed proof of concept, the open
+feature. The data stays the same all the way: the test data of `shared/data.js` become the fixtures of the in-memory
+adapter, and the fixtures are checked field by field against the module's spec in phase 3.
 
 ## How the scripts were tested
 
@@ -60,6 +78,12 @@ Against the specs `portal-backend-spec` @ `515b709` and `portal-frontend-spec` @
   (3 blocker, 6 high).
 - `dash-check.sh --list-only` reads the coordinates of `package-lock.json` (scoped and nested packages).
 - `spec-src.py`, `flow-trace.py`, `token-inspect.py`: as in the service repository (same scripts).
+- `mockup.py`: on this workspace (`main` @ `a62fd8e`): `new` with two views and `options`, `sync` (14 icons,
+  the navigation of `features/main.tsx` with the mocked feature enabled, the tokens of `palette.ts`, `theme.ts` and
+  `typography.ts`), `status --ready` (exit 1 while a view is open), `check` (a CDN stylesheet, an orange-green gradient
+  and lorem ipsum as errors; a colour literal and "Tractus-X" alone as warnings). The configurator: two dimensions
+  combined from the URL (`#layout=list`), a view without `data-variant` and a dimension with one value as warnings. The pages were compared with the
+  running portal in headless Chromium, desktop and phone width, dark and light.
 
 ## Ideas for further skills
 

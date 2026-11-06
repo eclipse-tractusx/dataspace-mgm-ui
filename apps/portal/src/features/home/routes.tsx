@@ -26,24 +26,22 @@
 
 import { HomeOutlinedIcon } from '@dataspace-mgm/ui-mui';
 import type { FeatureConfig } from '../../types/routing';
+import { homeTranslations } from './i18n';
 import Home from './pages/Home';
 
 export const homeFeature: FeatureConfig = {
-  name: 'Home',
-  description: 'Start page of the Dataspace Management.',
+  id: 'home',
   version: __APP_VERSION__,
   category: 'start',
   icon: <HomeOutlinedIcon />,
   navigationPath: '/',
   disabled: false,
+  translations: homeTranslations,
   routes: [
     {
       index: true,
       element: <Home />,
-      meta: {
-        title: 'Home',
-        description: 'Welcome to the Eclipse Tractus-X Dataspace Management',
-      },
+      meta: { title: 'hero.product', description: 'hero.lead' },
     },
   ],
 };

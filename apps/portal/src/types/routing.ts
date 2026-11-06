@@ -25,6 +25,7 @@
  ********************************************************************************/
 
 import type { ReactElement } from 'react';
+import type { FeatureTranslations } from '../i18n/lazyFeatureTranslations';
 
 /**
  * Feature modules, as in the Industry Core Hub frontend: every feature folder under
@@ -36,6 +37,7 @@ export interface FeatureRoute {
   path?: string;
   index?: boolean;
   element: ReactElement;
+  /** i18n keys in the feature's namespace, never texts. */
   meta?: {
     title?: string;
     description?: string;
@@ -46,24 +48,42 @@ export interface FeatureRoute {
 export type FeatureCategory = 'start' | 'onboarding' | 'participants' | 'as-a-service' | 'network';
 
 export interface FeatureConfig {
-  name: string;
-  /** One sentence for the "All services" view. */
-  description: string;
+  /**
+   * Unique, and the i18n key of the feature's name and description in the shell's namespace:
+   * `features.<id>.name` and `features.<id>.description` in src/i18n/locales/<language>/common.json.
+   */
+  id: string;
   /** The version of the service: the portal's own for its pages, the module's API version for the others. */
   version: string;
   category: FeatureCategory;
   icon: ReactElement;
   navigationPath: string;
   disabled: boolean;
+  /**
+   * 'poc': a proof of concept on mock data (skill build-poc). It is routed only in mock mode (VITE_USE_MOCKS=true)
+   * and shows as "coming soon" otherwise. Remove it once the feature talks to its backend module (skill build-feature).
+   */
+  stage?: 'poc';
+  /**
+   * The feature's own namespace (src/features/<feature>/i18n/). Every feature with pages has one; the registry loads
+   * it before it renders one of the routes.
+   */
+  translations?: FeatureTranslations;
   routes: FeatureRoute[];
 }
 
-export interface NavigationItem {
-  name: string;
-  description: string;
+/** A feature in the navigation, before its texts are translated (src/features/main.tsx). */
+export interface NavigationEntry {
+  id: string;
   version: string;
   category: FeatureCategory;
   icon: ReactElement;
   path: string;
   disabled: boolean;
+}
+
+/** A feature in the navigation with its name and description in the language in use (useNavigationItems). */
+export interface NavigationItem extends NavigationEntry {
+  name: string;
+  description: string;
 }

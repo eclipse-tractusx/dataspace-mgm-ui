@@ -35,8 +35,9 @@ Usage: merge-guard.py [base] [--run] [--strict]
 Checks the rules of the frontend architecture (portal-frontend-spec, chapters 01, 05, 13) on the added
 lines: no tokens or Keycloak in the browser, framework-free core packages, MUI only in ui-mui,
 openapi-fetch only in core infrastructure, no fetchBaseQuery, no WebSockets, generated code untouched,
-no new legacy shared components, no deep imports; plus license headers (TRG 7.02), DEPENDENCIES when
-the lock file changes (TRG 7.04), commits (AI disclosure, Conventional Commits) and secrets.
+no new legacy shared components, no deep imports, texts as i18n keys in every supported language; plus
+license headers (TRG 7.02), DEPENDENCIES when the lock file changes (TRG 7.04), commits (AI disclosure,
+Conventional Commits) and secrets.
 """
 from __future__ import annotations
 
@@ -82,6 +83,18 @@ RULES = [
      "deep import into another package or lib; import its barrel (src/index.ts)", "frontend 01.7"),
     (re.compile(r"""from\s+['"]class-validator['"]"""), None, "medium", "class-validator; use zod", "frontend 01.7"),
 ]
+# Texts a person sees or hears, written into a .tsx instead of an i18n key (docs/developers/translations.md).
+# A heuristic on added lines; a line that must keep a literal carries the comment `i18n-exempt`.
+TEXT_RULES = [
+    (re.compile(r"""\b(aria-label|aria-description|aria-valuetext|title|label|placeholder|alt|helperText|primary|"""
+                r"""secondary|titleAccess)=(?:"[^"]*[A-Za-z]{2,}[^"]*"|\{\s*(['`])[^'`]*[A-Za-z]{2,}[^'`]*\2\s*\})"""),
+     "a text in a JSX attribute"),
+    (re.compile(r""">\s*[^<>{}=;]*[A-Za-z]{2,}[^<>{}=;]*?\s*</"""), "a text between JSX tags"),
+    (re.compile(r"""^\s*[A-Z][^=;{}()<>\[\]'"`]*\s[^=;{}()<>\[\]'"`]*[a-z]{2,}[^=;{}()<>\[\]'"`]*$"""),
+     "a line of JSX text"),
+]
+COMMENT_LINE = re.compile(r"^\s*(//|/\*|\*)")
+LOCALE_FILE = re.compile(r"^(?P<root>.+/locales)/(?P<lang>[a-z]{2}(?:-[A-Z]{2})?)/(?P<file>[^/]+\.json)$")
 
 
 def git(*args: str) -> str:
@@ -121,6 +134,17 @@ def main(argv: list[str]) -> int:
     if any(p.startswith("specs/") for p in paths):
         add("info", "specs/ changed: compare the copies with the backend spec "
                     "(.claude/skills/contract-seam/scripts/seam-check.py vendored)", "decision 13, 19")
+    # --- translations: a locale file changed in one language changes in every language of its folder
+    for p in paths:
+        m = LOCALE_FILE.match(p)
+        if not m:
+            continue
+        folder = root / m["root"]
+        languages = sorted(d.name for d in folder.iterdir() if d.is_dir()) if folder.is_dir() else []
+        lagging = [lang for lang in languages if lang != m["lang"] and f"{m['root']}/{lang}/{m['file']}" not in paths]
+        if lagging:
+            add("high", f"{p} changed, but not {m['file']} in {', '.join(lagging)}; every text goes into every "
+                        "supported language in the same change", "docs/developers/translations.md")
     if {"package.json", "package-lock.json"} & set(paths) and "DEPENDENCIES" not in paths:
         add("high", "package.json or package-lock.json changed but DEPENDENCIES did not; run the dependencies-and-dash "
                     "skill", "TRG 7.04, workflow dependencies.yml")
@@ -139,6 +163,13 @@ def main(argv: list[str]) -> int:
             for rx, allowed, sev, what, rule in RULES:
                 if rx.search(line) and not (allowed and allowed.match(current)):
                     add(sev, f"{current}: {what}", rule)
+            if (current.endswith(".tsx") and not current.startswith("packages/") and not COMMENT_LINE.match(line)
+                    and "i18n-exempt" not in line):
+                for rx, what in TEXT_RULES:
+                    if rx.search(line):
+                        add("high", f"{current}: {what} ({line.strip()[:60]!r}); use an i18n key with a text in "
+                                    "every supported language", "docs/developers/translations.md")
+                        break
             if current.startswith("packages/") and FRAMEWORKS.search(line):
                 add("blocker", f"{current}: imports {FRAMEWORKS.search(line).group(1)}; core packages are "
                                "framework-free", "frontend 01.2, 01.6")

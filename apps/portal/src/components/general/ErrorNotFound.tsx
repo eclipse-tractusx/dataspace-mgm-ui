@@ -25,21 +25,23 @@
  ********************************************************************************/
 
 import { Button, Container, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function ErrorNotFound() {
+  const { t } = useTranslation();
   return (
     <Container maxWidth="sm" sx={{ py: 10 }}>
       <Stack spacing={2} sx={{ alignItems: 'flex-start' }}>
         <Typography variant="overline" color="text.secondary">
-          404
+          {t('notFound.code')}
         </Typography>
         <Typography variant="h2" component="h1">
-          Page not found
+          {t('notFound.title')}
         </Typography>
-        <Typography color="text.secondary">The page you are looking for does not exist, or its feature has not arrived yet.</Typography>
+        <Typography color="text.secondary">{t('notFound.text')}</Typography>
         <Button variant="contained" component={RouterLink} to="/">
-          Back to home
+          {t('notFound.back')}
         </Button>
       </Stack>
     </Container>
