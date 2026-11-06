@@ -25,7 +25,8 @@
  ********************************************************************************/
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { NavigationItem } from '../types/routing';
+import { useNavigationItems } from '../i18n/useNavigationItems';
+import type { NavigationEntry, NavigationItem } from '../types/routing';
 
 /** How many favourites the phone's bottom bar shows; the desktop sidebar shows all of them. */
 export const PHONE_FAVOURITE_SLOTS = 5;
@@ -46,7 +47,7 @@ interface FavouritesValue {
 const FavouritesContext = createContext<FavouritesValue | null>(null);
 
 /** The paths that are not hidden, Home first. */
-export function favouritesOf(items: readonly NavigationItem[], hidden: readonly string[]): NavigationItem[] {
+export function favouritesOf<T extends NavigationEntry>(items: readonly T[], hidden: readonly string[]): T[] {
   const home = items.filter((item) => item.path === HOME_PATH);
   return [...home, ...items.filter((item) => item.path !== HOME_PATH && !hidden.includes(item.path))];
 }
@@ -67,10 +68,11 @@ function readHidden(): string[] {
 }
 
 /**
- * The person's favourite features, kept in this browser for now and shared with its other tabs.
- * Once the backend stores preferences, load and save them through its core package instead.
+ * The person's favourite features, kept in this browser for now and shared with its other tabs, with their names in
+ * the language in use. Once the backend stores preferences, load and save them through its core package instead.
  */
-export function FavouritesProvider({ items, children }: { items: NavigationItem[]; children: ReactNode }) {
+export function FavouritesProvider({ items: entries, children }: { items: readonly NavigationEntry[]; children: ReactNode }) {
+  const items = useNavigationItems(entries);
   const [hidden, setHidden] = useState<string[]>(readHidden);
 
   // Another tab changed the favourites.

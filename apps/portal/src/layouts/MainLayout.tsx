@@ -32,6 +32,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
 import BottomBar from '../components/general/BottomBar';
 import Header from '../components/general/Header';
@@ -46,6 +47,7 @@ export default function MainLayout() {
   const compact = useMediaQuery(theme.breakpoints.down('md'));
   const canvas = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
+  const { t } = useTranslation();
 
   // A new page starts at its top, as it would with the window as the scroll container.
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function MainLayout() {
           '&:focus': { top: 8 },
         }}
       >
-        Skip to content
+        {t('app.skipToContent')}
       </Link>
       <Header />
       <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>

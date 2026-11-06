@@ -101,6 +101,9 @@ npm/npmjs/-/hoist-non-react-statics/3.3.2, BSD-3-Clause, approved, clearlydefine
 npm/npmjs/-/hookified/1.15.1, MIT, approved, clearlydefined
 npm/npmjs/-/hookified/2.2.0, MIT, approved, clearlydefined
 npm/npmjs/-/html-encoding-sniffer/7.0.0, , restricted, clearlydefined
+npm/npmjs/-/html-parse-stringify/4.0.1, MIT, approved, clearlydefined
+npm/npmjs/-/i18next-browser-languagedetector/8.2.1, MIT, approved, clearlydefined
+npm/npmjs/-/i18next/26.4.2, MIT, approved, clearlydefined
 npm/npmjs/-/ieee754/1.2.1, BSD-3-Clause, approved, #26025
 npm/npmjs/-/ignore/5.3.2, MIT, approved, #11665
 npm/npmjs/-/ignore/7.0.12, MIT, approved, #30871
@@ -187,6 +190,7 @@ npm/npmjs/-/prop-types/15.8.1, MIT, approved, clearlydefined
 npm/npmjs/-/punycode/2.3.1, MIT, approved, #6373
 npm/npmjs/-/qified/0.10.1, MIT, approved, #31047
 npm/npmjs/-/react-dom/19.3.1, MIT, approved, #32497
+npm/npmjs/-/react-i18next/17.0.15, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/16.13.1, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/17.0.2, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/19.3.1, MIT, approved, #32310
@@ -246,6 +250,7 @@ npm/npmjs/-/undici/7.30.1, MIT, approved, #31791
 npm/npmjs/-/undici/8.12.4, , restricted, clearlydefined
 npm/npmjs/-/update-browserslist-db/1.3.4, MIT, approved, #30137
 npm/npmjs/-/uri-js/4.4.1, BSD-2-Clause, approved, #1086
+npm/npmjs/-/use-sync-external-store/1.7.0, MIT, approved, clearlydefined
 npm/npmjs/-/util-deprecate/1.0.2, MIT, approved, #5885
 npm/npmjs/-/vite/8.3.6, Apache-2.0 AND BSD-2-Clause AND CC0-1.0 AND ISC AND MIT, approved, #31750
 npm/npmjs/-/vitest/5.1.0, , restricted, clearlydefined

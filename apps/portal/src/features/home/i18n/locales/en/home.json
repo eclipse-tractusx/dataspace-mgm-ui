@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "overline": "Onboarding service provider portal",
+    "welcome": "Welcome to the",
+    "product": "Eclipse Tractus-X Dataspace Management UI",
+    "lead": "Onboard companies, manage your participants, and run their connectors and wallets as a service, in the dataspace that the Core Service Provider keeps trusted.",
+    "allServices": "See all services",
+    "architecture": "Explore the architecture"
+  },
+  "how": {
+    "overline": "How it works",
+    "title": "One portal between your company and the dataspace",
+    "intro": "Every onboarding service provider runs its own portal for the companies it serves. The Eclipse Tractus-X Dataspace Management is that portal: open source, and the same for every provider.",
+    "join": {
+      "title": "Join",
+      "text": "Your company registers here. Your onboarding service provider reviews the application and brings you into the dataspace."
+    },
+    "run": {
+      "title": "Run",
+      "text": "Your provider runs what you need to take part, such as connectors and wallets as a service, so you do not have to host them yourself."
+    },
+    "trust": {
+      "title": "Trust",
+      "text": "The Core Service Provider keeps the dataspace trusted: the trusted providers, the business partner numbers and their home provider, and the discovery."
+    }
+  }
+}

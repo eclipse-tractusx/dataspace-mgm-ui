@@ -1,0 +1,46 @@
+{
+  "overline": "Teilnehmerverwaltung",
+  "title": "Ihr Unternehmen",
+  "loading": "Ihr Unternehmen wird geladen…",
+  "signInPrompt": "Melden Sie sich an, um Ihr Unternehmen zu sehen.",
+  "signIn": "Anmelden",
+  "noCompany": "Ihr Konto ist noch keinem Unternehmen zugeordnet. Registrieren Sie zuerst Ihr Unternehmen.",
+  "notFound": "Ihr Unternehmen wurde bei Ihrem Onboarding-Service-Provider nicht gefunden.",
+  "failed": "Ihr Unternehmen konnte nicht geladen werden: {{message}}",
+  "failedWithStatus": "Ihr Unternehmen konnte nicht geladen werden (HTTP {{status}}): {{message}}",
+  "participantOf": "Teilnehmer von {{dataspace}}",
+  "fields": {
+    "bpn": "Business Partner Number",
+    "address": "Adresse",
+    "coreData": "Stammdaten",
+    "identifiers": "Kennungen",
+    "roles": "Unternehmensrollen"
+  },
+  "bpnNotAssigned": "Noch nicht vergeben",
+  "coreDataSource": {
+    "EBW": "Aus der Business Wallet",
+    "MANUAL": "Vom Onboarding-Service-Provider geprüft"
+  },
+  "verified": "Aus der Business Wallet",
+  "identifier": "{{type}}: {{value}}",
+  "status": {
+    "ACTIVE": "Aktiv",
+    "REQUESTED": "Beantragt",
+    "REJECTED": "Abgelehnt",
+    "INACTIVE": "Inaktiv"
+  },
+  "identifierTypes": {
+    "EUID": "EUID",
+    "EBWOID": "EBWOID",
+    "VAT_ID": "USt-IdNr.",
+    "COMMERCIAL_REG_NUMBER": "Handelsregisternummer",
+    "LEI_CODE": "LEI-Code",
+    "EORI": "EORI"
+  },
+  "roles": {
+    "ACTIVE_PARTICIPANT": "Aktiver Teilnehmer",
+    "APP_PROVIDER": "App-Anbieter",
+    "SERVICE_PROVIDER": "Service-Anbieter",
+    "ONBOARDING_SERVICE_PROVIDER": "Onboarding-Service-Provider"
+  }
+}

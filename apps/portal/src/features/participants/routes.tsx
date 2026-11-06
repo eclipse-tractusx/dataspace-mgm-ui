@@ -26,22 +26,23 @@
 
 import { GroupsOutlinedIcon } from '@dataspace-mgm/ui-mui';
 import type { FeatureConfig } from '../../types/routing';
+import { participantsTranslations } from './i18n';
 import CompanyProfile from './pages/CompanyProfile';
 
 /** Participant management. Its backend module is C3-M1 Company Profile; the version is the API version of the module. */
 export const participantsFeature: FeatureConfig = {
-  name: 'Participant management',
-  description: 'Company data, business partner numbers, users and technical users of every participant.',
+  id: 'participants',
   version: '0.2.0',
   category: 'participants',
   icon: <GroupsOutlinedIcon />,
   navigationPath: '/participants',
   disabled: false,
+  translations: participantsTranslations,
   routes: [
     {
       path: 'participants',
       element: <CompanyProfile />,
-      meta: { title: 'Your company', description: 'The company profile of the signed-in person (C3-M1)' },
+      meta: { title: 'title' },
     },
   ],
 };
