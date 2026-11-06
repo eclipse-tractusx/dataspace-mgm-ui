@@ -142,7 +142,7 @@ describe('Wallets as a service: your credentials (C4-M1 listCompanyCredentials)'
   it('shows the feature tabs the person may see', async () => {
     showWallets('/wallets/credentials', { session: ERIKA, c4m1: recordingC4M1().module });
     const tabs = await screen.findByRole('navigation', { name: 'Wallets as a service' });
-    expect(within(tabs).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Credentials']);
+    expect(within(tabs).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Dataspace wallet', 'Credentials', 'Wallet accounts']);
     expect(within(tabs).getByRole('tab', { name: 'Credentials' })).toHaveAttribute('aria-selected', 'true');
   });
 });

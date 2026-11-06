@@ -31,6 +31,7 @@ import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-m
 import { createC2M2Module, C2_M2_BASE_PATH, type C2M2Module } from '@dataspace-mgm/c2-m2-core';
 import { createC11M1Module, C11M1_BASE_PATH, type C11M1Module } from '@dataspace-mgm/c11-m1-core';
 import type { C4M1Module } from '@dataspace-mgm/c4-m1-core';
+import type { C4M2Module } from '@dataspace-mgm/c4-m2-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
 import { createIdentityModule, type IdentityModule } from '@dataspace-mgm/identity-core';
 import type { RuntimeConfig } from '../config';
@@ -54,6 +55,12 @@ export interface CoreModules {
   c2m3: C2M3Module;
   c2m2: C2M2Module;
   c11m1: C11M1Module;
+  /**
+   * Proof of concept (feature `wallets`, stage 'poc'): C4-M2 Dataspace Wallet Interface, wired only in
+   * mock-container.ts on its in-memory adapters. Pages treat a missing module as "not connected". Required here once
+   * its HTTP adapter exists.
+   */
+  c4m2?: C4M2Module;
 }
 
 /**

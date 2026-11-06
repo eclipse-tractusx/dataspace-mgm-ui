@@ -36,10 +36,16 @@ beforeEach(atFixturesNow);
 afterEach(() => vi.useRealTimers());
 
 describe('Wallets as a service: landing page', () => {
-  it('opens "Your credentials" for a person of a company', async () => {
-    showWallets('/wallets', { session: ERIKA, c4m1: recordingC4M1().module });
+  it('opens "Your credentials" for a person of a company without the dataspace wallet', async () => {
+    showWallets('/wallets', { session: { ...ERIKA, permissions: ['view_credentials'] }, c4m1: recordingC4M1().module });
     expect(await screen.findByRole('heading', { level: 1, name: 'Your credentials' })).toBeInTheDocument();
     expect(screen.getByTestId('location')).toHaveTextContent('/wallets/credentials');
+  });
+
+  it('shows the dataspace wallet at /wallets for a person with view_dataspace_wallet', async () => {
+    showWallets('/wallets', { session: ERIKA, c4m1: recordingC4M1().module, c4m2: true });
+    expect(await screen.findByRole('heading', { level: 1, name: 'Your dataspace wallet' })).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent(/^\/wallets$/);
   });
 
   it('opens "Credentials of all companies" for OSP staff', async () => {

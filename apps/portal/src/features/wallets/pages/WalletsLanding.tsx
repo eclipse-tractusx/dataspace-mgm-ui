@@ -31,11 +31,18 @@ import { WalletsPage } from '../components/WalletsPage';
 import { useWalletsLanding } from '../hooks/useWalletsLanding';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
+import DataspaceWallet from './DataspaceWallet';
 
-/** /wallets: opens the first view the person may see (Your credentials, or Credentials of all companies for OSP staff). */
+/**
+ * /wallets: the dataspace wallet for a person of a company with view_dataspace_wallet; otherwise it opens the first
+ * view the person may see (Your credentials, or Credentials of all companies for OSP staff).
+ */
 export default function WalletsLanding() {
   const { t } = useTranslation(WALLETS_NS);
   const state = useWalletsLanding();
+  if (state.status === 'wallet') {
+    return <DataspaceWallet />;
+  }
   if (state.status === 'redirect') {
     return <Navigate to={state.to} replace />;
   }

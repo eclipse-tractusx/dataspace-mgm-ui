@@ -182,3 +182,6 @@ export { default as UndoIcon } from '@mui/icons-material/Undo';
 export { default as HelpOutlineOutlinedIcon } from '@mui/icons-material/HelpOutlineOutlined';
 export { default as SendOutlinedIcon } from '@mui/icons-material/SendOutlined';
 export { default as UploadFileOutlinedIcon } from '@mui/icons-material/UploadFileOutlined';
+export { default as KeyOutlinedIcon } from '@mui/icons-material/KeyOutlined';
+export { default as VisibilityOffOutlinedIcon } from '@mui/icons-material/VisibilityOffOutlined';
+export { default as VisibilityOutlinedIcon } from '@mui/icons-material/VisibilityOutlined';

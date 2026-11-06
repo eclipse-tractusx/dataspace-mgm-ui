@@ -3,7 +3,9 @@
   "tabs": {
     "label": "Wallets as a service",
     "credentials": "Credentials",
-    "allCredentials": "Credentials of all companies"
+    "allCredentials": "Credentials of all companies",
+    "wallet": "Dataspace wallet",
+    "walletAccounts": "Wallet accounts"
   },
   "common": {
     "signInPrompt": "Sign in to see the wallets and credentials.",
@@ -207,5 +209,73 @@
     "revocationNoteRequired": "Enter a note of 1 to 500 characters.",
     "revocationNoteTooLong": "The note may have at most 500 characters.",
     "revocationNoteRejected": "The onboarding service provider did not accept the note (HTTP 400)."
+  },
+  "walletStatus": {
+    "REQUESTED": "Being created",
+    "VALIDATING": "Checking the DID",
+    "ACTIVE": "Active",
+    "FAILED": "Failed"
+  },
+  "walletFailure": {
+    "PROVIDER_TIMEOUT": "The provider did not answer in time.",
+    "DID_MISMATCH": "The provider returned a DID that does not belong to your company.",
+    "INVALID_DID_DOCUMENT": "The DID document of the wallet is not valid.",
+    "DID_NOT_RESOLVABLE": "The DID document of the wallet could not be found."
+  },
+  "walletProviderShort": {
+    "CSP": "CSP wallet",
+    "SAP_DIV": "SAP DIV",
+    "IDENTITY_HUB": "IdentityHub",
+    "BRING_YOUR_OWN": "Own wallet"
+  },
+  "wallet": {
+    "title": "Your dataspace wallet",
+    "loading": "Loading your dataspace wallet…",
+    "noAccess": "You may not see the dataspace wallet of your company. Ask your Company Admin for the role IT Admin.",
+    "forbidden": "You may not see the dataspace wallet of your company (HTTP 403). Ask your Company Admin for the role IT Admin.",
+    "noCompany": "Your account is not bound to a company. A dataspace wallet belongs to a company of the dataspace.",
+    "failed": "The dataspace wallet could not be loaded: {{message}}",
+    "failedWithStatus": "The dataspace wallet could not be loaded (HTTP {{status}}): {{message}}",
+    "noWallet": {
+      "title": "Your company has no dataspace wallet yet",
+      "text": "The onboarding service provider creates it during onboarding, as soon as your company has its business partner number. You do not need to do anything."
+    },
+    "alert": {
+      "validating": "<strong>Your wallet is being checked.</strong> The DID document is resolved and checked. Your connectors can use the wallet as soon as it is active.",
+      "failed": "<strong>Your wallet could not be set up.</strong> {{reason}} Your onboarding service provider can start a new attempt."
+    },
+    "pass": {
+      "label": "Dataspace wallet",
+      "kind": "Dataspace wallet",
+      "company": "Company",
+      "bpn": "BPN",
+      "provider": "Provider",
+      "activeSince": "Active since",
+      "did": "DID"
+    },
+    "connectors": {
+      "title": "For your connectors",
+      "lead": "The addresses a connector of your company needs to use this wallet.",
+      "credentialService": "Credential service",
+      "bdrs": "Directory BPN → DID",
+      "sts": "Token address (STS)",
+      "stsPerAccount": "One per wallet account",
+      "didDocument": "DID document"
+    },
+    "accountsLink": {
+      "title": "Wallet accounts",
+      "count_one": "{{count}} technical user can sign in",
+      "count_other": "{{count}} technical users can sign in",
+      "unknown": "The technical users that sign in to the wallet"
+    },
+    "credentials": {
+      "title": "Credentials",
+      "loading": "Loading the credentials…",
+      "allIssued": "All issued",
+      "someIssued": "{{issued}} of {{total}} issued",
+      "details": "Details →",
+      "show": "Show the {{name}} of {{dataspace}}",
+      "hint": "Select a card to bring it to the front."
+    }
   }
 }

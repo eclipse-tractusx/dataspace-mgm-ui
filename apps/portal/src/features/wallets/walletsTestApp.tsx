@@ -45,13 +45,14 @@ import {
   InMemoryCompanyCredentialRepository,
   InMemoryCredentialRepository,
 } from '@dataspace-mgm/c4-m1-core/testing';
+import type { CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
 import type { SessionAnemic } from '@dataspace-mgm/identity-core';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { vi } from 'vitest';
 import { MOCK_PERSONS } from '../../core/mock-container';
-import { TestCoreModules, testCoreModules } from '../../core/testing';
+import { TestCoreModules, testCoreModules, type TestModulesOptions } from '../../core/testing';
 import { walletsFeature } from './routes';
 
 export const ERIKA = MOCK_PERSONS['wallets-erika'];
@@ -101,9 +102,17 @@ function LocationProbe() {
   return <output data-testid="location">{`${pathname}${search}`}</output>;
 }
 
-/** Renders the routes of the feature at `path`, as the person `session`, with `c4m1` (absent: not connected). */
-export function showWallets(path: string, { session, c4m1 }: { session: SessionAnemic | null; c4m1?: C4M1Module }) {
-  const test = testCoreModules({ session, c4m1 });
+interface ShowOptions {
+  session: SessionAnemic | null;
+  c4m1?: C4M1Module;
+  /** C4-M2 as in testCoreModules: `true` (the mockup's fixtures), options of createInMemoryC4M2Module, or a module. */
+  c4m2?: TestModulesOptions['c4m2'];
+  companies?: ReadonlyArray<CompanyAnemic>;
+}
+
+/** Renders the routes of the feature at `path`, as the person `session`, with the modules (absent: not connected). */
+export function showWallets(path: string, { session, c4m1, c4m2, companies }: ShowOptions) {
+  const test = testCoreModules({ session, c4m1, c4m2, companies });
   render(
     <ColorModeProvider>
       <MemoryRouter initialEntries={[path]}>

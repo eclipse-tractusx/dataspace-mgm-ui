@@ -53,6 +53,7 @@ import { InMemoryCompanyUserRepository, InMemoryInvitationRepository, COMPANY_US
 import { ListTechnicalUsersUseCase, GetTechnicalUserUseCase, ListAssignableRolesUseCase, CreateTechnicalUserUseCase, UpdateTechnicalUserUseCase, RotateCredentialsUseCase, DeleteTechnicalUserUseCase } from '@dataspace-mgm/c2-m3-core';
 import { InMemoryTechnicalUserRepository, TECHNICAL_USERS, FIXTURE_COMPANY_ID } from '@dataspace-mgm/c2-m3-core/testing';
 import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
+import { createInMemoryC4M2Module } from '@dataspace-mgm/c4-m2-core/testing';
 import { createIdentityModule, type RedirectPort, type SessionAnemic, type SessionRepository } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
@@ -305,12 +306,16 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   'erika-c3': C3_MOCK_PERSONS.erika,
   'max-c3': C3_MOCK_PERSONS.max,
   'hans-c3': C3_MOCK_PERSONS.hans,
-  /** C4-M1 credentials test persons, kept separate where C1-M2 uses the same names for different identities. */
+  /**
+   * Test persons of Wallets as a service (C4-M1, C4-M2), kept separate where C1-M2 uses the same names for different
+   * identities. Erika Mustermann is Company Admin of Beispiel Maschinenbau GmbH (FRAMEWORK 7a; C4-M1 test person P1):
+   * her credentials (C4-M1), the dataspace wallet and the retrieval of the access data of wallet accounts (C4-M2).
+   */
   'wallets-erika': {
     user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
     companyId: 'c0000001-0000-4000-8000-000000000001',
     bpn: 'BPNLIUK2REMLK3F4',
-    permissions: ['view_credentials'],
+    permissions: ['view_credentials', 'view_dataspace_wallet', 'retrieve_wallet_credentials'],
     csrfToken: 'csrf-test',
   },
   'wallets-max': {
@@ -391,5 +396,8 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
     }),
     c11m1: createC11M1ModuleFrom(new InMemoryNotificationRepository(session ? MOCK_INBOX : []), new InMemoryInboxEventSource()),
+    // Proof of concept: the dataspace wallet of the CSP and the wallet accounts of sa201 (access data ready to retrieve
+    // once) and sa202 (retrieved), from mockups/wallets/shared/data.js.
+    c4m2: createInMemoryC4M2Module(),
   };
 }

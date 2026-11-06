@@ -51,7 +51,7 @@ describe('mock mode', () => {
 
   it('signs in the test persons of Wallets as a service with the permissions of C4-M1', async () => {
     const signIn = async (person: string) => (await createMockCoreModules(person).identity.getCurrentSession.execute())!;
-    expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials'] });
+    expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials', 'view_dataspace_wallet', 'retrieve_wallet_credentials'] });
     expect(await signIn('wallets-max')).toMatchObject({ user: { name: 'Max Mustermann' }, companyId: MOCK_PERSONS['wallets-erika'].companyId, permissions: [] });
     expect(await signIn('wallets-otto')).toMatchObject({ user: { name: 'Otto Normalverbraucher' }, companyId: null, permissions: ['manage_credentials'] });
     expect(await signIn('wallets-rolf')).toMatchObject({ user: { name: 'Rolf Prüfer' }, companyId: null, permissions: [] });

@@ -67,12 +67,14 @@ import { createC11M1ModuleFrom, type NotificationAnemic } from '@dataspace-mgm/c
 import { InMemoryInboxEventSource, InMemoryNotificationRepository } from '@dataspace-mgm/c11-m1-core/testing';
 import type { C4M1Module } from '@dataspace-mgm/c4-m1-core';
 import { createInMemoryC4M1Module, type InMemoryC4M1ModuleOptions } from '@dataspace-mgm/c4-m1-core/testing';
+import type { C4M2Module } from '@dataspace-mgm/c4-m2-core';
+import { createInMemoryC4M2Module, type InMemoryC4M2ModuleOptions } from '@dataspace-mgm/c4-m2-core/testing';
 import { createIdentityModule, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, RecordingRedirect } from '@dataspace-mgm/identity-core/testing';
 import { CoreModulesProvider } from './CoreModulesContext';
 import type { CoreModules } from './container';
 
-interface TestModulesOptions {
+export interface TestModulesOptions {
   session?: SessionAnemic | null;
   /** The own company from a list (as before); without it, the own company comes from the participants store. */
   companies?: ReadonlyArray<CompanyAnemic>;
@@ -91,6 +93,8 @@ interface TestModulesOptions {
   c1m2?: Pick<MockC1M2Options, 'applications' | 'existingCompanies' | 'agreements' | 'failure' | 'now'>;
   notifications?: ReadonlyArray<NotificationAnemic>;
   notificationFailure?: Error;
+  /** C4-M2 (proof of concept), like `c4m1`: `true`, the options of createInMemoryC4M2Module, or a module. */
+  c4m2?: true | InMemoryC4M2ModuleOptions | C4M2Module;
 }
 
 function c4m1Module(option: TestModulesOptions['c4m1']): C4M1Module | undefined {
@@ -103,6 +107,16 @@ function c4m1Module(option: TestModulesOptions['c4m1']): C4M1Module | undefined 
   return 'listCompanyCredentials' in option ? option : createInMemoryC4M1Module(option);
 }
 
+function c4m2Module(option: TestModulesOptions['c4m2']): C4M2Module | undefined {
+  if (option === undefined) {
+    return undefined;
+  }
+  if (option === true) {
+    return createInMemoryC4M2Module();
+  }
+  return 'getOwnWallet' in option ? option : createInMemoryC4M2Module(option);
+}
+
 /** The core packages with in-memory adapters: pages are tested against the use cases, without HTTP. */
 export function testCoreModules({
   session = null,
@@ -113,6 +127,7 @@ export function testCoreModules({
   cspFailure,
   c1m2,
   c4m1,
+  c4m2,
   notifications = [],
   notificationFailure,
 }: TestModulesOptions = {}) {
@@ -149,6 +164,7 @@ export function testCoreModules({
     }),
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
     c4m1: c4m1Module(c4m1),
+    c4m2: c4m2Module(c4m2),
     c1m2: c1m2Ports ? createC1M2UseCases(c1m2Ports) : undefined,
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
