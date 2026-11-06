@@ -251,7 +251,8 @@
       "bpn": "BPN",
       "provider": "Provider",
       "activeSince": "Active since",
-      "did": "DID"
+      "did": "DID",
+      "qr": "QR code of the DID of your company"
     },
     "connectors": {
       "title": "For your connectors",

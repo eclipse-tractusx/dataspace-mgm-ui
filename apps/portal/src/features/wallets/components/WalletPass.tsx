@@ -25,7 +25,7 @@
  ********************************************************************************/
 
 import type { WalletAnemic } from '@dataspace-mgm/c4-m2-core';
-import { AccountBalanceWalletOutlinedIcon, Box } from '@dataspace-mgm/ui-mui';
+import { AccountBalanceWalletOutlinedIcon, Box, QrCode } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import type { WalletCompany } from '../hooks/useDataspaceWallet';
 import { useTimeTexts } from '../hooks/useTimeTexts';
@@ -38,7 +38,7 @@ import { StatusPill } from './StatusPill';
 
 /**
  * The dataspace wallet of the company as a carbon pass: the dataspace with "Dataspace wallet", the status, the company,
- * BPN, provider and activation date, and the DID in full with a copy button (no QR code: open point in the README).
+ * BPN, provider and activation date, and the DID with its QR code and a copy button.
  */
 export function WalletPass({ wallet, company }: { wallet: WalletAnemic; company: WalletCompany }) {
   const { t } = useTranslation(WALLETS_NS);
@@ -80,17 +80,20 @@ export function WalletPass({ wallet, company }: { wallet: WalletAnemic; company:
         <PassField label={t('wallet.pass.activeSince')}>{time.date(wallet.activatedAt)}</PassField>
       </Box>
 
-      <Box sx={{ display: 'grid', gap: '4px', pt: 2, borderTop: '1px dashed var(--pass-line)' }}>
-        <Box component="span" sx={PASS_LABEL_SX}>
-          {t('wallet.pass.did')}
-        </Box>
-        {wallet.did ? (
-          <PassCopyValue value={wallet.did} />
-        ) : (
-          <Box component="span" sx={{ color: 'var(--pass-muted)', fontStyle: 'italic', fontSize: '0.875rem' }}>
-            {t('common.notKnown')}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, pt: 2, borderTop: '1px dashed var(--pass-line)' }}>
+        {wallet.did && <QrCode value={wallet.did} label={t('wallet.pass.qr')} />}
+        <Box sx={{ display: 'grid', gap: '4px', flex: 1, minWidth: 0 }}>
+          <Box component="span" sx={PASS_LABEL_SX}>
+            {t('wallet.pass.did')}
           </Box>
-        )}
+          {wallet.did ? (
+            <PassCopyValue value={wallet.did} />
+          ) : (
+            <Box component="span" sx={{ color: 'var(--pass-muted)', fontStyle: 'italic', fontSize: '0.875rem' }}>
+              {t('common.notKnown')}
+            </Box>
+          )}
+        </Box>
       </Box>
     </PassSurface>
   );

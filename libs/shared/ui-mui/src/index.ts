@@ -34,6 +34,7 @@ export { createPortalTheme, RADIUS, BUTTON_RADIUS } from './theme/theme';
 export { tractusx, uiTokens, type BrandColors, type UiTokens } from './theme/palette';
 export { fontFamily } from './theme/typography';
 export { TractusXLogo } from './components/TractusXLogo';
+export { QrCode } from './components/QrCode';
 export { BrandBackdrop } from './components/BrandBackdrop';
 export { SpaceGlow } from './components/SpaceGlow';
 

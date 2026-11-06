@@ -192,6 +192,7 @@ npm/npmjs/-/pretty-format/27.5.1, 0BSD AND Apache-2.0 AND BSD-2-Clause AND MIT, 
 npm/npmjs/-/prop-types/15.8.1, MIT, approved, clearlydefined
 npm/npmjs/-/punycode/2.3.1, MIT, approved, #6373
 npm/npmjs/-/qified/0.10.1, MIT, approved, #31047
+npm/npmjs/-/qrcode.react/4.2.0, ISC, approved, clearlydefined
 npm/npmjs/-/react-dom/19.3.1, MIT, approved, #32497
 npm/npmjs/-/react-i18next/17.0.15, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/16.13.1, MIT, approved, clearlydefined

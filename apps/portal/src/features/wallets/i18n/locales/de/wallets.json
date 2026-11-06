@@ -251,7 +251,8 @@
       "bpn": "BPN",
       "provider": "Anbieter",
       "activeSince": "Aktiv seit",
-      "did": "DID"
+      "did": "DID",
+      "qr": "QR-Code der DID Ihres Unternehmens"
     },
     "connectors": {
       "title": "Für Ihre Konnektoren",

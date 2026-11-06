@@ -78,7 +78,7 @@ The aliases `@dataspace-mgm/c4-m2-core` and `@dataspace-mgm/c4-m2-core/testing` 
 | 5 | P1 | `retrieveWalletAccountCredentials` | whether a download of the secret as a file is allowed, or only copy | – | security decision; the package returns the credentials as data only, how the page offers them follows the mockup decision |
 | 6 | P1 | `retrieveWalletAccountCredentials` | who may retrieve: every person with `retrieve_wallet_credentials` of the company, or only the creator of the technical user | spec allows every person of the company | FRAMEWORK 5.7 says "typically the IT Admin who created it" |
 | 7 | P1 | SSE | the event the UI subscribes to when a wallet goes from `VALIDATING` to `ACTIVE` (and an account from `REQUESTED` to `ACTIVE`) | no | `DataspaceWalletCreated` is an outbox event for modules; the UI must not poll |
-| 8 | P2 (nice to have) | `GET /companies/{companyId}/wallet` | a QR code of the `did` | – | needs a QR library in `libs/shared/ui-mui` (new dependency, Eclipse Dash review); the POC leaves the QR out |
+| 8 | P2 (nice to have) | `GET /companies/{companyId}/wallet` | a QR code of the `did` | – | the POC draws it in the UI with `qrcode.react` 4.2.0 (ISC, approved by Eclipse Dash through ClearlyDefined) behind `QrCode` in `libs/shared/ui-mui`; nothing needed from the backend |
 | 9 | P2 | `getWalletAccount` | an `allowedActions` flag (e.g. `retrieveCredentials`) | no | today the UI shows "Retrieve" on `credentialsState` `AVAILABLE` and the session permission; a flag would keep the state rule in the backend |
 
 ## Layout
