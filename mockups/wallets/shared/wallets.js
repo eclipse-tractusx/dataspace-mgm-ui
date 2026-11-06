@@ -162,6 +162,10 @@
       }
       return `<div class="wx-qr" role="img" aria-label="${esc(label || 'QR code')}">${cells.join('')}</div>`;
     },
+    /** The logo slot of a dataspace on a pass: its logo when one is known, else its mark (initials). */
+    brand(dataspace) {
+      return `<span class="wx-pass__brand" title="${esc(dataspace.name)}" aria-label="${esc(dataspace.name)}">${dataspace.logo ? `<img src="${esc(dataspace.logo)}" alt="">` : esc(dataspace.mark)}</span>`;
+    },
     /** A status pill on a pass: wx.pill('credentialStatus', 'ISSUED'). */
     pill(kind, value) {
       return `<span class="wx-pill wx-pill--${tone[kind][value] || 'default'}">${esc(labels[kind][value] || value)}</span>`;

@@ -76,11 +76,11 @@
         <div><dt>Started</dt><dd>2026-11-06</dd></div>
       </dl>
 
-      <section class="hub-view" id="view-wallet" data-view="wallet" data-status="open">
+      <section class="hub-view" id="view-wallet" data-view="wallet" data-status="decided">
         <header class="hub-view__head">
           <span class="hub-num">1</span>
           <h2 class="tx-h2">Your dataspace wallet</h2>
-          <span class="hub-status">open</span>
+          <span class="hub-status">decided</span>
         </header>
         <p>Erika Mustermann, Company Admin of Beispiel Maschinenbau GmbH, opens Wallets as a service from the rail to check
           that the dataspace wallet of her company is ready, and to copy the DID and the addresses an IT colleague needs to
@@ -119,14 +119,14 @@
           </div>
         </div>
         <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
-        <p class="hub-decision" data-decision></p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=stack · skin=carbon · values=full · nav=tabs. Change asked: the credentials stand on the right as their own stack of passes (the wallet pass, the connector set-up and the wallet accounts on the left), and every credential pass has a slot for the logo of its dataspace (Catena-X next to, for example, a semiconductor dataspace; state two-dataspaces).</p>
       </section>
 
-      <section class="hub-view" id="view-credentials" data-view="credentials" data-status="open">
+      <section class="hub-view" id="view-credentials" data-view="credentials" data-status="decided">
         <header class="hub-view__head">
           <span class="hub-num">2</span>
           <h2 class="tx-h2">Your credentials</h2>
-          <span class="hub-status">open</span>
+          <span class="hub-status">decided</span>
         </header>
         <p>Erika comes here from the wallet page, or after a notification, to see whether the BPN credential and the
           membership credential of her company are issued: without them, the connectors of other participants do not
@@ -151,20 +151,21 @@
             <h3 class="hub-h">Open questions</h3>
             <ul class="hub-open">
               <li data-open>C4-M1: the "Overall status" banner is computed in the UI from the list, which is a decision the UI should not take. Can <code>listCompanyCredentials</code> return the last round (<code>run.status</code> <code>RUNNING</code>, <code>DONE</code>, <code>FAILED</code>), as the internal query 9.1 does? Without it the banner drops.</li>
+              <li data-open>C4-M1: a credential does not say which dataspace it belongs to. The logo slot of a pass needs <code>dataspace</code> (<code>id</code>, <code>name</code>, a logo address) per credential; today the UI could only take <code>dataspace.memberOf</code> of the installation, which works for one dataspace only.</li>
               <li data-open>C4-M1: <code>CredentialStatusView</code> has no <code>revocationReason</code>, so a revoked credential cannot say why (company deactivated or other).</li>
               <li data-open>C4-M1: <code>FAILED</code> without any hint for the company. Is a short, safe reason category for the company wanted (for example "being repeated", "your OSP was informed"), or is the fixed sentence enough?</li>
               <li data-open>Live updates: <code>REQUESTED</code> becomes <code>ISSUED</code> by a status report. Which SSE event does the page listen to, so it does not poll?</li>
             </ul>
           </div>
         </div>
-        <p class="hub-decision" data-decision></p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=passes · explain=info · summary=none. Each pass carries the logo slot of its dataspace.</p>
       </section>
 
-      <section class="hub-view" id="view-wallet-accounts" data-view="wallet-accounts" data-status="open">
+      <section class="hub-view" id="view-wallet-accounts" data-view="wallet-accounts" data-status="decided">
         <header class="hub-view__head">
           <span class="hub-num">3</span>
           <h2 class="tx-h2">Wallet accounts</h2>
-          <span class="hub-status">open</span>
+          <span class="hub-status">decided</span>
         </header>
         <p>Erika (or the IT Admin who created the technical user) comes here after creating a technical user with wallet
           access in Technical users (C2-M3), to retrieve the access data of its wallet account and enter them into the
@@ -197,14 +198,14 @@
             </ul>
           </div>
         </div>
-        <p class="hub-decision" data-decision></p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=detail · reveal=inline · confirm=ask.</p>
       </section>
 
-      <section class="hub-view" id="view-credential-monitor" data-view="credential-monitor" data-status="open">
+      <section class="hub-view" id="view-credential-monitor" data-view="credential-monitor" data-status="decided">
         <header class="hub-view__head">
           <span class="hub-num">4</span>
           <h2 class="tx-h2">Credentials of all companies</h2>
-          <span class="hub-status">open</span>
+          <span class="hub-status">decided</span>
         </header>
         <p>Otto Normalverbraucher, OSP Admin, opens it from Wallets as a service to find credentials that need him: failed
           issuances, orders without a status report for more than 24 hours, and membership credentials of deactivated
@@ -237,14 +238,14 @@
             </ul>
           </div>
         </div>
-        <p class="hub-decision" data-decision></p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=attention · filters=chips · detail=page · company=name.</p>
       </section>
 
-      <section class="hub-view" id="view-credential-detail" data-view="credential-detail" data-status="open">
+      <section class="hub-view" id="view-credential-detail" data-view="credential-detail" data-status="decided">
         <header class="hub-view__head">
           <span class="hub-num">5</span>
           <h2 class="tx-h2">Credential</h2>
-          <span class="hub-status">open</span>
+          <span class="hub-status">decided</span>
         </header>
         <p>Otto opens one credential from view 4 to see everything the issuer reported, and, for a revocation pending
           (route Credential Issuer cannot revoke, C4-M1 6.3), to confirm with a note that he revoked it at the Credential
@@ -274,7 +275,7 @@
             </ul>
           </div>
         </div>
-        <p class="hub-decision" data-decision></p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=sections · confirm=dialog · history=timeline.</p>
       </section>
 
       <section class="hub-next" id="not-here">

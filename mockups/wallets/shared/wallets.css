@@ -346,3 +346,11 @@ dialog.tx-dialog h2 { margin-bottom: 8px; }
   content: ""; position: absolute; z-index: -1; inset: 8% 20% auto 0; height: 340px; border-radius: 50%; filter: blur(60px);
   background: radial-gradient(circle, color-mix(in srgb, var(--tx-orange) 28%, transparent) 0%, transparent 70%);
 }
+
+/* the logo slot of the dataspace a credential belongs to (Catena-X, another dataspace): 44 px, logo or initials */
+.wx-pass__brand {
+  width: 44px; height: 44px; border-radius: 12px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden;
+  font-weight: 800; font-size: 0.9375rem; letter-spacing: 0.04em; color: var(--pass-fg);
+  background: color-mix(in srgb, var(--pass-fg) 12%, transparent); border: 1px solid var(--pass-line);
+}
+.wx-pass__brand img { width: 100%; height: 100%; object-fit: contain; }

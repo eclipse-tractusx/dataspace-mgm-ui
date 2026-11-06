@@ -33,7 +33,9 @@
   <link rel="stylesheet" href="../shared/wallets.css">
   <style>
     /* ── stack (like a phone wallet) ── */
-    .wl-wallet { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 40px; align-items: start; }
+    .wl-wallet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 40px; align-items: start; }
+    .wl-creds { position: sticky; top: 24px; }
+    @media (max-width: 1099.98px) { .wl-creds { position: static; } }
     @media (max-width: 1099.98px) { .wl-wallet { grid-template-columns: 1fr; } }
     .wl-stack { display: grid; gap: 0; max-width: 440px; width: 100%; }
     .wl-front { animation: wl-rise 0.35s ease; position: relative; z-index: 4; }
@@ -95,7 +97,7 @@
 </head>
 <!-- C4-M2 7.1 GET /companies/{companyId}/wallet (getWallet, view_dataspace_wallet, scope company).
      The credential passes and tiles also read C4-M1 7.1 GET /companies/{companyId}/credentials (view_credentials). -->
-<body data-active="/wallets" data-view="Your dataspace wallet" data-states="active,validating,failed,no-wallet,loading,forbidden">
+<body data-active="/wallets" data-view="Your dataspace wallet" data-states="active,two-dataspaces,validating,failed,no-wallet,loading,forbidden">
   <main class="tx-page" aria-labelledby="view-title">
     <div class="mock-persona" id="persona"></div>
 
@@ -161,18 +163,19 @@
       const company = data.companies[data.ids.u1];
       const dataspace = data.installation.dataspace;
       const accountCount = data.technicalUsers.filter((u) => u.walletAccess !== 'NONE').length;
-      let front = 'wallet';   // the pass in front of the stack
+      let front = null;       // the key of the credential pass in front of the stack (null = the first)
       let flipped = false;
 
       const ctx = () => {
         const state = document.body.dataset.state;
         const w = state === 'validating' || state === 'failed' ? data.walletVariants[state] : data.wallet;
-        const creds = state === 'active' ? data.companyCredentials.issued : data.companyCredentials.none;
+        const creds = { active: data.companyCredentials.issued, 'two-dataspaces': data.companyCredentials.twoDataspaces }[state] || data.companyCredentials.none;
         return { state, w, creds, v: (k) => mock.variant(k), skin: `wx-skin--${mock.variant('skin')}` };
       };
 
       const val = (c, value, empty) => wx.copyable(value, c.v('values') === 'short' ? { short: 14, empty } : { empty });
       const cred = (c, type) => c.creds.find((x) => x.credentialType === type);
+      const byKey = (c, key) => c.creds.find((x) => x.key === key) || c.creds[0];
 
       const stateAlert = (c) => {
         if (c.w.status === 'VALIDATING') {
@@ -214,8 +217,8 @@
         </article>`;
 
       const credHead = (cr) => `<div class="wx-pass__head">
-          <span class="wx-pass__logo">${mock.icon(wx.icons.credentialType[cr.credentialType])}</span>
-          <span class="wx-pass__issuer">${esc(wx.labels.credentialType[cr.credentialType])}<small>${wx.labels.credentialTypeTech[cr.credentialType].toUpperCase()}</small></span>
+          ${wx.brand(cr.dataspace)}
+          <span class="wx-pass__issuer">${esc(wx.labels.credentialType[cr.credentialType])}<small>${esc(cr.dataspace.name.toUpperCase())}</small></span>
           ${wx.pill('credentialStatus', cr.status)}
         </div>`;
 
@@ -223,7 +226,7 @@
           ${credHead(cr)}
           <div class="wx-pass__primary">${cr.credentialType === 'BPN'
             ? `<span class="wx-pass__label">Business partner number</span><strong class="wx-mono">${esc(company.bpn)}</strong>`
-            : `<span class="wx-pass__label">Member of</span><strong>${esc(dataspace)}</strong>`}</div>
+            : `<span class="wx-pass__label">Member of</span><strong>${esc(cr.dataspace.name)}</strong>`}</div>
           <div class="wx-pass__fields">
             <div><span class="wx-pass__label">Requested</span><span>${wx.date(cr.requestedAt)}</span></div>
             <div><span class="wx-pass__label">${cr.revokedAt ? 'Revoked' : 'Issued'}</span><span>${wx.date(cr.revokedAt || cr.issuedAt)}</span></div>
@@ -231,12 +234,8 @@
           <div class="wx-pass__foot"><span style="color: var(--pass-muted); font-size: 0.875rem">${esc(wx.labels.credentialDescription[cr.credentialType])}</span></div>
         </article>`;
 
-      const peek = (c, key) => {
-        if (key === 'wallet') {
-          return `<button type="button" class="wx-pass ${c.skin} wl-peek" data-front="wallet" aria-label="Show the dataspace wallet">${walletHead(c)}</button>`;
-        }
-        return `<button type="button" class="wx-pass ${c.skin} wl-peek" data-front="${key}" aria-label="Show the ${esc(wx.labels.credentialType[key])}">${credHead(cred(c, key))}</button>`;
-      };
+      const peek = (c, cr) => `<button type="button" class="wx-pass ${c.skin} wl-peek ${['FAILED', 'REVOKED', 'NONE'].includes(cr.status) ? 'is-muted' : ''}" data-front="${esc(cr.key)}"
+          aria-label="Show the ${esc(wx.labels.credentialType[cr.credentialType])} of ${esc(cr.dataspace.name)}">${credHead(cr)}</button>`;
 
       const connectorList = (c) => `<dl class="wl-mini-kv">
           <dt>Credential service</dt><dd>${val(c, c.w.credentialServiceUrl)}</dd>
@@ -251,26 +250,28 @@
           ${mock.icon('ChevronRightOutlined')}</a>`;
 
       const issuedCount = (c) => c.creds.filter((x) => x.status === 'ISSUED').length;
-      const credSummary = (c) => (issuedCount(c) === c.creds.length ? 'Both issued' : `${issuedCount(c)} of ${c.creds.length} issued`);
+      const credSummary = (c) => (issuedCount(c) === c.creds.length ? 'All issued' : `${issuedCount(c)} of ${c.creds.length} issued`);
 
       // ── layouts ──────────────────────────────────────────────────────────
       const layouts = {
         stack: (c) => {
-          const keys = ['wallet', 'BPN', 'MEMBERSHIP'];
-          const side = front === 'wallet'
-            ? `<section class="tx-card" aria-labelledby="h-conn"><div class="wx-section__head"><div><h2 class="tx-h3" id="h-conn">For your connectors</h2>
-                <p class="tx-muted tx-body2">The addresses a connector of your company needs to use this wallet.</p></div></div>${connectorList(c)}</section>
-               ${actionTile('wallet-accounts.html', 'KeyOutlined', 'Wallet accounts', `${accountCount} technical users can sign in`)}`
-            : `<section class="tx-card" aria-labelledby="h-cred"><div class="wx-section__head"><h2 class="tx-h3" id="h-cred">${esc(wx.labels.credentialType[front])}</h2>${wx.chip('credentialStatus', cred(c, front).status)}</div>
-                <p style="margin: 0">${esc(wx.labels.credentialDescription[front])}</p></section>
-               ${actionTile('credentials.html', 'VerifiedUserOutlined', 'Your credentials', credSummary(c))}`;
+          const top = byKey(c, front);
           return `${stateAlert(c)}<div class="wl-wallet ${c.v('skin') === 'glass' ? 'wx-ambient' : ''}">
-              <div class="wl-stack">
-                ${front === 'wallet' ? walletPass(c, 'wl-front') : credPass(c, cred(c, front), 'wl-front')}
-                <div class="wl-peeks">${keys.filter((k) => k !== front).map((k) => peek(c, k)).join('')}</div>
-                <p class="wl-hint">Select a card to bring it to the front.</p>
+              <div class="wl-side">
+                ${walletPass(c)}
+                <section class="tx-card" aria-labelledby="h-conn"><div class="wx-section__head"><div><h2 class="tx-h3" id="h-conn">For your connectors</h2>
+                  <p class="tx-muted tx-body2">The addresses a connector of your company needs to use this wallet.</p></div></div>${connectorList(c)}</section>
+                ${actionTile('wallet-accounts.html', 'KeyOutlined', 'Wallet accounts', `${accountCount} technical users can sign in`)}
               </div>
-              <aside class="wl-side">${side}</aside>
+              <section class="wl-creds" aria-labelledby="h-stack">
+                <div class="wx-section__head"><div><h2 class="tx-h3" id="h-stack">Credentials</h2>
+                  <p class="tx-muted tx-body2">${credSummary(c)}</p></div><a class="tx-link tx-body2" href="credentials.html">Details →</a></div>
+                <div class="wl-stack">
+                  ${credPass(c, top, 'wl-front')}
+                  <div class="wl-peeks">${c.creds.filter((x) => x.key !== top.key).map((x) => peek(c, x)).join('')}</div>
+                </div>
+                ${c.creds.length > 1 ? '<p class="wl-hint">Select a card to bring it to the front.</p>' : ''}
+              </section>
             </div>`;
         },
 
@@ -281,7 +282,7 @@
                   <article class="wx-pass ${c.skin} wl-face ${c.w.status === 'FAILED' ? 'is-muted' : ''}" aria-hidden="${flipped}">
                     ${walletHead(c)}
                     <div class="wx-pass__primary"><span class="wx-pass__label">Company</span><strong>${esc(company.name)}</strong></div>
-                    <div class="wl-creds-row">${c.creds.map((cr) => `<span class="wx-pill wx-pill--${wx.toneOf('credentialStatus', cr.status)}">${esc(wx.labels.credentialTypeShort[cr.credentialType])}: ${esc(wx.labels.credentialStatus[cr.status])}</span>`).join('')}</div>
+                    <div class="wl-creds-row">${c.creds.map((cr) => `<span class="wx-pill wx-pill--${wx.toneOf('credentialStatus', cr.status)}">${esc(cr.dataspace.mark)} ${esc(wx.labels.credentialTypeShort[cr.credentialType])}: ${esc(wx.labels.credentialStatus[cr.status])}</span>`).join('')}</div>
                     <div class="wx-pass__fields">
                       <div><span class="wx-pass__label">BPN</span><span class="wx-mono">${esc(company.bpn)}</span></div>
                       <div><span class="wx-pass__label">Provider</span><span>${esc(wx.labels.providerShort[c.w.provider])}</span></div>
@@ -403,7 +404,7 @@
           document.querySelector('[data-flip]').innerHTML = `${mock.icon('FlipOutlined', 'sm')}${flipped ? 'Show the front' : 'Show the connector set-up'}`;
         }
       });
-      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.on('click', '[data-state-button]', () => { front = null; setTimeout(render); });
       mock.onConfigure(() => { flipped = false; render(); });
       render();
     })();

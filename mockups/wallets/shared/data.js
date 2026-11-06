@@ -140,7 +140,14 @@
 
   // ── C4-M1 Credentials ────────────────────────────────────────────────────
   /** C4-M1 `CredentialStatusView[]` of Beispiel Maschinenbau GmbH (GET /companies/{companyId}/credentials). */
-  const view = (credentialType, status, requestedAt, issuedAt, revokedAt) => ({ credentialType, status, requestedAt: requestedAt || null, issuedAt: issuedAt || null, revokedAt: revokedAt || null });
+  // `dataspace` is not in CredentialStatusView (C4-M1 0.2): the UI takes it from the installation settings
+  // (dataspace.memberOf, dataspace.name) until the API returns it per credential. Open point in the hub.
+  const CATENA_X = { id: 'catena-x', name: 'Catena-X', mark: 'CX' };
+  const view = (credentialType, status, requestedAt, issuedAt, revokedAt, dataspace = CATENA_X) => ({
+    key: `${dataspace.id}:${credentialType}`, credentialType, status, requestedAt: requestedAt || null, issuedAt: issuedAt || null, revokedAt: revokedAt || null, dataspace,
+  });
+  /** Outlook only (not in C4-M1 0.2): the credential of a second dataspace, to show that passes of several dataspaces live together. */
+  const SEMICONDUCTOR = { id: 'semiconductor', name: 'Semiconductor dataspace', mark: 'SC' };
   const companyCredentials = {
     issued: [
       view('BPN', 'ISSUED', '2026-11-03T09:59:40Z', '2026-11-03T10:00:12Z'),
@@ -159,6 +166,11 @@
       view('MEMBERSHIP', 'REVOKED', '2026-11-03T09:59:40Z', '2026-11-03T10:00:15Z', '2026-11-06T09:30:02Z'),
     ],
     none: [view('BPN', 'NONE'), view('MEMBERSHIP', 'NONE')],
+    twoDataspaces: [
+      view('BPN', 'ISSUED', '2026-11-03T09:59:40Z', '2026-11-03T10:00:12Z'),
+      view('MEMBERSHIP', 'ISSUED', '2026-11-03T09:59:40Z', '2026-11-03T10:00:15Z'),
+      view('MEMBERSHIP', 'ISSUED', '2026-11-05T08:30:00Z', '2026-11-05T08:31:10Z', null, SEMICONDUCTOR),
+    ],
   };
 
   /** C4-M1 `CredentialDetail` of all companies (GET /credentials, sorted by changedAt descending). */
