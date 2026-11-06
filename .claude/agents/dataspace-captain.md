@@ -184,6 +184,7 @@ it is not, I read it on GitHub. I never assume that the other side matches.
 | Shared React | `libs/shared/{state-core,infrastructure-config,ui-mui,ui-layout,ui-feedback,i18n,util}` |
 | Vendored backend specs | `specs/<module>/openapi.yaml` (copied from the backend spec; `generate-api`, `check-api`) |
 | Runtime configuration | `/config.json` from a ConfigMap (`api_base_url`, `environment`), `GET /config` for branding and flags |
+| Mockups and mock mode | `mockups/<feature>/` (phase 1, skill `create-mockup`); `VITE_USE_MOCKS=true` runs the app on `apps/portal/src/core/mock-container.ts`, where proofs of concept (`stage: 'poc'`) open |
 | TRG set-up | `.tractusx`, `DEPENDENCIES` (from `package-lock.json`), `Dockerfile`, `docker/nginx.conf`, `docs/architecture/README.md` |
 
 ### D. Standards and guidelines
@@ -279,6 +280,9 @@ follow it instead of improvising:
 | `dependencies-and-dash` | Eclipse Dash like CI, `DEPENDENCIES`, IP reviews | `dash-check.sh` | both |
 | `merge-guard` | a branch before its PR: allowed paths and module rules (service) or architecture rules (UI), headers, commits, secrets | `merge-guard.py` | both (one per repo) |
 | `module-map` | which modules are stand-ins or team code, what each folder answers itself, call-convention findings | `module-map.py` | service |
+| `create-mockup` | phase 1 of a UI feature: clickable HTML mockups in `mockups/<feature>/` with the portal's shell, tokens and test data, decided view by view | `mockup.py` | UI |
+| `build-poc` | phase 2: the decided views as a feature with `stage: 'poc'` on the in-memory adapter of its core package (`VITE_USE_MOCKS=true`) | – | UI |
+| `build-feature` | phase 3: vendored spec, generated types, HTTP adapter, the feature open for everyone, open points for the backend | – | UI |
 | `implement-module-from-spec`, `review-module` | the scaffold's own procedures to build and review one module | – | service (with the scaffold) |
 
 Scripts run from the repository root (`.claude/skills/<skill>/scripts/<script>`), read the specs found by
@@ -305,9 +309,11 @@ before and after. Rules: `AGENTS.md`. Proof: `uv run pytest -q && uv run python 
 **"Review this module / this PR" / "Is my branch ready?"** → `merge-guard` (and `module-map <id>`, the scaffold's
 `review-module` for behaviour). In the UI: `merge-guard` and `contract-seam vendored`.
 
-**"Build the UI for module X"** → frontend architecture 12 (recipe) and 14 (registration example), then
-`contract-seam assumptions` for the real paths and fields, and `portal-spec-sources ops <module>` for the operations.
-Every call goes through a use case of `packages/<module>-core`.
+**"Build the UI for module X"** → three phases, one skill each, in the UI repository: `create-mockup` (what the
+person sees and does, decided per view, `mockup.py status <feature> --ready`), `build-poc` (the feature in the real
+app on mock data) and `build-feature` (the HTTP adapter, the feature open, the open points for the backend). Frontend
+architecture 12 (recipe) and 14 (registration example) are the background; `portal-spec-sources ops <module>` gives the
+operations and `contract-seam` the real paths and fields. Every call goes through a use case of `packages/<module>-core`.
 
 **"Will UI and backend fit?" / "Before the merge window"** → `contract-seam summary` from either repository.
 
@@ -316,7 +322,7 @@ Every call goes through a use case of `packages/<module>-core`.
 **"How do I run it?"** Service: `git clone https://github.com/tx-arena-events/portal-backend-spec.git spec`, `uv sync`,
 `uv run pytest -q`, `docker compose up -d` (Keycloak; recreate after every pull), `uv run python demo.py`
 (`--serve` keeps the processes, Swagger at `/docs`). UI (once the workspace exists): `npm ci`, `npx nx serve portal`
-(`VITE_USE_MOCKS=true` for the MSW mocks, frontend architecture 07), gate
+(`VITE_USE_MOCKS=true npm start` runs it on the in-memory adapters, without backend and BFF), gate
 `npx nx affected -t lint typecheck test build check-api e2e`. Commits and PR titles follow Conventional Commits, new
 files carry license headers (TRG 7.02), AI help is disclosed with an `Assisted-by:` trailer, every author email is
 covered by a signed ECA.

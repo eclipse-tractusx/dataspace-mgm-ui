@@ -37,7 +37,10 @@ export interface CoreModules {
 
 /**
  * Creates the core packages from the runtime configuration. Add a backend module here: `<module>: create<Module>Module(
- * moduleConfig(<MODULE>_BASE_PATH))`, then add it to CoreModules.
+ * moduleConfig(<MODULE>_BASE_PATH))`, then add it to CoreModules and to mock-container.ts (mock mode).
+ *
+ * A proof of concept (FeatureConfig `stage: 'poc'`) has no HTTP adapter yet: its module is an optional member of
+ * CoreModules, wired only in mock-container.ts, and becomes required here with its HTTP adapter (skill build-feature).
  */
 export function createCoreModules(config: RuntimeConfig): CoreModules {
   const identity = createIdentityModule({ bffBaseUrl: '' });

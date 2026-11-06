@@ -27,6 +27,14 @@ npm run build        # nx build portal → dist/apps/portal (the image in the Do
 npm run lint && npm run typecheck && npm test
 ```
 
+### Mock mode
+
+`VITE_USE_MOCKS=true npm start` runs the portal without the backend and without the BFF: every core package uses its
+in-memory adapter with the test data of its `testing` entry point ([src/core/mock-container.ts](src/core/mock-container.ts)),
+and the environment chip in the header says **mock data**. `VITE_MOCK_PERSON=<key>` signs in another test person of
+`MOCK_PERSONS` (default `pia`; an unknown key such as `none` starts signed out). Both can also go into
+`apps/portal/.env.local`. Vite replaces the switch at build time, so a build without it contains no mock code.
+
 Runtime configuration comes from `/config.json` (see [docs/architecture](../../docs/architecture/README.md)). Without it
 the defaults of [src/config/index.ts](src/config/index.ts) apply. For a local override copy
 `config.example.json` to `public/config.json` (ignored by git).
@@ -61,6 +69,13 @@ apps/portal/src/
 2. In `routes.tsx` export one `FeatureConfig` (name, icon, `navigationPath`, `disabled`, `routes`).
 3. Add it to `allFeatures` in [src/features/main.tsx](src/features/main.tsx). The sidebar and the router pick it up.
    With `disabled: true` the feature shows in the navigation as "coming soon" without routes.
+4. A proof of concept on mock data gets `stage: 'poc'`: it opens only in mock mode and shows as "coming soon"
+   otherwise, so it can be merged before its backend module is connected.
+
+New features go through three phases, each with a skill of the Dataspace Captain
+([.claude/skills](../../.claude/skills/README.md#from-an-idea-to-a-feature-mockup-proof-of-concept-feature)):
+`create-mockup` (HTML mockups in `mockups/<feature>/`), `build-poc` (the feature with `stage: 'poc'` in mock mode) and
+`build-feature` (connected to its backend module).
 
 When a feature talks to a backend module, its calls go through the framework-free core package of that module
 (`packages/<module>-core`, generated from `specs/<module>/openapi.yaml`), never directly from a page

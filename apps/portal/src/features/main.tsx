@@ -31,9 +31,18 @@ import {
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
+import { MOCK_MODE } from '../core/mock-mode';
 import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/routing';
 import { homeFeature } from './home/routes';
 import { participantsFeature } from './participants/routes';
+
+/**
+ * Whether a feature can be opened: not disabled, and a proof of concept (`stage: 'poc'`) only in mock mode, because it
+ * runs on mock data only. A closed feature shows as "coming soon" and has no routes.
+ */
+export function isOpen(feature: FeatureConfig, mockMode: boolean = MOCK_MODE): boolean {
+  return !feature.disabled && (feature.stage !== 'poc' || mockMode);
+}
 
 /**
  * Features that are announced but not built yet: shown greyed out as "coming soon", without routes. Their version
@@ -117,10 +126,10 @@ export const features: NavigationItem[] = allFeatures.map((feature) => ({
   category: feature.category,
   icon: feature.icon,
   path: feature.navigationPath,
-  disabled: feature.disabled,
+  disabled: !isOpen(feature),
 }));
 
 /** The routes of all enabled features. */
 export function getAllRoutes() {
-  return allFeatures.filter((feature) => !feature.disabled).flatMap((feature) => feature.routes);
+  return allFeatures.filter((feature) => isOpen(feature)).flatMap((feature) => feature.routes);
 }
