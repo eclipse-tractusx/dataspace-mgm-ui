@@ -25,7 +25,6 @@
  ********************************************************************************/
 
 import {
-  AccountBalanceWalletOutlinedIcon,
   CableOutlinedIcon,
   HowToRegOutlinedIcon,
   HubOutlinedIcon,
@@ -39,10 +38,7 @@ import { accessControlFeature } from './access-control';
 import { homeFeature } from './home/routes';
 import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
-import { lazy, Suspense } from 'react';
 import { notificationsFeature } from './notifications/routes';
-import { onboardingFeature } from './onboarding/routes';
-import { participantsFeature } from './participants/routes';
 import { walletsFeature } from './wallets/routes';
 
 const ReviewRoutes = lazy(() => import('./review/review-routes'));
