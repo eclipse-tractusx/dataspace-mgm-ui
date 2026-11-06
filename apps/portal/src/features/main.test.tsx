@@ -51,12 +51,19 @@ describe('feature registry', () => {
 
   it('routes the built features outside mock mode', () => {
     expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
-      'index', 'onboarding/reviews/*',
-      'participants',
-'participants/company/change', 'participants/company/change-requests', 'participants/company/roles', 'participants/companies', 'participants/companies/:companyId', 'participants/companies/:companyId/csp', 'participants/change-requests', 'participants/change-requests/:changeRequestId',
-      'access-control',
+      'index',
       'notifications',
       'onboarding/reviews/*',
+      'participants',
+      'participants/company/change',
+      'participants/company/change-requests',
+      'participants/company/roles',
+      'participants/companies',
+      'participants/companies/:companyId',
+      'participants/companies/:companyId/csp',
+      'participants/change-requests',
+      'participants/change-requests/:changeRequestId',
+      'access-control',
       'access-control/technical-users',
       'access-control/iam',
     ]);
@@ -67,6 +74,6 @@ describe('feature registry', () => {
     const gated = getAllRoutes()
       .map((route) => route.element.key)
       .filter((key) => key !== null);
-    expect(gated).toEqual(['home', 'notifications', 'participants']);
+    expect(gated).toEqual(['home', 'notifications', ...Array(9).fill('participants'), ...Array(3).fill('access-control')]);
   });
 });
