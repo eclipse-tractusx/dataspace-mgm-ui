@@ -25,25 +25,31 @@
  ********************************************************************************/
 
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
+import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-mgm/c2-m3-core';
+import { createC2M2Module, C2_M2_BASE_PATH, type C2M2Module } from '@dataspace-mgm/c2-m2-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
 import { createIdentityModule, type IdentityModule } from '@dataspace-mgm/identity-core';
 import type { RuntimeConfig } from '../config';
+import { ConfigurableRedirect, createSpecSessionRepository, isSpecLoginResponseEnabled } from './mock-container';
 
 /** Every core package the portal uses, created once (composition root). Pages reach them through useCoreModules(). */
 export interface CoreModules {
   identity: IdentityModule;
   c3m1: C3M1Module;
+  c2m3: C2M3Module;
+  c2m2: C2M2Module;
 }
 
 /**
  * Creates the core packages from the runtime configuration. Add a backend module here: `<module>: create<Module>Module(
  * moduleConfig(<MODULE>_BASE_PATH))`, then add it to CoreModules and to mock-container.ts (mock mode).
- *
- * A proof of concept (FeatureConfig `stage: 'poc'`) has no HTTP adapter yet: its module is an optional member of
- * CoreModules, wired only in mock-container.ts, and becomes required here with its HTTP adapter (skill build-feature).
  */
 export function createCoreModules(config: RuntimeConfig): CoreModules {
-  const identity = createIdentityModule({ bffBaseUrl: '' });
+  const identity = createIdentityModule({
+    bffBaseUrl: '',
+    ...(isSpecLoginResponseEnabled() ? { sessions: createSpecSessionRepository() } : {}),
+    redirect: new ConfigurableRedirect('', 'normal'),
+  });
   const moduleConfig = (basePath: string): CoreModuleConfig => ({
     baseUrl: `${config.api_base_url.replace(/\/$/, '')}${basePath}`,
     getCsrfToken: () => CsrfTokenStore.get(),
@@ -52,5 +58,7 @@ export function createCoreModules(config: RuntimeConfig): CoreModules {
   return {
     identity,
     c3m1: createC3M1Module(moduleConfig(C3M1_BASE_PATH)),
+    c2m2: createC2M2Module(moduleConfig(C2_M2_BASE_PATH)),
+    c2m3: createC2M3Module(moduleConfig(C2_M3_BASE_PATH)),
   };
 }

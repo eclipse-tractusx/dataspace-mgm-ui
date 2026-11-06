@@ -51,7 +51,12 @@ async function coreModules(config: RuntimeConfig): Promise<{ config: RuntimeConf
 
 loadConfig()
   .then(coreModules)
-  .then(({ config, modules }) => {
+  .then(async ({ config, modules }) => {
+    if (window.location.pathname === '/mock-eudi-sign-in') {
+      const { MockEudiSignIn } = await import('./core/mock-eudi-sign-in');
+      createRoot(container).render(<MockEudiSignIn />);
+      return;
+    }
     createRoot(container).render(
       <StrictMode>
         <App config={config} modules={modules} />
