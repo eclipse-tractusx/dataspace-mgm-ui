@@ -45,6 +45,8 @@ prevent this.
 | Shared React UI (the only place that imports `@mui/*`) | `libs/shared/ui-mui/` |
 | Backend API specs | `specs/<module>/openapi.yaml` |
 | Docs | `docs/` (how to add a module: `docs/developers/integrate-a-backend-module.md`) |
+| Mockups of new screens (phase 1 of a feature, not in the image) | `mockups/<feature>/` |
+| Mock mode (in-memory adapters, no backend, no BFF) | `apps/portal/src/core/mock-container.ts` |
 
 Per module the spec asks for `libs/<module>/state` (RTK Query, slices) and `libs/<module>/feature` (pages). Today the
 skeleton keeps features in `apps/portal/src/features/`; follow the spec layout for new modules when the libs exist,
@@ -90,6 +92,10 @@ Import aliases are `@dataspace-mgm/<name>` and are kept in sync in `tsconfig.bas
 12. No secrets (passwords, tokens, client secrets, API keys) in code, logs, tests or the `config.json` of the repo.
 13. If the spec is unclear or contradicts itself, do not guess silently. Implement the reading the spec supports most
     directly, and name the question and that reading in the PR description.
+14. **A new feature starts as a mockup, and every mockup view is a configurator.** Do not hand over one fixed design
+    per view: each part that could look different (layout, where the primary action sits, filters, how a detail
+    opens, density, one form or a wizard) gets two or three alternatives, so the person who decides picks the best
+    combination on the screen. Only the chosen combination is built. See "New features" below.
 
 ## Layers (dependencies point inward only)
 
@@ -164,6 +170,46 @@ spec.
    user), lazy components, translations.
 5. Wire it into the app: use case container, store, page registry, menu config, listeners.
 
+## Skills
+
+Tested procedures in `.claude/skills/` (catalog: `.claude/skills/README.md`), loaded by Claude Code and GitHub
+Copilot. Use the matching skill instead of improvising:
+
+| Skill | Use it for | Script |
+|---|---|---|
+| `create-mockup` | Phase 1 of a feature: clickable HTML mockups in `mockups/<feature>/`, a configurator per view, decided view by view | `mockup.py` |
+| `build-poc` | Phase 2: the decided views as a feature with `stage: 'poc'` on the in-memory adapter (`VITE_USE_MOCKS=true`) | – |
+| `build-feature` | Phase 3: vendored spec, generated types, HTTP adapter, the feature open, open points for the backend | – |
+| `portal-spec-sources` | Modules, operations, permissions and scopes, events, open points; fetch and update the specs | `spec-src.py` |
+| `contract-seam` | UI against backend: paths, casing, errors, BFF, vendored specs, the calls in the UI code | `seam-check.py` |
+| `flow-trace` | Process Orchestration flows: what runs next, what a step waits for | `flow-trace.py` |
+| `portal-token-inspect` | 401 / 403 / 404 from a person's token and the operation's permission and scope | `token-inspect.py` |
+| `merge-guard` | A branch before its PR: architecture rules, generated code, headers, commits, secrets | `merge-guard.py` |
+| `dependencies-and-dash` | Eclipse Dash like CI, `DEPENDENCIES`, IP reviews | `dash-check.sh` |
+
+## New features: mockup → proof of concept → feature
+
+Three phases, one skill each in `.claude/skills/` (the Dataspace Captain routes to them). Each phase ends with a PR
+that can be reviewed and merged.
+
+1. **Mockup** (`create-mockup`): clickable HTML in `mockups/<feature>/` that looks like the portal. The script
+   `.claude/skills/create-mockup/scripts/mockup.py` scaffolds it and generates the theme tokens, the navigation and the
+   icons from the code. The data are the test persons and companies of FRAMEWORK 7a and the field names of the
+   module's `openapi.yaml`.
+   - **Every view is a configurator by default.** Mark each alternative `data-variant="<dimension>:<value>"`
+     (`data-variant-label`, `data-dimension`), two to four independent dimensions per view, two or three values each.
+     The configurator panel combines them; the combination is in the URL (`#layout=list&action=header`).
+   - Record the chosen combination as the view's decision in the hub (`index.html`). A side-by-side options page
+     (`mockup.py options`) is only for answers that must be seen at the same time.
+   - The phase ends when `mockup.py check <feature>` has no error and `mockup.py status <feature> --ready` passes.
+2. **Proof of concept** (`build-poc`): the decided views, and only the chosen combination of each, as a feature with
+   `stage: 'poc'` in its `FeatureConfig`. Its pages call use cases of `packages/<module>-core`, wired on the in-memory
+   adapter (fixtures from the mockup's data) in `apps/portal/src/core/mock-container.ts`. It runs with
+   `VITE_USE_MOCKS=true npm start` and shows as "coming soon" outside mock mode, so it can be merged early.
+3. **Feature** (`build-feature`): the vendored spec, generated types and the HTTP adapter behind the same port,
+   `create<Module>Module` in the app's container, `stage: 'poc'` removed. It is tested against the running backend
+   with the test persons, and the open points go to the backend team as P0, P1 and P2.
+
 ## Commands
 
 ```bash
@@ -174,6 +220,8 @@ npm run build                              # nx build portal
 npx nx affected -t lint typecheck test build check-api
 npx nx run <module>-core:generate-api      # regenerate types from specs/<module>/openapi.yaml
 npx nx run <module>-core:check-api         # fails if generated types are stale
+VITE_USE_MOCKS=true npm start              # mock mode: in-memory adapters, no backend, no BFF (VITE_MOCK_PERSON=<key>)
+.claude/skills/create-mockup/scripts/mockup.py check <feature>    # mockup rules; status <feature> --ready before the POC
 ```
 
 Runtime configuration comes from `/config.json` (copy `apps/portal/config.example.json` to
@@ -188,6 +236,7 @@ Runtime configuration comes from `/config.json` (copy `apps/portal/config.exampl
 - [ ] No business rules, tokens or hard-coded texts in the UI
 - [ ] The core package README explains its use cases and how to create the module
 - [ ] Open questions and spec differences are written in the PR description
+- [ ] A new feature: its views were decided in a mockup (the chosen configurator combination is in the hub)
 
 ## Not here
 
