@@ -1,0 +1,277 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Company roles — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .cr-cards { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); align-items: start; }
+    .cr-card { display: flex; flex-direction: column; gap: 16px; padding: 24px; }
+    .cr-card--active { border-color: var(--tx-orange); }
+    .cr-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .cr-name { font-weight: 700; font-size: 1.125rem; }
+    .cr-desc { color: var(--muted); font-size: 0.9375rem; margin: 2px 0 0; }
+    .cr-terms { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    .cr-terms li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9375rem; }
+    .cr-terms .tx-icon { width: 20px; height: 20px; flex: 0 0 auto; margin-top: 2px; }
+    .cr-term-ok { color: var(--success); }
+    .cr-term-open { color: var(--muted); }
+    .cr-term-meta { color: var(--muted); font-size: 0.8125rem; }
+    .cr-summary { color: var(--muted); font-size: 0.875rem; display: flex; gap: 6px; align-items: center; }
+    .cr-summary .tx-icon { width: 18px; height: 18px; }
+    .cr-foot { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; margin-top: auto; }
+    .cr-consent { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--subtle-border); border-radius: var(--radius); background: var(--bg); }
+    .cr-consent__actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .cr-list > li { display: grid; grid-template-columns: 44px minmax(0, 2fr) minmax(0, 2fr) auto; gap: 16px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--subtle-border); }
+    .cr-list > li:last-child { border-bottom: 0; }
+    .cr-list .cr-consent { grid-column: 2 / -1; }
+    .cr-list__end { display: flex; gap: 12px; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
+    @media (max-width: 899.98px) { .cr-list > li { grid-template-columns: 44px minmax(0, 1fr); } .cr-list > li > :nth-child(n+3) { grid-column: 2 / -1; } .cr-list__end { justify-content: flex-start; } }
+    .cr-tile { width: 44px; height: 44px; }
+  </style>
+</head>
+<!-- C3-M1 7.7 GET /companies/{companyId}/company-roles?lang= (view_company), 7.8 POST and 7.9 DELETE
+     /companies/{companyId}/company-roles[/{companyRole}] (edit_company_roles), scope company. -->
+<body data-active="/participants" data-view="Company roles" data-states="loaded,read-only,loading,last-role,upstream-error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="layout:cards" data-dimension="Layout" data-variant-label="A card per role"></span>
+      <span data-variant="layout:list" data-variant-label="One list"></span>
+      <span data-variant="consent:dialog" data-dimension="Accept the terms" data-variant-label="In a dialog"></span>
+      <span data-variant="consent:inline" data-variant-label="In place, at the role"></span>
+      <span data-variant="terms:always" data-dimension="Terms of a role" data-variant-label="Always listed"></span>
+      <span data-variant="terms:adding" data-variant-label="Only when adding the role"></span>
+    </div>
+
+    <a class="px-back" href="company-profile.html"><span data-icon="ArrowBack" data-size="sm"></span>Your company</a>
+    <div class="tx-overline">Participant management</div>
+    <h1 class="tx-title" id="view-title" style="margin-bottom: 8px">Company roles</h1>
+    <p class="px-sub" id="sub" style="margin-bottom: 32px"></p>
+
+    <div id="problem"></div>
+    <section data-show-state="loaded read-only last-role upstream-error" id="content"></section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the company roles">
+      <div class="cr-cards">
+        <div class="tx-card"><div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div></div>
+        <div class="tx-card"><div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div></div>
+        <div class="tx-card"><div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div></div>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog" id="consent-dialog" aria-labelledby="consent-title">
+      <div class="tx-dialog__body px-form" id="consent-body"></div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-add-confirm>Add the role</button>
+      </div>
+    </dialog>
+
+    <dialog class="tx-dialog" id="remove-dialog" aria-labelledby="remove-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="remove-title">Remove the role?</h2>
+        <p class="tx-muted" id="remove-text" style="margin-bottom: 0"></p>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn tx-btn--danger" type="button" data-remove-confirm>Remove</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc, labels } = px;
+      const data = mock.data;
+      const company = data.companies[data.ids.u1];
+      const clone = () => JSON.parse(JSON.stringify(data.companyRoleStates));
+      let roles = clone();
+      let adding = null;
+      let removing = null;
+      let checked = {};
+      const icons = {
+        ACTIVE_PARTICIPANT: () => mock.icon('HubOutlined'),
+        APP_PROVIDER: () => mock.icon('AppsOutlined'),
+        SERVICE_PROVIDER: () => mock.icon('HandshakeOutlined'),
+      };
+
+      const v = (k) => mock.variant(k);
+      const ctx = () => {
+        const state = document.body.dataset.state;
+        const personKey = state === 'read-only' ? 'max' : 'erika';
+        return { state, personKey, canEdit: data.permissions[personKey].includes('edit_company_roles') };
+      };
+      const roleName = (r) => esc(labels.role[r.companyRole] || r.companyRole);
+      // A UX pre-check on the status of the role; the API decides (open question: flags per role).
+      const canAdd = (r, c) => c.canEdit && r.assignableBy === 'COMPANY' && ['NONE', 'INACTIVE'].includes(r.status);
+      const canRemove = (r, c) => c.canEdit && r.assignableBy === 'COMPANY' && r.status === 'ACTIVE';
+
+      const termLink = (a) => `<a class="tx-link" href="${esc(a.documentUrl)}" target="_blank" rel="noopener">${esc(a.name)}</a>`;
+      const termsList = (r) => `<ul class="cr-terms">${r.agreements.map((a) => (a.consentStatus === 'ACTIVE'
+        ? `<li><span class="cr-term-ok">${mock.icon('TaskAltOutlined')}</span><span>${termLink(a)}<br><span class="cr-term-meta">Version ${esc(a.consentedVersion)} accepted on ${px.date(a.consentedAt)}</span></span></li>`
+        : `<li><span class="cr-term-open">${mock.icon('RadioButtonUncheckedOutlined')}</span><span>${termLink(a)}<br><span class="cr-term-meta">Version ${esc(a.version)} · not accepted yet</span></span></li>`)).join('')}</ul>`;
+      const termsSummary = (r) => {
+        const ok = r.agreements.filter((a) => a.consentStatus === 'ACTIVE').length;
+        const text = r.status === 'ACTIVE'
+          ? `${ok} of ${r.agreements.length} terms accepted`
+          : `${r.agreements.length === 1 ? 'One term' : `${r.agreements.length} terms`} to accept when you add the role`;
+        return `<div class="cr-summary">${r.status === 'ACTIVE' ? mock.icon('TaskAltOutlined') : mock.icon('GavelOutlined')}${text}</div>`;
+      };
+      const terms = (r) => (v('terms') === 'always' ? termsList(r) : termsSummary(r));
+
+      const consentForm = (r) => `<div class="cr-consent" role="group" aria-label="Accept the terms of ${roleName(r)}">
+          <div class="tx-body2">To add the role <strong>${roleName(r)}</strong>, accept its terms for ${esc(company.name)}:</div>
+          ${r.agreements.map((a) => `<label class="px-check px-check--block"><input type="checkbox" data-consent="${a.agreementKey}"${checked[a.agreementKey] ? ' checked' : ''}>
+            <span>I accept the ${termLink(a)}, version ${esc(a.version)}.</span></label>`).join('')}
+          ${v('consent') === 'inline' ? `<div class="cr-consent__actions"><button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-add-cancel>Cancel</button>
+            <button class="tx-btn tx-btn--sm" type="button" data-add-confirm${allChecked(r) ? '' : ' disabled'}>Add the role</button></div>` : ''}
+        </div>`;
+      const allChecked = (r) => r.agreements.every((a) => checked[a.agreementKey]);
+
+      const action = (r, c) => {
+        if (canAdd(r, c)) {
+          return adding === r.companyRole && v('consent') === 'inline' ? '' : `<button class="tx-btn tx-btn--sm" type="button" data-add="${r.companyRole}">${mock.icon('Add', 'sm')}Add the role</button>`;
+        }
+        if (canRemove(r, c)) {
+          return `<button class="tx-btn tx-btn--outlined tx-btn--sm" type="button" data-remove="${r.companyRole}">${mock.icon('RemoveCircleOutlined', 'sm')}Remove</button>`;
+        }
+        return '';
+      };
+      const inlineConsent = (r) => (adding === r.companyRole && v('consent') === 'inline' ? consentForm(r) : '');
+
+      const layouts = {
+        cards: (c) => `<div class="cr-cards">${roles.map((r) => `
+          <article class="tx-card cr-card${r.status === 'ACTIVE' ? ' cr-card--active' : ''}" aria-label="${roleName(r)}">
+            <div class="cr-card__top"><span class="tx-tile cr-tile" aria-hidden="true">${(icons[r.companyRole] || icons.ACTIVE_PARTICIPANT)()}</span>${px.chip('roleStatus', r.status)}</div>
+            <div><div class="cr-name">${roleName(r)}</div><p class="cr-desc">${esc(r.description)}</p></div>
+            ${adding === r.companyRole && v('consent') === 'inline' ? '' : terms(r)}
+            ${inlineConsent(r)}
+            <div class="cr-foot">${action(r, c)}</div>
+          </article>`).join('')}</div>`,
+
+        list: (c) => `<div class="tx-card" style="padding: 8px 24px"><ul class="tx-list cr-list">${roles.map((r) => `
+          <li><span class="tx-tile cr-tile" aria-hidden="true">${(icons[r.companyRole] || icons.ACTIVE_PARTICIPANT)()}</span>
+            <div><div class="cr-name">${roleName(r)}</div><p class="cr-desc">${esc(r.description)}</p></div>
+            <div>${adding === r.companyRole && v('consent') === 'inline' ? '' : terms(r)}</div>
+            <div class="cr-list__end">${px.chip('roleStatus', r.status)}${action(r, c)}</div>
+            ${inlineConsent(r)}
+          </li>`).join('')}</ul></div>`,
+      };
+
+      function problemBox(c) {
+        if (c.state === 'last-role') {
+          return `<div class="tx-alert tx-alert--error" role="alert" style="margin-bottom: 24px">${mock.icon('ErrorOutlineOutlined')}
+            <div><div>Active participant could not be removed: your company needs at least one active role.</div><code>urn:c3-m1:problem:last-role</code></div></div>`;
+        }
+        if (c.state === 'upstream-error') {
+          return `<div class="tx-alert tx-alert--error" role="alert" style="margin-bottom: 24px">${mock.icon('CloudOffOutlined')}
+            <div><div>App provider could not be added: the terms could not be read (HTTP 502). Try again later.</div><code>urn:c3-m1:problem:upstream-error</code></div></div>`;
+        }
+        return '';
+      }
+
+      function render() {
+        const c = ctx();
+        document.getElementById('persona').innerHTML = px.persona(c.personKey);
+        document.getElementById('sub').textContent = `The roles of ${company.name} in ${company.dataspaceName}. A role is active once your company has accepted its terms.`;
+        document.getElementById('problem').innerHTML = problemBox(c);
+        document.getElementById('content').innerHTML = layouts[v('layout')](c);
+      }
+
+      function startAdding(role) {
+        adding = role;
+        checked = {};
+        const r = roles.find((x) => x.companyRole === role);
+        if (v('consent') === 'dialog') {
+          document.getElementById('consent-body').innerHTML = `<h2 class="tx-h3" id="consent-title">Add ${roleName(r)}</h2>
+            <p class="tx-muted" style="margin: 0">${esc(r.description)}</p>${consentForm(r)}`;
+          document.querySelector('#consent-dialog [data-add-confirm]').disabled = true;
+          document.getElementById('consent-dialog').showModal();
+        }
+        render();
+      }
+
+      function confirmAdd() {
+        const r = roles.find((x) => x.companyRole === adding);
+        if (!r) { return; }
+        // POST /company-roles { companyRole, consents: [{ agreementKey, version }] }
+        r.status = 'ACTIVE';
+        r.agreements.forEach((a) => Object.assign(a, { consentStatus: 'ACTIVE', consentedVersion: a.version, consentedAt: '2026-11-06T10:30:00Z' }));
+        const dialog = document.getElementById('consent-dialog');
+        if (dialog.open) { dialog.close(); }
+        mock.toast(`${labels.role[r.companyRole]} added`);
+        adding = null;
+        render();
+      }
+
+      mock.on('click', '[data-add]', (_e, el) => startAdding(el.dataset.add));
+      mock.on('click', '[data-add-cancel]', () => { adding = null; render(); });
+      mock.on('change', '[data-consent]', (_e, el) => {
+        checked[el.dataset.consent] = el.checked;
+        const r = roles.find((x) => x.companyRole === adding);
+        document.querySelectorAll('[data-add-confirm]').forEach((b) => { b.disabled = !allChecked(r); });
+      });
+      mock.on('click', '[data-add-confirm]', confirmAdd);
+      mock.on('click', '#consent-dialog [data-close]', () => { adding = null; render(); });
+      mock.on('click', '[data-remove]', (_e, el) => {
+        removing = el.dataset.remove;
+        document.getElementById('remove-text').textContent = `${company.name} loses the role ${labels.role[removing]}. The consents to its terms are withdrawn, unless another active role needs them.`;
+        document.getElementById('remove-dialog').showModal();
+      });
+      mock.on('click', '[data-remove-confirm]', () => {
+        document.getElementById('remove-dialog').close();
+        const active = roles.filter((r) => r.status === 'ACTIVE' && r.assignableBy === 'COMPANY');
+        // The mockup plays the API: removing the last active role gives 409 last-role (C3-M1 7.9).
+        if (active.length === 1 && active[0].companyRole === removing) {
+          mock.setState('last-role');
+          render();
+          return;
+        }
+        const r = roles.find((x) => x.companyRole === removing);
+        r.status = 'INACTIVE';
+        r.agreements.forEach((a) => { a.consentStatus = 'INACTIVE'; });
+        mock.toast(`${labels.role[r.companyRole]} removed`);
+        render();
+      });
+      mock.on('click', '[data-state-button]', () => setTimeout(() => { roles = clone(); adding = null; render(); }));
+      mock.onConfigure(() => { adding = null; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Change requests to review — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .crq-age { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.8125rem; white-space: nowrap; }
+    .crq-age .tx-icon { width: 16px; height: 16px; }
+    .crq-age--old { color: var(--warning); }
+    .crq-card__top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .crq-card__company { font-weight: 700; font-size: 1.0625rem; }
+    .crq-card__comment { color: var(--muted); font-size: 0.9375rem; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .crq-master { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; align-items: start; }
+    @media (max-width: 899.98px) { .crq-master { grid-template-columns: 1fr; } }
+    .crq-master__list { padding: 8px; display: grid; gap: 4px; }
+    .crq-item { text-align: left; font: inherit; color: inherit; border: 1px solid transparent; background: transparent; border-radius: var(--button-radius); padding: 12px 14px; cursor: pointer; display: grid; gap: 4px; }
+    .crq-item:hover { background: var(--accent-hover); }
+    .crq-item[aria-current="true"] { border-color: var(--tx-orange); background: var(--accent-hover); }
+    .crq-item__row { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .crq-detail { position: sticky; top: 24px; }
+    .crq-filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+    .crq-filters .tx-select { width: auto; min-width: 240px; padding: 8px 12px; }
+  </style>
+</head>
+<!-- C3-M1 7.14 GET /osp/change-requests (listChangeRequests, review_company_changes, scope osp): filters status, companyId; oldest first; paged. -->
+<body data-active="/participants" data-view="Change requests to review" data-states="loaded,empty,loading,forbidden,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="layout:table" data-dimension="Layout" data-variant-label="Table"></span>
+      <span data-variant="layout:queue" data-variant-label="Queue of cards"></span>
+      <span data-variant="filter:tabs" data-dimension="Status filter" data-variant-label="Tabs"></span>
+      <span data-variant="filter:chips" data-variant-label="Chips and a company field"></span>
+      <span data-variant="open:page" data-dimension="Open a request" data-variant-label="Review page"></span>
+      <span data-variant="open:split" data-variant-label="List and detail side by side"></span>
+    </div>
+
+    <div class="px-head">
+      <div>
+        <div class="tx-overline">Participant management</div>
+        <h1 class="tx-title" id="view-title">Change requests to review</h1>
+        <p class="px-sub">Companies ask to change their data with supporting documents. The oldest request comes first.</p>
+      </div>
+    </div>
+
+    <section data-show-state="loaded empty" id="filters"></section>
+    <section data-show-state="loaded" id="content"></section>
+
+    <section data-show-state="empty">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="TaskAltOutlined"></div>
+        <h2 class="tx-h3">No open change requests</h2>
+        <p>Every request is decided. New ones appear here, and you get a notification.</p>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the change requests">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading the change requests…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>Only the staff of the onboarding service provider review change requests (HTTP 403).</div>
+          <code>urn:c3-m1:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div>The change requests could not be loaded (HTTP 400): the filter is not valid.</div>
+          <code>urn:c3-m1:problem:validation</code>
+        </div>
+        <button class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" type="button" data-reset-filters>Reset filters</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = px;
+      const data = mock.data;
+      const NOW = new Date('2026-11-06T12:00:00Z');
+      const STATUSES = ['OPEN', 'APPROVED', 'DECLINED', 'WITHDRAWN'];
+      let statuses = ['OPEN'];
+      let companyId = '';
+      let selected = null;
+
+      const company = (id) => data.companies[id];
+      const all = () => data.changeRequests.slice().sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+      const filtered = () => all().filter((cr) => (!statuses.length || statuses.includes(cr.status)) && (!companyId || cr.companyId === companyId));
+      const reviewLink = (cr) => `change-request-review.html?request=${cr.id.slice(0, 8)}`;
+
+      const age = (cr) => {
+        const hours = Math.round((NOW - new Date(cr.createdAt)) / 36e5);
+        const text = hours < 24 ? `${hours} h` : `${Math.floor(hours / 24)} d ${hours % 24} h`;
+        return cr.status === 'OPEN'
+          ? `<span class="crq-age${hours >= 24 ? ' crq-age--old' : ''}" title="Open since ${px.dateTime(cr.createdAt)}">${mock.icon('ScheduleOutlined', 'sm')}${text}</span>`
+          : `<span class="crq-age">${px.date(cr.closedAt)}</span>`;
+      };
+      const docs = (cr) => `<span class="crq-age" title="Supporting documents">${mock.icon('AttachFileOutlined', 'sm')}${cr.documents.length}</span>`;
+      const summary = (cr) => esc(px.changeSummary(cr.changes, company(cr.companyId)));
+
+      // ── filters ──────────────────────────────────────────────────────────
+      function renderFilters() {
+        const count = (s) => all().filter((cr) => cr.status === s && (!companyId || cr.companyId === companyId)).length;
+        if (mock.variant('filter') === 'tabs') {
+          const tabs = [...STATUSES.map((s) => [s, px.labels.changeRequestStatus[s]]), ['ALL', 'All']];
+          const current = statuses.length === 1 ? statuses[0] : 'ALL';
+          document.getElementById('filters').innerHTML = `<div class="tx-tabs" role="tablist" aria-label="Status">${tabs.map(([key, label]) => `
+            <button class="tx-tab" role="tab" type="button" data-status-tab="${key}" aria-selected="${current === key}">${label}${key !== 'ALL' ? `<span class="px-count px-tab-count">${count(key)}</span>` : ''}</button>`).join('')}</div>`;
+        } else {
+          const companies = [...new Set(all().map((cr) => cr.companyId))];
+          document.getElementById('filters').innerHTML = `<div class="crq-filters" role="group" aria-label="Filters">
+            ${STATUSES.map((s) => `<button class="px-fchip" type="button" data-status-chip="${s}" aria-pressed="${statuses.includes(s)}">${statuses.includes(s) ? mock.icon('CheckOutlined', 'sm') : ''}${px.labels.changeRequestStatus[s]}</button>`).join('')}
+            <select class="tx-select" data-company-filter aria-label="Company">
+              <option value="">All companies</option>
+              ${companies.map((id) => `<option value="${id}"${id === companyId ? ' selected' : ''}>${esc(company(id).name)}</option>`).join('')}
+            </select>
+            ${statuses.length !== 1 || statuses[0] !== 'OPEN' || companyId ? '<button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-reset-filters>Reset</button>' : ''}
+          </div>`;
+        }
+      }
+
+      // ── list ─────────────────────────────────────────────────────────────
+      const table = (items, compact) => `<div class="tx-card" style="padding: 8px 0 16px"><div class="tx-table-wrap"><table class="tx-table px-table${compact ? ' px-table--compact' : ''}">
+        <thead><tr><th>Company</th><th>Change</th>${compact ? '' : '<th>Documents</th><th>Status</th>'}<th>${statuses.length === 1 && statuses[0] === 'OPEN' ? 'Waiting' : 'Date'}</th></tr></thead>
+        <tbody>${items.map((cr) => `<tr data-open-request="${cr.id}"${selected === cr.id && compact ? ' class="px-row-expand"' : ''}>
+          <td><div class="px-cell-main">${esc(cr.companyName)}</div>${compact ? '' : `<div class="px-cell-sub">${px.labels.coreDataSource[company(cr.companyId).coreDataSource]}</div>`}</td>
+          <td>${summary(cr)}</td>
+          ${compact ? '' : `<td>${docs(cr)}</td><td>${px.chip('changeRequestStatus', cr.status)}</td>`}
+          <td>${age(cr)}</td></tr>`).join('')}</tbody></table></div>
+        <div class="px-pager"><span>${items.length} of ${items.length}</span><span>Page 1 of 1</span></div></div>`;
+
+      const queue = (items) => `<div class="px-cards">${items.map((cr) => `
+        <article class="tx-card" data-open-request="${cr.id}" tabindex="0">
+          <div class="crq-card__top"><div><div class="crq-card__company">${esc(cr.companyName)}</div><div class="px-cell-sub">${summary(cr)}</div></div>${px.chip('changeRequestStatus', cr.status)}</div>
+          <p class="crq-card__comment">“${esc(cr.comment)}”</p>
+          <div class="px-card-foot">${docs(cr)}${age(cr)}</div>
+        </article>`).join('')}</div>`;
+
+      const masterList = (items) => `<div class="tx-card crq-master__list" role="list">${items.map((cr) => `
+        <button class="crq-item" type="button" role="listitem" data-select-request="${cr.id}" aria-current="${selected === cr.id}">
+          <span class="crq-item__row"><span class="px-cell-main">${esc(cr.companyName)}</span>${age(cr)}</span>
+          <span class="crq-item__row"><span class="px-cell-sub">${summary(cr)}</span>${px.chip('changeRequestStatus', cr.status)}</span>
+        </button>`).join('')}</div>`;
+
+      const detail = (cr) => {
+        const c = company(cr.companyId);
+        const rows = px.changeRows(cr.changes, c);
+        return `<section class="tx-card crq-detail" aria-labelledby="crq-detail-title">
+          <div class="px-section__head"><div><h2 class="tx-h3" id="crq-detail-title">${esc(cr.companyName)}</h2>
+            <p class="tx-muted tx-body2">Submitted ${px.dateTime(cr.createdAt)} by ${esc(px.personName(cr.requestedBy))}</p></div>${px.chip('changeRequestStatus', cr.status)}</div>
+          <table class="px-diff"><thead><tr><th>Field</th><th>Now</th><th>Requested</th></tr></thead>
+            <tbody>${rows.map((r) => `<tr class="${r.changed ? 'px-changed' : ''}"><td class="px-diff__field">${r.field}</td><td>${r.current}</td><td>${r.requested}</td></tr>`).join('')}</tbody></table>
+          <p class="tx-body2" style="margin: 16px 0 0"><span class="tx-muted">Reason given:</span> ${esc(cr.comment)}</p>
+          <ul class="px-files" style="margin-top: 16px">${cr.documents.map((d) => `<li class="px-file"><span class="px-file__icon">${px.fileIcon(d.mediaType)}</span><span class="px-file__name">${esc(d.fileName)}</span><span class="px-file__meta">${px.bytes(d.sizeBytes)}</span></li>`).join('')}</ul>
+          <div class="tx-row" style="margin-top: 24px"><a class="tx-btn" href="${reviewLink(cr)}">${cr.status === 'OPEN' ? 'Review and decide' : 'Open'}</a></div>
+        </section>`;
+      };
+
+      function renderList() {
+        const items = filtered();
+        const el = document.getElementById('content');
+        if (!items.length) {
+          el.innerHTML = `<div class="tx-card tx-empty"><div class="tx-tile">${mock.icon('FilterListOffOutlined')}</div><h2 class="tx-h3">No change request matches the filter</h2>
+            <p><button class="tx-btn tx-btn--outlined tx-btn--sm" type="button" data-reset-filters>Reset filters</button></p></div>`;
+          return;
+        }
+        if (mock.variant('open') === 'split') {
+          if (!items.some((cr) => cr.id === selected)) { selected = items[0].id; }
+          const list = mock.variant('layout') === 'table' ? table(items, true) : masterList(items);
+          el.innerHTML = `<div class="crq-master">${list}${detail(items.find((cr) => cr.id === selected))}</div>`;
+        } else {
+          el.innerHTML = mock.variant('layout') === 'table' ? table(items) : queue(items);
+        }
+      }
+
+      function render() {
+        document.getElementById('persona').innerHTML = px.persona(document.body.dataset.state === 'forbidden' ? 'erika' : 'rolf');
+        renderFilters();
+        renderList();
+      }
+
+      const open = (id) => {
+        if (mock.variant('open') === 'split') { selected = id; renderList(); return; }
+        location.href = reviewLink(data.changeRequests.find((cr) => cr.id === id));
+      };
+      mock.on('click', '[data-open-request]', (_e, el) => open(el.dataset.openRequest));
+      mock.on('keydown', '[data-open-request]', (e, el) => { if (e.key === 'Enter') { open(el.dataset.openRequest); } });
+      mock.on('click', '[data-select-request]', (_e, el) => { selected = el.dataset.selectRequest; renderList(); });
+      mock.on('click', '[data-status-tab]', (_e, el) => { statuses = el.dataset.statusTab === 'ALL' ? [] : [el.dataset.statusTab]; render(); });
+      mock.on('click', '[data-status-chip]', (_e, el) => {
+        const s = el.dataset.statusChip;
+        statuses = statuses.includes(s) ? statuses.filter((x) => x !== s) : [...statuses, s];
+        render();
+      });
+      mock.on('change', '[data-company-filter]', (_e, el) => { companyId = el.value; render(); });
+      mock.on('click', '[data-reset-filters]', () => { statuses = ['OPEN']; companyId = ''; if (document.body.dataset.state === 'error') { mock.setState('loaded'); } render(); });
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

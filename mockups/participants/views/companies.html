@@ -1,0 +1,294 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Companies — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .co-select { width: auto; min-width: 170px; padding: 7px 12px; border-radius: var(--button-radius); font-size: 0.875rem; }
+    .co-sep { width: 1px; align-self: stretch; background: var(--subtle-border); }
+    .co-result { color: var(--muted); font-size: 0.875rem; margin-bottom: 12px; }
+    .co-table-card { padding: 8px 0 16px; }
+    .co-roles { display: flex; gap: 6px; flex-wrap: wrap; }
+    .co-roles .tx-chip { font-size: 0.75rem; height: 22px; }
+    .co-drawer-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: auto; }
+    @media (max-width: 899.98px) { .co-hide-sm { display: none; } }
+    .co-cards-dense .tx-card { padding: 16px; gap: 8px; }
+    .co-nowrap, .co-nowrap .px-mono { white-space: nowrap; overflow-wrap: normal; }
+    .co-name { min-width: 200px; }
+  </style>
+</head>
+<!-- C3-M1 7.10 GET /osp/companies (listCompanies, view_companies, scope osp). -->
+<body data-active="/participants" data-view="Companies" data-states="loaded,empty,loading,forbidden,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="filters:chips" data-dimension="Filters" data-variant-label="Chips above the list"></span>
+      <span data-variant="filters:panel" data-variant-label="Side panel"></span>
+      <span data-variant="filters:search" data-variant-label="Search field only"></span>
+      <span data-variant="layout:table" data-dimension="Layout" data-variant-label="Table"></span>
+      <span data-variant="layout:cards" data-variant-label="Cards"></span>
+      <span data-variant="open:page" data-dimension="Open a company" data-variant-label="Its own page"></span>
+      <span data-variant="open:drawer" data-variant-label="Drawer with a summary"></span>
+      <span data-variant="density:comfortable" data-dimension="Density" data-variant-label="Comfortable"></span>
+      <span data-variant="density:compact" data-variant-label="Compact"></span>
+    </div>
+
+    <div class="px-head">
+      <div>
+        <div class="tx-overline">Participant management · Onboarding service provider</div>
+        <h1 class="tx-title" id="view-title">Companies</h1>
+        <p class="px-sub">Every company of OSP A, from the application to the deactivation.</p>
+      </div>
+    </div>
+
+    <section data-show-state="loaded empty" id="content"></section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the companies">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading the companies…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>Only staff of the onboarding service provider see all companies (HTTP 403).</div>
+          <code>urn:c3-m1:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div>The companies could not be loaded (HTTP 400): a filter value is not valid.</div>
+          <code>urn:c3-m1:problem:validation</code>
+        </div>
+        <button class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" type="button" data-reset>Reset filters</button>
+      </div>
+    </section>
+
+    <div id="drawer-root"></div>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc, labels } = px;
+      const data = mock.data;
+
+      // CompanySummary, as GET /osp/companies returns it (newest first).
+      const summaries = Object.values(data.companies).map((c) => ({
+        id: c.id, name: c.name, status: c.status, bpn: c.bpn, coreDataSource: c.coreDataSource,
+        countryCode: c.address.countryCode,
+        companyRoles: c.companyRoles.filter((r) => r.status === 'ACTIVE').map((r) => r.companyRole),
+        createdAt: c.createdAt,
+      })).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+
+      const empty = () => ({ status: [], name: '', hasBpn: '', companyRole: '', coreDataSource: '' });
+      let filter = empty();
+      let drawerId = null;
+
+      // The page the API would return for the filters (the mockup filters locally; the real UI sends them as query).
+      function query() {
+        if (document.body.dataset.state === 'empty') { return []; }
+        const q = filter.name.trim().toLowerCase();
+        return summaries.filter((c) =>
+          (!filter.status.length || filter.status.includes(c.status))
+          && (!q || c.name.toLowerCase().includes(q) || (c.bpn || '').toLowerCase() === q)
+          && (filter.hasBpn === '' || String(Boolean(c.bpn)) === filter.hasBpn)
+          && (!filter.companyRole || c.companyRoles.includes(filter.companyRole))
+          && (!filter.coreDataSource || c.coreDataSource === filter.coreDataSource));
+      }
+      const active = () => Boolean(filter.status.length || filter.name || filter.hasBpn || filter.companyRole || filter.coreDataSource);
+
+      // ── filters ──────────────────────────────────────────────────────────
+      const searchField = () => `<label class="px-search">${mock.icon('SearchOutlined')}
+        <input class="tx-input" type="search" data-f="name" value="${esc(filter.name)}" placeholder="Name or BPN" aria-label="Search by name or BPN"></label>`;
+      const select = (key, values, all) => `<select class="tx-select co-select" data-f="${key}" aria-label="${all}">
+        <option value="">${all}</option>${values.map(([v, l]) => `<option value="${v}"${filter[key] === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+      const roleOptions = Object.entries(labels.role);
+      const sourceOptions = [['EBW', 'Business Wallet'], ['MANUAL', 'Documents']];
+      const bpnOptions = [['true', 'With BPN'], ['false', 'Without BPN']];
+      const statusChips = () => Object.entries(labels.companyStatus).map(([s, l]) =>
+        `<button class="px-fchip" type="button" data-status="${s}" aria-pressed="${filter.status.includes(s)}">${filter.status.includes(s) ? mock.icon('CheckOutlined', 'sm') : ''}${l}</button>`).join('');
+
+      const filtersChips = () => `<div class="px-filterbar">${searchField()}<span class="co-sep" aria-hidden="true"></span>${statusChips()}</div>
+        <div class="px-filterbar">${select('companyRole', roleOptions, 'All company roles')}${select('coreDataSource', sourceOptions, 'Any source of core data')}${select('hasBpn', bpnOptions, 'With and without BPN')}
+          ${active() ? '<button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-reset>Reset filters</button>' : ''}</div>`;
+
+      const statusBox = (value, label) => `<label class="px-check"><input type="checkbox" data-status="${value}"${filter.status.includes(value) ? ' checked' : ''}>${esc(label)}</label>`;
+      const radio = (key, value, label) => `<label class="px-check"><input type="radio" name="${key}" data-radio="${key}:${value}"${filter[key] === value ? ' checked' : ''}>${esc(label)}</label>`;
+      const filtersPanel = () => `<aside class="tx-card px-filter-panel" aria-label="Filters">
+        <fieldset><legend>Status</legend>${Object.entries(labels.companyStatus).map(([s, l]) => statusBox(s, l)).join('')}</fieldset>
+        <fieldset><legend>Company role</legend>${radio('companyRole', '', 'All')}${roleOptions.map(([v, l]) => radio('companyRole', v, l)).join('')}</fieldset>
+        <fieldset><legend>Core data</legend>${radio('coreDataSource', '', 'Any')}${sourceOptions.map(([v, l]) => radio('coreDataSource', v, l)).join('')}</fieldset>
+        <fieldset><legend>BPN</legend>${radio('hasBpn', '', 'Any')}${bpnOptions.map(([v, l]) => radio('hasBpn', v, l)).join('')}</fieldset>
+        <button class="tx-btn tx-btn--outlined tx-btn--sm" type="button" data-reset${active() ? '' : ' disabled'}>Reset filters</button>
+      </aside>`;
+
+      // ── results ──────────────────────────────────────────────────────────
+      const compact = () => mock.variant('density') === 'compact';
+      const roles = (list) => (list.length ? `<span class="co-roles">${list.map((r) => px.roleChip(r)).join('')}</span>` : '<span class="px-none">None active</span>');
+      const bpn = (c) => (c.bpn ? `<span class="px-mono">${esc(c.bpn)}</span>` : '<span class="px-none">Not assigned yet</span>');
+      const source = (c) => (c.coreDataSource === 'EBW'
+        ? `<span class="px-source px-source--wallet">${mock.icon('VerifiedUserOutlined')}Business Wallet</span>`
+        : `<span class="px-source px-source--manual">${mock.icon('FactCheckOutlined')}Documents</span>`);
+      const pager = (items) => `<div class="px-pager"><span>1–${items.length} of ${items.length} companies · newest first</span>
+        <span class="tx-row"><button class="tx-btn tx-btn--text tx-btn--sm" type="button" disabled>Previous</button><button class="tx-btn tx-btn--text tx-btn--sm" type="button" disabled>Next</button></span></div>`;
+
+      const table = (items) => `<div class="tx-card co-table-card"><div class="tx-table-wrap">
+        <table class="tx-table px-table${compact() ? ' px-table--compact' : ''}">
+          <thead><tr><th>Company</th><th>BPN</th><th>Status</th><th class="co-hide-sm">Core data</th><th class="co-hide-sm">Active company roles</th><th class="co-hide-sm">Created</th></tr></thead>
+          <tbody>${items.map((c) => `<tr data-open-company="${c.id}" tabindex="0">
+            <td class="co-name"><div class="px-cell-main">${esc(c.name)}</div>${compact() ? '' : `<div class="px-cell-sub">${esc(px.country(c.countryCode))}</div>`}</td>
+            <td class="co-nowrap">${bpn(c)}</td><td>${px.chip('companyStatus', c.status)}</td>
+            <td class="co-hide-sm co-nowrap">${source(c)}</td><td class="co-hide-sm">${roles(c.companyRoles)}</td><td class="co-hide-sm co-nowrap">${px.date(c.createdAt)}</td></tr>`).join('')}</tbody>
+        </table></div>${pager(items)}</div>`;
+
+      const cards = (items) => `<div class="px-cards${compact() ? ' co-cards-dense' : ''}">${items.map((c) => `
+        <article class="tx-card" data-open-company="${c.id}" tabindex="0" aria-label="${esc(c.name)}">
+          <div class="tx-row tx-row--between" style="align-items: flex-start; flex-wrap: nowrap">
+            <div><div class="tx-h3" style="font-size: 1.0625rem">${esc(c.name)}</div><div class="px-cell-sub">${esc(px.country(c.countryCode))}</div></div>
+            ${px.chip('companyStatus', c.status)}</div>
+          <dl class="px-kv"><dt>BPN</dt><dd>${bpn(c)}</dd><dt>Core data</dt><dd>${source(c)}</dd></dl>
+          ${compact() ? '' : roles(c.companyRoles)}
+          <div class="px-card-foot"><span>Created ${px.date(c.createdAt)}</span>${mock.icon('ChevronRight', 'sm')}</div>
+        </article>`).join('')}</div>${pager(items)}`;
+
+      const emptyResult = () => `<div class="tx-card tx-empty">
+        <div class="tx-tile">${mock.icon('SearchOffOutlined')}</div>
+        <h2 class="tx-h3">No company matches the filters</h2>
+        <p>Change or reset the filters.</p>
+        <button class="tx-btn tx-btn--outlined" type="button" data-reset>Reset filters</button></div>`;
+
+      function results() {
+        const items = query();
+        if (!items.length) { return emptyResult(); }
+        return mock.variant('layout') === 'cards' ? cards(items) : table(items);
+      }
+
+      // ── drawer ───────────────────────────────────────────────────────────
+      function drawer() {
+        const root = document.getElementById('drawer-root');
+        if (!drawerId) { root.innerHTML = ''; return; }
+        const c = data.companies[drawerId];
+        const open = data.changeRequests.find((cr) => cr.id === c.openChangeRequestId);
+        root.innerHTML = `<div class="px-drawer-backdrop" data-close-drawer></div>
+          <aside class="px-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+            <div class="px-drawer__head">
+              <div><div class="tx-overline">Company</div><h2 class="tx-h3" id="drawer-title">${esc(c.name)}</h2></div>
+              <button class="tx-iconbtn" type="button" data-close-drawer title="Close">${mock.icon('CloseOutlined')}</button>
+            </div>
+            <div class="tx-row">${px.chip('companyStatus', c.status)}${px.coreSource(c.coreDataSource)}</div>
+            <dl class="px-kv">
+              <dt>BPN</dt><dd>${px.copyable(c.bpn)}</dd>
+              <dt>Address</dt><dd>${px.address(c.address)}</dd>
+              <dt>Created</dt><dd>${px.dateTime(c.createdAt)}</dd>
+              <dt>Active since</dt><dd>${px.dateTime(c.activatedAt)}</dd>
+            </dl>
+            <div><div class="tx-label">Identifiers</div>${px.identifiers(c.identifiers)}</div>
+            <div><div class="tx-label">Company roles</div><div class="px-chips">${c.companyRoles.map((r) => px.roleChip(r.companyRole, r.status !== 'ACTIVE')).join('')}</div></div>
+            ${open ? `<div class="tx-alert tx-alert--info">${mock.icon('PendingActionsOutlined')}<div>Open change request since ${px.date(open.createdAt)}: ${esc(px.changeSummary(open.changes, c))}.</div>
+              <a class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" href="change-request-review.html">Review</a></div>` : ''}
+            <div class="co-drawer-actions"><a class="tx-btn" href="company-detail.html">Open company</a>
+              <button class="tx-btn tx-btn--outlined" type="button" data-close-drawer>Close</button></div>
+          </aside>`;
+      }
+
+      function render() {
+        const state = document.body.dataset.state;
+        document.getElementById('persona').innerHTML = px.persona(state === 'forbidden' ? 'erika' : 'rolf');
+        if (state === 'empty' && !filter.name) { filter.name = 'Beispiel Logistik SE'; }
+        const count = query().length;
+        const head = `<div class="co-result" role="status">${count} ${count === 1 ? 'company' : 'companies'}</div>`;
+        const variant = mock.variant('filters');
+        const content = document.getElementById('content');
+        if (variant === 'panel') {
+          content.innerHTML = `<div class="px-filter-layout">${filtersPanel()}<div><div class="px-filterbar">${searchField()}</div>${head}${results()}</div></div>`;
+        } else if (variant === 'search') {
+          content.innerHTML = `<div class="px-filterbar">${searchField()}</div>${head}${results()}`;
+        } else {
+          content.innerHTML = `${filtersChips()}${head}${results()}`;
+        }
+        drawer();
+      }
+
+      function refocusSearch(position) {
+        const input = document.querySelector('[data-f="name"]');
+        if (input) { input.focus(); input.setSelectionRange(position, position); }
+      }
+
+      mock.on('input', '[data-f="name"]', (_e, el) => { filter.name = el.value; const p = el.selectionStart; render(); refocusSearch(p); });
+      mock.on('change', 'select[data-f]', (_e, el) => { filter[el.dataset.f] = el.value; render(); });
+      mock.on('click', 'button[data-status]', (_e, el) => {
+        const s = el.dataset.status;
+        filter.status = filter.status.includes(s) ? filter.status.filter((x) => x !== s) : [...filter.status, s];
+        render();
+      });
+      mock.on('change', 'input[data-status]', (_e, el) => {
+        const s = el.dataset.status;
+        filter.status = el.checked ? [...filter.status, s] : filter.status.filter((x) => x !== s);
+        render();
+      });
+      mock.on('change', 'input[data-radio]', (_e, el) => { const [k, v] = el.dataset.radio.split(':'); filter[k] = v; render(); });
+      mock.on('click', '[data-reset]', () => {
+        filter = empty();
+        if (document.body.dataset.state !== 'loaded') { mock.setState('loaded'); }
+        render();
+      });
+      const openCompany = (id) => {
+        if (mock.variant('open') === 'drawer') { drawerId = id; drawer(); } else { location.href = 'company-detail.html'; }
+      };
+      mock.on('click', '[data-open-company]', (event, el) => { if (!event.target.closest('a, button')) { openCompany(el.dataset.openCompany); } });
+      mock.on('keydown', '[data-open-company]', (event, el) => { if (event.key === 'Enter') { openCompany(el.dataset.openCompany); } });
+      mock.on('click', '[data-close-drawer]', () => { drawerId = null; drawer(); });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && drawerId) { drawerId = null; drawer(); } });
+      mock.on('click', '[data-state-button]', (_e, el) => {
+        if (el.dataset.stateButton !== 'empty' && filter.name === 'Beispiel Logistik SE') { filter.name = ''; }
+        setTimeout(render);
+      });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

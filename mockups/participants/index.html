@@ -1,0 +1,435 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management — Mockups</title>
+  <!-- The settings of this mockup; the mockup script reads them. -->
+  <meta name="mockup-title" content="Participant management">
+  <meta name="mockup-module" content="c3-m1">
+  <meta name="mockup-path" content="/participants">
+  <meta name="mockup-nav-name" content="">
+  <meta name="mockup-nav-icon" content="">
+  <meta name="mockup-states" content="loaded,empty,loading,error">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="shared/shell.css">
+  <link rel="stylesheet" href="shared/hub.css">
+</head>
+<!-- The hub of the mockup, by view. Each <section class="hub-view"> carries data-status: open | decided | deferred.
+     `mockup.py status participants` reads it; the proof of concept starts when no view is open. -->
+<body data-hub-page>
+  <div class="hub-layout">
+    <nav class="hub-toc" aria-label="Views">
+      <div class="hub-toc__h">The company</div>
+
+      <a href="#view-company-profile"><span class="hub-num">1</span>Your company</a>
+      <a href="#view-change-company-data"><span class="hub-num">2</span>Change company data</a>
+      <a href="#view-own-change-requests"><span class="hub-num">3</span>Your change requests</a>
+      <a href="#view-company-roles"><span class="hub-num">4</span>Company roles</a>
+      <div class="hub-toc__sep"></div>
+      <div class="hub-toc__h">The OSP</div>
+      <a href="#view-companies"><span class="hub-num">5</span>Companies</a>
+      <a href="#view-company-detail"><span class="hub-num">6</span>Company</a>
+      <a href="#view-csp-registration"><span class="hub-num">7</span>CSP registration</a>
+      <a href="#view-change-request-queue"><span class="hub-num">8</span>Change requests to review</a>
+      <a href="#view-change-request-review"><span class="hub-num">9</span>Review change request</a>
+      <div class="hub-toc__sep"></div>
+      <button class="tx-btn tx-btn--outlined hub-toc__theme" type="button" data-theme-toggle></button>
+    </nav>
+
+    <main class="hub">
+      <div class="tx-overline">Dataspace Management · mockup · phase 1 of 3</div>
+      <h1 class="tx-title">Participant management</h1>
+      <p class="hub-lead">Participant management keeps the record of every company of this onboarding service provider
+        (OSP A): the company itself sees and keeps its data, its identifiers and its company roles; the staff of the OSP find
+        companies, correct them, decide change requests and see the registration of each company at the core service
+        provider (CSP). Behind it are two backend modules: <code>c3-m1</code> Company Profile and <code>c3-m2</code> CSP
+        Connection (portal-backend-spec). Each view below is one screen of the portal with a configurator: switch the
+        alternatives on the screen, copy the combination you like, and it becomes the decision of the view.</p>
+      <dl class="hub-facts">
+        <div><dt>Backend modules</dt><dd><code>c3-m1</code> 0.2 · <code>c3-m2</code> 0.1</dd></div>
+        <div><dt>Test data</dt><dd>FRAMEWORK 7a, C3-M1 14, C3-M2 14</dd></div>
+        <div><dt>Navigation</dt><dd><code>/participants</code></dd></div>
+        <div><dt>Started</dt><dd>2026-11-06</dd></div>
+      </dl>
+
+
+
+      <section class="hub-view" id="view-company-profile" data-view="company-profile" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">1</span>
+          <h2 class="tx-h2">Your company</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Every person of a company opens it from the rail (Participant management): the Company Admin (Erika) to check and keep the data of the company right, a Member (Max) to look up the BPN or an identifier. It replaces today's page "Your company" and links to the views 2 to 4.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/company-profile.html">
+            <span class="hub-card__frame"><iframe src="views/company-profile.html" title="Preview of Your company" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/companies/{companyId}</code> (<code>getCompany</code>, <code>view_company</code>, scope <code>company</code>) → <code>Company</code>: <code>name</code>, <code>shortName</code>, <code>address</code> (<code>street</code>, <code>houseNumber</code>, <code>postalCode</code>, <code>city</code>, <code>region</code>, <code>countryCode</code>), <code>identifiers[]</code> (<code>type</code>, <code>value</code>, <code>source</code>), <code>coreDataSource</code>, <code>coreDataVerifiedAt</code>, <code>bpn</code>, <code>status</code>, <code>companyRoles[]</code>, <code>dataspaceName</code>, <code>activatedAt</code>.</li>
+  <li><code>PATCH /api/c3-m1/companies/{companyId}</code> (<code>updateCompany</code>, <code>edit_company</code>) with <code>{ shortName }</code> only; <code>null</code> removes it. Errors: 409 <code>field-locked</code>, 409 <code>invalid-state</code>, 400 <code>validation</code>.</li>
+  <li>The open change request comes from <code>GET …/change-requests</code> (<code>listOwnChangeRequests</code>), first item with <code>status</code> <code>OPEN</code>.</li>
+  <li>States: <code>read-only</code> = Member without <code>edit_company</code> (buttons hidden by the permission of <code>GET /me</code>); <code>not-found</code> = 404 <code>not-found</code> (also another company); <code>forbidden</code> = 403 for Lieschen (Applicant).</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: the UI may not decide that an <code>INACTIVE</code> company cannot be edited (6.6). Can <code>Company</code> return what the person may do now, for example <code>allowedActions: [editShortName, attestationUpdate, changeRequest]</code>?</li>
+  <li data-open>C3-M1: <code>Company</code> has no <code>deactivationReason</code> for people of the company; the inactive state cannot say why (deactivated by the OSP or moved to another OSP).</li>
+  <li data-open>C3-M1: <code>openChangeRequestId</code> is only in <code>CompanyDetail</code> (OSP). Also in <code>Company</code>, so the page needs one call instead of two?</li>
+  <li data-open>C2-M5 / i18n: company role names are not in the API (only the key); the UI translates the keys, so a new role from the catalogue shows as its key until the UI is updated.</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-change-company-data" data-view="change-company-data" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">2</span>
+          <h2 class="tx-h2">Change company data</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika Mustermann, Company Admin of Beispiel Maschinenbau GmbH, comes here from "Your company" (button "Change company data", or "Verify again" in the verification banner) when the name, address or an identifier of her company is out of date. She chooses one of the two ways of C3-M1 6.6: verify again with the Business Wallet (applied at once) or request a change with supporting documents (decided by OSP A).</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/change-company-data.html">
+            <span class="hub-card__frame"><iframe src="views/change-company-data.html" title="Preview of Change company data" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>POST /api/c3-m1/companies/{companyId}/attestation-updates</code> (<code>updateCompanyFromAttestation</code>, <code>edit_company</code>, scope <code>company</code>): body <code>AttestationUpdate.attestation</code> (compact JWS from the EBW-Connector, fetched by the BFF with the scopes <code>openid profile representation company attestation</code>); response <code>AttestationUpdateResult</code> (<code>changedFields</code>, <code>company</code>), shown in the state "updated" (data of attestation T1: Beispiel Maschinenbau AG, Industriestraße 10, 70565 Stuttgart).</li>
+  <li><code>POST /api/c3-m1/companies/{companyId}/change-requests</code> (<code>createChangeRequest</code>, <code>edit_company</code>, scope <code>company</code>), <code>multipart/form-data</code>: part <code>data</code> = <code>ChangeRequestData</code> (<code>identifiers</code> as the complete new list of <code>DeclaredIdentifier</code> {<code>type</code>, <code>value</code>}, optional <code>name</code>, <code>address</code>; required <code>comment</code> 1–1000), part <code>documents</code> (1–3 PDF/PNG/JPEG, ≤ 10 MB); response 201 <code>ChangeRequest</code> with <code>status</code> <code>OPEN</code> (state "submitted").</li>
+  <li>The current values ("Now") come from <code>GET /companies/{companyId}</code> (<code>Company.name</code>, <code>address</code>, <code>identifiers[].source</code>, <code>coreDataSource</code>); identifiers with source <code>BUSINESS_WALLET</code> are shown read-only.</li>
+  <li>Problem types shown: <code>urn:c3-m1:problem:company-mismatch</code> (<code>fields</code> <code>[EBWOID]</code>), <code>attestation-used</code>, <code>attestation-required</code>, <code>change-request-open</code>, <code>document-invalid</code> (one state button each).</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: which fields may the company change on which way? Today the UI reads it from <code>coreDataSource</code> and the source of each identifier (a UX pre-check of 6.6; the API answers 409 <code>attestation-required</code>). Proposal: flags in <code>Company</code>, for example <code>changeOptions: { attestation: [...fields], changeRequest: [...fields] }</code>.</li>
+  <li data-open>C3-M1: the installation can switch change requests off (<code>CHANGE_REQUESTS_ENABLED</code>) and sets the document limits (<code>CHANGE_REQUEST_MAX_DOCUMENTS</code>, <code>CHANGE_REQUEST_MAX_DOCUMENT_BYTES</code>). The UI cannot read them, so it shows the second card and the limits 3 / 10 MB without knowing. Needs a flag or <code>GET /config</code>.</li>
+  <li data-open>C3-M1: no preview before the attestation is applied: 7.3 changes the data at once, so the UI can show the changes only afterwards. Should there be a dry run, or is "applied at once, then shown" the intended experience?</li>
+  <li data-open>C3-M1: <code>changedFields</code> names fields without values; is the granularity <code>name</code>, <code>address</code>, <code>EUID</code> or single address parts (<code>street</code>, <code>postalCode</code>)? The UI compares the company before and after itself.</li>
+  <li data-open>C5-M1 / BFF: can the EBW-Connector show its QR code inside the portal (cross-device, "QR code on this screen"), or does the person always leave to the EBW-Connector ("Continue to the EBW-Connector")? The BFF flow for a changed attestation (scopes, return URL) is not specified yet.</li>
+  <li data-open>C3-M1: the identifier patterns (6.4) come from the reference data (<code>masterDataFile</code>); the UI cannot pre-check a VAT ID or LEI code before sending. Should the reference data be readable for the UI?</li>
+  <li data-open>The mockup assumes no open change request in the state "loaded"; in the test data Erika has one open (LEI code), so a real submit gives 409 <code>change-request-open</code>. Should the screen warn before the form, from <code>GET /change-requests</code>?</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-own-change-requests" data-view="own-change-requests" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">3</span>
+          <h2 class="tx-h2">Your change requests</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika Mustermann (Company Admin) and Max Mustermann (Member, read only) of Beispiel Maschinenbau GmbH open this from "Your company" (the alert about the open change request, or the tab "Change requests") to follow their change requests, read why one was declined, and withdraw an open one.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/own-change-requests.html">
+            <span class="hub-card__frame"><iframe src="views/own-change-requests.html" title="Preview of Your change requests" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/companies/{companyId}/change-requests?page=&amp;size=</code> (<code>listOwnChangeRequests</code>, <code>view_company</code>, scope <code>company</code>): <code>ChangeRequestPage</code> (<code>items</code>, <code>page</code>, <code>size</code>, <code>total</code>), newest first; per item <code>status</code>, <code>changes</code> (<code>name</code>, <code>address</code>, <code>identifiers</code>), <code>comment</code>, <code>documents[]</code> (<code>fileName</code>, <code>mediaType</code>, <code>sizeBytes</code> only, no content), <code>requestedBy</code>, <code>decisionReason</code>, <code>createdAt</code>, <code>closedAt</code>; no <code>decidedBy</code>.</li>
+  <li><code>POST /api/c3-m1/companies/{companyId}/change-requests/{changeRequestId}/withdraw</code> (<code>withdrawChangeRequest</code>, <code>edit_company</code>, scope <code>company</code>) → <code>ChangeRequest</code> with <code>status</code> <code>WITHDRAWN</code>; confirmed in a dialog.</li>
+  <li>"Now" in the details: <code>GET /companies/{companyId}</code> (current <code>Company</code>), compared with <code>changes</code>.</li>
+  <li>Test data: LEI code open (05 Nov), LEI code declined with the reason of Rolf Prüfer (04 Nov), EORI withdrawn (03 Nov).</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: may this change request still be withdrawn? The UI shows "Withdraw" only for <code>OPEN</code> (a UX pre-check; the API answers 409 <code>invalid-state</code>). Proposal: a flag <code>canWithdraw</code> per item.</li>
+  <li data-open>C3-M1 / C2-M2: <code>requestedBy</code> is a <code>sub</code>. The mockup shows the name ("Sent by Erika Mustermann"); the UI would need the name from C2-M2 or a <code>requestedByName</code> in the response.</li>
+  <li data-open>C3-M1: there is no single read <code>GET /companies/{companyId}/change-requests/{changeRequestId}</code> for the company, so a link to one request (from a notification) has to search the list.</li>
+  <li data-open>C11-M1: is the company notified of the decision (<code>CompanyChangeRequestClosed</code>), so the list updates live (SSE)?</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-company-roles" data-view="company-roles" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">4</span>
+          <h2 class="tx-h2">Company roles</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika Mustermann (Company Admin, <code>edit_company_roles</code>) opens this from "Your company" (link "Manage company roles") to see the roles of Beispiel Maschinenbau GmbH in Catena-X, add a role by accepting its terms, or remove one. Max Mustermann (Member) sees the same page read only.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/company-roles.html">
+            <span class="hub-card__frame"><iframe src="views/company-roles.html" title="Preview of Company roles" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/companies/{companyId}/company-roles?lang=en</code> (<code>listCompanyRolesOfCompany</code>, <code>view_company</code>, scope <code>company</code>): <code>CompanyRoleState[]</code> with <code>companyRole</code>, <code>assignableBy</code>, <code>status</code> (<code>NONE</code>, <code>REQUESTED</code>, <code>ACTIVE</code>, <code>INACTIVE</code>), <code>description</code>, <code>agreements[]</code> = <code>AgreementConsent</code> (<code>agreementKey</code>, <code>version</code>, <code>name</code>, <code>documentUrl</code>, <code>consentStatus</code>, <code>consentedVersion</code>, <code>consentedAt</code>).</li>
+  <li><code>POST /api/c3-m1/companies/{companyId}/company-roles</code> (<code>addCompanyRole</code>, <code>edit_company_roles</code>, scope <code>company</code>): <code>CompanyRoleAdd</code> = <code>companyRole</code> + <code>consents[]</code> (<code>AgreementRef</code>: <code>agreementKey</code>, <code>version</code>) — one checkbox per term; 400 <code>consent-missing</code> (<code>missing</code>), 502 <code>upstream-error</code> (terms of C1-M2 not readable).</li>
+  <li><code>DELETE /api/c3-m1/companies/{companyId}/company-roles/{companyRole}</code> (<code>removeCompanyRole</code>, <code>edit_company_roles</code>, scope <code>company</code>), confirmed in a dialog; 409 <code>last-role</code> when the last active role would go (state "last-role").</li>
+  <li>Terms of the test data (C1-M2 14.3): <code>terms-active-participant</code>, <code>security-regulations</code>, <code>terms-app-provider</code>, <code>terms-service-provider</code>, all version 1.0.</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: <code>CompanyRoleState</code> has a <code>description</code> but no display name; the UI translates the key (<code>roles.ACTIVE_PARTICIPANT</code>). Should the response carry the localized <code>name</code>, as the catalogue of C1-M2 does?</li>
+  <li data-open>C3-M1: may this role be added or removed now? The UI derives it from <code>assignableBy</code> and <code>status</code> (a UX pre-check; the API decides, for example 409 <code>last-role</code>, <code>role-not-assignable</code>, <code>invalid-state</code>). Proposal: flags <code>canAdd</code> and <code>canRemove</code> per role, so "Remove" is not offered for the last role.</li>
+  <li data-open>C3-M1: removing a role sets the consents to its terms <code>INACTIVE</code> unless another active role needs them (6.5). Should the confirmation name which terms are withdrawn, and should the API return that?</li>
+  <li data-open>C3-M1 / C10-M1 / C8-M1: removing <code>APP_PROVIDER</code> or <code>SERVICE_PROVIDER</code> does not check offers or subscriptions (7.9). Should the UI warn, and from which module?</li>
+  <li data-open>C3-M1: a new version of terms keeps the key; re-consent is not part of version 0.2 (OP-11). The page shows "Version 1.0 accepted"; how should it show an accepted version that is older than the active one?</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-companies" data-view="companies" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">5</span>
+          <h2 class="tx-h2">Companies</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>OSP staff (Rolf Prüfer, OSP Reviewer; Otto Normalverbraucher, OSP Admin) open it from participant management to find any company of the installation, from the application to the deactivation, and open its record.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/companies.html">
+            <span class="hub-card__frame"><iframe src="views/companies.html" title="Preview of Companies" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/osp/companies</code> (<code>listCompanies</code>, <code>x-permission: view_companies</code>, scope <code>osp</code>): query <code>status</code> (repeatable), <code>name</code> (contains, case-insensitive), <code>bpn</code>, <code>hasBpn</code>, <code>companyRole</code> (active roles only), <code>coreDataSource</code>, <code>page</code>, <code>size</code>; sorted by <code>createdAt</code> descending.</li>
+  <li>Response <code>CompanyPage</code> <code>{ items, page, size, total }</code> of <code>CompanySummary</code>: <code>id</code>, <code>name</code>, <code>status</code>, <code>bpn</code>, <code>coreDataSource</code>, <code>countryCode</code>, <code>companyRoles</code> (active), <code>createdAt</code>.</li>
+  <li>The drawer alternative shows more than the summary (address, identifiers, open change request): it calls <code>GET /api/c3-m1/osp/companies/{companyId}</code> (<code>getCompanyDetail</code>, <code>view_companies</code>) when it opens.</li>
+  <li>Errors: 403 <code>urn:c3-m1:problem:forbidden</code> (for example a Company Admin), 400 <code>urn:c3-m1:problem:validation</code> (invalid filter value).</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>One search field for name <em>or</em> BPN: the API has two parameters (<code>name</code> contains, <code>bpn</code> exact). Does the UI decide by the BPN pattern which one to send, or can C3-M1 add a combined <code>q</code>? (C3-M1)</li>
+  <li data-open>Other sort orders (name, status) and a sort parameter are not in the spec; only <code>createdAt</code> descending. Enough for OSP staff? (C3-M1)</li>
+  <li data-open><code>CompanySummary</code> has no open change request and no "needs attention" flag; a column "open change request" would need <code>openChangeRequestId</code> in the summary. (C3-M1)</li>
+  <li data-open>The drawer needs a second call per company; is the summary plus a link enough, or should the summary carry the address? Decide with the drawer alternative.</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-company-detail" data-view="company-detail" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">6</span>
+          <h2 class="tx-h2">Company</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>OSP staff open one company from the list of companies, from a review case or from a change request: to see its full record, to correct its data after a hint (OSP Admin) or to deactivate it (OSP Admin), and to see how the core service provider knows it (C3-M2).</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/company-detail.html">
+            <span class="hub-card__frame"><iframe src="views/company-detail.html" title="Preview of Company" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/osp/companies/{companyId}</code> (<code>getCompanyDetail</code>, <code>view_companies</code>, scope <code>osp</code>): <code>CompanyDetail</code> = <code>Company</code> (<code>name</code>, <code>shortName</code>, <code>address</code>, <code>identifiers[].source</code>, <code>coreDataSource</code>, <code>coreDataVerifiedAt</code>, <code>bpn</code>, <code>status</code>, <code>companyRoles</code>, <code>dataspaceName</code>, <code>createdAt</code>, <code>changedAt</code>, <code>activatedAt</code>) plus <code>applicationId</code>, <code>verificationRef</code>, <code>bpnAssignedAt</code>, <code>deactivationReason</code>, <code>rejectedAt</code>, <code>deactivatedAt</code>, <code>reactivatedAt</code>, <code>openChangeRequestId</code>. 404 <code>not-found</code>.</li>
+  <li><code>PATCH /api/c3-m1/osp/companies/{companyId}</code> (<code>correctCompany</code>, <code>manage_companies</code>): <code>CompanyCorrection</code> <code>name</code>, <code>shortName</code>, <code>address</code> (with <code>countryCode</code>), <code>identifiers</code> (the complete new list of <code>DECLARED</code> ones), <code>reason</code> (1–500, required). Name or address of an <code>EBW</code> company → source <code>MANUAL</code>, <code>verificationRef</code> empty (shown in the form). Errors 409 <code>field-locked</code> with <code>fields</code> (for example <code>countryCode</code> after the BPN), 409 <code>invalid-state</code>, 400 <code>validation</code>.</li>
+  <li><code>POST /api/c3-m1/osp/companies/{companyId}/deactivate</code> (<code>deactivateCompany</code>, <code>manage_companies</code>): <code>Reason</code> <code>reason</code> (1–500, audit log only). The dialog lists the consequences of FRAMEWORK 5.4. Response <code>CompanyDetail</code> with <code>status</code> <code>INACTIVE</code>, <code>deactivationReason</code> <code>MANUAL</code>.</li>
+  <li>C3-M2: <code>GET /api/c3-m2/companies/{companyId}</code> (<code>getCspRegistration</code>, <code>view_csp_registration</code>, scope <code>osp</code>, OSP Admin only): <code>status</code>, <code>bpn</code>, <code>did</code>, <code>membership</code>, <code>registeredAt</code>, <code>updatedAt</code>. Hidden for the OSP Reviewer (no permission), as in the state read-only.</li>
+  <li>Open change request: <code>openChangeRequestId</code> → link to the review (<code>GET /osp/change-requests/{id}</code>, <code>review_company_changes</code>).</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>The UI shows "Correct data" for <code>ACTIVE</code> and <code>REQUESTED</code> and "Deactivate" only for <code>ACTIVE</code>: that is a rule of 6.1 and 7.12/7.13. C3-M1 should return the allowed actions as flags (for example <code>canCorrect</code>, <code>canDeactivate</code>) so the UI decides nothing. (C3-M1)</li>
+  <li data-open>Which fields are locked (country after the BPN, identifiers from the Business Wallet) is rule 6.6. The form shows the lock from data; C3-M1 should return the locked fields (for example <code>lockedFields</code>) instead of the UI knowing 6.6 and only learning it from a 409 <code>field-locked</code>. (C3-M1)</li>
+  <li data-open>The deactivation reason is only in the audit log. Should OSP staff see who deactivated and why on this page? There is no read operation for the audit log. (C3-M1)</li>
+  <li data-open>Company roles: OSP staff cannot change them (6.6, "no"). Is that intended, also for removing a role after a breach? (C3-M1)</li>
+  <li data-open>The page combines two modules. Should C3-M1 <code>CompanyDetail</code> carry a short CSP status, or is the second call to C3-M2 the intended way? (C3-M1, C3-M2)</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-csp-registration" data-view="csp-registration" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">7</span>
+          <h2 class="tx-h2">CSP registration</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>The OSP Admin (Otto Normalverbraucher) opens it from the record of a company to see how the core service provider knows the company: whether it is registered with a BPN and OSP A as home OSP, whether its DID is in the BPN → DID directory, and whether it is a member of the dataspace. It is the only screen of C3-M2.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/csp-registration.html">
+            <span class="hub-card__frame"><iframe src="views/csp-registration.html" title="Preview of CSP registration" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m2/companies/{companyId}</code> (<code>getCspRegistration</code>, <code>x-permission: view_csp_registration</code>, scope <code>osp</code>): <code>CspRegistration</code> <code>companyId</code>, <code>bpn</code>, <code>status</code> (<code>PENDING</code>, <code>REGISTERED</code>, <code>FAILED</code>, <code>TRANSFERRED_AWAY</code>), <code>failureReason</code> (for example <code>REGISTERED_AT_OTHER_OSP</code>), <code>did</code>, <code>membership</code> (<code>NONE</code>, <code>REGISTERED</code>, <code>DEREGISTERED</code>), <code>registeredAt</code>, <code>updatedAt</code>.</li>
+  <li>Errors: 404 <code>urn:c3-m2:problem:not-found</code> (company without registration, for example before the approval), 403 <code>urn:c3-m2:problem:forbidden</code> (OSP Reviewer), 401 <code>unauthorized</code>.</li>
+  <li>The company card (alternative "Company card from C3-M1") reads <code>GET /api/c3-m1/osp/companies/{companyId}</code> (<code>view_companies</code>): <code>name</code>, <code>address</code>, <code>status</code>.</li>
+  <li>The three parts (registered, DID, membership) are read from the fields above; the UI does not say what runs next.</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>The response has no home OSP (<code>homeOspId</code>, <code>homeOspName</code>) and, for <code>TRANSFERRED_AWAY</code>, not the new OSP; the screen can only say "this installation" when <code>REGISTERED</code>. Add them to <code>CspRegistration</code>? (C3-M2)</li>
+  <li data-open>No history: there is no list of the calls and notifications (<code>audit_entry</code>, <code>csp_notification</code>) for OSP staff, so "when was the DID entered" or "when did the transfer arrive" cannot be shown. (C3-M2)</li>
+  <li data-open>No action for staff: after <code>FAILED</code> only Process Orchestration can run <code>register-company</code> again. Should the OSP Admin be able to retry, or see the process (C12-M1)? (C3-M2, C12-M1)</li>
+  <li data-open>No list endpoint: an overview "all companies at the CSP" (for example all <code>PENDING</code> or <code>FAILED</code>) needs one call per company. Add <code>GET /api/c3-m2/companies?status=</code>? (C3-M2)</li>
+  <li data-open><code>failureReason</code> is free text from the CSP; the UI translates known values (<code>REGISTERED_AT_OTHER_OSP</code>). Can the spec list the possible values as an enum? (C3-M2)</li>
+  <li data-open>The connectors entered in the discovery (<code>csp_connector</code>) are not readable; show them here or only in C6-M1? (C3-M2, C6-M1)</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-change-request-queue" data-view="change-request-queue" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">8</span>
+          <h2 class="tx-h2">Change requests to review</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>OSP staff with <code>review_company_changes</code> (Rolf and Renate, OSP Reviewer; Otto, OSP Admin) open it from Participant management or from a notification about a new request. They work the oldest request first.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/change-request-queue.html">
+            <span class="hub-card__frame"><iframe src="views/change-request-queue.html" title="Preview of Change requests to review" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/osp/change-requests?status=OPEN&amp;companyId=&amp;page=&amp;size=</code> (<code>listChangeRequests</code>, <code>review_company_changes</code>, scope <code>osp</code>) → <code>ChangeRequestPage</code> <code>{ items, page, size, total }</code>, sorted by <code>createdAt</code>, oldest first.</li>
+  <li>Per row from <code>ChangeRequest</code>: <code>companyName</code>, <code>changes</code> (<code>name</code>, <code>address</code>, <code>identifiers</code>; the changed fields are the summary), <code>documents.length</code>, <code>status</code>, <code>createdAt</code> (waiting time), <code>closedAt</code>.</li>
+  <li>The source of the core data under the company name needs <code>GET /osp/companies/{id}</code> per company (or the list of 7.10).</li>
+  <li>States: <code>empty</code> = no open request; <code>forbidden</code> = 403 for a Company Admin; <code>error</code> = 400 <code>validation</code> for a bad filter.</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: the counts in the status tabs need one call per status. Can the page return counts per status (<code>totals</code>), or do we drop the counts?</li>
+  <li data-open>C3-M1: <code>ChangeRequest</code> has <code>companyName</code> but not <code>coreDataSource</code>; add it, so the list shows which requests touch Business Wallet data without a call per company?</li>
+  <li data-open>C11-M1 Notifications: is there a notice to OSP staff on <code>CompanyChangeRequestSubmitted</code>? The empty state promises one.</li>
+  <li data-open>Live update (SSE) of the list when a colleague decides a request: which event stream does the UI subscribe to?</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-change-request-review" data-view="change-request-review" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">9</span>
+          <h2 class="tx-h2">Review change request</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>The reviewer (Rolf) opens one change request from the list: compares the current data with the requested data, reads the reason, opens the supporting documents and approves or declines with a reason that the Company Admin sees.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/change-request-review.html">
+            <span class="hub-card__frame"><iframe src="views/change-request-review.html" title="Preview of Review change request" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+  <li><code>GET /api/c3-m1/osp/change-requests/{changeRequestId}</code> (<code>getChangeRequest</code>, <code>review_company_changes</code>, scope <code>osp</code>) → <code>ChangeRequestDetail</code>: <code>changes</code>, <code>comment</code>, <code>documents[]</code> (<code>id</code>, <code>fileName</code>, <code>mediaType</code>, <code>sizeBytes</code>), <code>requestedBy</code>, <code>status</code>, <code>createdAt</code> and <code>company</code> (<code>name</code>, <code>address</code>, <code>identifiers</code>, <code>coreDataSource</code>, <code>status</code>) for the comparison.</li>
+  <li><code>GET …/documents/{documentId}</code> (<code>getChangeRequestDocument</code>): the file with <code>Content-Disposition: attachment</code>; every read is in the audit log (the page says so).</li>
+  <li><code>POST …/approve</code> (<code>approveChangeRequest</code>) with optional <code>comment</code> (≤ 1000, audit log only); <code>POST …/decline</code> (<code>declineChangeRequest</code>) with required <code>reason</code> (1–1000, shown to the Company Admin).</li>
+  <li>States: <code>approved</code> and <code>declined</code> = the results; <code>same-person</code> = 409 <code>same-person</code> (four-eyes principle); <code>attestation-required</code> = 409 when the company verified with its Business Wallet in the meantime; <code>not-found</code> = 404.</li>
+</ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+  <li data-open>C3-M1: only the <code>sub</code> of the requesting person is returned (<code>requestedBy</code>). Shown here as a name: does the UI resolve it through C2-M2, or does C3-M1 return a display name?</li>
+  <li data-open>C3-M1: the UI cannot know before the call that the reviewer is the requester (409 <code>same-person</code>). Can <code>ChangeRequestDetail</code> return <code>canDecide</code> (or the reason why not), so the buttons are not shown?</li>
+  <li data-open>C3-M1: the preview of a document needs an inline variant of 7.16 (<code>Content-Disposition: inline</code>), or the UI shows a download only.</li>
+  <li data-open>C3-M1 / C12-M1: after the approval, core data goes to the CSP (C3-M2 <code>update-company</code>). Should the page show that this step ran?</li>
+</ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-next">
+        <h2 class="tx-h3">Next: the proof of concept</h2>
+        <p>When no view is open, the skill <code>build-poc</code> builds the decided views into
+          <code>apps/portal/src/features/</code> as a feature with <code>stage: 'poc'</code>, on the in-memory adapter of
+          the module's core package (<code>VITE_USE_MOCKS=true npm start</code>). The data of
+          <code>shared/data.js</code> becomes its fixtures; every open point below goes to the backend team.</p>
+      </section>
+    </main>
+  </div>
+  <script src="shared/icons.js"></script>
+  <script src="shared/shell.js"></script>
+</body>
+</html>
