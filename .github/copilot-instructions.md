@@ -96,7 +96,7 @@ matches:
 - `portal-token-inspect`: 401 / 403 / 404 from a person's token and the operation's permission and scope (`token-inspect.py`)
 - `dependencies-and-dash`: Eclipse Dash like CI, `DEPENDENCIES`, IP reviews (`dash-check.sh`)
 - `merge-guard`: a UI branch before its PR against the frontend architecture rules, headers, commits, secrets (`merge-guard.py`)
-- `create-mockup`: phase 1 of a feature, clickable HTML mockups in `mockups/<feature>/` that look like the portal, decided view by view (`mockup.py`)
+- `create-mockup`: phase 1 of a feature, clickable HTML mockups in `mockups/<feature>/` that look like the portal, with a configurator per view to pick the best combination, decided view by view (`mockup.py`)
 - `build-poc`: phase 2, the decided views as a feature with `stage: 'poc'` on mock data (`VITE_USE_MOCKS=true npm start`)
 - `build-feature`: phase 3, the feature against its backend module (vendored spec, generated types, HTTP adapter) and the open points for the backend
 

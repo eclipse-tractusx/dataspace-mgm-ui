@@ -1,6 +1,6 @@
 ---
 name: create-mockup
-description: Phase 1 of 3 (mockup → proof of concept → feature). Design new portal screens as standalone, clickable HTML mockups in mockups/<feature>/ that look exactly like the Dataspace Management portal (shell, Eclipse Tractus-X tokens, icons and navigation generated from the code), filled with the real test data and the field names of the backend spec, organised by view with options and open questions, and decided one view at a time. Use for "mock up the onboarding screens", "how could the review page look", "show me two options for X", "prototype a new feature before we build it", "a design to discuss with the team or the backend", or whenever a feature has no decided design yet. Next phase - build-poc.
+description: Phase 1 of 3 (mockup → proof of concept → feature). Design new portal screens as standalone, clickable HTML mockups in mockups/<feature>/ that look exactly like the Dataspace Management portal (shell, Eclipse Tractus-X tokens, icons and navigation generated from the code), filled with the real test data and the field names of the backend spec, organised by view, each view with a configurator by default (switch the alternatives of every part of the screen and pick the best combination), with open questions, decided one view at a time. Use for "mock up the onboarding screens", "how could the review page look", "show me the options for X", "let me pick the best combination", "prototype a new feature before we build it", "a design to discuss with the team or the backend", or whenever a feature has no decided design yet. Next phase - build-poc.
 ---
 
 <!--
@@ -47,7 +47,7 @@ M=.claude/skills/create-mockup/scripts/mockup.py
 $M new onboarding --title Onboarding --module c1-m3 --path /onboarding \
    --view review-cases:"Review cases" --view review-case:"Review case"   # hub + views + shared/
 $M view onboarding decision:"Decision"         # one more view (page, hub section, table of contents)
-$M options onboarding review-case              # options page for ONE open question of a view
+$M options onboarding review-case              # side-by-side page for ONE question (the exception; views have a configurator)
 $M sync onboarding                             # tokens, navigation and icons again from the portal code
 $M check onboarding                            # the rules below; exit 1 on an error (--strict: also warnings)
 $M open onboarding [review-case]               # open in the browser; `$M serve` for http://localhost:4290/mockups/
@@ -61,8 +61,9 @@ Python 3.10+, standard library only. `sync` needs `node_modules` (`npm ci`) for 
 ```text
 mockups/<feature>/
 ├── index.html            the hub: one section per view (preview, data from the spec, open questions, decision)
-├── views/<view>.html     one screen inside the portal shell, with a state switcher (loaded, empty, loading, error)
-├── options/<view>-options.html   2 or 3 answers to one open question, side by side
+├── views/<view>.html     one screen inside the portal shell, with its configurator and a state switcher
+│                         (loaded, empty, loading, error)
+├── options/<view>-options.html   only when two answers must be seen at the same time, side by side
 └── shared/
     ├── tokens.css        generated from libs/shared/ui-mui/src/theme (palette, radii, Manrope), dark and light
     ├── nav.js            generated from apps/portal/src/features/main.tsx, with this feature enabled
@@ -119,11 +120,38 @@ Never edit the three generated files; change the portal and run `sync`. The othe
 - Real words only: the persons, companies, BPNs and IDs of `data.js`, the field labels the page will have. No
   "Item 1", no lorem ipsum, no invented companies.
 
-### 4. Options for what is undecided
+### 4. A configurator for every view (the default)
 
-For one open question of a view (list or cards? one page or a wizard? where does the decision live?) run
-`mockup.py options <feature> <view>` and build two or three answers side by side, each with what it makes easier
-(`.pro`) and harder (`.con`, including what the backend would have to provide). One question per options page.
+**The preference of this product: every view is built as a configurator.** Instead of one design, or one options page
+per question, each part of the screen that could look different gets two or three alternatives, and the person who
+decides switches them on the screen itself until the combination is right. The parts are independent dimensions:
+
+| Typical dimension | Alternatives, for example |
+|---|---|
+| Layout of the content | table, cards, master and detail |
+| Where the primary action sits | in the header, below the content, a floating button |
+| Filters | chips above the list, a side panel, a search field only |
+| Detail of an item | a drawer, its own page, an expanding row |
+| Density | comfortable, compact |
+| A multi-step task | one long form, a wizard with steps |
+
+How to build it:
+
+- Mark each alternative with `data-variant="<dimension>:<value>"`, name the value with `data-variant-label`, and the
+  dimension with `data-dimension` on its first alternative. The starter of `views/<view>.html` has two dimensions
+  (`layout`, `action`) to copy.
+- `shell.js` finds the dimensions and shows the **configurator panel** (the "configure" button of the mockup bar hides
+  it). It switches every dimension independently of the others and of the state buttons, and shows how many
+  combinations there are.
+- The combination is in the URL (`views/review-cases.html#layout=list&action=header`), so a link opens a combination.
+  "Copy" puts `layout=list · action=header` on the clipboard for the decision in the hub.
+- Parts built in JavaScript read the choice with `mock.variant('layout')` and re-render in `mock.onConfigure(…)`.
+- Every alternative uses the same data from `data.js`, so the combinations differ only in how they show it.
+- Keep a view to two to four dimensions with two or three values each. More than that becomes a design of its own.
+
+`mockup.py options <feature> <view>` stays for the exception: two answers that must be seen at the same time to
+compare them (two navigation concepts, two wizard flows), each with what it makes easier (`.pro`) and harder (`.con`,
+including what the backend would have to provide).
 
 ### 5. Check, look, show
 
@@ -135,8 +163,10 @@ For one open question of a view (list or cards? one page or a wizard? where does
 
 Walk the person who owns the feature through the hub view by view. For each view record the outcome in its section:
 
-- `data-status="decided"` and `<span class="hub-status">decided</span>`, the choice in
-  `<p class="hub-decision" data-decision>Decided 2026-11-06: option B, …</p>`, the losing options stay as the record;
+- `data-status="decided"` and `<span class="hub-status">decided</span>`, and the chosen combination of the
+  configurator (copied from its panel) in
+  `<p class="hub-decision" data-decision>Decided 2026-11-06: layout=list · action=header, …</p>`. The alternatives that
+  lost stay in the view as the record; the proof of concept builds only the chosen combination;
 - or `data-status="deferred"` with the reason (not in this iteration, waiting for the backend);
 - open questions that belong to the backend go to the module's team: an issue on portal-backend-spec, or the module's
   `OPEN-QUESTIONS.md` in the service. Remove the `data-open` item when it is answered.
@@ -158,6 +188,7 @@ Walk the person who owns the feature through the hub view by view. For each view
 | No inline `onclick=`; `<img>` with `alt` | warning | the same habits as the app |
 | No starter content left (`data-todo`) | warning | the scaffold is a starting point, not a design |
 | Every page in `views/` and `options/` linked from the hub | warning | the hub is the index reviewers use |
+| Every view has a configurator (`data-variant`); every dimension has at least two values | warning | the preference: pick the best combination per view |
 
 ## Conventions
 
@@ -175,12 +206,14 @@ Walk the person who owns the feature through the hub view by view. For each view
 | A screen that decides (shows "Approve" only to "the second reviewer") | Show it from an API flag; the flag goes into the hub |
 | Only the happy path | One state per result of the use case, errors with their Problem Details type |
 | A new colour, radius or font "just for this screen" | Use the tokens; a missing token is a change to `libs/shared/ui-mui` first |
-| Many questions on one options page | One question per page, two or three answers |
+| One fixed design per view, or an options page per question | A configurator: the alternatives as dimensions of the same view |
+| Dimensions that depend on each other (a filter panel only in the card layout) | Make them independent, or merge them into one dimension |
 | Building a React component "to try it out" | That is phase 2; finish deciding here |
 
 ## Done when
 
 - [ ] Every view of the feature has a page in `views/` and a section in the hub with its data from the spec
+- [ ] Every view has a configurator with its alternatives, and its decision names the chosen combination
 - [ ] `mockup.py check <feature>` has no error; the remaining warnings are explained
 - [ ] Each view was clicked through in both themes and at phone width
 - [ ] `mockup.py status <feature> --ready` exits 0: every view decided or deferred, with the decision written down
