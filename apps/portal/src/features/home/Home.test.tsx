@@ -27,10 +27,13 @@
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { FavouritesProvider } from '../../contexts/FavouritesContext';
 import { allFeatures, features, getAllRoutes } from '../main';
+import { homeTranslations } from './i18n';
 import Home from './pages/Home';
+
+beforeAll(() => homeTranslations.load());
 
 describe('Home', () => {
   it('welcomes the user, explains the portal, leads to all services and ends with the footer', () => {
@@ -59,7 +62,7 @@ describe('Home', () => {
 
 describe('feature registry', () => {
   it('registers home as the index route and in the navigation', () => {
-    expect(allFeatures.map((feature) => feature.name)).toContain('Home');
+    expect(allFeatures.map((feature) => feature.id)).toContain('home');
     expect(getAllRoutes().some((route) => route.index)).toBe(true);
     expect(features.find((item) => item.path === '/')?.disabled).toBe(false);
   });

@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{FEATURE_TITLE}} · {{VIEW_TITLE}} — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <style>
+    /* Styles of this screen only. Colours, radii and fonts: var(--…) from tokens.css, never literals. */
+  </style>
+</head>
+<!-- data-active: the navigation path of the feature; data-states: one button per result of the use case. -->
+<body data-active="{{ACTIVE_PATH}}" data-view="{{VIEW_TITLE}}" data-states="{{STATES}}">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">{{FEATURE_TITLE}}</div>
+    <h1 class="tx-title" id="view-title">{{VIEW_TITLE}}</h1>
+
+    <!-- Replace this starter with the screen. Every value shown comes from window.MOCK_DATA (shared/data.js).
+         Configurator (default): give each part of the screen that could look different two or three alternatives,
+         data-variant="<dimension>:<value>". The configurator panel combines them; the hub records the chosen one. -->
+    <section data-show-state="loaded" data-todo>
+      <div class="tx-card" data-variant="layout:card" data-dimension="Layout" data-variant-label="One card">
+        <div class="tx-row tx-row--between">
+          <h2 class="tx-h3">Signed in as <span data-person-name></span></h2>
+          <button class="tx-btn" type="button" data-action="primary" data-variant="action:header" data-dimension="Primary action" data-variant-label="In the header"><span data-icon="Add"></span>Primary action</button>
+        </div>
+        <p class="tx-muted">The screen of {{VIEW_TITLE}} goes here: what the person sees, in the order they need it.</p>
+        <div class="tx-row" data-variant="action:footer" data-variant-label="Below the content">
+          <button class="tx-btn" type="button" data-action="primary"><span data-icon="Add"></span>Primary action</button>
+        </div>
+      </div>
+      <ul class="tx-list" data-variant="layout:list" data-variant-label="A list">
+        <li><span class="tx-tile" data-icon="PersonOutlined"></span><span>Signed in as <strong data-person-name></strong></span></li>
+      </ul>
+    </section>
+
+    <section data-show-state="empty">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="InfoOutlined"></div>
+        <h2 class="tx-h3">Nothing here yet</h2>
+        <p>Say what the person can do to fill this list.</p>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status">
+      <div class="tx-row"><span class="tx-spinner"></span><span>Loading…</span></div>
+    </section>
+
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div>This page could not be loaded (HTTP 502).</div>
+          <code>urn:{{MODULE}}:problem:upstream-error</code>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    // Interactions of this screen: plain JavaScript on the state in window.MOCK_DATA.
+    (function () {
+      'use strict';
+      const person = mock.data.persons.pia;
+      document.querySelectorAll('[data-person-name]').forEach((el) => { el.textContent = person.name; });
+      mock.on('click', '[data-action="primary"]', () => mock.toast('Done'));
+    })();
+  </script>
+</body>
+</html>

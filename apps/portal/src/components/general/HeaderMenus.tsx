@@ -42,6 +42,7 @@ import {
   alpha,
   tractusx,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { useCoreModules, useSession } from '../../core/CoreModulesContext';
 
@@ -89,6 +90,7 @@ function useMenu() {
  * leave the app for the BFF; the UI has no login screen and never sees a token.
  */
 export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacement }) {
+  const { t } = useTranslation();
   const menu = useMenu();
   const session = useSession();
   const { identity } = useCoreModules();
@@ -100,10 +102,10 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
   };
   return (
     <>
-      <Tooltip title="Profile" placement={placement === 'rail' ? 'right' : 'bottom'}>
+      <Tooltip title={t('profile.label')} placement={placement === 'rail' ? 'right' : 'bottom'}>
         <IconButton
           onClick={menu.show}
-          aria-label="Profile"
+          aria-label={t('profile.label')}
           aria-haspopup="menu"
           aria-expanded={menu.open}
           aria-controls={menu.open ? `profile-menu-${placement}` : undefined}
@@ -122,9 +124,13 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
         {...originsFor(placement)}
       >
         <MenuItem disabled sx={{ opacity: '1 !important', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <Typography sx={{ fontWeight: 700 }}>{person ? person.user.name : 'Guest'}</Typography>
+          <Typography sx={{ fontWeight: 700 }}>{person ? person.user.name : t('profile.guest')}</Typography>
           <Typography variant="body2" color="text.secondary">
-            {person ? (person.bpn ?? 'No company yet') : session.status === 'loading' ? 'Checking the session…' : 'Not signed in'}
+            {person
+              ? (person.bpn ?? t('profile.noCompany'))
+              : session.status === 'loading'
+                ? t('profile.checking')
+                : t('profile.signedOut')}
           </Typography>
         </MenuItem>
         <Divider />
@@ -132,21 +138,21 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
           <ListItemIcon>
             <PersonOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="My profile" secondary="Coming soon" />
+          <ListItemText primary={t('profile.myProfile')} secondary={t('navigation.comingSoon')} />
         </MenuItem>
         {person ? (
           <MenuItem onClick={signOut}>
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary="Sign out" />
+            <ListItemText primary={t('profile.signOut')} />
           </MenuItem>
         ) : (
           <MenuItem disabled={session.status === 'loading'} onClick={() => identity.login.execute(pathname)}>
             <ListItemIcon>
               <LoginIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary="Sign in" />
+            <ListItemText primary={t('profile.signIn')} />
           </MenuItem>
         )}
       </Menu>
@@ -159,13 +165,14 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
  * phones. The inbox arrives with the notifications module; until then the menu says so.
  */
 export function NotificationsMenu({ placement = 'header' }: { placement?: MenuPlacement }) {
+  const { t } = useTranslation();
   const menu = useMenu();
   return (
     <>
-      <Tooltip title="Notifications" placement={placement === 'rail' ? 'right' : 'bottom'}>
+      <Tooltip title={t('notifications.label')} placement={placement === 'rail' ? 'right' : 'bottom'}>
         <IconButton
           onClick={menu.show}
-          aria-label="Notifications"
+          aria-label={t('notifications.label')}
           aria-haspopup="menu"
           aria-expanded={menu.open}
           aria-controls={menu.open ? `notifications-menu-${placement}` : undefined}
@@ -180,14 +187,14 @@ export function NotificationsMenu({ placement = 'header' }: { placement?: MenuPl
       </Tooltip>
       <Menu id={`notifications-menu-${placement}`} anchorEl={menu.anchor} open={menu.open} onClose={menu.hide} {...originsFor(placement)}>
         <MenuItem disabled sx={{ opacity: '1 !important', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <Typography sx={{ fontWeight: 700 }}>Notifications</Typography>
+          <Typography sx={{ fontWeight: 700 }}>{t('notifications.label')}</Typography>
           <Typography variant="body2" color="text.secondary">
-            Nothing new
+            {t('notifications.nothingNew')}
           </Typography>
         </MenuItem>
         <Divider />
         <MenuItem disabled>
-          <ListItemText primary="Your inbox" secondary="Arrives with the notifications module" />
+          <ListItemText primary={t('notifications.inbox')} secondary={t('notifications.inboxPending')} />
         </MenuItem>
       </Menu>
     </>

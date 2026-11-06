@@ -26,6 +26,16 @@
 
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach } from 'vitest';
+import { afterEach, expect } from 'vitest';
+import { initI18n } from './i18n';
 
-afterEach(() => cleanup());
+// Tests run in English, and fail on a key that has no text in any language: a typo, or a feature namespace the test
+// did not load (`await <feature>Translations.load()`).
+const missingKeys: string[] = [];
+const i18n = initI18n({ language: 'en', onMissingKey: (namespace, key) => missingKeys.push(`${namespace}:${key}`) });
+
+afterEach(async () => {
+  cleanup();
+  await i18n.changeLanguage('en');
+  expect(missingKeys.splice(0), 'i18n keys without a text').toEqual([]);
+});

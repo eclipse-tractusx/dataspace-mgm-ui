@@ -39,18 +39,13 @@ import {
   tractusx,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
-import type { NavigationItem } from '../../types/routing';
+import { useTranslation } from 'react-i18next';
+import type { FeatureCategory, NavigationItem } from '../../types/routing';
 
 export const SERVICE_CARD_WIDTH = 240;
 
-/** Display names of the areas, for the line under a service's name. */
-export const AREA_LABELS: Record<NavigationItem['category'], string> = {
-  start: 'Start',
-  onboarding: 'Onboarding',
-  participants: 'Participants',
-  'as-a-service': 'As a service',
-  network: 'Network',
-};
+/** The areas in display order; their names are `areas.<area>` in common.json. */
+export const AREAS: readonly FeatureCategory[] = ['start', 'onboarding', 'participants', 'as-a-service', 'network'];
 
 interface ServiceCardProps {
   service: NavigationItem;
@@ -64,12 +59,13 @@ interface ServiceCardProps {
  * status, and the action. The description and version show in a tooltip on the info button, never on the card.
  */
 export default function ServiceCard({ service, favourite, onOpen }: ServiceCardProps) {
+  const { t } = useTranslation();
   const { palette } = useTheme();
   const dark = palette.mode === 'dark';
   const iconColor = dark ? tractusx.orange : tractusx.orangeDarkest;
   const glow = dark ? '0 0 14px rgba(255, 255, 255, 0.28)' : '0 0 14px rgba(0, 0, 0, 0.12)';
   const glowStrong = dark ? '0 0 22px rgba(255, 255, 255, 0.5)' : '0 0 22px rgba(0, 0, 0, 0.2)';
-  const status = service.disabled ? 'Coming soon' : 'Available';
+  const status = service.disabled ? t('navigation.comingSoon') : t('services.available');
 
   return (
     <Box
@@ -131,9 +127,9 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
         </ButtonBase>
 
         {favourite && (
-          <Tooltip title="In your sidebar">
+          <Tooltip title={t('services.inSidebar')}>
             <Box component="span" sx={{ position: 'absolute', top: 10, left: 10, color: tractusx.orange, display: 'inline-flex' }}>
-              <StarIcon fontSize="small" aria-label="In your sidebar" />
+              <StarIcon fontSize="small" aria-label={t('services.inSidebar')} />
             </Box>
           </Tooltip>
         )}
@@ -166,7 +162,7 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
                   {service.name}
                 </Typography>
                 <Typography component="span" sx={{ fontSize: 12, color: 'rgba(255, 255, 255, 0.7)' }}>
-                  v{service.version}
+                  {t('services.version', { version: service.version })}
                 </Typography>
               </Stack>
               <Typography component="span" sx={{ fontSize: 13, lineHeight: 1.5 }}>
@@ -177,7 +173,7 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
         >
           <IconButton
             size="small"
-            aria-label={`About ${service.name}`}
+            aria-label={t('services.about', { name: service.name })}
             sx={{
               position: 'absolute',
               top: 6,
@@ -197,7 +193,7 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
           {service.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" noWrap>
-          {AREA_LABELS[service.category]} · {status}
+          {t(`areas.${service.category}`)} · {status}
         </Typography>
       </Box>
 
@@ -207,10 +203,14 @@ export default function ServiceCard({ service, favourite, onOpen }: ServiceCardP
         disabled={service.disabled}
         onClick={onOpen}
         endIcon={service.disabled ? undefined : <ArrowForwardIcon />}
-        aria-label={service.disabled ? `${service.name}, coming soon` : `Open ${service.name}`}
+        aria-label={
+          service.disabled
+            ? t('navigation.itemComingSoonLabel', { name: service.name })
+            : t('services.openService', { name: service.name })
+        }
         sx={{ py: 1 }}
       >
-        {service.disabled ? 'Coming soon' : 'Open'}
+        {service.disabled ? t('navigation.comingSoon') : t('services.open')}
       </Button>
     </Box>
   );

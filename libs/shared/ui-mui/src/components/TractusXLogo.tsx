@@ -30,13 +30,14 @@ import logo from '../assets/logo_tractus-x.svg';
 /**
  * The Eclipse Tractus-X mark in colour, from the SVG source (Design Guidelines, slides 10-14):
  * never recoloured, stretched, rotated or given a glow; keep clear space around it.
+ * Either `decorative` (next to the name) or with `label`, the translated text alternative: the library has no texts.
  */
-export function TractusXLogo({ size = 36, decorative = false }: { size?: number; decorative?: boolean }) {
+export function TractusXLogo({ size = 36, decorative = false, label = '' }: { size?: number; decorative?: boolean; label?: string }) {
   return (
     <Box
       component="img"
       src={logo}
-      alt={decorative ? '' : 'Eclipse Tractus-X logo'}
+      alt={decorative ? '' : label}
       sx={{ height: size, width: 'auto', display: 'block', flexShrink: 0 }}
     />
   );

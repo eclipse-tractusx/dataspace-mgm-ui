@@ -101,7 +101,9 @@ The agent itself needs only Claude Code or GitHub Copilot with this repository o
 | Module status | "Which modules are still stand-ins, and what is left in C1-M2?" | `module-map` |
 | Before a merge window | "Check team/3 before we open the PR." | `merge-guard`, `module-map` |
 | UI meets backend | "Will the registration UI work against the service? Paths, casing, errors." | `contract-seam` |
-| Build UI for a module | "Sketch the core package for C1-M3 review cases with the real operations." | `portal-spec-sources`, `contract-seam` |
+| Design a feature | "Mock up the review cases of C1-M3 for Rolf, with two options for the decision." | `create-mockup` |
+| Prototype it in the app | "Build the POC of onboarding from the decided mockup." | `build-poc` |
+| Build UI for a module | "Connect the onboarding POC to C1-M3 and list what the backend still lacks." | `build-feature`, `portal-spec-sources`, `contract-seam` |
 | Dependency hygiene | "I added httpx-sse. Update DEPENDENCIES like CI." | `dependencies-and-dash` |
 | Neighbouring products | "How does C4-M2 create a wallet in an IdentityHub?" | answers the portal side, hands the wallet side to the Identity Keeper |
 
@@ -123,6 +125,9 @@ $S/contract-seam/scripts/seam-check.py summary --ui ../dataspace-mgm-ui
 $S/portal-token-inspect/scripts/token-inspect.py token.jwt --op "GET /api/c3-m1/companies/<id>"
 $S/dependencies-and-dash/scripts/dash-check.sh --list-only
 $S/merge-guard/scripts/merge-guard.py --strict
+$S/create-mockup/scripts/mockup.py new onboarding --title Onboarding --module c1-m3 --path /onboarding --view review-cases
+$S/create-mockup/scripts/mockup.py check onboarding                 # self-contained, tokens, real data
+$S/create-mockup/scripts/mockup.py status --ready                   # every view decided before the POC
 ```
 
 The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/README.md).
@@ -153,7 +158,7 @@ The full catalog is in [`.claude/skills/README.md`](../../../.claude/skills/READ
   matter differs. Change all four in the same pair of PRs.
 - **Shared skills are identical in both repositories** (`portal-spec-sources`, `flow-trace`, `contract-seam`,
   `portal-token-inspect`, `dependencies-and-dash`). `merge-guard` differs per repository; `module-map` exists only in
-  the service.
+  the service; `create-mockup`, `build-poc` and `build-feature` (mockup → proof of concept → feature) only in the UI.
 - **Add a skill:** a folder with `SKILL.md` (front matter `name`, `description`) and `scripts/`; list it in
   `.claude/skills/README.md`, in the skill table of the agent files and in `.github/copilot-instructions.md`.
 - **License headers:** AI-generated files carry the Apache-2.0 header with the AI disclosure block (AI-generated

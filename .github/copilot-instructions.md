@@ -41,12 +41,42 @@ including when you are not explicitly selected as that agent.
 
 ## The rules of this repository come first
 
-The UI follows the frontend architecture (portal-frontend-spec: `HACKATHON-FRONTEND.md`, `architecture/01` to `14`):
-no business decisions in the UI (the API returns flags), no tokens and no Keycloak in the browser (the BFF holds the
+The UI follows the frontend architecture (portal-frontend-spec: `HACKATHON-FRONTEND.md`, `architecture/01` to `14`): no
+business decisions in the UI (the API returns flags), no tokens and no Keycloak in the browser (the BFF holds the
 session), every call through a use case of a framework-free core package, types generated from
 `specs/<module>/openapi.yaml` and never edited, RTK Query endpoints with `queryFn`, SSE instead of WebSockets or
-polling, texts and errors as i18n keys, one type per file, `if` always with braces. The backend contract is the backend
-spec (portal-backend-spec); where the two disagree, name the seam with the `contract-seam` skill.
+polling, texts and errors as i18n keys in every supported language (below), one type per file, `if` always with braces.
+The backend contract is the backend spec (portal-backend-spec); where the two disagree, name the seam with the
+`contract-seam` skill.
+
+## Translations: always, in every language
+
+Every text a person can see or hear in the UI is an i18n key, and every change that adds or changes one carries the
+text in **every supported language** (`SUPPORTED_LANGUAGES` in `apps/portal/src/i18n/index.ts`: today English and
+German) in the same commit. Never leave a language for later, never hard-code a string "for now", never ship a key
+that only English has. The guide is [`docs/developers/translations.md`](../docs/developers/translations.md):
+
+- Shell texts (header, navigation, footer, `features.<id>.name` / `.description`) go to
+  `apps/portal/src/i18n/locales/<language>/common.json`; a feature's own texts to
+  `apps/portal/src/features/<feature>/i18n/locales/<language>/<feature>.json`, the namespace loaded lazily through
+  `translations` in its `FeatureConfig`. A new feature copies `features/participants/i18n/`.
+- Keys, not strings, also for `aria-label`, `title`, `alt`, `placeholder`, tooltips, chips, alerts and the loading,
+  empty and error states; values by interpolation (`{{name}}`), counts by plurals (`_one` / `_other`), values of the
+  API as keys (`status.ACTIVE`), dates and numbers with `appLocale()`.
+- German uses the formal *Sie*. Core packages (`packages/*`) never contain texts; their errors are keys.
+- Before you hand over: `npm test` (key parity in every language, and no rendered key without a text) and
+  `merge-guard.py` (no new literal JSX text, no locale file changed in one language only).
+
+## Mockups: a configurator per view, by default
+
+When you mock up a screen (skill `create-mockup`, `mockups/<feature>/`), do not hand over one fixed design per view.
+Build every view as a **configurator**: each part that could look different (layout of the content, where the primary
+action sits, filters, how a detail opens, density, one form or a wizard) gets two or three alternatives, marked
+`data-variant="<dimension>:<value>"` with `data-variant-label` and `data-dimension`. The configurator panel lets the
+person who decides combine them on the screen; the combination is in the URL (`#layout=list&action=header`) and is
+recorded as the view's decision in the hub. Keep two to four independent dimensions per view. The proof of concept
+(`build-poc`) builds only the chosen combination. Use a side-by-side options page (`mockup.py options`) only when two
+answers must be seen at the same time. `mockup.py check` warns about a view without a configurator.
 
 ## Your core identity rules
 
@@ -96,5 +126,8 @@ matches:
 - `portal-token-inspect`: 401 / 403 / 404 from a person's token and the operation's permission and scope (`token-inspect.py`)
 - `dependencies-and-dash`: Eclipse Dash like CI, `DEPENDENCIES`, IP reviews (`dash-check.sh`)
 - `merge-guard`: a UI branch before its PR against the frontend architecture rules, headers, commits, secrets (`merge-guard.py`)
+- `create-mockup`: phase 1 of a feature, clickable HTML mockups in `mockups/<feature>/` that look like the portal, with a configurator per view to pick the best combination, decided view by view (`mockup.py`)
+- `build-poc`: phase 2, the decided views as a feature with `stage: 'poc'` on mock data (`VITE_USE_MOCKS=true npm start`)
+- `build-feature`: phase 3, the feature against its backend module (vendored spec, generated types, HTTP adapter) and the open points for the backend
 
 The full catalog is in `.claude/skills/README.md`.

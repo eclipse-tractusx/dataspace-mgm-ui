@@ -35,6 +35,7 @@ import {
   alpha,
   tractusx,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { PHONE_FAVOURITE_SLOTS, activePath, useFavourites } from '../../contexts/FavouritesContext';
 import { ALL_SERVICES_PATH } from '../../pages/AllServicesPage';
@@ -48,6 +49,7 @@ import { ProfileMenu } from './HeaderMenus';
  * Items only move when the favourites change.
  */
 export default function BottomBar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const shown = useFavourites().favourites.slice(0, PHONE_FAVOURITE_SLOTS);
@@ -60,7 +62,7 @@ export default function BottomBar() {
   return (
     <Paper
       component="nav"
-      aria-label="Favourites"
+      aria-label={t('navigation.favourites')}
       square
       elevation={0}
       sx={{
@@ -86,7 +88,7 @@ export default function BottomBar() {
             value={item.path}
             icon={item.icon}
             disabled={item.disabled}
-            aria-label={item.disabled ? `${item.name}, coming soon` : item.name}
+            aria-label={item.disabled ? t('navigation.itemComingSoonLabel', { name: item.name }) : item.name}
             title={item.name}
           />
         ))}
@@ -101,7 +103,7 @@ export default function BottomBar() {
         <IconButton
           component={NavLink}
           to={ALL_SERVICES_PATH}
-          aria-label="All services"
+          aria-label={t('navigation.allServices')}
           sx={{
             width: 44,
             height: 44,

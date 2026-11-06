@@ -25,22 +25,25 @@
  ********************************************************************************/
 
 import { Box, Divider, Grid, Link, Stack, TractusXLogo, Typography, tractusx, useTheme } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 
+/** `label` is an i18n key in common.json (footer.*). */
 const ECLIPSE_LINKS = [
-  { label: 'About', href: 'https://www.eclipse.org' },
-  { label: 'Privacy Policy', href: 'https://www.eclipse.org/legal/privacy.php' },
-  { label: 'Terms of Use', href: 'https://www.eclipse.org/legal/termsofuse.php' },
-  { label: 'Compliance', href: 'https://www.eclipse.org/legal/compliance/' },
-  { label: 'Legal Resources', href: 'https://www.eclipse.org/legal' },
-];
+  { label: 'footer.about', href: 'https://www.eclipse.org' },
+  { label: 'footer.privacy', href: 'https://www.eclipse.org/legal/privacy.php' },
+  { label: 'footer.terms', href: 'https://www.eclipse.org/legal/termsofuse.php' },
+  { label: 'footer.compliance', href: 'https://www.eclipse.org/legal/compliance/' },
+  { label: 'footer.legal', href: 'https://www.eclipse.org/legal' },
+] as const;
 
 const PROJECT_LINKS = [
-  { label: 'Eclipse Tractus-X', href: 'https://eclipse-tractusx.github.io' },
-  { label: 'Source code', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-ui' },
-  { label: 'Architecture', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture' },
-];
+  { label: 'brand.tractusx', href: 'https://eclipse-tractusx.github.io' },
+  { label: 'footer.sourceCode', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-ui' },
+  { label: 'footer.architecture', href: 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture' },
+] as const;
 
-function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+function FooterColumn({ title, links }: { title: string; links: ReadonlyArray<{ label: string; href: string }> }) {
+  const { t } = useTranslation();
   return (
     <Stack spacing={1} component="nav" aria-label={title}>
       <Typography variant="overline" sx={{ color: tractusx.white }}>
@@ -55,7 +58,7 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
           variant="body2"
           sx={{ color: 'rgba(255, 255, 255, 0.85)', '&:hover': { color: tractusx.orange } }}
         >
-          {link.label}
+          {t(link.label)}
         </Link>
       ))}
     </Stack>
@@ -65,6 +68,7 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
 /** Footer in the dark style of eclipse-tractusx.github.io, mentioning the Eclipse Foundation (slide 14). */
 export default function Footer() {
   const { palette } = useTheme();
+  const { t } = useTranslation();
   return (
     <Box
       component="footer"
@@ -75,24 +79,24 @@ export default function Footer() {
           <Stack spacing={1.5}>
             <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
               <TractusXLogo size={32} decorative />
-              <Typography sx={{ fontWeight: 800, fontSize: 18 }}>Eclipse Tractus-X</Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: 18 }}>{t('brand.tractusx')}</Typography>
             </Stack>
             <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-              Where We Build Dataspaces
+              {t('footer.tagline')}
             </Typography>
           </Stack>
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <FooterColumn title="Eclipse Foundation" links={ECLIPSE_LINKS} />
+          <FooterColumn title={t('footer.eclipseFoundation')} links={ECLIPSE_LINKS} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <FooterColumn title="Dataspace Management" links={PROJECT_LINKS} />
+          <FooterColumn title={t('brand.product')} links={PROJECT_LINKS} />
         </Grid>
       </Grid>
       <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.3)' }} />
       <Box sx={{ px: { xs: 3, md: 6 }, py: 2.5 }}>
         <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.85)' }}>
-          Copyright © 2026 Contributors to the Eclipse Foundation · Apache-2.0
+          {t('footer.copyright')}
         </Typography>
       </Box>
     </Box>

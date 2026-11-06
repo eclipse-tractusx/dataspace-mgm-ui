@@ -1,0 +1,132 @@
+{
+  "brand": {
+    "tractusx": "Eclipse Tractus-X",
+    "product": "Dataspace Management"
+  },
+  "app": {
+    "homeLink": "Eclipse Tractus-X Dataspace Management, home",
+    "skipToContent": "Skip to content",
+    "loading": "Loading…"
+  },
+  "header": {
+    "environment": "Environment: {{environment}}",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
+  },
+  "language": {
+    "label": "Language",
+    "menu": "Choose a language"
+  },
+  "navigation": {
+    "features": "Features",
+    "favourites": "Favourites",
+    "allServices": "All services",
+    "comingSoon": "Coming soon",
+    "itemComingSoon": "{{name}} (coming soon)",
+    "itemComingSoonLabel": "{{name}}, coming soon"
+  },
+  "favourites": {
+    "title": "Favourites",
+    "edit": "Edit favourites",
+    "add": "Add {{name}} to favourites",
+    "hintSidebar": "Switch on the services you want in your sidebar.",
+    "hintBar": "The first five are in your bar. Home is always there."
+  },
+  "profile": {
+    "label": "Profile",
+    "guest": "Guest",
+    "noCompany": "No company yet",
+    "checking": "Checking the session…",
+    "signedOut": "Not signed in",
+    "myProfile": "My profile",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "notifications": {
+    "label": "Notifications",
+    "nothingNew": "Nothing new",
+    "inbox": "Your inbox",
+    "inboxPending": "Arrives with the notifications module"
+  },
+  "services": {
+    "carousel": "Services",
+    "count_one": "{{count}} service",
+    "count_other": "{{count}} services",
+    "previous": "Previous services",
+    "next": "Next services",
+    "open": "Open",
+    "openService": "Open {{name}}",
+    "about": "About {{name}}",
+    "version": "v{{version}}",
+    "inSidebar": "In your sidebar",
+    "available": "Available",
+    "heading": "Services",
+    "settings": "Settings",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "sourceCode": "Source code"
+  },
+  "areas": {
+    "start": "Start",
+    "onboarding": "Onboarding",
+    "participants": "Participants",
+    "as-a-service": "As a service",
+    "network": "Network"
+  },
+  "allServices": {
+    "overline": "Eclipse Tractus-X Dataspace Management",
+    "title": "All services",
+    "intro": "Every service of your onboarding service provider in one place. Keep the ones you use most in your sidebar with the + under your favourites.",
+    "filter": "Filter services",
+    "all": "All · {{count}}",
+    "area": "{{area}} · {{count}}"
+  },
+  "features": {
+    "home": {
+      "name": "Home",
+      "description": "Start page of the Dataspace Management."
+    },
+    "onboarding": {
+      "name": "Onboarding",
+      "description": "Register companies, review their applications and bring them into the dataspace."
+    },
+    "participants": {
+      "name": "Participant management",
+      "description": "Company data, business partner numbers, users and technical users of every participant."
+    },
+    "connectors": {
+      "name": "Connectors as a service",
+      "description": "Run and monitor dataspace connectors for your participants, so they do not have to host their own."
+    },
+    "wallets": {
+      "name": "Wallets as a service",
+      "description": "Provide dataspace wallets for your participants and manage their credentials."
+    },
+    "marketplace": {
+      "name": "Marketplace",
+      "description": "Offer apps and services to the participants and manage their subscriptions."
+    },
+    "network": {
+      "name": "Provider network",
+      "description": "Work with other onboarding service providers: find the home provider of a participant and exchange trust."
+    }
+  },
+  "footer": {
+    "tagline": "Where We Build Dataspaces",
+    "eclipseFoundation": "Eclipse Foundation",
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "compliance": "Compliance",
+    "legal": "Legal Resources",
+    "sourceCode": "Source code",
+    "architecture": "Architecture",
+    "copyright": "Copyright © 2026 Contributors to the Eclipse Foundation · Apache-2.0"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist, or its feature has not arrived yet.",
+    "back": "Back to home"
+  }
+}

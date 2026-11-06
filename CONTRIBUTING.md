@@ -47,9 +47,11 @@ The project maintains the following source code repositories
 2. Open an issue, or comment on an existing one, before you start bigger changes, so that the committers can give early feedback.
 3. Fork the repository, create a branch from `main` and open a pull request against `main`.
 4. Use [conventional commits](https://www.conventionalcommits.org) for the PR title (`feat:`, `fix:`, `docs:`, `chore:` ...): the titles are used for the release notes.
-5. Add the copyright and license header ([License headers](#license-headers), TRG 7.02) to every new file, and keep the documentation and the `CHANGELOG.md` up to date.
-6. New third-party dependencies must be approved by the [Eclipse Dash License Tool](https://github.com/eclipse-dash/dash-licenses); the `DEPENDENCIES` file is checked on every pull request.
-7. Pull requests with more than 1000 lines of relevant code need an approved [IP review](https://eclipse-tractusx.github.io/docs/release/trg-7/trg-7-03) before they can be merged.
+5. Write every text of the UI as an i18n key, with its text in every supported language (English and German) in the
+   same pull request ([translations](docs/developers/translations.md)).
+6. Add the copyright and license header ([License headers](#license-headers), TRG 7.02) to every new file, and keep the documentation and the `CHANGELOG.md` up to date.
+7. New third-party dependencies must be approved by the [Eclipse Dash License Tool](https://github.com/eclipse-dash/dash-licenses); the `DEPENDENCIES` file is checked on every pull request.
+8. Pull requests with more than 1000 lines of relevant code need an approved [IP review](https://eclipse-tractusx.github.io/docs/release/trg-7/trg-7-03) before they can be merged.
 
 At least one committer has to approve a pull request before it is merged.
 

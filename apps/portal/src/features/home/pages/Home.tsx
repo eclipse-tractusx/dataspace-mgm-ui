@@ -44,35 +44,25 @@ import {
   tractusx,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Footer from '../../../components/general/Footer';
 import { ALL_SERVICES_PATH } from '../../../pages/AllServicesPage';
+import { HOME_NS } from '../i18n';
 
 const ARCHITECTURE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-service/tree/main/docs/architecture';
 
 interface Point {
-  title: string;
-  text: string;
+  /** `how.<key>.title` and `how.<key>.text` in home.json. */
+  key: 'join' | 'run' | 'trust';
   icon: ReactElement;
 }
 
 /** How taking part works, in three steps: an explanation, not a list of the services. */
 const HOW_IT_WORKS: Point[] = [
-  {
-    title: 'Join',
-    text: 'Your company registers here. Your onboarding service provider reviews the application and brings you into the dataspace.',
-    icon: <HowToRegOutlinedIcon />,
-  },
-  {
-    title: 'Run',
-    text: 'Your provider runs what you need to take part, such as connectors and wallets as a service, so you do not have to host them yourself.',
-    icon: <RocketLaunchOutlinedIcon />,
-  },
-  {
-    title: 'Trust',
-    text: 'The Core Service Provider keeps the dataspace trusted: the trusted providers, the business partner numbers and their home provider, and the discovery.',
-    icon: <VerifiedUserOutlinedIcon />,
-  },
+  { key: 'join', icon: <HowToRegOutlinedIcon /> },
+  { key: 'run', icon: <RocketLaunchOutlinedIcon /> },
+  { key: 'trust', icon: <VerifiedUserOutlinedIcon /> },
 ];
 
 /**
@@ -80,11 +70,12 @@ const HOW_IT_WORKS: Point[] = [
  * leads to All services.
  */
 export default function Home() {
+  const { t } = useTranslation(HOME_NS);
   const iconColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
 
   const allServicesButton = (
     <Button component={RouterLink} to={ALL_SERVICES_PATH} color="primary" startIcon={<AppsOutlinedIcon />} endIcon={<ArrowForwardIcon />}>
-      See all services
+      {t('hero.allServices')}
     </Button>
   );
 
@@ -94,17 +85,16 @@ export default function Home() {
         <Container maxWidth="lg" sx={{ pt: { xs: 14, md: 12 }, pb: { xs: 8, md: 12 } }}>
           <Stack spacing={3} sx={{ maxWidth: 760 }}>
             <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              Onboarding service provider portal
+              {t('hero.overline')}
             </Typography>
             <Typography id="home-title" variant="h1" component="h1" sx={{ fontSize: 'clamp(2.25rem, 3vw + 1rem, 4rem)' }}>
-              Welcome to the{' '}
+              {t('hero.welcome')}{' '}
               <Typography component="span" variant="inherit" sx={{ color: tractusx.orange, display: 'block' }}>
-                Eclipse Tractus-X Dataspace Management UI
+                {t('hero.product')}
               </Typography>
             </Typography>
             <Typography sx={{ fontSize: { xs: 18, md: 20 }, lineHeight: 1.5, color: 'rgba(255, 255, 255, 0.85)' }}>
-              Onboard companies, manage your participants, and run their connectors and wallets as a service, in the
-              dataspace that the Core Service Provider keeps trusted.
+              {t('hero.lead')}
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
               {allServicesButton}
@@ -115,7 +105,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 endIcon={<OpenInNewIcon />}
               >
-                Explore the architecture
+                {t('hero.architecture')}
               </Button>
             </Stack>
           </Stack>
@@ -131,18 +121,17 @@ export default function Home() {
           sx={{ position: 'relative', zIndex: 1, py: { xs: 8, md: 12 } }}
         >
           <Typography variant="overline" color="text.secondary">
-            How it works
+            {t('how.overline')}
           </Typography>
           <Typography id="how-title" variant="h2" component="h2" sx={{ mt: 1, mb: 2, maxWidth: 760 }}>
-            One portal between your company and the dataspace
+            {t('how.title')}
           </Typography>
           <Typography color="text.secondary" sx={{ mb: 6, maxWidth: 680 }}>
-            Every onboarding service provider runs its own portal for the companies it serves. The Eclipse Tractus-X
-            Dataspace Management is that portal: open source, and the same for every provider.
+            {t('how.intro')}
           </Typography>
           <Grid container spacing={{ xs: 4, md: 6 }} component="ol" sx={{ listStyle: 'none', p: 0, m: 0 }}>
             {HOW_IT_WORKS.map((point) => (
-              <Grid key={point.title} size={{ xs: 12, md: 4 }} component="li">
+              <Grid key={point.key} size={{ xs: 12, md: 4 }} component="li">
                 <Stack spacing={2}>
                   <Box
                     aria-hidden
@@ -160,9 +149,9 @@ export default function Home() {
                     {point.icon}
                   </Box>
                   <Typography component="h3" sx={{ fontWeight: 700, fontSize: 20 }}>
-                    {point.title}
+                    {t(`how.${point.key}.title`)}
                   </Typography>
-                  <Typography color="text.secondary">{point.text}</Typography>
+                  <Typography color="text.secondary">{t(`how.${point.key}.text`)}</Typography>
                 </Stack>
               </Grid>
             ))}
