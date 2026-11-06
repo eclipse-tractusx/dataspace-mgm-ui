@@ -63,7 +63,7 @@ export function AccessDataPanel({ credentials, onDone }: AccessDataPanelProps) {
       </Box>
       <ValueBlock label={t('walletAccounts.access.tokenUrl')} value={credentials.tokenUrl} />
       <ValueBlock label={t('walletAccounts.access.clientId')} value={credentials.clientId} />
-      <ValueBlock label={t('walletAccounts.access.clientSecret')} value={credentials.clientSecret} secret />
+      <ValueBlock label={t('walletAccounts.access.secret')} value={credentials.clientSecret} secret />
       {credentials.did && <ValueBlock label={t('walletAccounts.access.did')} value={credentials.did} />}
       {credentials.credentialServiceUrl && <ValueBlock label={t('walletAccounts.access.credentialService')} value={credentials.credentialServiceUrl} />}
       <Box sx={{ mt: 0.5 }}>

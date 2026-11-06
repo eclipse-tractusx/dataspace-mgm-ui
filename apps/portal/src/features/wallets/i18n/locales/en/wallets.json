@@ -332,7 +332,7 @@
       "once": "Shown only once. Copy them into the connector now.",
       "tokenUrl": "Token address (STS)",
       "clientId": "Client ID",
-      "clientSecret": "Client secret",
+      "secret": "Client secret",
       "did": "DID of your company",
       "credentialService": "Credential service",
       "show": "Show the client secret",
