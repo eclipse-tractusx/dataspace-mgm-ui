@@ -62,6 +62,7 @@ core package's `README.md` (create it from `packages/c3-m1-core/README.md`):
 | Mockup | Becomes |
 |---|---|
 | a view (`views/<view>.html`) | a page in `pages/` and a route in `routes.tsx` |
+| the chosen combination of the view's configurator (the decision in the hub) | the only variant that is built; the other alternatives are not ported |
 | a visual zone of a view (header card, table, filter bar, dialog) | a component in `components/`, one file each, under 150 lines |
 | an operation under "Data from the spec" | one use case per operation, reads included (`get…`, `list…`, `approve…`) |
 | the states of a view (`data-states`) | the `status` values of the use case's result union, plus `loading` and `signed-out` in the hook |

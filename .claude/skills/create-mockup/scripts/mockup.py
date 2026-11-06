@@ -30,7 +30,8 @@ apps/portal/src/features, @mui/icons-material), so a mockup never drifts from th
 
   new <feature> --title T --module M --path /p --view slug[:Title] ...   scaffold the hub, the views, shared/
   view <feature> slug[:Title]                                            add a view (page, hub section, TOC)
-  options <feature> <view>                                               add an option page for one open question
+  options <feature> <view>                                               side-by-side page for one question (the exception;
+                                                                         by default a view has a configurator)
   sync <feature>                                                         regenerate tokens.css, nav.js, icons.js
   check <feature> [--strict]                                             the rules of the skill create-mockup
   status [<feature>] [--ready]                                           views: open, decided or deferred
@@ -551,6 +552,17 @@ def cmd_check(args) -> int:
             for img in re.findall(r"<img\b[^>]*>", text, re.I):
                 if not re.search(r"\balt\s*=", img):
                     warnings.append(f"{rel}: <img> without alt")
+            if file.parent.name == "views":
+                variants = re.findall(r'data-variant="([\w-]+):([\w-]+)"', text)
+                if not variants:
+                    warnings.append(f"{rel}: no configurator; give the parts of the screen alternatives with "
+                                    "data-variant=\"<dimension>:<value>\" (the default for every view)")
+                values: dict[str, set[str]] = {}
+                for key, value in variants:
+                    values.setdefault(key, set()).add(value)
+                for key, found in sorted(values.items()):
+                    if len(found) < 2:
+                        warnings.append(f"{rel}: configurator dimension {key!r} has only one value; add an alternative or drop it")
             if "data-todo" in text and file.parent.name in ("views", "options", folder.name):
                 warnings.append(f"{rel}: starter content left (elements with data-todo); replace it and drop the attribute")
     for sub in ("views", "options"):
