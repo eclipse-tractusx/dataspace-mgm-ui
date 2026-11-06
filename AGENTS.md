@@ -69,18 +69,23 @@ Import aliases are `@dataspace-mgm/<name>` and are kept in sync in `tsconfig.bas
    core package. No `fetch`, `openapi-fetch` or `@dataspace-mgm/core-http` in components, state or `domain`.
 5. **No tokens, no Keycloak in the browser.** Sign-in and session are handled by the backend (BFF); the browser only
    has a session cookie. The frontend gets permission keys from `GET /me` and uses them only to hide UI; the API
-   enforces them. Branding and feature flags come from `GET /config`.
+   enforces them. Branding and feature flags are meant to come from
+   `GET /config` (target contract, not implemented yet: the dev BFF only serves `/me` and `/api/**`). Do not call it
+   until it exists; deployment settings still come from `/config.json` (see Commands).
 6. **Redux Toolkit is the only state mechanism.** RTK Query endpoints use `queryFn` calling core use cases
    (`toQueryResult(() => getUseCases(api).<module>.<useCase>.execute(...))`); no `fetchBaseQuery`, no handwritten
    URLs. Slices hold client state only (filters, wizard progress, dialogs), never server data. No React context for
    business state. Core packages never depend on Redux.
 7. **Live updates via SSE**, never WebSockets and never polling.
-8. **Texts are i18n keys** (`de` and `en`). API errors and validation messages are keys; the UI translates them.
-   Add the core package's validation keys to the locale files.
+8. **Texts are i18n keys** (`de` and `en`). Local validation messages are keys; add the core package's
+   validation keys to the locale files. Backend errors are RFC 9457 Problem Details with a `type` URN (kept by
+   `ensureData`): map the `type` to an i18n key explicitly in the UI, never treat the response `title` or `detail`
+   as a key.
 9. **Generated code** in `packages/<module>-core/src/generated/` is never edited by hand. Update the spec, run
    `nx run <module>-core:generate-api`, and commit the result; `check-api` must pass.
-10. **API JSON is `snake_case`**; generated DTO types mirror it. A mapper in the core package converts to `camelCase`
-    anemics (and back for requests).
+10. **Keep the casing of the vendored spec** on the wire: generated DTO types and request bodies use the field names
+    exactly as `specs/<module>/openapi.yaml` defines them (for example `shortName`, `createdAt` in c3-m1; other
+    modules may differ). A mapper in the core package converts DTOs to the anemics and back; never rename wire fields.
 11. `zod` for runtime validation (`config.json`, API responses where needed); never class-validator.
 12. No secrets (passwords, tokens, client secrets, API keys) in code, logs, tests or the `config.json` of the repo.
 13. If the spec is unclear or contradicts itself, do not guess silently. Implement the reading the spec supports most
