@@ -37,7 +37,6 @@ import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace
 import { GetCspRegistrationUseCase } from '@dataspace-mgm/c3-m2-core';
 import { createC11M1ModuleFrom } from '@dataspace-mgm/c11-m1-core';
 import { InMemoryInboxEventSource, InMemoryNotificationRepository, MOCK_INBOX } from '@dataspace-mgm/c11-m1-core/testing';
-import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
 import {
   AcceptInvitationUseCase,
   CreateInvitationUseCase,
@@ -53,10 +52,8 @@ import {
 import { InMemoryCompanyUserRepository, InMemoryInvitationRepository, COMPANY_USERS, COMPANY_APP_ROLES } from '@dataspace-mgm/c2-m2-core/testing';
 import { ListTechnicalUsersUseCase, GetTechnicalUserUseCase, ListAssignableRolesUseCase, CreateTechnicalUserUseCase, UpdateTechnicalUserUseCase, RotateCredentialsUseCase, DeleteTechnicalUserUseCase } from '@dataspace-mgm/c2-m3-core';
 import { InMemoryTechnicalUserRepository, TECHNICAL_USERS, FIXTURE_COMPANY_ID } from '@dataspace-mgm/c2-m3-core/testing';
-import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
 import { createIdentityModule, type RedirectPort, type SessionAnemic, type SessionRepository } from '@dataspace-mgm/identity-core';
 import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
-import { createIdentityModule, type RedirectPort, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
 import { C3_MOCK_PERSONS } from './mock-persons';
@@ -227,66 +224,15 @@ function toSessionAnemic(dto: SpecMeResponse): SessionAnemic {
 }
 
 /**
- * The accounts of OSP A, by their key in the backend data (`persons-osp-a.json`). VITE_MOCK_PERSON
- * picks one; a key that is not here (e.g. `none`) starts signed out.
  * The test persons of mock mode, by their key in test data or a feature-specific alias. VITE_MOCK_PERSON picks one; a
  * key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
  * Erika, Max and Hans are applicants (C1-M2 Registration); `erika-c3`, `max-c3`, `hans-c3` are the same persons after
  * onboarding, bound to their companies (participant management, C3-M1); `wallets-*` are the persons of C4-M1.
+ * The spec login response (`SPEC_ME_RESPONSES`) is a separate set: the GET /me bodies of the backend test data.
  */
-export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = Object.fromEntries(
-  Object.entries(SPEC_ME_RESPONSES).map(([key, dto]) => [key, toSessionAnemic(dto)]),
-);
-
-export function getLoginMode(defaultMode: LoginMode = import.meta.env.VITE_USE_MOCKS === 'true' ? 'eudi' : 'normal'): LoginMode {
-  const stored = window.sessionStorage.getItem(LOGIN_MODE_KEY);
-  return stored === 'normal' || stored === 'eudi' ? stored : defaultMode;
-}
-
-export function setLoginMode(mode: LoginMode): void {
-  window.sessionStorage.setItem(LOGIN_MODE_KEY, mode);
-}
-
-export function isSpecLoginResponseEnabled(): boolean {
-  return window.sessionStorage.getItem(LOGIN_SPEC_RESPONSE_KEY) === 'true';
-}
-
-export function setSpecLoginResponseEnabled(enabled: boolean): void {
-  window.sessionStorage.setItem(LOGIN_SPEC_RESPONSE_KEY, enabled ? 'true' : 'false');
-}
-
-export function buildBackendLoginUrl(returnTo: string, person?: string, bffBaseUrl = ''): string {
-  const params = new URLSearchParams();
-  if (person) {
-    params.set('person', person);
-  }
-  params.set('return_to', returnTo);
-  return `${bffBaseUrl}/auth/login?${params.toString()}`;
-}
-
-export function createSpecSessionRepository(defaultPerson: string = DEFAULT_MOCK_PERSON): SessionRepository {
-  const selectedPerson = window.sessionStorage.getItem(MOCK_PERSON_KEY) ?? defaultPerson;
-  const dto = SPEC_ME_RESPONSES[selectedPerson] ?? null;
-  const session = dto ? toSessionAnemic(dto) : null;
-  return new (class extends InMemorySessionRepository {
-    public override async logout(): Promise<void> {
-      await super.logout();
-      window.sessionStorage.setItem(MOCK_PERSON_KEY, 'none');
-    }
-  })(session);
-}
-
-/** Redirects either to the BFF `/auth/login` or to the EUDI Wallet sign-in view depending on the active login mode. */
-export class ConfigurableRedirect implements RedirectPort {
-  constructor(
-    private readonly bffBaseUrl = '',
-    private readonly defaultMode: LoginMode = import.meta.env.VITE_USE_MOCKS === 'true' ? 'eudi' : 'normal',
-  ) {}
-
 export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: PIA_SESSION,
   /** Applicants without a company (C1-M2 Registration): Erika (EBW), Max, Hans (DOCUMENTS), Lieschen. */
-  /** Applicants and OSP staff for C1-M2 Registration. */
   erika: ERIKA_SESSION,
   max: MAX_SESSION,
   hans: HANS_SESSION,
@@ -299,11 +245,6 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   'erika-c3': C3_MOCK_PERSONS.erika,
   'max-c3': C3_MOCK_PERSONS.max,
   'hans-c3': C3_MOCK_PERSONS.hans,
-  /** OSP staff without a company: Rolf is OSP Reviewer, Otto OSP Admin. */
-  rolf: ROLF_SESSION,
-  otto: OTTO_SESSION,
-  rolf: ROLF_SESSION,
-  otto: OTTO_SESSION,
   /** C4-M1 credentials test persons, kept separate where C1-M2 uses the same names for different identities. */
   'wallets-erika': {
     user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
@@ -335,8 +276,56 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   },
 };
 
-/** Mock mode has no BFF: "sign in" reloads the page, which starts a new mock session. */
-class ReloadRedirect implements RedirectPort {
+
+export function getLoginMode(defaultMode: LoginMode = import.meta.env.VITE_USE_MOCKS === 'true' ? 'eudi' : 'normal'): LoginMode {
+  const stored = window.sessionStorage.getItem(LOGIN_MODE_KEY);
+  return stored === 'normal' || stored === 'eudi' ? stored : defaultMode;
+}
+
+export function setLoginMode(mode: LoginMode): void {
+  window.sessionStorage.setItem(LOGIN_MODE_KEY, mode);
+}
+
+export function isSpecLoginResponseEnabled(): boolean {
+  return window.sessionStorage.getItem(LOGIN_SPEC_RESPONSE_KEY) === 'true';
+}
+
+export function setSpecLoginResponseEnabled(enabled: boolean): void {
+  window.sessionStorage.setItem(LOGIN_SPEC_RESPONSE_KEY, enabled ? 'true' : 'false');
+}
+
+export function buildBackendLoginUrl(returnTo: string, person?: string, bffBaseUrl = ''): string {
+  const params = new URLSearchParams();
+  if (person) {
+    params.set('person', person);
+  }
+  params.set('return_to', returnTo);
+  return `${bffBaseUrl}/auth/login?${params.toString()}`;
+}
+
+export function createSpecSessionRepository(defaultPerson: string = DEFAULT_MOCK_PERSON): SessionRepository {
+  const selectedPerson = window.sessionStorage.getItem(MOCK_PERSON_KEY) ?? defaultPerson;
+  const dto = SPEC_ME_RESPONSES[selectedPerson] ?? null;
+  return signOutRemembered(dto ? toSessionAnemic(dto) : null);
+}
+
+/** A session of mock mode whose sign-out is remembered (`none`), so the reload after it starts signed out. */
+function signOutRemembered(session: SessionAnemic | null): SessionRepository {
+  return new (class extends InMemorySessionRepository {
+    public override async logout(): Promise<void> {
+      await super.logout();
+      window.sessionStorage.setItem(MOCK_PERSON_KEY, 'none');
+    }
+  })(session);
+}
+
+/** Redirects either to the BFF `/auth/login` or to the EUDI Wallet sign-in view depending on the active login mode. */
+export class ConfigurableRedirect implements RedirectPort {
+  constructor(
+    private readonly bffBaseUrl = '',
+    private readonly defaultMode: LoginMode = import.meta.env.VITE_USE_MOCKS === 'true' ? 'eudi' : 'normal',
+  ) {}
+
   public toLogin(returnTo: string): void {
     if (getLoginMode(this.defaultMode) === 'normal' && !isSpecLoginResponseEnabled()) {
       const selected = window.sessionStorage.getItem(MOCK_PERSON_KEY);
@@ -369,13 +358,13 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
   return {
     identity: createIdentityModule({
       bffBaseUrl: '',
-      sessions: createSpecSessionRepository(person),
+      // The person of MOCK_PERSONS, the one the fixtures below are bound to; the GET /me body of the spec on request.
+      sessions: isSpecLoginResponseEnabled() ? createSpecSessionRepository(person) : signOutRemembered(session),
       redirect: new ConfigurableRedirect('', 'eudi'),
     }),
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
     c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
-    c3m1: { getOwnCompany: new GetOwnCompanyUseCase(new InMemoryCompanyRepository([OSP_A_COMPANY])) },
     c1m2: createMockC1M2Module(session),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
@@ -403,7 +392,6 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     c4m1: createInMemoryC4M1Module({
       companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
     }),
-    c1m2: createMockC1M2Module(session),
     c11m1: createC11M1ModuleFrom(new InMemoryNotificationRepository(session ? MOCK_INBOX : []), new InMemoryInboxEventSource()),
   };
 }

@@ -30,7 +30,6 @@ import { createC3M2Module, C3M2_BASE_PATH, type C3M2Module } from '@dataspace-mg
 import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-mgm/c2-m3-core';
 import { createC2M2Module, C2_M2_BASE_PATH, type C2M2Module } from '@dataspace-mgm/c2-m2-core';
 import { createC11M1Module, C11M1_BASE_PATH, type C11M1Module } from '@dataspace-mgm/c11-m1-core';
-import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
 import type { C4M1Module } from '@dataspace-mgm/c4-m1-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
 import { createIdentityModule, type IdentityModule } from '@dataspace-mgm/identity-core';
