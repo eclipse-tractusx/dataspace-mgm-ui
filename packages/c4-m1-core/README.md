@@ -76,7 +76,7 @@ now), answers a `REVOKED` credential unchanged (README 7.3: 200 without a change
 | `shared/data.js` `credentials` (`detail()`) | `CREDENTIALS_OF_ALL_COMPANIES` with `companyName` from the mockup's `companies` (null for the C4-M2 test companies) |
 | `shared/data.js` `CATENA_X`, `SEMICONDUCTOR` | `CATENA_X_DATASPACE`, `SEMICONDUCTOR_DATASPACE` (`logoUrl` null: the slot shows the mark) |
 | `installation.resendAfterHours` | `DEFAULT_OPEN_ORDER_HOURS` (24), see open point 6 |
-| "now" of the mockup (2026-11-06T12:00:00Z) | `C4M1_FIXTURES_NOW`, injected as the clock |
+| "now" of the mockup (2026-11-06T12:00:00Z) | `C4M1_FIXTURES_NOW`, injected as the clock in tests (see "Mock mode and time") |
 | Enum labels (`wx.labels.*`) | `CREDENTIAL_TYPES`, `CREDENTIAL_STATUSES`, `CREDENTIAL_VIEW_STATUSES`, `ROUTES`, `WALLET_PROVIDERS`, `REVOCATION_REASONS`: API values, used as i18n keys |
 | "Confirm revocation" shown on `REVOCATION_PENDING` | the UI reads `status` of the anemic; the API decides (409); see open point 9 |
 
@@ -95,7 +95,7 @@ now), answers a `REVOKED` credential unchanged (README 7.3: 200 without a change
 | 9 | P2 | `GET /credentials`, `POST …/confirm-revocation` | `allowedActions` (e.g. `CONFIRM_REVOCATION`) per `CredentialDetail` | no | the button shows on `status` `REVOCATION_PENDING` today; the API enforces it with 409 |
 | 10 | P2 | events | an SSE event for the UI when a status changes (`CredentialsIssued`, `CredentialIssuanceFailed`, `CredentialRevoked` are outbox events for modules) | no | live updates without polling (AGENTS rule 7) |
 | 11 | P2 | `GET /companies/{companyId}/credentials` | the `bpn` the BPN credential proves, per `CredentialStatusView` | no | the BPN pass shows the `bpn` of the session (`GET /me`) today |
-| 12 | P2 | `GET /credentials` | a filter for open orders (e.g. `overdue=true`), or `requestedBefore` that combines with several statuses | no | "Open for more than 24 h" sends `status=REQUESTED` with the `requestedBefore` of `listOpenItems`, so the UI clears the status chips while it is on |
+| 12 | P2 | `GET /credentials` | a filter for open orders (e.g. `overdue=true`), or `requestedBefore` that combines with several statuses | no | "Open for more than 24 h" sends `openOrders` of `listOpenItems` (`status=REQUESTED` with its `requestedBefore`), so the UI clears the status chips and disables them, with a tooltip, while it is on (the mockup combines both with AND) |
 
 The UI shows the "Confirm revocation" button while `status` is `REVOCATION_PENDING` and greys out a pass whose
 `status` is `FAILED`, `REVOKED` or `NONE`; it decides nothing else (open point 9 replaces the first with
@@ -104,6 +104,13 @@ The UI shows the "Confirm revocation" button while `status` is `REVOCATION_PENDI
 Fields of the fixtures and whether the spec has them: `CredentialStatusView` `credentialType`, `status`,
 `requestedAt`, `issuedAt`, `revokedAt` (yes), `dataspace` (no, 7); `CredentialDetail` all fields (yes; `bpn`,
 `holderDid`, `walletProvider` are optional in the schema and null when absent), `companyName` (no, 5).
+
+## Mock mode and time
+
+Mock mode (`apps/portal/src/core/mock-container.ts`) runs on the real time, not on `C4M1_FIXTURES_NOW`: the fixtures
+are pinned to 2026-11-06T12:00Z, so on later days every `REQUESTED` fixture counts as open for more than 24 h in
+"Needs attention" and the relative times read "n days ago". Accepted for the proof of concept; the tests fake the date
+(`atFixturesNow` in `walletsTestApp.tsx`) and see the queue as the mockup does.
 
 ## Differences from the spec, in this package
 

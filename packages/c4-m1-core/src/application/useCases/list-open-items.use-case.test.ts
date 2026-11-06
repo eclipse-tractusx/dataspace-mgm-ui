@@ -49,6 +49,7 @@ describe('ListOpenItemsUseCase', () => {
       total: 3,
       requestedBefore: '2026-11-05T12:00:00.000Z',
       openOrderHours: 24,
+      openOrders: { status: ['REQUESTED'], requestedBefore: '2026-11-05T12:00:00.000Z' },
     });
     expect(repository.calls).toEqual([
       { method: 'listCredentials', query: { page: 0, size: 100, status: ['FAILED'] } },

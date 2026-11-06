@@ -36,7 +36,10 @@ export type CredentialState =
   | {
       status: 'found';
       credential: CredentialDetailAnemic;
-      /** C4-M1 `confirmRevocation`; on success the page shows the credential the API returned. */
+      /**
+       * C4-M1 `confirmRevocation`. On success the page shows the credential the API returned; on 409 or 404 it reads
+       * the credential again (`getCredential`), so the page shows its current status instead of a stale one.
+       */
       confirm: (note: string) => Promise<ConfirmRevocationResult>;
     };
 
@@ -45,7 +48,8 @@ export function useCredential(credentialId: string): CredentialState {
   const access = useWalletsAccess(WALLETS_PERMISSIONS.manageCredentials);
   const c4m1 = access.status === 'ready' ? access.c4m1 : null;
   const result = useUseCaseResult(useMemo(() => (c4m1 ? () => c4m1.getCredential.execute(credentialId) : null), [c4m1, credentialId]));
-  const [confirmed, setConfirmed] = useState<CredentialDetailAnemic | null>(null);
+  /** A newer answer than `result`, after a confirmation; it belongs to `credentialId` only. */
+  const [latest, setLatest] = useState<{ credentialId: string; result: GetCredentialResult } | null>(null);
 
   const confirm = useCallback(
     async (note: string): Promise<ConfirmRevocationResult> => {
@@ -54,7 +58,9 @@ export function useCredential(credentialId: string): CredentialState {
       }
       const outcome = await c4m1.confirmRevocation.execute(credentialId, note);
       if (outcome.status === 'confirmed') {
-        setConfirmed(outcome.credential);
+        setLatest({ credentialId, result: { status: 'found', credential: outcome.credential } });
+      } else if (outcome.status === 'conflict' || outcome.status === 'not-found') {
+        setLatest({ credentialId, result: await c4m1.getCredential.execute(credentialId) });
       }
       return outcome;
     },
@@ -64,12 +70,12 @@ export function useCredential(credentialId: string): CredentialState {
   if (access.status !== 'ready') {
     return access;
   }
-  if (!result) {
+  const current = latest?.credentialId === credentialId ? latest.result : result;
+  if (!current) {
     return { status: 'loading' };
   }
-  if (result.status !== 'found') {
-    return result;
+  if (current.status !== 'found') {
+    return current;
   }
-  const credential = confirmed?.id === result.credential.id ? confirmed : result.credential;
-  return { status: 'found', credential, confirm };
+  return { status: 'found', credential: current.credential, confirm };
 }

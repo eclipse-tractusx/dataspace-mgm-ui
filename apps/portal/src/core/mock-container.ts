@@ -52,8 +52,9 @@ import {
 import { InMemoryCompanyUserRepository, InMemoryInvitationRepository, COMPANY_USERS, COMPANY_APP_ROLES } from '@dataspace-mgm/c2-m2-core/testing';
 import { ListTechnicalUsersUseCase, GetTechnicalUserUseCase, ListAssignableRolesUseCase, CreateTechnicalUserUseCase, UpdateTechnicalUserUseCase, RotateCredentialsUseCase, DeleteTechnicalUserUseCase } from '@dataspace-mgm/c2-m3-core';
 import { InMemoryTechnicalUserRepository, TECHNICAL_USERS, FIXTURE_COMPANY_ID } from '@dataspace-mgm/c2-m3-core/testing';
-import { createIdentityModule, type RedirectPort, type SessionAnemic, type SessionRepository } from '@dataspace-mgm/identity-core';
 import { C4M1_TEST_COMPANY_IDS, COMPANY_CREDENTIALS, createInMemoryC4M1Module } from '@dataspace-mgm/c4-m1-core/testing';
+import { createInMemoryC4M2Module } from '@dataspace-mgm/c4-m2-core/testing';
+import { createIdentityModule, type RedirectPort, type SessionAnemic, type SessionRepository } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
 import { C3_MOCK_PERSONS } from './mock-persons';
@@ -223,60 +224,6 @@ function toSessionAnemic(dto: SpecMeResponse): SessionAnemic {
   };
 }
 
-/**
- * The test persons of mock mode, by their key in test data or a feature-specific alias. VITE_MOCK_PERSON picks one; a
- * key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
- * Erika, Max and Hans are applicants (C1-M2 Registration); `erika-c3`, `max-c3`, `hans-c3` are the same persons after
- * onboarding, bound to their companies (participant management, C3-M1); `wallets-*` are the persons of C4-M1.
- * The spec login response (`SPEC_ME_RESPONSES`) is a separate set: the GET /me bodies of the backend test data.
- */
-export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
-  pia: PIA_SESSION,
-  /** Applicants without a company (C1-M2 Registration): Erika (EBW), Max, Hans (DOCUMENTS), Lieschen. */
-  erika: ERIKA_SESSION,
-  max: MAX_SESSION,
-  hans: HANS_SESSION,
-  lieschen: LIESCHEN_SESSION,
-  /** OSP staff: Rolf is OSP Reviewer, Otto OSP Admin (and Company Admin of the OSP company); Renate a second reviewer. */
-  rolf: both(ROLF_SESSION, C3_MOCK_PERSONS.rolf),
-  otto: both(OTTO_SESSION, C3_MOCK_PERSONS.otto),
-  renate: C3_MOCK_PERSONS.renate,
-  /** People of an onboarded company (C3-M1): Erika and Hans Company Admin, Max Member. */
-  'erika-c3': C3_MOCK_PERSONS.erika,
-  'max-c3': C3_MOCK_PERSONS.max,
-  'hans-c3': C3_MOCK_PERSONS.hans,
-  /** C4-M1 credentials test persons, kept separate where C1-M2 uses the same names for different identities. */
-  'wallets-erika': {
-    user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
-    companyId: 'c0000001-0000-4000-8000-000000000001',
-    bpn: 'BPNLIUK2REMLK3F4',
-    permissions: ['view_credentials'],
-    csrfToken: 'csrf-test',
-  },
-  'wallets-max': {
-    user: { id: '5a1c0002-0000-4000-8000-000000000002', name: 'Max Mustermann', username: 'max' },
-    companyId: 'c0000001-0000-4000-8000-000000000001',
-    bpn: 'BPNLIUK2REMLK3F4',
-    permissions: [],
-    csrfToken: 'csrf-test',
-  },
-  'wallets-otto': {
-    user: { id: '5a1c0012-0000-4000-8000-000000000012', name: 'Otto Normalverbraucher', username: 'otto' },
-    companyId: null,
-    bpn: null,
-    permissions: ['manage_credentials'],
-    csrfToken: 'csrf-test',
-  },
-  'wallets-rolf': {
-    user: { id: 'bbede0f3-fbc4-433b-b7ca-1982e8724912', name: 'Rolf Prüfer', username: 'rolf' },
-    companyId: null,
-    bpn: null,
-    permissions: [],
-    csrfToken: 'csrf-test',
-  },
-};
-
-
 export function getLoginMode(defaultMode: LoginMode = import.meta.env.VITE_USE_MOCKS === 'true' ? 'eudi' : 'normal'): LoginMode {
   const stored = window.sessionStorage.getItem(LOGIN_MODE_KEY);
   return stored === 'normal' || stored === 'eudi' ? stored : defaultMode;
@@ -303,20 +250,20 @@ export function buildBackendLoginUrl(returnTo: string, person?: string, bffBaseU
   return `${bffBaseUrl}/auth/login?${params.toString()}`;
 }
 
-export function createSpecSessionRepository(defaultPerson: string = DEFAULT_MOCK_PERSON): SessionRepository {
-  const selectedPerson = window.sessionStorage.getItem(MOCK_PERSON_KEY) ?? defaultPerson;
-  const dto = SPEC_ME_RESPONSES[selectedPerson] ?? null;
-  return signOutRemembered(dto ? toSessionAnemic(dto) : null);
-}
-
-/** A session of mock mode whose sign-out is remembered (`none`), so the reload after it starts signed out. */
-function signOutRemembered(session: SessionAnemic | null): SessionRepository {
+/** An in-memory session that remembers a sign-out across reloads (the selected person becomes `none`). */
+function persistentSessionRepository(session: SessionAnemic | null): SessionRepository {
   return new (class extends InMemorySessionRepository {
     public override async logout(): Promise<void> {
       await super.logout();
       window.sessionStorage.setItem(MOCK_PERSON_KEY, 'none');
     }
   })(session);
+}
+
+export function createSpecSessionRepository(defaultPerson: string = DEFAULT_MOCK_PERSON): SessionRepository {
+  const selectedPerson = window.sessionStorage.getItem(MOCK_PERSON_KEY) ?? defaultPerson;
+  const dto = SPEC_ME_RESPONSES[selectedPerson] ?? null;
+  return persistentSessionRepository(dto ? toSessionAnemic(dto) : null);
 }
 
 /** Redirects either to the BFF `/auth/login` or to the EUDI Wallet sign-in view depending on the active login mode. */
@@ -336,6 +283,64 @@ export class ConfigurableRedirect implements RedirectPort {
     window.location.assign(`${MOCK_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
   }
 }
+
+/**
+ * The test persons of mock mode, by their key in test data or a feature-specific alias. VITE_MOCK_PERSON picks one; a
+ * key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
+ * Pia is the Company Admin of OSP A with the permission keys of the spec's /me response (SPEC_ME_RESPONSES).
+ * Erika, Max and Hans are applicants (C1-M2 Registration); `erika-c3`, `max-c3`, `hans-c3` are the same persons after
+ * onboarding, bound to their companies (participant management, C3-M1); `wallets-*` are the persons of C4-M1.
+ * The spec login response (`SPEC_ME_RESPONSES`) is a separate set: the GET /me bodies of the backend test data.
+ */
+export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
+  pia: toSessionAnemic(SPEC_ME_RESPONSES.pia),
+  /** Applicants without a company (C1-M2 Registration): Erika (EBW), Max, Hans (DOCUMENTS), Lieschen. */
+  erika: ERIKA_SESSION,
+  max: MAX_SESSION,
+  hans: HANS_SESSION,
+  lieschen: LIESCHEN_SESSION,
+  /** OSP staff: Rolf is OSP Reviewer, Otto OSP Admin (and Company Admin of the OSP company); Renate a second reviewer. */
+  rolf: both(ROLF_SESSION, C3_MOCK_PERSONS.rolf),
+  otto: both(OTTO_SESSION, C3_MOCK_PERSONS.otto),
+  renate: C3_MOCK_PERSONS.renate,
+  /** People of an onboarded company (C3-M1): Erika and Hans Company Admin, Max Member. */
+  'erika-c3': C3_MOCK_PERSONS.erika,
+  'max-c3': C3_MOCK_PERSONS.max,
+  'hans-c3': C3_MOCK_PERSONS.hans,
+  /**
+   * Test persons of Wallets as a service (C4-M1, C4-M2), kept separate where C1-M2 uses the same names for different
+   * identities. Erika Mustermann is Company Admin of Beispiel Maschinenbau GmbH (FRAMEWORK 7a; C4-M1 test person P1):
+   * her credentials (C4-M1), the dataspace wallet and the retrieval of the access data of wallet accounts (C4-M2).
+   */
+  'wallets-erika': {
+    user: { id: '5a1c0001-0000-4000-8000-000000000001', name: 'Erika Mustermann', username: 'erika' },
+    companyId: 'c0000001-0000-4000-8000-000000000001',
+    bpn: 'BPNLIUK2REMLK3F4',
+    permissions: ['view_credentials', 'view_dataspace_wallet', 'retrieve_wallet_credentials'],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-max': {
+    user: { id: '5a1c0002-0000-4000-8000-000000000002', name: 'Max Mustermann', username: 'max' },
+    companyId: 'c0000001-0000-4000-8000-000000000001',
+    bpn: 'BPNLIUK2REMLK3F4',
+    permissions: [],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-otto': {
+    user: { id: '5a1c0012-0000-4000-8000-000000000012', name: 'Otto Normalverbraucher', username: 'otto' },
+    companyId: null,
+    bpn: null,
+    permissions: ['manage_credentials'],
+    csrfToken: 'csrf-test',
+  },
+  'wallets-rolf': {
+    user: { id: 'bbede0f3-fbc4-433b-b7ca-1982e8724912', name: 'Rolf Prüfer', username: 'rolf' },
+    companyId: null,
+    bpn: null,
+    permissions: [],
+    csrfToken: 'csrf-test',
+  },
+};
 
 /**
  * The core packages on in-memory adapters with the fixtures of their `testing` entry points.
@@ -359,7 +364,7 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     identity: createIdentityModule({
       bffBaseUrl: '',
       // The person of MOCK_PERSONS, the one the fixtures below are bound to; the GET /me body of the spec on request.
-      sessions: isSpecLoginResponseEnabled() ? createSpecSessionRepository(person) : signOutRemembered(session),
+      sessions: isSpecLoginResponseEnabled() ? createSpecSessionRepository(person) : persistentSessionRepository(session),
       redirect: new ConfigurableRedirect('', 'eudi'),
     }),
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
@@ -393,5 +398,8 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       companyCredentials: { [C4M1_TEST_COMPANY_IDS.beispielMaschinenbau]: COMPANY_CREDENTIALS.twoDataspaces },
     }),
     c11m1: createC11M1ModuleFrom(new InMemoryNotificationRepository(session ? MOCK_INBOX : []), new InMemoryInboxEventSource()),
+    // Proof of concept: the dataspace wallet of the CSP and the wallet accounts of sa201 (access data ready to retrieve
+    // once) and sa202 (retrieved), from mockups/wallets/shared/data.js.
+    c4m2: createInMemoryC4M2Module(),
   };
 }

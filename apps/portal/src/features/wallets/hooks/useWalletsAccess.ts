@@ -37,7 +37,11 @@ export type WalletsBlocked =
   /** The proof of concept runs without C4-M1 outside mock mode. */
   | { status: 'not-connected' }
   /** The session lacks the permission of the page: the page is hidden, nothing is called. */
-  | { status: 'no-access' };
+  | {
+      status: 'no-access';
+      /** The person belongs to no company (OSP staff): the page says so instead of "ask your Company Admin". */
+      withoutCompany?: boolean;
+    };
 
 export type WalletsAccess = WalletsBlocked | { status: 'ready'; session: SessionAnemic; c4m1: C4M1Module };
 

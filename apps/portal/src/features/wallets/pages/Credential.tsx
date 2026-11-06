@@ -32,6 +32,7 @@ import { FailedAlert } from '../components/FailedAlert';
 import { ProblemAlert } from '../components/ProblemAlert';
 import { WalletsPage } from '../components/WalletsPage';
 import { useCredential } from '../hooks/useCredential';
+import { useBackToList } from '../hooks/useListReturn';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
 import { FORBIDDEN_PROBLEM, NOT_FOUND_PROBLEM } from '../problems';
@@ -41,6 +42,7 @@ export default function Credential() {
   const { t } = useTranslation(WALLETS_NS);
   const { credentialId = '' } = useParams();
   const state = useCredential(credentialId);
+  const backTo = useBackToList();
 
   if (state.status === 'found') {
     return <CredentialView credential={state.credential} confirm={state.confirm} />;
@@ -77,7 +79,7 @@ export default function Credential() {
   }
 
   return (
-    <WalletsPage overline={t('overline')} title={t('credential.title')} back={{ to: WALLETS_PATHS.allCredentials, label: t('credential.back') }} tabs={false}>
+    <WalletsPage overline={t('overline')} title={t('credential.title')} back={{ to: backTo, label: t('credential.back') }} tabs={false}>
       {body}
     </WalletsPage>
   );

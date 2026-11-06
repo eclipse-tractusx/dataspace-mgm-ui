@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { ConfirmRevocationResult } from '@dataspace-mgm/c4-m1-core';
 
 export interface ConfirmRevocationForm {
@@ -37,7 +37,9 @@ export interface ConfirmRevocationForm {
   done: boolean;
   setNote: (note: string) => void;
   openDialog: () => void;
+  /** Ignored while the confirmation is being sent. */
   close: () => void;
+  /** Ignored while an earlier confirmation is still being sent. */
   submit: () => Promise<void>;
   dismissDone: () => void;
 }
@@ -52,18 +54,29 @@ export function useConfirmRevocation(
   const [submitting, setSubmitting] = useState(false);
   const [problem, setProblem] = useState<ConfirmRevocationForm['problem']>(null);
   const [done, setDone] = useState(false);
+  const sending = useRef(false);
 
   const openDialog = useCallback(() => {
     setProblem(null);
     setOpen(true);
   }, []);
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => {
+    if (!sending.current) {
+      setOpen(false);
+    }
+  }, []);
   const dismissDone = useCallback(() => setDone(false), []);
 
   const submit = useCallback(async () => {
+    if (sending.current) {
+      return;
+    }
+    sending.current = true;
     setSubmitting(true);
-    const outcome = await confirm(note);
-    setSubmitting(false);
+    const outcome = await confirm(note).finally(() => {
+      sending.current = false;
+      setSubmitting(false);
+    });
     if (outcome.status === 'confirmed') {
       setProblem(null);
       setNote('');

@@ -3,7 +3,9 @@
   "tabs": {
     "label": "Wallets as a Service",
     "credentials": "Nachweise",
-    "allCredentials": "Nachweise aller Unternehmen"
+    "allCredentials": "Nachweise aller Unternehmen",
+    "wallet": "Datenraum-Wallet",
+    "walletAccounts": "Wallet-Konten"
   },
   "common": {
     "signInPrompt": "Melden Sie sich an, um die Wallets und Nachweise zu sehen.",
@@ -116,6 +118,7 @@
     "invalid": "Der Onboarding-Service-Provider hat die Filter nicht angenommen (HTTP 400).",
     "needsAttention": "Braucht Aufmerksamkeit",
     "attentionItem": "{{credential}} von {{company}}",
+    "attentionShown": "{{shown}} von {{total}} werden angezeigt.",
     "all": "Alle Nachweise"
   },
   "note": {
@@ -126,6 +129,7 @@
   "filters": {
     "label": "Filter",
     "openOnly": "Länger als {{hours}} Std. offen",
+    "openOnlyExcludes": "Schalten Sie „Länger als {{hours}} Std. offen“ aus, um nach Status zu filtern.",
     "credentialType": "Nachweisart",
     "allCredentialTypes": "Alle Nachweisarten"
   },
@@ -198,12 +202,162 @@
     "count": "{{length}} / {{max}}",
     "cancel": "Abbrechen",
     "done": "Widerruf bestätigt",
-    "conflict": "Der Nachweis wartet nicht mehr auf einen Widerruf (HTTP 409). Laden Sie ihn neu, um seinen Status zu sehen.",
+    "conflict": "Der Nachweis wartet nicht mehr auf einen Widerruf (HTTP 409). Die Seite zeigt jetzt seinen aktuellen Status.",
     "forbidden": "Sie dürfen keine Widerrufe bestätigen (HTTP 403). Dafür ist die Rolle OSP Admin nötig."
   },
   "validation": {
     "revocationNoteRequired": "Geben Sie eine Notiz mit 1 bis 500 Zeichen ein.",
     "revocationNoteTooLong": "Die Notiz darf höchstens 500 Zeichen haben.",
     "revocationNoteRejected": "Der Onboarding-Service-Provider hat die Notiz nicht angenommen (HTTP 400)."
+  },
+  "walletStatus": {
+    "REQUESTED": "Wird angelegt",
+    "VALIDATING": "DID wird geprüft",
+    "ACTIVE": "Aktiv",
+    "FAILED": "Fehlgeschlagen"
+  },
+  "walletFailure": {
+    "PROVIDER_TIMEOUT": "Der Anbieter hat nicht rechtzeitig geantwortet.",
+    "DID_MISMATCH": "Der Anbieter hat eine DID geliefert, die nicht zu Ihrem Unternehmen gehört.",
+    "INVALID_DID_DOCUMENT": "Das DID-Dokument der Wallet ist nicht gültig.",
+    "DID_NOT_RESOLVABLE": "Das DID-Dokument der Wallet wurde nicht gefunden."
+  },
+  "walletProviderShort": {
+    "CSP": "CSP-Wallet",
+    "SAP_DIV": "SAP DIV",
+    "IDENTITY_HUB": "IdentityHub",
+    "BRING_YOUR_OWN": "Eigene Wallet"
+  },
+  "wallet": {
+    "title": "Ihre Datenraum-Wallet",
+    "loading": "Ihre Datenraum-Wallet wird geladen…",
+    "noAccess": "Sie dürfen die Datenraum-Wallet Ihres Unternehmens nicht sehen. Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "forbidden": "Sie dürfen die Datenraum-Wallet Ihres Unternehmens nicht sehen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "noCompany": "Ihr Konto ist keinem Unternehmen zugeordnet. Eine Datenraum-Wallet gehört einem Unternehmen des Datenraums.",
+    "failed": "Die Datenraum-Wallet konnte nicht geladen werden: {{message}}",
+    "failedWithStatus": "Die Datenraum-Wallet konnte nicht geladen werden (HTTP {{status}}): {{message}}",
+    "noWallet": {
+      "title": "Ihr Unternehmen hat noch keine Datenraum-Wallet",
+      "text": "Der Onboarding-Service-Provider legt sie beim Onboarding an, sobald Ihr Unternehmen seine Business Partner Number hat. Sie müssen nichts tun."
+    },
+    "alert": {
+      "validating": "<strong>Ihre Wallet wird geprüft.</strong> Das DID-Dokument wird aufgelöst und geprüft. Ihre Konnektoren können die Wallet nutzen, sobald sie aktiv ist.",
+      "failed": "<strong>Ihre Wallet konnte nicht eingerichtet werden.</strong> {{reason}} Ihr Onboarding-Service-Provider kann einen neuen Versuch starten.",
+      "failureCode": "Fehlercode: {{reason}}"
+    },
+    "pass": {
+      "label": "Datenraum-Wallet",
+      "kind": "Datenraum-Wallet",
+      "company": "Unternehmen",
+      "bpn": "BPN",
+      "provider": "Anbieter",
+      "activeSince": "Aktiv seit",
+      "did": "DID",
+      "qr": "QR-Code der DID Ihres Unternehmens"
+    },
+    "connectors": {
+      "title": "Für Ihre Konnektoren",
+      "lead": "Die Adressen, die ein Konnektor Ihres Unternehmens braucht, um diese Wallet zu nutzen.",
+      "credentialService": "Credential Service",
+      "bdrs": "Verzeichnis BPN → DID",
+      "sts": "Token-Adresse (STS)",
+      "stsPerAccount": "Eine je Wallet-Konto",
+      "didDocument": "DID-Dokument"
+    },
+    "accountsLink": {
+      "title": "Wallet-Konten",
+      "count_one": "{{count}} technischer Benutzer kann sich anmelden",
+      "count_other": "{{count}} technische Benutzer können sich anmelden",
+      "unknown": "Die technischen Benutzer, die sich an der Wallet anmelden"
+    },
+    "credentials": {
+      "title": "Nachweise",
+      "loading": "Die Nachweise werden geladen…",
+      "allIssued": "Alle ausgestellt",
+      "someIssued": "{{issued}} von {{total}} ausgestellt",
+      "details": "Details →",
+      "show": "{{name}} von {{dataspace}} anzeigen",
+      "hint": "Wählen Sie eine Karte, um sie nach vorn zu holen.",
+      "empty": "In dieser Wallet gibt es noch keine Nachweise Ihres Unternehmens."
+    }
+  },
+  "accountStatus": {
+    "REQUESTED": "Wird angelegt",
+    "ACTIVE": "Aktiv",
+    "FAILED": "Fehlgeschlagen",
+    "DELETING": "Wird gelöscht",
+    "DELETED": "Gelöscht"
+  },
+  "credentialsState": {
+    "NONE": "Keine Zugangsdaten",
+    "AVAILABLE": "Bereit zum Abrufen",
+    "RETRIEVED": "Abgerufen",
+    "EXPIRED": "Abgelaufen"
+  },
+  "walletAccounts": {
+    "title": "Wallet-Konten",
+    "lead": "Ein Konnektor Ihres Unternehmens meldet sich mit dem Wallet-Konto seines technischen Benutzers an Ihrer Datenraum-Wallet an. Die Zugangsdaten eines Wallet-Kontos können Sie <strong>einmal</strong> abrufen; tragen Sie sie sofort in den Konnektor ein.",
+    "loading": "Die Wallet-Konten werden geladen…",
+    "noAccess": "Sie dürfen die Wallet-Konten Ihres Unternehmens nicht sehen. Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "forbidden": "Sie dürfen die Wallet-Konten Ihres Unternehmens nicht sehen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "noCompany": "Ihr Konto ist keinem Unternehmen zugeordnet. Wallet-Konten gehören den technischen Benutzern eines Unternehmens.",
+    "failed": "Die Wallet-Konten konnten nicht geladen werden: {{message}}",
+    "failedWithStatus": "Die Wallet-Konten konnten nicht geladen werden (HTTP {{status}}): {{message}}",
+    "listLabel": "Technische Benutzer mit Wallet-Zugang",
+    "noDescription": "Technischer Benutzer Ihres Unternehmens",
+    "noAccount": "Kein Wallet-Konto",
+    "noAccountText": "Dieser technische Benutzer hat noch kein Wallet-Konto. Ihr Onboarding-Service-Provider legt es an.",
+    "fields": {
+      "clientId": "Client-ID im Portal",
+      "wallet": "Wallet",
+      "accessData": "Zugangsdaten",
+      "retrievableUntil": "Abrufbar bis",
+      "created": "Angelegt",
+      "walletAccountRef": "Wallet-Konto"
+    },
+    "stateText": {
+      "AVAILABLE": "Bereit zum Abrufen bis {{date}}.",
+      "RETRIEVED": "Abgerufen. Wenn sie verloren sind, löschen Sie den technischen Benutzer und legen Sie ihn neu an.",
+      "EXPIRED": "Nicht rechtzeitig abgerufen und gelöscht. Löschen Sie den technischen Benutzer und legen Sie ihn neu an.",
+      "NONE": "Keine Zugangsdaten, solange das Konto nicht aktiv ist."
+    },
+    "retrieve": "Zugangsdaten abrufen",
+    "confirm": {
+      "title": "Zugangsdaten abrufen?",
+      "text": "Die Token-Adresse, Client-ID und das Client-Secret von {{name}} für Ihre Datenraum-Wallet.",
+      "once": "Sie werden <strong>nur einmal</strong> angezeigt. Danach kann sie niemand mehr abrufen, auch nicht Ihr Onboarding-Service-Provider.",
+      "cancel": "Abbrechen",
+      "retrieveNow": "Jetzt abrufen"
+    },
+    "access": {
+      "title": "Zugangsdaten des Wallet-Kontos",
+      "once": "Nur einmal angezeigt. Kopieren Sie sie jetzt in den Konnektor.",
+      "tokenUrl": "Token-Adresse (STS)",
+      "clientId": "Client-ID",
+      "secret": "Client-Secret",
+      "did": "DID Ihres Unternehmens",
+      "credentialService": "Credential Service",
+      "show": "Client-Secret anzeigen",
+      "hide": "Client-Secret verbergen",
+      "copy": "{{label}} kopieren",
+      "done": "Ich habe sie eingetragen"
+    },
+    "problem": {
+      "already-retrieved": "Eine andere Person Ihres Unternehmens hat die Zugangsdaten von {{name}} gerade abgerufen (HTTP 410).",
+      "expired": "Die Zugangsdaten von {{name}} wurden nicht rechtzeitig abgerufen und sind gelöscht (HTTP 410).",
+      "no-credentials": "Das Wallet-Konto von {{name}} hat keine Zugangsdaten zum Abrufen (HTTP 409).",
+      "invalid-state": "Das Wallet-Konto von {{name}} ist nicht aktiv (HTTP 409).",
+      "forbidden": "Sie dürfen keine Zugangsdaten von Wallet-Konten abrufen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+      "not-found": "{{name}} hat kein Wallet-Konto bei Ihrem Onboarding-Service-Provider (HTTP 404).",
+      "failed": "Die Zugangsdaten von {{name}} konnten nicht abgerufen werden: {{message}}",
+      "failedWithStatus": "Die Zugangsdaten von {{name}} konnten nicht abgerufen werden (HTTP {{status}}): {{message}}"
+    },
+    "empty": {
+      "title": "Kein technischer Benutzer mit Wallet-Zugang",
+      "text": "Legen Sie unter Technische Benutzer einen technischen Benutzer mit der Rolle für den Wallet-Zugang an. Sein Wallet-Konto erscheint dann hier.",
+      "technicalUsers": "Technische Benutzer",
+      "comingSoon": "Technische Benutzer (C2-M3), bald verfügbar"
+    },
+    "listLocked": "Übernehmen Sie zuerst die Zugangsdaten in den Konnektor. Danach können Sie einen anderen technischen Benutzer wählen."
   }
 }

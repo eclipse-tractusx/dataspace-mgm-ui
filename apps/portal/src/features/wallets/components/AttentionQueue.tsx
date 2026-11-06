@@ -29,6 +29,8 @@ import type { CredentialDetailAnemic } from '@dataspace-mgm/c4-m1-core';
 import { Box, Button, Card, Link, Stack, Typography, tractusx } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useCompanyLine } from '../hooks/useCompanyLine';
+import { useListLinkState } from '../hooks/useListReturn';
 import { useTimeTexts } from '../hooks/useTimeTexts';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
@@ -44,12 +46,14 @@ function AttentionCard({ credential }: { credential: CredentialDetailAnemic }) {
   const { t } = useTranslation(WALLETS_NS);
   const time = useTimeTexts();
   const navigate = useNavigate();
+  const company = useCompanyLine(credential);
+  const state = useListLinkState();
   const to = WALLETS_PATHS.credential(credential.id);
   return (
     <Card
       component="article"
-      aria-label={t('allCredentials.attentionItem', { credential: t(`credentialType.${credential.credentialType}`), company: credential.companyName ?? credential.bpn })}
-      onClick={(event: MouseEvent) => fromCard(event) && navigate(to)}
+      aria-label={t('allCredentials.attentionItem', { credential: t(`credentialType.${credential.credentialType}`), company })}
+      onClick={(event: MouseEvent) => fromCard(event) && navigate(to, { state })}
       sx={{ p: 2.5, display: 'grid', gap: 1.25, alignContent: 'start', cursor: 'pointer', '&:hover': { borderColor: tractusx.orange } }}
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
@@ -59,7 +63,7 @@ function AttentionCard({ credential }: { credential: CredentialDetailAnemic }) {
         </Typography>
       </Stack>
       <Box>
-        <Link component={RouterLink} to={to} sx={{ fontWeight: 600, fontSize: '1.0625rem' }}>
+        <Link component={RouterLink} to={to} state={state} sx={{ fontWeight: 600, fontSize: '1.0625rem' }}>
           {t(`credentialType.${credential.credentialType}`)}
         </Link>
         <Typography component="div" variant="body2" color="text.secondary">
@@ -68,7 +72,7 @@ function AttentionCard({ credential }: { credential: CredentialDetailAnemic }) {
       </Box>
       <StatusNote credential={credential} />
       {credential.status === 'REVOCATION_PENDING' && (
-        <Button size="small" sx={{ justifySelf: 'start', px: 2, py: 1 }} onClick={() => navigate(`${to}?confirm=1`)}>
+        <Button sx={{ justifySelf: 'start', fontSize: '0.9375rem' }} onClick={() => navigate(`${to}?confirm=1`, { state })}>
           {t('confirm.button')}
         </Button>
       )}
@@ -76,15 +80,26 @@ function AttentionCard({ credential }: { credential: CredentialDetailAnemic }) {
   );
 }
 
+interface AttentionQueueProps {
+  items: ReadonlyArray<CredentialDetailAnemic>;
+  /** All open items of `listOpenItems`; more than `items.length` when a category had more than one page. */
+  total: number;
+}
+
 /** "Needs attention": failed credentials, revocations to confirm by hand and orders open for too long, as cards. */
-export function AttentionQueue({ items }: { items: ReadonlyArray<CredentialDetailAnemic> }) {
+export function AttentionQueue({ items, total }: AttentionQueueProps) {
   const { t } = useTranslation(WALLETS_NS);
   return (
     <Box component="section" aria-labelledby="needs-attention" sx={{ mb: 4 }}>
       <Typography id="needs-attention" variant="h2" sx={{ fontSize: '1.375rem', fontWeight: 700, display: 'flex', alignItems: 'baseline', gap: 1.25, mb: 2 }}>
         {t('allCredentials.needsAttention')}
-        <CountBadge count={items.length} />
+        <CountBadge count={total} />
       </Typography>
+      {total > items.length && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: -1, mb: 2 }}>
+          {t('allCredentials.attentionShown', { shown: items.length, total })}
+        </Typography>
+      )}
       <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
         {items.map((credential) => (
           <AttentionCard key={credential.id} credential={credential} />

@@ -25,6 +25,7 @@
  ********************************************************************************/
 
 import { useSession } from '../../../core/CoreModulesContext';
+import { WALLETS_PERMISSIONS } from '../permissions';
 import { visibleTabs } from '../tabs';
 
 export type WalletsLandingState =
@@ -32,10 +33,15 @@ export type WalletsLandingState =
   | { status: 'signed-out' }
   | { status: 'session-failed'; message: string }
   | { status: 'no-access' }
+  /** The person may see the dataspace wallet: /wallets shows it. */
+  | { status: 'wallet' }
   /** The first tab the person may see. */
   | { status: 'redirect'; to: string };
 
-/** Where /wallets leads the signed-in person: the first feature tab their permission keys show. */
+/**
+ * What /wallets shows the signed-in person: the dataspace wallet with view_dataspace_wallet, else the first feature tab
+ * their permission keys show.
+ */
 export function useWalletsLanding(): WalletsLandingState {
   const session = useSession();
   switch (session.status) {
@@ -45,6 +51,9 @@ export function useWalletsLanding(): WalletsLandingState {
     case 'failed':
       return { status: 'session-failed', message: session.message };
     default: {
+      if (session.session.permissions.includes(WALLETS_PERMISSIONS.viewDataspaceWallet)) {
+        return { status: 'wallet' };
+      }
       const [first] = visibleTabs(session.session.permissions);
       return first ? { status: 'redirect', to: first.path } : { status: 'no-access' };
     }

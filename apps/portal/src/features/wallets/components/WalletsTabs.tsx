@@ -29,7 +29,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useSession } from '../../../core/CoreModulesContext';
 import { WALLETS_NS } from '../i18n';
-import { visibleTabs } from '../tabs';
+import { matchesTab, visibleTabs } from '../tabs';
 
 /** The feature tabs under the page title: the views the person's permission keys show (WALLETS_TABS). */
 export function WalletsTabs() {
@@ -41,13 +41,14 @@ export function WalletsTabs() {
     return null;
   }
   const active = tabs
+    .filter((tab) => matchesTab(tab, pathname))
     .map((tab) => tab.path)
-    .filter((path) => pathname === path || pathname.startsWith(`${path}/`))
     .sort((a, b) => b.length - a.length)[0];
 
   return (
     <Box component="nav" aria-label={t('tabs.label')} sx={{ mt: -1, mb: 3.5, borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs value={active ?? false} variant="scrollable" scrollButtons={false} aria-label={t('tabs.label')}>
+      {/* The <nav> carries the name; the links keep aria-current for the page they open. */}
+      <Tabs value={active ?? false} variant="scrollable" scrollButtons={false}>
       {tabs.map((tab) => (
         <Tab
           key={tab.path}

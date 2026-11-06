@@ -34,17 +34,25 @@ export interface WalletsTab {
   label: string;
   /** Shown only to a person with this permission (hiding only; the API checks it). */
   permission: WalletsPermission;
+  /** Active only on its own path, not on the paths below it (the index route /wallets). */
+  exact?: boolean;
 }
 
 /**
- * The feature tabs, in their order. The landing page opens the first one the person may see. The dataspace wallet and
- * the wallet accounts (C4-M2) join this list.
+ * The feature tabs, in their order: the dataspace wallet, the credentials and the wallet accounts for the people of a
+ * company, the credentials of all companies for OSP staff. The landing page opens the first one the person may see.
  */
 export const WALLETS_TABS: ReadonlyArray<WalletsTab> = [
+  { path: WALLETS_PATHS.landing, label: 'tabs.wallet', permission: WALLETS_PERMISSIONS.viewDataspaceWallet, exact: true },
   { path: WALLETS_PATHS.credentials, label: 'tabs.credentials', permission: WALLETS_PERMISSIONS.viewCredentials },
+  { path: WALLETS_PATHS.walletAccounts, label: 'tabs.walletAccounts', permission: WALLETS_PERMISSIONS.viewDataspaceWallet },
   { path: WALLETS_PATHS.allCredentials, label: 'tabs.allCredentials', permission: WALLETS_PERMISSIONS.manageCredentials },
 ];
 
 /** The tabs a person with these permission keys sees. */
 export const visibleTabs = (permissions: ReadonlyArray<string>): ReadonlyArray<WalletsTab> =>
   WALLETS_TABS.filter((tab) => permissions.includes(tab.permission));
+
+/** Whether `tab` is the tab of `pathname` (its path, or a path below it unless the tab is exact). */
+export const matchesTab = (tab: WalletsTab, pathname: string): boolean =>
+  pathname === tab.path || (!tab.exact && pathname.startsWith(`${tab.path}/`));

@@ -43,7 +43,7 @@ describe('Wallets as a service: your credentials (C4-M1 listCompanyCredentials)'
 
     const bpn = await pass('BPN credential of Catena-X');
     expect(within(bpn).getByRole('img', { name: 'Catena-X' })).toHaveTextContent('CX');
-    expect(within(bpn).getByRole('heading', { level: 3, name: 'BPN credential' })).toBeInTheDocument();
+    expect(within(bpn).getByRole('heading', { level: 2, name: 'BPN credential' })).toBeInTheDocument();
     expect(within(bpn).getByText('Business partner number')).toBeInTheDocument();
     expect(within(bpn).getByText('BPNLIUK2REMLK3F4')).toBeInTheDocument();
     expect(within(bpn).getAllByText('Issued')).toHaveLength(2);
@@ -115,6 +115,12 @@ describe('Wallets as a service: your credentials (C4-M1 listCompanyCredentials)'
     expect(screen.getByText('urn:c4-m1:problem:forbidden')).toBeInTheDocument();
   });
 
+  it('says when the credentials of the company are not found (404)', async () => {
+    showWallets('/wallets/credentials', { session: ERIKA, c4m1: recordingC4M1({ companyCredentialFailure: c4m1Problem(404, 'not-found') }).module });
+    expect(await screen.findByText('The credentials of your company were not found at your onboarding service provider.')).toBeInTheDocument();
+    expect(screen.getByText('urn:c4-m1:problem:not-found')).toBeInTheDocument();
+  });
+
   it('tells a person without a company and does not call the module', async () => {
     const { module, companyRepository } = recordingC4M1();
     showWallets('/wallets/credentials', { session: { ...OTTO, permissions: ['view_credentials'] }, c4m1: module });
@@ -136,7 +142,7 @@ describe('Wallets as a service: your credentials (C4-M1 listCompanyCredentials)'
   it('shows the feature tabs the person may see', async () => {
     showWallets('/wallets/credentials', { session: ERIKA, c4m1: recordingC4M1().module });
     const tabs = await screen.findByRole('navigation', { name: 'Wallets as a service' });
-    expect(within(tabs).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Credentials']);
+    expect(within(tabs).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Dataspace wallet', 'Credentials', 'Wallet accounts']);
     expect(within(tabs).getByRole('tab', { name: 'Credentials' })).toHaveAttribute('aria-selected', 'true');
   });
 });

@@ -26,18 +26,27 @@
 
 import type { ReactNode } from 'react';
 import { CREDENTIAL_TYPES, type CredentialStatusCount, type CredentialType } from '@dataspace-mgm/c4-m1-core';
-import { Box, ButtonBase, FormControl, MenuItem, ScheduleOutlinedIcon, Select, alpha, tractusx } from '@dataspace-mgm/ui-mui';
+import { Box, ButtonBase, FormControl, MenuItem, ScheduleOutlinedIcon, Select, Tooltip, alpha, tractusx } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import type { AllCredentialsLoaded } from '../hooks/useAllCredentials';
 import { WALLETS_NS } from '../i18n';
 import { CountBadge } from './CountBadge';
 
+interface FilterChipProps {
+  pressed: boolean;
+  onClick: () => void;
+  /** Why the chip cannot be pressed now (a tooltip); the chip stays focusable (aria-disabled). */
+  disabledReason?: string;
+  children: ReactNode;
+}
+
 /** A filter chip that is on or off (aria-pressed). */
-function FilterChip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
-  return (
+function FilterChip({ pressed, onClick, disabledReason, children }: FilterChipProps) {
+  const chip = (
     <ButtonBase
       aria-pressed={pressed}
-      onClick={onClick}
+      aria-disabled={disabledReason ? true : undefined}
+      onClick={disabledReason ? undefined : onClick}
       sx={{
         height: 32,
         px: 1.5,
@@ -50,11 +59,14 @@ function FilterChip({ pressed, onClick, children }: { pressed: boolean; onClick:
         borderColor: pressed ? tractusx.orange : 'ui.cardBorder',
         bgcolor: pressed ? alpha(tractusx.orange, 0.15) : 'transparent',
         '&.Mui-focusVisible': { outline: `2px solid ${tractusx.orange}`, outlineOffset: 2 },
+        ...(disabledReason && { opacity: 0.5, cursor: 'not-allowed' }),
       }}
     >
       {children}
     </ButtonBase>
   );
+  // Always inside the Tooltip (empty title: none), so the chip is not remounted when it gets disabled.
+  return <Tooltip title={disabledReason ?? ''}>{chip}</Tooltip>;
 }
 
 interface CredentialFiltersProps {
@@ -63,16 +75,25 @@ interface CredentialFiltersProps {
   openOrderHours: number;
 }
 
-/** The filters above the list: a chip per status with its count, open orders, and the credential type. */
+/**
+ * The filters above the list: a chip per status with its count, open orders, and the credential type. While "Open for
+ * more than X h" is on, the status chips are disabled with a tooltip: the API cannot combine them yet (open point 12).
+ */
 export function CredentialFilters({ state, counts, openOrderHours }: CredentialFiltersProps) {
   const { t } = useTranslation(WALLETS_NS);
   const { filters } = state;
+  const statusDisabled = filters.openOnly ? t('filters.openOnlyExcludes', { hours: openOrderHours }) : undefined;
   return (
     <Box role="group" aria-label={t('filters.label')} sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap', mb: 2.5 }}>
       {counts
         .filter((count) => count.total > 0)
         .map((count) => (
-          <FilterChip key={count.status} pressed={filters.status.includes(count.status)} onClick={() => state.toggleStatus(count.status)}>
+          <FilterChip
+            key={count.status}
+            pressed={filters.status.includes(count.status)}
+            onClick={() => state.toggleStatus(count.status)}
+            disabledReason={statusDisabled}
+          >
             {t(`credentialStatus.${count.status}`)}
             <CountBadge count={count.total} />
           </FilterChip>

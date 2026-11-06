@@ -31,7 +31,7 @@ import {
   REVOCATION_PENDING_CREDENTIAL,
   c4m1Problem,
 } from '@dataspace-mgm/c4-m1-core/testing';
-import { fireEvent, screen, within } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { walletsTranslations } from './i18n';
 import { OTTO, ROLF, atFixturesNow, recordingC4M1, showWallets } from './walletsTestApp';
@@ -98,15 +98,61 @@ describe('Wallets as a service: one credential (C4-M1 getCredential, confirmRevo
     });
   });
 
-  it('shows a conflict when the credential changed meanwhile (409)', async () => {
-    const changed = new InMemoryCredentialRepository([{ ...REVOCATION_PENDING_CREDENTIAL, status: 'ISSUED' }]);
-    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: recordingC4M1({ confirmWith: changed }).module });
+  it('shows a conflict when the credential changed meanwhile (409), and then its current status', async () => {
+    const issued = { ...REVOCATION_PENDING_CREDENTIAL, status: 'ISSUED' as const };
+    const { module, credentialRepository } = recordingC4M1({ confirmWith: new InMemoryCredentialRepository([issued]) });
+    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: module });
     const dialog = await openDialog();
+    vi.spyOn(credentialRepository, 'getCredential').mockResolvedValue(issued);
 
     fireEvent.change(within(dialog).getByRole('textbox', { name: 'Note on the revocation' }), { target: { value: 'Ticket OPS-4711' } });
     fireEvent.click(within(dialog).getByRole('button', { name: 'Confirm revocation' }));
     expect(await within(dialog).findByText(/no longer waiting for a revocation \(HTTP 409\)/)).toBeInTheDocument();
     expect(within(dialog).getByText('urn:c4-m1:problem:invalid-state')).toBeInTheDocument();
+    expect(credentialRepository.getCredential).toHaveBeenCalledWith(REVOCATION_PENDING_CREDENTIAL.id);
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(screen.queryByRole('button', { name: 'Confirm revocation' })).not.toBeInTheDocument();
+    expect(within(screen.getByRole('region', { name: 'Life cycle' })).queryByText('Revocation pending')).not.toBeInTheDocument();
+  });
+
+  it('shows a 403 of the confirmation in the dialog', async () => {
+    const refusing = new InMemoryCredentialRepository([REVOCATION_PENDING_CREDENTIAL], c4m1Problem(403, 'forbidden'));
+    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: recordingC4M1({ confirmWith: refusing }).module });
+    const dialog = await openDialog();
+
+    fireEvent.change(within(dialog).getByRole('textbox', { name: 'Note on the revocation' }), { target: { value: 'Ticket OPS-4711' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Confirm revocation' }));
+    expect(await within(dialog).findByText('You may not confirm revocations (HTTP 403). This needs the role OSP Admin.')).toBeInTheDocument();
+    expect(within(dialog).getByText('urn:c4-m1:problem:forbidden')).toBeInTheDocument();
+  });
+
+  it('says in the dialog when the credential is gone (404), and reads it again', async () => {
+    const { module, credentialRepository } = recordingC4M1({ confirmWith: new InMemoryCredentialRepository([]) });
+    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: module });
+    const dialog = await openDialog();
+
+    fireEvent.change(within(dialog).getByRole('textbox', { name: 'Note on the revocation' }), { target: { value: 'Ticket OPS-4711' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Confirm revocation' }));
+    expect(await within(dialog).findByText('This credential does not exist at this onboarding service provider.')).toBeInTheDocument();
+    expect(within(dialog).getByText('urn:c4-m1:problem:not-found')).toBeInTheDocument();
+    expect(credentialRepository.calls.filter((call) => call.method === 'getCredential')).toHaveLength(2);
+  });
+
+  it('sends the confirmation once and keeps the dialog open while it is sent', async () => {
+    const { module, credentialRepository } = recordingC4M1();
+    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: module });
+    const dialog = await openDialog();
+
+    fireEvent.change(within(dialog).getByRole('textbox', { name: 'Note on the revocation' }), { target: { value: 'Ticket OPS-4711' } });
+    const send = within(dialog).getByRole('button', { name: 'Confirm revocation' });
+    fireEvent.click(send);
+    fireEvent.click(send);
+    expect(within(dialog).getByRole('button', { name: 'Cancel' })).toBeDisabled();
+    fireEvent.keyDown(dialog, { key: 'Escape' });
+    expect(await screen.findByText('Revocation confirmed')).toBeInTheDocument();
+    expect(credentialRepository.calls.filter((call) => call.method === 'confirmRevocation')).toHaveLength(1);
   });
 
   it('shows the message of the issuer of a failed credential and no confirmation', async () => {
@@ -138,6 +184,12 @@ describe('Wallets as a service: one credential (C4-M1 getCredential, confirmRevo
     showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: ROLF, c4m1: module });
     expect(await screen.findByText(/This needs the role OSP Admin/)).toBeInTheDocument();
     expect(credentialRepository.calls).toEqual([]);
+  });
+
+  it('shows another error of the module with its HTTP status', async () => {
+    showWallets(path(REVOCATION_PENDING_CREDENTIAL.id), { session: OTTO, c4m1: recordingC4M1({ credentialFailure: c4m1Problem(503, 'unavailable', 'try later') }).module });
+    expect(await screen.findByText(/HTTP 503/)).toHaveTextContent('try later');
+    expect(screen.getByText('urn:c4-m1:problem:unavailable')).toBeInTheDocument();
   });
 
   it('shows a 403 of the module', async () => {

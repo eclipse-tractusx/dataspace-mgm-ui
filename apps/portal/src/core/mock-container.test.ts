@@ -51,7 +51,7 @@ describe('mock mode', () => {
 
   it('signs in the test persons of Wallets as a service with the permissions of C4-M1', async () => {
     const signIn = async (person: string) => (await createMockCoreModules(person).identity.getCurrentSession.execute())!;
-    expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials'] });
+    expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials', 'view_dataspace_wallet', 'retrieve_wallet_credentials'] });
     expect(await signIn('wallets-max')).toMatchObject({ user: { name: 'Max Mustermann' }, companyId: MOCK_PERSONS['wallets-erika'].companyId, permissions: [] });
     expect(await signIn('wallets-otto')).toMatchObject({ user: { name: 'Otto Normalverbraucher' }, companyId: null, permissions: ['manage_credentials'] });
     expect(await signIn('wallets-rolf')).toMatchObject({ user: { name: 'Rolf Prüfer' }, companyId: null, permissions: [] });
@@ -63,6 +63,15 @@ describe('mock mode', () => {
     expect(own?.status === 'found' && own.credentials.map((credential) => credential.dataspace.mark)).toEqual(['CX', 'CX', 'SC']);
     const all = await c4m1?.listCredentials.execute({ page: 0, size: 20 });
     expect(all?.status === 'found' && all.page.total).toBe(16);
+  });
+
+  it('serves the dataspace wallet and the wallet accounts of C4-M2 from the fixtures of the mockup (proof of concept)', async () => {
+    const { c3m1, c4m2 } = createMockCoreModules('wallets-erika');
+    const { companyId } = MOCK_PERSONS['wallets-erika'];
+    expect(await c4m2?.getOwnWallet.execute(companyId)).toMatchObject({ status: 'found', wallet: { provider: 'CSP', status: 'ACTIVE' } });
+    const accounts = await c4m2?.listWalletAccounts.execute(companyId);
+    expect(accounts?.status === 'found' && accounts.items.map((item) => item.technicalUser.iamClientId)).toEqual(['sa201', 'sa202']);
+    expect(await c3m1.getOwnCompany.execute(companyId)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH', bpn: 'BPNLIUK2REMLK3F4' } });
   });
 
   it('starts signed out for a person key it does not know', async () => {

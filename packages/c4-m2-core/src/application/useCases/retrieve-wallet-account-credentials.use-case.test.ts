@@ -92,6 +92,7 @@ describe('RetrieveWalletAccountCredentialsUseCase', () => {
 
   it.each([
     [409, 'urn:c4-m2:problem:conflict'],
+    [409, 'urn:c4-m2:problem:wallet-not-active'],
     [410, 'urn:c4-m2:problem:challenge-expired'],
     [500, null],
   ])('reports %i %s as failed, with the Problem Details type', async (status, problemType) => {

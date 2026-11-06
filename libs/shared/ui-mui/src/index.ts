@@ -34,6 +34,7 @@ export { createPortalTheme, RADIUS, BUTTON_RADIUS } from './theme/theme';
 export { tractusx, uiTokens, type BrandColors, type UiTokens } from './theme/palette';
 export { fontFamily } from './theme/typography';
 export { TractusXLogo } from './components/TractusXLogo';
+export { QrCode } from './components/QrCode';
 export { BrandBackdrop } from './components/BrandBackdrop';
 export { SpaceGlow } from './components/SpaceGlow';
 
@@ -106,7 +107,6 @@ export { default as TablePagination } from '@mui/material/TablePagination';
 export { default as TableRow } from '@mui/material/TableRow';
 export { default as Tabs } from '@mui/material/Tabs';
 export { default as TextField } from '@mui/material/TextField';
-// Added for the onboarding proof of concept (C1-M2 Registration).
 export { alpha, useTheme, type SxProps, type Theme } from '@mui/material/styles';
 
 // Icons used by the apps.
@@ -180,7 +180,9 @@ export { default as ScheduleIcon } from '@mui/icons-material/Schedule';
 export { default as SearchIcon } from '@mui/icons-material/Search';
 export { default as SendIcon } from '@mui/icons-material/Send';
 export { default as UndoIcon } from '@mui/icons-material/Undo';
-// Icons added for the onboarding proof of concept (C1-M2 Registration).
 export { default as HelpOutlineOutlinedIcon } from '@mui/icons-material/HelpOutlineOutlined';
 export { default as SendOutlinedIcon } from '@mui/icons-material/SendOutlined';
 export { default as UploadFileOutlinedIcon } from '@mui/icons-material/UploadFileOutlined';
+export { default as KeyOutlinedIcon } from '@mui/icons-material/KeyOutlined';
+export { default as VisibilityOffOutlinedIcon } from '@mui/icons-material/VisibilityOffOutlined';
+export { default as VisibilityOutlinedIcon } from '@mui/icons-material/VisibilityOutlined';

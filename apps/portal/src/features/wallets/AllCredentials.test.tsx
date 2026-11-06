@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { c4m1Problem, type InMemoryCredentialCall } from '@dataspace-mgm/c4-m1-core/testing';
+import { CREDENTIALS_OF_ALL_COMPANIES, FAILED_CREDENTIAL, c4m1Problem, type InMemoryCredentialCall } from '@dataspace-mgm/c4-m1-core/testing';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { walletsTranslations } from './i18n';
@@ -94,6 +94,46 @@ describe('Wallets as a service: credentials of all companies (C4-M1 listCredenti
     expect(within(await table()).getAllByRole('row')[1]).toHaveTextContent('BPNL00000000IH01');
   });
 
+  it('disables the status chips while the open orders are shown, and says why', async () => {
+    const { module, credentialRepository } = recordingC4M1();
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: module });
+
+    const failed = await screen.findByRole('button', { name: 'Failed 1' });
+    fireEvent.click(failed);
+    fireEvent.click(screen.getByRole('button', { name: 'Open for more than 24 h' }));
+    expect(await screen.findByText('1 credential')).toBeInTheDocument();
+    expect(failed).toHaveAttribute('aria-pressed', 'false');
+    expect(failed).toHaveAttribute('aria-disabled', 'true');
+
+    fireEvent.click(failed);
+    expect(failed).toHaveAttribute('aria-pressed', 'false');
+    expect(lastQuery(credentialRepository.calls)).toMatchObject({ status: ['REQUESTED'] });
+    fireEvent.mouseOver(failed);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Turn off "Open for more than 24 h" to filter by status.');
+  });
+
+  it('keeps the filters in the address, so they survive a visit of a credential', async () => {
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1().module });
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Issued 11' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Next' }));
+    expect(await screen.findByText('Page 2 of 2')).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent('/wallets/all-credentials?status=ISSUED&page=2');
+
+    fireEvent.click(within(await table()).getAllByRole('row')[1].querySelector('a') as HTMLElement);
+    expect(await screen.findByRole('heading', { level: 1, name: 'BPN credential' })).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('link', { name: 'Credentials of all companies' }));
+    expect(await screen.findByText('Page 2 of 2')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Issued 11' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('goes to the last page when the page of the address is past the end', async () => {
+    const { module, credentialRepository } = recordingC4M1();
+    showWallets('/wallets/all-credentials?page=9', { session: OTTO, c4m1: module });
+    expect(await screen.findByText('Page 2 of 2')).toBeInTheDocument();
+    expect(lastQuery(credentialRepository.calls)).toMatchObject({ page: 1 });
+  });
+
   it('filters by the credential type', async () => {
     const { module, credentialRepository } = recordingC4M1();
     showWallets('/wallets/all-credentials', { session: OTTO, c4m1: module });
@@ -148,6 +188,40 @@ describe('Wallets as a service: credentials of all companies (C4-M1 listCredenti
     showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ credentialFailure: c4m1Problem(403, 'forbidden') }).module });
     expect(await screen.findByText(/\(HTTP 403\)\. This needs the role OSP Admin/)).toBeInTheDocument();
     expect(screen.getByText('urn:c4-m1:problem:forbidden')).toBeInTheDocument();
+  });
+
+  it('shows the full number of open items when the queue holds only the first page of each kind', async () => {
+    const failed = Array.from({ length: 101 }, (_, index) => ({ ...FAILED_CREDENTIAL, id: `c4c10000-0000-4000-8000-${String(index).padStart(12, '0')}` }));
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ credentials: [...CREDENTIALS_OF_ALL_COMPANIES, ...failed] }).module });
+    const queue = await screen.findByRole('region', { name: /Needs attention/ });
+    expect(within(queue).getByRole('heading', { level: 2 })).toHaveTextContent('Needs attention104');
+    expect(within(queue).getByText('Showing 102 of 104.')).toBeInTheDocument();
+  });
+
+  it('names a company that has neither a name nor a BPN yet', async () => {
+    const unknown = { ...FAILED_CREDENTIAL, companyName: null, bpn: null };
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ credentials: [unknown] }).module });
+    expect(await screen.findByRole('article', { name: 'Membership credential of Not known yet' })).toBeInTheDocument();
+    expect(within(await table()).getByRole('link', { name: 'Not known yet' })).toBeInTheDocument();
+  });
+
+  it('shows another error of the queue with its HTTP status', async () => {
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ credentialFailure: c4m1Problem(503, 'unavailable', 'try later') }).module });
+    expect(await screen.findByText(/HTTP 503/)).toHaveTextContent('try later');
+    expect(screen.getByText('urn:c4-m1:problem:unavailable')).toBeInTheDocument();
+  });
+
+  it('says when the module does not accept the filters (400)', async () => {
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ listFailure: c4m1Problem(400, 'validation') }).module });
+    expect(await screen.findByText('The onboarding service provider did not accept the filters (HTTP 400).')).toBeInTheDocument();
+    expect(screen.getByText('urn:c4-m1:problem:validation')).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /Needs attention/ })).toBeInTheDocument();
+  });
+
+  it('shows another error of the list with its HTTP status', async () => {
+    showWallets('/wallets/all-credentials', { session: OTTO, c4m1: recordingC4M1({ listFailure: c4m1Problem(502, 'upstream-error', 'issuer down') }).module });
+    expect(await screen.findByText(/HTTP 502/)).toHaveTextContent('issuer down');
+    expect(screen.getByText('urn:c4-m1:problem:upstream-error')).toBeInTheDocument();
   });
 
   it('shows the feature tab of OSP staff', async () => {

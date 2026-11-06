@@ -35,7 +35,7 @@ import { WalletsPage } from '../components/WalletsPage';
 import { useCompanyCredentials } from '../hooks/useCompanyCredentials';
 import { WALLETS_NS } from '../i18n';
 import { WALLETS_PATHS } from '../paths';
-import { FORBIDDEN_PROBLEM } from '../problems';
+import { FORBIDDEN_PROBLEM, NOT_FOUND_PROBLEM } from '../problems';
 
 /**
  * "Your credentials" (C4-M1 `listCompanyCredentials`): one pass per credential of the company, the BPN credential in
@@ -73,7 +73,11 @@ export default function YourCredentials() {
       body = <Alert severity="info">{t('yourCredentials.noCompany')}</Alert>;
       break;
     case 'not-found':
-      body = <Alert severity="warning">{t('yourCredentials.notFound')}</Alert>;
+      body = (
+        <ProblemAlert severity="warning" problemType={NOT_FOUND_PROBLEM}>
+          {t('yourCredentials.notFound')}
+        </ProblemAlert>
+      );
       break;
     case 'failed':
       body = <FailedAlert error={state.error} />;
