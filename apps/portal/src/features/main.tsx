@@ -25,7 +25,6 @@
  ********************************************************************************/
 
 import {
-  AccountBalanceWalletOutlinedIcon,
   AppRegistrationOutlinedIcon,
   CableOutlinedIcon,
   HubOutlinedIcon,
@@ -36,6 +35,7 @@ import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
 import { homeFeature } from './home/routes';
 import { participantsFeature } from './participants/routes';
+import { walletsFeature } from './wallets/routes';
 
 /**
  * Whether a feature can be opened: not disabled, and a proof of concept (`stage: 'poc'`) only in mock mode, because it
@@ -79,7 +79,7 @@ export const allFeatures: FeatureConfig[] = [
   upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
   participantsFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
-  upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),
+  walletsFeature,
   upcoming('marketplace', 'as-a-service', <StorefrontOutlinedIcon />, '/marketplace', '0.2.0'),
   upcoming('network', 'network', <HubOutlinedIcon />, '/network', '0.1.0'),
 ];

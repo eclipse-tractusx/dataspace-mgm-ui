@@ -52,7 +52,8 @@ const result = await c4m1.listCompanyCredentials.execute(session.companyId);
 
 `createInMemoryC4M1Module(options)` takes `companyCredentials` (per company ID), `credentials`,
 `companyCredentialFailure`, `credentialFailure` (e.g. `c4m1Problem(403, 'forbidden')`), `clock` and `openOrderHours`;
-the defaults are the mockup's data. Tests use the adapters directly (`InMemoryCompanyCredentialRepository`,
+the defaults are the mockup's data. Mock mode (`apps/portal/src/core/mock-container.ts`) gives Beispiel Maschinenbau
+GmbH `COMPANY_CREDENTIALS.twoDataspaces`, so the passes show the logo slots of two dataspaces. Tests use the adapters directly (`InMemoryCompanyCredentialRepository`,
 `InMemoryCredentialRepository`, both record their `calls`) and the fixtures: `COMPANY_CREDENTIALS.issued`, `requested`,
 `failed`, `revoked`, `none`, `twoDataspaces` (Beispiel Maschinenbau GmbH), `CREDENTIALS_OF_ALL_COMPANIES` (the 16
 credentials, sorted by `changedAt` descending) and the named examples `REVOCATION_PENDING_CREDENTIAL`,
@@ -68,9 +69,9 @@ now), answers a `REVOKED` credential unchanged (README 7.3: 200 without a change
 | Mockup (`mockups/wallets/`) | Becomes |
 |---|---|
 | `views/wallet.html`, the credential passes on the right (stack) | `listCompanyCredentials`; a pass per `CredentialStatusAnemic`, the logo slot from its `dataspace` (`logoUrl`, else `mark`) |
-| `views/credentials.html` (layout passes) | `listCompanyCredentials`; states issued, being-issued, failed, revoked, not-requested = `COMPANY_CREDENTIALS.*`; forbidden = 403 |
-| `views/credential-monitor.html` (layout attention, filters chips) | `listOpenItems` (the "Needs attention" queue), `listCredentials` (the list and its filters), `countCredentialsByStatus` (the counts on the chips) |
-| `views/credential-detail.html` (sections, confirm dialog, timeline) | `getCredential`, `confirmRevocation`; the timeline from `requestedAt`, `failedAt`, `issuedAt`, `revokedAt`, `changedAt` |
+| `views/credentials.html` (layout passes) | `listCompanyCredentials`; states issued, being-issued, failed, revoked, not-requested = `COMPANY_CREDENTIALS.*`; forbidden = 403. Page `features/wallets/pages/YourCredentials.tsx` at `/wallets/credentials`, one `CredentialPass` per credential |
+| `views/credential-monitor.html` (layout attention, filters chips) | `listOpenItems` (the "Needs attention" queue), `listCredentials` (the list and its filters), `countCredentialsByStatus` (the counts on the chips). Page `AllCredentials.tsx` at `/wallets/all-credentials` |
+| `views/credential-detail.html` (sections, confirm dialog, timeline) | `getCredential`, `confirmRevocation`; the timeline from `requestedAt`, `failedAt`, `issuedAt`, `revokedAt`, `changedAt`. Page `Credential.tsx` at `/wallets/all-credentials/:credentialId` (`?confirm=1` opens the dialog) |
 | `shared/data.js` `companyCredentials` | `COMPANY_CREDENTIALS` (without the mockup-only `key`) |
 | `shared/data.js` `credentials` (`detail()`) | `CREDENTIALS_OF_ALL_COMPANIES` with `companyName` from the mockup's `companies` (null for the C4-M2 test companies) |
 | `shared/data.js` `CATENA_X`, `SEMICONDUCTOR` | `CATENA_X_DATASPACE`, `SEMICONDUCTOR_DATASPACE` (`logoUrl` null: the slot shows the mark) |
@@ -93,6 +94,12 @@ now), answers a `REVOKED` credential unchanged (README 7.3: 200 without a change
 | 8 | P2 (nice to have) | `GET /companies/{companyId}/credentials` | `revocationReason` per credential, and the last round (`run.status`) as in the internal query 9.1 | no | a revoked pass cannot say why; an overall status would otherwise be a UI decision |
 | 9 | P2 | `GET /credentials`, `POST …/confirm-revocation` | `allowedActions` (e.g. `CONFIRM_REVOCATION`) per `CredentialDetail` | no | the button shows on `status` `REVOCATION_PENDING` today; the API enforces it with 409 |
 | 10 | P2 | events | an SSE event for the UI when a status changes (`CredentialsIssued`, `CredentialIssuanceFailed`, `CredentialRevoked` are outbox events for modules) | no | live updates without polling (AGENTS rule 7) |
+| 11 | P2 | `GET /companies/{companyId}/credentials` | the `bpn` the BPN credential proves, per `CredentialStatusView` | no | the BPN pass shows the `bpn` of the session (`GET /me`) today |
+| 12 | P2 | `GET /credentials` | a filter for open orders (e.g. `overdue=true`), or `requestedBefore` that combines with several statuses | no | "Open for more than 24 h" sends `status=REQUESTED` with the `requestedBefore` of `listOpenItems`, so the UI clears the status chips while it is on |
+
+The UI shows the "Confirm revocation" button while `status` is `REVOCATION_PENDING` and greys out a pass whose
+`status` is `FAILED`, `REVOKED` or `NONE`; it decides nothing else (open point 9 replaces the first with
+`allowedActions`).
 
 Fields of the fixtures and whether the spec has them: `CredentialStatusView` `credentialType`, `status`,
 `requestedAt`, `issuedAt`, `revokedAt` (yes), `dataspace` (no, 7); `CredentialDetail` all fields (yes; `bpn`,
