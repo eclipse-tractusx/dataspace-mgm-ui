@@ -24,5 +24,8 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-/** Font stack of identifiers (BPN, DID, IDs): generic families only, the platform picks the face. */
-export const MONO = 'ui-monospace, monospace';
+/**
+ * Font stack of identifiers (BPN, DID, IDs): installed system faces only, no web font. The stack of the mockup:
+ * Chromium does not know `ui-monospace`, so without the named faces it would fall back to Courier.
+ */
+export const MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace';

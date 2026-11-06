@@ -96,7 +96,7 @@ export function CredentialPass({ credential, bpn, skin, explain = 'info', headin
     <PassSurface skin={skin} muted={muted} label={t('pass.label', { name, dataspace: credential.dataspace.name })}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <DataspaceLogo dataspace={credential.dataspace} />
-        <Box sx={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: '0.9375rem', lineHeight: 1.2 }}>
+        <Box sx={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: '0.9375rem', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto' }}>
           {/* Name and info button in one text flow: when the name wraps, the button follows its last word. */}
           <div>
             <Typography component={headingLevel} sx={{ font: 'inherit', display: 'inline' }}>

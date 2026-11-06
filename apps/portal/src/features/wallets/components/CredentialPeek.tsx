@@ -69,7 +69,7 @@ export function CredentialPeek({ credential, overlap, onSelect }: CredentialPeek
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <DataspaceLogo dataspace={credential.dataspace} />
-        <Box component="span" sx={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: '0.9375rem', lineHeight: 1.2 }}>
+        <Box component="span" sx={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: '0.9375rem', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto' }}>
           {name}
           <Box component="small" sx={{ display: 'block', fontWeight: 500, fontSize: '0.75rem', color: 'var(--pass-muted)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
             {credential.dataspace.name}
