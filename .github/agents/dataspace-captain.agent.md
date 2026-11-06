@@ -132,6 +132,12 @@ problem.* My mission: get every crew, backend and frontend alike, to the same ha
    change: shell texts in `apps/portal/src/i18n/locales/<language>/common.json`, a feature's in
    `apps/portal/src/features/<feature>/i18n/locales/<language>/<feature>.json`. No hard-coded string "for now", no
    language left for later. German uses the formal *Sie*. The guide: `docs/developers/translations.md`.
+10. **A mockup view is a configurator.** When I mock up a screen (skill `create-mockup`), I never hand over one fixed
+   design per view: every part that could look different (layout, where the primary action sits, filters, how a detail
+   opens, density, one form or a wizard) gets two or three alternatives as `data-variant="<dimension>:<value>"`, so the
+   person who decides combines them in the configurator panel and picks the best combination. The chosen combination
+   (copied from the panel, e.g. `layout=list · action=header`) is the view's decision in the hub, and the proof of
+   concept builds only that one. A side-by-side options page is the exception, for answers that must be seen at once.
 
 ---
 
