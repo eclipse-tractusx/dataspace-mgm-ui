@@ -1,0 +1,299 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallets as a service — Mockups</title>
+  <!-- The settings of this mockup; the mockup script reads them. -->
+  <meta name="mockup-title" content="Wallets as a service">
+  <meta name="mockup-module" content="c4-m2">
+  <meta name="mockup-path" content="/wallets">
+  <meta name="mockup-nav-name" content="">
+  <meta name="mockup-nav-icon" content="">
+  <meta name="mockup-states" content="loaded,empty,loading,error">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="shared/shell.css">
+  <link rel="stylesheet" href="shared/hub.css">
+</head>
+<!-- The hub of the mockup, by view. Each <section class="hub-view"> carries data-status: open | decided | deferred.
+     `mockup.py status wallets` reads it; the proof of concept starts when no view is open. -->
+<body data-hub-page>
+  <div class="hub-layout">
+    <nav class="hub-toc" aria-label="Views">
+      <div class="hub-toc__h">The company</div>
+      <a href="#view-wallet"><span class="hub-num">1</span>Your dataspace wallet</a>
+      <a href="#view-credentials"><span class="hub-num">2</span>Your credentials</a>
+      <a href="#view-wallet-accounts"><span class="hub-num">3</span>Wallet accounts</a>
+      <div class="hub-toc__sep"></div>
+      <div class="hub-toc__h">The OSP</div>
+      <a href="#view-credential-monitor"><span class="hub-num">4</span>Credentials of all companies</a>
+      <a href="#view-credential-detail"><span class="hub-num">5</span>Credential</a>
+      <div class="hub-toc__sep"></div>
+      <a href="#not-here">Not in this mockup</a>
+      <div class="hub-toc__sep"></div>
+      <button class="tx-btn tx-btn--outlined hub-toc__theme" type="button" data-theme-toggle></button>
+    </nav>
+
+    <main class="hub">
+      <div class="tx-overline">Dataspace Management · mockup · phase 1 of 3</div>
+      <h1 class="tx-title">Wallets as a service</h1>
+      <p class="hub-lead">Every company of this onboarding service provider (OSP A) gets a dataspace wallet during onboarding,
+        and in it two credentials: the BPN credential and the membership credential. Its connectors sign in to the wallet
+        with the wallet accounts of technical users. People of the company see the wallet, the credentials and the wallet
+        accounts, and retrieve the access data of a wallet account once; the staff of the OSP watch the credentials of all
+        companies and confirm a revocation done by hand. Behind it are two backend modules: <code>c4-m2</code> Dataspace
+        Wallet Interface and <code>c4-m1</code> Credentials (portal-backend-spec). Each view below is one screen of the
+        portal with a configurator: switch the alternatives on the screen, copy the combination you like, and it becomes
+        the decision of the view.</p>
+      <dl class="hub-facts">
+        <div><dt>Backend modules</dt><dd><code>c4-m2</code> 0.2 · <code>c4-m1</code> 0.2</dd></div>
+        <div><dt>Test data</dt><dd>FRAMEWORK 7a, C4-M1 14, C4-M2 14.1</dd></div>
+        <div><dt>Navigation</dt><dd><code>/wallets</code> (Wallets as a service)</dd></div>
+        <div><dt>Started</dt><dd>2026-11-06</dd></div>
+      </dl>
+
+      <section class="hub-view" id="view-wallet" data-view="wallet" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">1</span>
+          <h2 class="tx-h2">Your dataspace wallet</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika Mustermann, Company Admin of Beispiel Maschinenbau GmbH, opens Wallets as a service from the rail to check
+          that the dataspace wallet of her company is ready, and to copy the DID and the addresses an IT colleague needs to
+          set up a connector. It is the landing page of the feature for people of a company and links to the views 2 and 3.
+          The navigation inside the feature (tabs or not) is decided here and applies to the views 2 and 3 too.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/wallet.html">
+            <span class="hub-card__frame"><iframe src="views/wallet.html" title="Preview of Your dataspace wallet" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /api/c4-m2/companies/{companyId}/wallet</code> (<code>getWallet</code>, <code>view_dataspace_wallet</code>, scope <code>company</code>) → <code>Wallet</code>: <code>provider</code> (<code>CSP</code>), <code>status</code> (<code>REQUESTED</code>, <code>VALIDATING</code>, <code>ACTIVE</code>, <code>FAILED</code>), <code>did</code>, <code>didDocumentLocation</code>, <code>credentialServiceUrl</code>, <code>bdrsUrl</code>, <code>stsTokenUrl</code> (IdentityHub only), <code>supportsWalletAccounts</code>, <code>failureReason</code>, <code>createdAt</code>, <code>activatedAt</code>.</li>
+              <li>With "Status of both credentials": also <code>GET /api/c4-m1/companies/{companyId}/credentials</code> (view 2).</li>
+              <li>The company name and BPN in the header come from C3-M1 <code>GET /companies/{companyId}</code>; <code>Wallet</code> has neither.</li>
+              <li>States: <code>validating</code> and <code>failed</code> (<code>failureReason</code> <code>DID_NOT_RESOLVABLE</code>) are results of the same call; <code>no-wallet</code> = 404 <code>urn:c4-m2:problem:not-found</code> (no row yet); <code>forbidden</code> = 403 for Max (Member).</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>C4-M2: the layout "Set-up progress" needs the state of the directory entry (C3-M2 <code>register-did</code>) and of the credentials (C4-M1). Is a combined status of the onboarding steps for the company planned (Process Orchestration), or does this layout drop?</li>
+              <li data-open>C4-M2: <code>Wallet</code> returns no <code>bpn</code>, although the table has it. Add it, so the page needs no second call to C3-M1 for the header?</li>
+              <li data-open>C2-M5: <code>view_dataspace_wallet</code> is a proposal for <code>IT Admin</code> and <code>Company Admin</code> (6.8). Should a <code>Member</code> see the DID and the addresses (they are public anyway)?</li>
+              <li data-open>Live updates: <code>VALIDATING</code> becomes <code>ACTIVE</code> in the background (6.10). Which SSE event does the UI subscribe to (<code>DataspaceWalletCreated</code> is an outbox event for modules)?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-credentials" data-view="credentials" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">2</span>
+          <h2 class="tx-h2">Your credentials</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika comes here from the wallet page, or after a notification, to see whether the BPN credential and the
+          membership credential of her company are issued: without them, the connectors of other participants do not
+          exchange data with hers. The page only reads; the company cannot request or revoke a credential in version 0.2.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/credentials.html">
+            <span class="hub-card__frame"><iframe src="views/credentials.html" title="Preview of Your credentials" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /api/c4-m1/companies/{companyId}/credentials</code> (<code>listCompanyCredentials</code>, <code>view_credentials</code>, scope <code>company</code>) → <code>CredentialStatusView[]</code>: <code>credentialType</code> (<code>BPN</code>, <code>MEMBERSHIP</code>), <code>status</code> (<code>NONE</code>, <code>REQUESTED</code>, <code>ISSUED</code>, <code>FAILED</code>, <code>CANCELLED</code>, <code>REVOCATION_PENDING</code>, <code>REVOKED</code>), <code>requestedAt</code>, <code>issuedAt</code>, <code>revokedAt</code>. No messages of the issuer, no route (7.1).</li>
+              <li>The states are the results of the same call: <code>issued</code>, <code>being-issued</code> (membership <code>REQUESTED</code>), <code>failed</code>, <code>revoked</code> (company deactivated, membership <code>REVOKED</code>, BPN stays), <code>not-requested</code> (both <code>NONE</code>); <code>forbidden</code> = 403 for Max.</li>
+              <li>The texts that explain a credential ("Proves the business partner number…") are UI texts (i18n), not from the API.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>C4-M1: the "Overall status" banner is computed in the UI from the list, which is a decision the UI should not take. Can <code>listCompanyCredentials</code> return the last round (<code>run.status</code> <code>RUNNING</code>, <code>DONE</code>, <code>FAILED</code>), as the internal query 9.1 does? Without it the banner drops.</li>
+              <li data-open>C4-M1: <code>CredentialStatusView</code> has no <code>revocationReason</code>, so a revoked credential cannot say why (company deactivated or other).</li>
+              <li data-open>C4-M1: <code>FAILED</code> without any hint for the company. Is a short, safe reason category for the company wanted (for example "being repeated", "your OSP was informed"), or is the fixed sentence enough?</li>
+              <li data-open>Live updates: <code>REQUESTED</code> becomes <code>ISSUED</code> by a status report. Which SSE event does the page listen to, so it does not poll?</li>
+            </ul>
+          </div>
+        </div>
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-wallet-accounts" data-view="wallet-accounts" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">3</span>
+          <h2 class="tx-h2">Wallet accounts</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Erika (or the IT Admin who created the technical user) comes here after creating a technical user with wallet
+          access in Technical users (C2-M3), to retrieve the access data of its wallet account and enter them into the
+          connector. They are handed out exactly once (C4-M2 6.7); whoever loses them deletes the technical user and creates
+          it again.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/wallet-accounts.html">
+            <span class="hub-card__frame"><iframe src="views/wallet-accounts.html" title="Preview of Wallet accounts" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li>The technical users come from C2-M3 <code>GET /companies/{companyId}/technical-users</code> → <code>TechnicalUserSummary</code> (<code>name</code>, <code>description</code>, <code>iamClientId</code>, <code>walletAccess</code>); only those with <code>walletAccess</code> other than <code>NONE</code> are listed.</li>
+              <li>Per technical user <code>GET /api/c4-m2/technical-users/{technicalUserId}/wallet-account</code> (<code>getWalletAccount</code>, <code>view_dataspace_wallet</code>) → <code>WalletAccount</code>: <code>walletAccountRef</code>, <code>provider</code>, <code>status</code>, <code>credentialsState</code> (<code>NONE</code>, <code>AVAILABLE</code>, <code>RETRIEVED</code>, <code>EXPIRED</code>), <code>credentialsExpireAt</code>, <code>createdAt</code>.</li>
+              <li><code>POST …/wallet-account/credentials</code> (<code>retrieveWalletAccountCredentials</code>, <code>retrieve_wallet_credentials</code>) → <code>WalletAccountCredentials</code>: <code>tokenUrl</code>, <code>clientId</code>, <code>clientSecret</code>, <code>did</code>, <code>credentialServiceUrl</code>; <code>Cache-Control: no-store</code>. The button shows from the permission of <code>GET /me</code> and <code>credentialsState</code> <code>AVAILABLE</code>.</li>
+              <li>Errors shown: 410 <code>urn:c4-m2:problem:already-retrieved</code> (state <code>retrieved-meanwhile</code>, someone else was faster); 410 <code>credentials-expired</code>, 409 <code>no-credentials</code> and 409 <code>invalid-state</code> are covered by <code>credentialsState</code> and the hidden button.</li>
+              <li>"Download as a file" builds the file in the browser from the response; nothing is stored. The secret in <code>data.js</code> is a mockup value.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>C4-M2: there is no list of the wallet accounts of a company; the page needs the C2-M3 list and one call per technical user. Add <code>GET /companies/{companyId}/wallet-accounts</code>?</li>
+              <li data-open>Where does this screen live: here in Wallets as a service, in Technical users (C2-M3, right after creating the user), or in both? C2-M3 returns <code>walletAccountRef</code> on the technical user, so its detail page could offer the retrieval.</li>
+              <li data-open>Security: is a download of the client secret as a file acceptable, or only copy (the file stays in the download folder)?</li>
+              <li data-open>C4-M2: may a person retrieve the access data of a technical user that another person created? The spec allows every person with <code>retrieve_wallet_credentials</code> of the company.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-credential-monitor" data-view="credential-monitor" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">4</span>
+          <h2 class="tx-h2">Credentials of all companies</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Otto Normalverbraucher, OSP Admin, opens it from Wallets as a service to find credentials that need him: failed
+          issuances, orders without a status report for more than 24 hours, and membership credentials of deactivated
+          companies that he has to revoke at the Credential Issuer by hand. It is the landing page of the feature for OSP
+          staff.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/credential-monitor.html">
+            <span class="hub-card__frame"><iframe src="views/credential-monitor.html" title="Preview of Credentials of all companies" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /api/c4-m1/credentials</code> (<code>listCredentials</code>, <code>manage_credentials</code>, scope <code>osp</code>) → <code>CredentialPage</code> (<code>items</code>, <code>page</code>, <code>size</code>, <code>total</code>) of <code>CredentialDetail</code>: <code>id</code>, <code>companyId</code>, <code>bpn</code>, <code>credentialType</code>, <code>status</code>, <code>route</code>, <code>issuerDid</code>, <code>walletProvider</code>, <code>holderDid</code>, <code>requestRef</code>, <code>attempt</code>, <code>requestedAt</code>, <code>issuedAt</code>, <code>failedAt</code>, <code>revokedAt</code>, <code>failureReason</code>, <code>revocationReason</code>, <code>changedAt</code>; sorted by <code>changedAt</code> descending.</li>
+              <li>Filters of the API: <code>status</code> (repeatable), <code>credentialType</code>, <code>companyId</code>, <code>route</code>, <code>requestedBefore</code>. "Open for more than 24 h" = <code>status=REQUESTED&amp;requestedBefore=now−24h</code>. "Needs attention" = three queries: <code>FAILED</code>, <code>REVOCATION_PENDING</code>, open orders.</li>
+              <li>"Name and BPN" looks the names up at C3-M1 (<code>listCompanies</code>); the C4-M2 test companies have no name and show their BPN.</li>
+              <li>States: <code>no-results</code> (empty page); <code>forbidden</code> = 403 for Rolf (OSP Reviewer without <code>manage_credentials</code>).</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>C4-M1: no counts per status; the status chips show counts only from the page in hand. Add counts (for example <code>GET /credentials/summary</code>) or drop them?</li>
+              <li data-open>C4-M1: the list filters by <code>companyId</code>, not by BPN or name. Add a <code>bpn</code> filter (the column exists), or does the UI look up the company at C3-M1 first?</li>
+              <li data-open>C4-M1: the 24 hours of "open" are <code>RESEND_AFTER_HOURS</code> of the installation; the UI must not hard-code them. Return the value (for example in <code>GET /config</code>) or a flag <code>overdue</code> per credential?</li>
+              <li data-open>C4-M1: <code>CredentialDetail</code> has no company name; every row needs C3-M1. Add <code>companyName</code>?</li>
+              <li data-open>C4-M1: can OSP staff start a new attempt for a failed credential here, or is that only Process Orchestration (OP-18)? Today the screen only reads.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-view" id="view-credential-detail" data-view="credential-detail" data-status="open">
+        <header class="hub-view__head">
+          <span class="hub-num">5</span>
+          <h2 class="tx-h2">Credential</h2>
+          <span class="hub-status">open</span>
+        </header>
+        <p>Otto opens one credential from view 4 to see everything the issuer reported, and, for a revocation pending
+          (route Credential Issuer cannot revoke, C4-M1 6.3), to confirm with a note that he revoked it at the Credential
+          Issuer. The mockup links four example credentials (pending, failed, being issued, issued) above the title.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/credential-detail.html">
+            <span class="hub-card__frame"><iframe src="views/credential-detail.html" title="Preview of Credential" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li>One <code>CredentialDetail</code> (fields as in view 4).</li>
+              <li><code>POST /api/c4-m1/credentials/{credentialId}/confirm-revocation</code> (<code>confirmRevocation</code>, <code>manage_credentials</code>, scope <code>osp</code>) with <code>{ note }</code> (1–500 characters, no names) → 200 <code>CredentialDetail</code> with <code>status</code> <code>REVOKED</code>. Errors: 400 <code>urn:c4-m1:problem:validation</code> (empty note), 409 <code>urn:c4-m1:problem:invalid-state</code> (state <code>conflict</code>), 404 <code>not-found</code>.</li>
+              <li>The life cycle is built from <code>requestedAt</code>, <code>failedAt</code>, <code>issuedAt</code>, <code>revokedAt</code> and <code>changedAt</code>; earlier attempts are not visible.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>C4-M1: there is no <code>GET /credentials/{credentialId}</code>. A direct link (from a notification) cannot load one credential; add it?</li>
+              <li data-open>C4-M1: the table <code>credential_history</code> (every status change with <code>attempt</code> and <code>note</code>) is not in the API. Return it in the detail, so the timeline shows all attempts and the note of the confirmation?</li>
+              <li data-open>C4-M1: the UI shows "Confirm revocation" because <code>status</code> is <code>REVOCATION_PENDING</code>. Is that enough (the API enforces it with 409), or should <code>CredentialDetail</code> carry <code>allowedActions</code>?</li>
+              <li data-open>C2-M2 / audit: the note may not hold names. Who did the confirmation is only in the audit log (<code>sub</code>); should the detail show it?</li>
+            </ul>
+          </div>
+        </div>
+        <p class="hub-decision" data-decision></p>
+      </section>
+
+      <section class="hub-next" id="not-here">
+        <h2 class="tx-h3">Not in this mockup</h2>
+        <ul class="hub-data">
+          <li><strong>Dataspace wallets of all companies for OSP staff.</strong> "Wallets as a service" suggests that the OSP
+            sees the wallets it provides, but C4-M2 has no operation with scope <code>osp</code> for people (only
+            <code>/internal</code> queries for modules). Open question to C4-M2: add <code>GET /wallets</code> (status,
+            provider, failure reason per company), so OSP staff find failed wallets? Then it becomes view 6.</li>
+          <li><strong>Own wallet (bring your own, control proof).</strong> <code>POST /wallet-control-challenges</code> and
+            <code>…/proof</code> are "later" (OP-29) and part of onboarding (applicant), not of this feature.</li>
+          <li><strong>Requesting further credentials</strong> (use case credentials, certificates): Outlook of C4-M1, not in
+            version 0.2.</li>
+        </ul>
+      </section>
+
+      <section class="hub-next">
+        <h2 class="tx-h3">Next: the proof of concept</h2>
+        <p>When no view is open, the skill <code>build-poc</code> builds the decided views into
+          <code>apps/portal/src/features/</code> as a feature with <code>stage: 'poc'</code>, on the in-memory adapters of
+          the core packages <code>c4-m2-core</code> and <code>c4-m1-core</code> (<code>VITE_USE_MOCKS=true npm start</code>).
+          The data of <code>shared/data.js</code> becomes their fixtures; every open point above goes to the backend team.</p>
+      </section>
+    </main>
+  </div>
+  <script src="shared/icons.js"></script>
+  <script src="shared/shell.js"></script>
+</body>
+</html>

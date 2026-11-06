@@ -1,0 +1,265 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallets as a service · Your dataspace wallet — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/wallets.css">
+  <style>
+    .wl-hero { box-shadow: var(--hero-glow); }
+    .wl-hero .wx-fields { margin-top: 28px; }
+    .wl-progress-layout { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; align-items: start; }
+    @media (max-width: 1099.98px) { .wl-progress-layout { grid-template-columns: 1fr; } }
+    .wl-step--external .wx-dot { border-style: dashed; }
+    .wl-link-card { display: flex; align-items: center; gap: 16px; text-decoration: none; color: inherit; }
+    .wl-link-card:hover { border-color: var(--tx-orange); }
+    .wl-link-card__main { flex: 1; min-width: 0; }
+  </style>
+</head>
+<!-- C4-M2 7.1 GET /companies/{companyId}/wallet (getWallet, view_dataspace_wallet, scope company).
+     With the credentials summary also C4-M1 7.1 GET /companies/{companyId}/credentials (view_credentials). -->
+<body data-active="/wallets" data-view="Your dataspace wallet" data-states="active,validating,failed,no-wallet,loading,forbidden">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="wx-markers" aria-hidden="true">
+      <span data-variant="layout:card" data-dimension="Layout" data-variant-label="One card"></span>
+      <span data-variant="layout:sections" data-variant-label="Identity + connector set-up"></span>
+      <span data-variant="layout:progress" data-variant-label="Set-up progress + details"></span>
+      <span data-variant="credentials:summary" data-dimension="Credentials on this page" data-variant-label="Status of both credentials"></span>
+      <span data-variant="credentials:link" data-variant-label="A link to the credentials only"></span>
+      <span data-variant="values:full" data-dimension="Long values (DID, addresses)" data-variant-label="In full"></span>
+      <span data-variant="values:short" data-variant-label="Shortened in the middle"></span>
+      <span data-variant="nav:tabs" data-dimension="Navigation in the feature" data-variant-label="Tabs under the title"></span>
+      <span data-variant="nav:none" data-variant-label="No tabs (links in the page)"></span>
+    </div>
+
+    <div class="tx-overline">Wallets as a service</div>
+    <h1 class="tx-title" id="view-title">Your dataspace wallet</h1>
+    <div id="feature-tabs"></div>
+
+    <section data-show-state="active validating failed" id="content"></section>
+
+    <section data-show-state="no-wallet">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="AccountBalanceWalletOutlined"></div>
+        <h2 class="tx-h3">Your company has no dataspace wallet yet</h2>
+        <p>The onboarding service provider creates it during onboarding, as soon as your company has its business partner number.
+          You do not need to do anything.</p>
+        <code>urn:c4-m2:problem:not-found</code>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading your dataspace wallet">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading your dataspace wallet…</span></div>
+        <div class="wx-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>You may not see the dataspace wallet of your company (HTTP 403). Ask your Company Admin for the role IT Admin.</div>
+          <code>urn:c4-m2:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/wallets.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = wx;
+      const data = mock.data;
+      const company = data.companies[data.ids.u1];
+
+      const ctx = () => {
+        const state = document.body.dataset.state;
+        const w = state === 'validating' || state === 'failed' ? data.walletVariants[state] : data.wallet;
+        const creds = state === 'active' ? data.companyCredentials.issued : data.companyCredentials.none;
+        return { state, w, creds, v: (k) => mock.variant(k) };
+      };
+
+      const val = (c, value, empty) => (c.v('values') === 'short' ? wx.copyable(value, { short: 16, empty }) : wx.copyable(value, { empty }));
+
+      // ── pieces ───────────────────────────────────────────────────────────
+      const head = (c) => `<div class="wx-company">
+          <div class="tx-tile" aria-hidden="true">${mock.icon('AccountBalanceWalletOutlined')}</div>
+          <div class="wx-company__main">
+            <h2 class="wx-company__name">${esc(company.name)}</h2>
+            <div class="wx-company__meta"><span>${esc(wx.labels.provider[c.w.provider])}</span><span>BPN ${esc(company.bpn)}</span></div>
+          </div>
+          ${wx.chip('walletStatus', c.w.status)}
+        </div>`;
+
+      const stateAlert = (c) => {
+        if (c.w.status === 'VALIDATING') {
+          return `<div class="tx-alert tx-alert--info" style="margin-bottom: 24px">${mock.icon('HourglassTopOutlined')}
+            <div><div><strong>Your wallet is being checked.</strong> The DID document is resolved and checked. Your connectors can use the wallet as soon as it is active.</div></div></div>`;
+        }
+        if (c.w.status === 'FAILED') {
+          return `<div class="tx-alert tx-alert--error" style="margin-bottom: 24px">${mock.icon('ErrorOutlineOutlined')}
+            <div><div><strong>Your wallet could not be set up.</strong> ${esc(wx.labels.walletFailure[c.w.failureReason])} Your onboarding service provider can start a new attempt.</div>
+            <code>failureReason: ${esc(c.w.failureReason)}</code></div></div>`;
+        }
+        return '';
+      };
+
+      const identityFields = (c) => `
+        <div class="wx-field"><dt>DID</dt><dd>${val(c, c.w.did)}</dd></div>
+        <div class="wx-field"><dt>DID document</dt><dd>${val(c, c.w.didDocumentLocation)}</dd></div>`;
+
+      const connectorFields = (c) => `
+        <div class="wx-field"><dt>Credential service</dt><dd>${val(c, c.w.credentialServiceUrl)}</dd></div>
+        <div class="wx-field"><dt>Directory BPN → DID</dt><dd>${val(c, c.w.bdrsUrl)}</dd></div>
+        <div class="wx-field"><dt>Token address (STS)</dt><dd>${c.w.stsTokenUrl ? val(c, c.w.stsTokenUrl) : '<span class="wx-none">One per wallet account</span>'}</dd></div>`;
+
+      const metaFields = (c) => `
+        <div class="wx-field"><dt>Provider</dt><dd>${esc(wx.labels.provider[c.w.provider])}</dd></div>
+        <div class="wx-field"><dt>Created</dt><dd>${wx.dateTime(c.w.createdAt)}</dd></div>
+        <div class="wx-field"><dt>Active since</dt><dd>${c.w.activatedAt ? wx.dateTime(c.w.activatedAt) : '<span class="wx-none">Not active yet</span>'}</dd></div>`;
+
+      const credentialSummary = (c) => {
+        if (c.v('credentials') === 'link') {
+          return `<a class="tx-card wl-link-card" href="credentials.html">
+              <span class="tx-tile" aria-hidden="true">${mock.icon('VerifiedUserOutlined')}</span>
+              <span class="wl-link-card__main"><span class="tx-h3" style="display: block">Credentials</span>
+                <span class="tx-muted tx-body2">The BPN credential and the membership credential in this wallet.</span></span>
+              ${mock.icon('ChevronRightOutlined')}</a>`;
+        }
+        return `<section class="tx-card" aria-labelledby="h-creds">
+            <div class="wx-section__head"><h2 class="tx-h3" id="h-creds">Credentials in this wallet</h2><a class="tx-link tx-body2" href="credentials.html">Details →</a></div>
+            <div class="wx-mini">${c.creds.map((cr) => `<div class="wx-mini__row"><strong>${esc(wx.labels.credentialType[cr.credentialType])}</strong>${wx.chip('credentialStatus', cr.status)}</div>`).join('')}</div>
+          </section>`;
+      };
+
+      const accountsHint = (c) => (c.w.supportsWalletAccounts
+        ? `<p class="tx-muted tx-body2" style="margin: 16px 0 0">Your connectors sign in to the wallet with a wallet account of a technical user. <a class="tx-link" href="wallet-accounts.html">Wallet accounts →</a></p>`
+        : '');
+
+      // ── layouts ──────────────────────────────────────────────────────────
+      const layouts = {
+        card: (c) => `${stateAlert(c)}
+          <div class="tx-card wl-hero">
+            ${head(c)}
+            <dl class="wx-fields wx-fields--2">${identityFields(c)}${connectorFields(c)}</dl>
+            <hr class="wx-divider">
+            <dl class="wx-fields">${metaFields(c)}</dl>
+            ${accountsHint(c)}
+          </div>
+          <div style="margin-top: 24px">${credentialSummary(c)}</div>`,
+
+        sections: (c) => `${stateAlert(c)}
+          <div class="tx-card wl-hero" style="margin-bottom: 24px">${head(c)}</div>
+          <div class="wx-split">
+            <div class="wx-sections">
+              <section class="tx-card" aria-labelledby="h-identity">
+                <div class="wx-section__head"><div><h2 class="tx-h3" id="h-identity">Identity in the dataspace</h2>
+                  <p class="tx-muted tx-body2">Other participants find your company by this DID.</p></div></div>
+                <dl class="wx-fields wx-fields--1">${identityFields(c)}</dl>
+              </section>
+              <section class="tx-card" aria-labelledby="h-connector">
+                <div class="wx-section__head"><div><h2 class="tx-h3" id="h-connector">For your connectors</h2>
+                  <p class="tx-muted tx-body2">The addresses a connector of your company needs to use this wallet.</p></div></div>
+                <div class="wx-config">
+                  <div class="wx-config__item"><div class="wx-config__label"><strong>DID of your company</strong><span>the identity of the connector</span></div>${wx.valueBlock(c.w.did)}</div>
+                  <div class="wx-config__item"><div class="wx-config__label"><strong>Credential service</strong><span>where partners query your credentials</span></div>${wx.valueBlock(c.w.credentialServiceUrl)}</div>
+                  <div class="wx-config__item"><div class="wx-config__label"><strong>Directory BPN → DID</strong><span>finds the DID of a partner</span></div>${wx.valueBlock(c.w.bdrsUrl)}</div>
+                  <div class="wx-config__item"><div class="wx-config__label"><strong>Token address (STS)</strong><span>comes with each wallet account</span></div>
+                    ${c.w.stsTokenUrl ? wx.valueBlock(c.w.stsTokenUrl) : `<div class="wx-value-block"><span class="wx-none">One per wallet account</span><a class="tx-link tx-body2" href="wallet-accounts.html">Wallet accounts →</a></div>`}</div>
+                </div>
+              </section>
+            </div>
+            <aside class="wx-aside">
+              ${credentialSummary(c)}
+              <section class="tx-card wx-card-sm" aria-labelledby="h-about">
+                <div class="wx-section__head"><h2 class="tx-h3" id="h-about">About this wallet</h2></div>
+                <dl class="wx-kv">
+                  <dt>Provider</dt><dd>${esc(wx.labels.providerShort[c.w.provider])}</dd>
+                  <dt>Status</dt><dd>${wx.chip('walletStatus', c.w.status)}</dd>
+                  <dt>Created</dt><dd>${wx.date(c.w.createdAt)}</dd>
+                  <dt>Active since</dt><dd>${wx.date(c.w.activatedAt)}</dd>
+                  <dt>Wallet accounts</dt><dd>${c.w.supportsWalletAccounts ? 'Supported' : 'Not supported'}</dd>
+                </dl>
+              </section>
+            </aside>
+          </div>`,
+
+        progress: (c) => {
+          const active = c.w.status === 'ACTIVE';
+          const failed = c.w.status === 'FAILED';
+          const issued = c.creds.every((cr) => cr.status === 'ISSUED');
+          const step = (cls, iconName, title, meta) => `<li class="${cls}"><span class="wx-dot">${mock.icon(iconName)}</span><div><div class="wx-progress__title">${title}</div><div class="wx-progress__meta">${meta}</div></div></li>`;
+          return `${stateAlert(c)}
+            <div class="tx-card wl-hero" style="margin-bottom: 24px">${head(c)}</div>
+            <div class="wl-progress-layout">
+              <section class="tx-card" aria-labelledby="h-progress">
+                <div class="wx-section__head"><h2 class="tx-h3" id="h-progress">Set-up</h2></div>
+                <ol class="wx-progress">
+                  ${step('is-done', 'CheckOutlined', 'Wallet created', `${esc(wx.labels.providerShort[c.w.provider])} · ${wx.dateTime(c.w.createdAt)}`)}
+                  ${step(active ? 'is-done' : failed ? 'is-failed' : 'is-current', active ? 'CheckOutlined' : failed ? 'CloseOutlined' : 'HourglassTopOutlined', 'DID document checked', active ? wx.dateTime(c.w.activatedAt) : failed ? esc(wx.labels.walletFailure[c.w.failureReason]) : 'Running')}
+                  ${step(`wl-step--external ${active ? 'is-done' : ''}`, active ? 'CheckOutlined' : 'HorizontalRuleOutlined', 'DID entered in the directory BPN → DID', 'CSP Connection (C3-M2)')}
+                  ${step(`wl-step--external ${issued ? 'is-done' : ''}`, issued ? 'CheckOutlined' : 'HorizontalRuleOutlined', 'Credentials issued', `Credentials (C4-M1) · <a class="tx-link" href="credentials.html">Details</a>`)}
+                </ol>
+              </section>
+              <section class="tx-card" aria-labelledby="h-details">
+                <div class="wx-section__head"><h2 class="tx-h3" id="h-details">Details</h2></div>
+                <dl class="wx-fields wx-fields--1">${identityFields(c)}${connectorFields(c)}</dl>
+                ${accountsHint(c)}
+              </section>
+            </div>
+            <div style="margin-top: 24px">${credentialSummary(c)}</div>`;
+        },
+      };
+
+      function render() {
+        const c = ctx();
+        const personKey = c.state === 'forbidden' ? 'max' : 'erika';
+        document.getElementById('persona').innerHTML = wx.persona(personKey);
+        document.getElementById('feature-tabs').innerHTML = c.v('nav') === 'tabs' ? wx.tabs('wallet.html') : '';
+        if (['active', 'validating', 'failed'].includes(c.state)) {
+          document.getElementById('content').innerHTML = layouts[c.v('layout')](c);
+        }
+      }
+
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>
