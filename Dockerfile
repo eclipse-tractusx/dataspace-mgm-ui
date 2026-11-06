@@ -44,7 +44,7 @@ RUN npx nx build "${APP}" --configuration=production \
     && cp -R "dist/apps/${APP}/." /out/
 
 # ---- Runtime stage: nginx-unprivileged (TRG 4.02); runs as user 101 (TRG 4.03) ----
-FROM nginxinc/nginx-unprivileged:1.30-alpine
+FROM nginxinc/nginx-unprivileged:1.31-alpine
 # The base image is rebuilt only now and then: take the security fixes Alpine has published since, so the released
 # image passes Trivy (CRITICAL/HIGH in brotli, curl, expat and zlib on 6 Nov 2026).
 USER root
