@@ -34,6 +34,7 @@ import {
 import { MOCK_MODE } from '../core/mock-mode';
 import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
+import { accessControlFeature } from './access-control';
 import { homeFeature } from './home/routes';
 import { participantsFeature } from './participants/routes';
 
@@ -78,6 +79,7 @@ export const allFeatures: FeatureConfig[] = [
   homeFeature,
   upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
   participantsFeature,
+  accessControlFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
   upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),
   upcoming('marketplace', 'as-a-service', <StorefrontOutlinedIcon />, '/marketplace', '0.2.0'),
@@ -97,7 +99,14 @@ export const features: NavigationEntry[] = allFeatures.map((feature) => ({
 /** A route that renders once its feature's translations are there. */
 const translated = (feature: FeatureConfig, route: FeatureRoute): FeatureRoute =>
   feature.translations
-    ? { ...route, element: <FeatureTranslationsGate translations={feature.translations}>{route.element}</FeatureTranslationsGate> }
+    ? {
+        ...route,
+        element: (
+          <FeatureTranslationsGate key={feature.id} translations={feature.translations}>
+            {route.element}
+          </FeatureTranslationsGate>
+        ),
+      }
     : route;
 
 /** The routes of all enabled features. */

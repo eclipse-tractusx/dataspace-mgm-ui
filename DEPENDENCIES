@@ -22,6 +22,7 @@ npm/npmjs/-/callsites/3.1.0, MIT, approved, clearlydefined
 npm/npmjs/-/caniuse-lite/1.0.30001820, CC-BY-4.0, approved, #1196
 npm/npmjs/-/chai/6.3.0, MIT, approved, #32200
 npm/npmjs/-/chalk/4.1.2, MIT, approved, clearlydefined
+npm/npmjs/-/chokidar/5.0.0, MIT, approved, #31373
 npm/npmjs/-/cli-cursor/3.1.0, MIT, approved, clearlydefined
 npm/npmjs/-/cli-spinners/2.6.1, MIT, approved, clearlydefined
 npm/npmjs/-/cliui/8.0.1, ISC AND Artistic-2.0, approved, #3753
@@ -108,6 +109,8 @@ npm/npmjs/-/ieee754/1.2.1, BSD-3-Clause, approved, #26025
 npm/npmjs/-/ignore/5.3.2, MIT, approved, #11665
 npm/npmjs/-/ignore/7.0.12, MIT, approved, #30871
 npm/npmjs/-/ignore/7.0.14, MIT, approved, #30871
+npm/npmjs/-/immer/11.2.9, , restricted, clearlydefined
+npm/npmjs/-/immutable/5.1.9, MIT, approved, #20384
 npm/npmjs/-/import-fresh/3.3.1, MIT, approved, #19299
 npm/npmjs/-/imurmurhash/0.1.4, MIT, approved, clearlydefined
 npm/npmjs/-/indent-string/4.0.0, MIT, approved, clearlydefined
@@ -161,6 +164,7 @@ npm/npmjs/-/minimist/1.2.8, MIT, approved, #5886
 npm/npmjs/-/ms/2.1.3, MIT, approved, #5895
 npm/npmjs/-/nanoid/3.3.20, MIT, approved, #7571
 npm/npmjs/-/natural-compare/1.4.0, MIT, approved, clearlydefined
+npm/npmjs/-/node-addon-api/7.1.1, MIT, approved, #24792
 npm/npmjs/-/node-releases/2.0.63, MIT, approved, #1954
 npm/npmjs/-/npm-run-path/4.0.1, MIT, approved, clearlydefined
 npm/npmjs/-/nx/24.0.4, , restricted, clearlydefined
@@ -194,20 +198,26 @@ npm/npmjs/-/react-i18next/17.0.15, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/16.13.1, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/17.0.2, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/19.3.1, MIT, approved, #32310
+npm/npmjs/-/react-redux/9.3.1, , restricted, clearlydefined
 npm/npmjs/-/react-router-dom/7.18.5, , restricted, clearlydefined
 npm/npmjs/-/react-router/7.18.5, , restricted, clearlydefined
 npm/npmjs/-/react-transition-group/4.4.5, BSD-3-Clause, approved, CQ22955
 npm/npmjs/-/react/19.3.1, MIT, approved, #32496
 npm/npmjs/-/readable-stream/3.6.2, MIT, approved, CQ22627
+npm/npmjs/-/readdirp/5.1.1, MIT, approved, #30178
 npm/npmjs/-/redent/3.0.0, MIT, approved, clearlydefined
+npm/npmjs/-/redux-thunk/3.1.0, MIT, approved, clearlydefined
+npm/npmjs/-/redux/5.0.1, MIT, approved, clearlydefined
 npm/npmjs/-/require-directory/2.1.1, MIT, approved, #31415
 npm/npmjs/-/require-from-string/2.0.2, MIT, approved, #24815
+npm/npmjs/-/reselect/5.3.0, MIT, approved, clearlydefined
 npm/npmjs/-/resolve-from/4.0.0, MIT, approved, clearlydefined
 npm/npmjs/-/resolve.exports/2.0.3, MIT, approved, #18688
 npm/npmjs/-/resolve/1.22.14, MIT AND ISC, approved, #29249
 npm/npmjs/-/restore-cursor/3.1.0, MIT, approved, clearlydefined
 npm/npmjs/-/rolldown/1.2.16, MIT, approved, #30405
 npm/npmjs/-/safe-buffer/5.2.1, MIT, approved, clearlydefined
+npm/npmjs/-/sass/1.108.0, Apache-2.0 AND BSD-3-Clause AND MIT, approved, #32974
 npm/npmjs/-/saxes/6.0.0, ISC, approved, clearlydefined
 npm/npmjs/-/scheduler/0.28.0, MIT, approved, clearlydefined
 npm/npmjs/-/semver/6.3.2, , restricted, clearlydefined
@@ -366,7 +376,21 @@ npm/npmjs/@nx/nx-linux-x64-musl/24.0.4, , restricted, clearlydefined
 npm/npmjs/@nx/nx-win32-arm64-msvc/24.0.4, , restricted, clearlydefined
 npm/npmjs/@nx/nx-win32-x64-msvc/24.0.4, , restricted, clearlydefined
 npm/npmjs/@oxc-project/types/0.156.0, , restricted, clearlydefined
+npm/npmjs/@parcel/watcher-android-arm64/2.6.0, MIT, approved, #29859
+npm/npmjs/@parcel/watcher-darwin-arm64/2.6.0, MIT, approved, #29868
+npm/npmjs/@parcel/watcher-darwin-x64/2.6.0, MIT, approved, #29856
+npm/npmjs/@parcel/watcher-freebsd-x64/2.6.0, MIT, approved, #29862
+npm/npmjs/@parcel/watcher-linux-arm-glibc/2.6.0, MIT, approved, #29866
+npm/npmjs/@parcel/watcher-linux-arm-musl/2.6.0, MIT, approved, #29863
+npm/npmjs/@parcel/watcher-linux-arm64-glibc/2.6.0, MIT, approved, #29867
+npm/npmjs/@parcel/watcher-linux-arm64-musl/2.6.0, MIT, approved, #29864
+npm/npmjs/@parcel/watcher-linux-x64-glibc/2.6.0, MIT, approved, #29869
+npm/npmjs/@parcel/watcher-linux-x64-musl/2.6.0, MIT, approved, #29858
+npm/npmjs/@parcel/watcher-win32-arm64/2.6.0, MIT, approved, #29865
+npm/npmjs/@parcel/watcher-win32-x64/2.6.0, MIT, approved, #29857
+npm/npmjs/@parcel/watcher/2.6.0, MIT, approved, #29861
 npm/npmjs/@popperjs/core/2.11.8, MIT, approved, clearlydefined
+npm/npmjs/@reduxjs/toolkit/2.14.0, , restricted, clearlydefined
 npm/npmjs/@rolldown/binding-android-arm-eabi/1.2.16, MIT, approved, #30516
 npm/npmjs/@rolldown/binding-android-arm64/1.2.16, MIT, approved, #30518
 npm/npmjs/@rolldown/binding-darwin-arm64/1.2.16, MIT, approved, #30396
@@ -383,6 +407,8 @@ npm/npmjs/@rolldown/binding-openharmony-arm64/1.2.16, MIT, approved, #30392
 npm/npmjs/@rolldown/binding-win32-arm64-msvc/1.2.16, MIT, approved, #30404
 npm/npmjs/@rolldown/binding-win32-x64-msvc/1.2.16, MIT AND (EPL-1.0 AND MIT), approved, #30401
 npm/npmjs/@rolldown/pluginutils/1.0.1, MIT, approved, #25896
+npm/npmjs/@standard-schema/spec/1.1.0, MIT, approved, clearlydefined
+npm/npmjs/@standard-schema/utils/0.3.0, MIT, approved, clearlydefined
 npm/npmjs/@testing-library/dom/10.4.2, MIT, approved, #15966
 npm/npmjs/@testing-library/jest-dom/7.0.1, , restricted, clearlydefined
 npm/npmjs/@testing-library/react/16.3.3, MIT, approved, clearlydefined
@@ -399,6 +425,7 @@ npm/npmjs/@types/prop-types/15.7.15, MIT, approved, #16176
 npm/npmjs/@types/react-dom/19.3.0, MIT, approved, #31775
 npm/npmjs/@types/react-transition-group/4.4.12, MIT, approved, #8416
 npm/npmjs/@types/react/19.3.0, MIT, approved, clearlydefined
+npm/npmjs/@types/use-sync-external-store/0.0.6, MIT, approved, clearlydefined
 npm/npmjs/@typescript-eslint/eslint-plugin/8.72.1, MIT, approved, #32968
 npm/npmjs/@typescript-eslint/parser/8.72.1, MIT, approved, #32966
 npm/npmjs/@typescript-eslint/project-service/8.72.1, MIT, approved, #32969
