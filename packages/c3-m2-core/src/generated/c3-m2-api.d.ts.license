@@ -1,0 +1,5 @@
+This file is generated with openapi-typescript 7.13.0 from specs/c3-m2/openapi.yaml (nx run c3-m2-core:generate-api).
+
+- SPDX-License-Identifier: Apache-2.0
+- SPDX-FileCopyrightText: 2026 Contributors to the Eclipse Foundation
+- Source URL: https://github.com/eclipse-tractusx/dataspace-mgm-ui/blob/main/specs/c3-m2/openapi.yaml

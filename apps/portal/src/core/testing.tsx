@@ -25,8 +25,19 @@
  ********************************************************************************/
 
 import type { ReactNode } from 'react';
-import { GetOwnCompanyUseCase, type CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
-import { InMemoryCompanyRepository } from '@dataspace-mgm/c3-m1-core/testing';
+import { c3m1ModuleFrom, type CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
+import {
+  InMemoryC3M1Store,
+  InMemoryChangeRequestReviewRepository,
+  InMemoryCompanyRepository,
+  InMemoryCompanyRoleRepository,
+  InMemoryOspCompanyRepository,
+  InMemoryOwnChangeRequestRepository,
+  InMemoryOwnCompanyRepository,
+  type InMemoryC3M1StoreOptions,
+} from '@dataspace-mgm/c3-m1-core/testing';
+import { GetCspRegistrationUseCase, type CspRegistrationAnemic } from '@dataspace-mgm/c3-m2-core';
+import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
 import { createIdentityModule, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, RecordingRedirect } from '@dataspace-mgm/identity-core/testing';
 import { CoreModulesProvider } from './CoreModulesContext';
@@ -34,19 +45,40 @@ import type { CoreModules } from './container';
 
 interface TestModulesOptions {
   session?: SessionAnemic | null;
+  /** The own company from a list (as before); without it, the own company comes from the participants store. */
   companies?: ReadonlyArray<CompanyAnemic>;
   companyFailure?: Error;
+  /** Data and injected answers of the in-memory C3-M1 (participant management); the actor is the session's person. */
+  participants?: Omit<InMemoryC3M1StoreOptions, 'actorId'>;
+  cspRegistrations?: ReadonlyArray<CspRegistrationAnemic>;
+  cspFailure?: Error;
 }
 
 /** The core packages with in-memory adapters: pages are tested against the use cases, without HTTP. */
-export function testCoreModules({ session = null, companies = [], companyFailure }: TestModulesOptions = {}) {
+export function testCoreModules({
+  session = null,
+  companies,
+  companyFailure,
+  participants = {},
+  cspRegistrations = CSP_REGISTRATIONS,
+  cspFailure,
+}: TestModulesOptions = {}) {
   const redirect = new RecordingRedirect();
-  const companyRepository = new InMemoryCompanyRepository(companies, companyFailure ?? null);
+  const companyRepository = new InMemoryCompanyRepository(companies ?? [], companyFailure ?? null);
+  const store = new InMemoryC3M1Store({ ...participants, actorId: session?.user.id });
+  const cspRepository = new InMemoryCspRegistrationRepository(cspRegistrations, cspFailure ?? null);
   const modules: CoreModules = {
     identity: createIdentityModule({ bffBaseUrl: '', sessions: new InMemorySessionRepository(session), redirect }),
-    c3m1: { getOwnCompany: new GetOwnCompanyUseCase(companyRepository) },
+    c3m1: c3m1ModuleFrom({
+      companies: companies || companyFailure ? companyRepository : new InMemoryOwnCompanyRepository(store),
+      ownChangeRequests: new InMemoryOwnChangeRequestRepository(store),
+      companyRoles: new InMemoryCompanyRoleRepository(store),
+      ospCompanies: new InMemoryOspCompanyRepository(store),
+      reviews: new InMemoryChangeRequestReviewRepository(store),
+    }),
+    c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
   };
-  return { modules, redirect, companyRepository };
+  return { modules, redirect, companyRepository, store, cspRepository };
 }
 
 export function TestCoreModules({ modules, children }: { modules?: CoreModules; children: ReactNode }) {

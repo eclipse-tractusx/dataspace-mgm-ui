@@ -26,3 +26,4 @@
 
 export { default as CompanyProfile } from './pages/CompanyProfile';
 export { participantsFeature } from './routes';
+export { participantsPath } from './paths';

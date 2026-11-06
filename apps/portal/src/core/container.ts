@@ -25,6 +25,7 @@
  ********************************************************************************/
 
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
+import { createC3M2Module, C3M2_BASE_PATH, type C3M2Module } from '@dataspace-mgm/c3-m2-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
 import { createIdentityModule, type IdentityModule } from '@dataspace-mgm/identity-core';
 import type { RuntimeConfig } from '../config';
@@ -33,6 +34,7 @@ import type { RuntimeConfig } from '../config';
 export interface CoreModules {
   identity: IdentityModule;
   c3m1: C3M1Module;
+  c3m2: C3M2Module;
 }
 
 /**
@@ -52,5 +54,6 @@ export function createCoreModules(config: RuntimeConfig): CoreModules {
   return {
     identity,
     c3m1: createC3M1Module(moduleConfig(C3M1_BASE_PATH)),
+    c3m2: createC3M2Module(moduleConfig(C3M2_BASE_PATH)),
   };
 }

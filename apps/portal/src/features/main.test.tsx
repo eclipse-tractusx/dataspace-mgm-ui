@@ -50,6 +50,17 @@ describe('feature registry', () => {
   });
 
   it('routes the built features outside mock mode', () => {
-    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual(['index', 'participants']);
+    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
+      'index',
+      'participants',
+      'participants/company/change',
+      'participants/company/change-requests',
+      'participants/company/roles',
+      'participants/companies',
+      'participants/companies/:companyId',
+      'participants/companies/:companyId/csp',
+      'participants/change-requests',
+      'participants/change-requests/:changeRequestId',
+    ]);
   });
 });

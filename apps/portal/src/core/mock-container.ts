@@ -23,22 +23,18 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { GetOwnCompanyUseCase } from '@dataspace-mgm/c3-m1-core';
-import { InMemoryCompanyRepository, OSP_A_COMPANY } from '@dataspace-mgm/c3-m1-core/testing';
-import { createIdentityModule, type RedirectPort, type SessionAnemic } from '@dataspace-mgm/identity-core';
-import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
+import { createInMemoryC3M1Module } from '@dataspace-mgm/c3-m1-core/testing';
+import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
+import { GetCspRegistrationUseCase } from '@dataspace-mgm/c3-m2-core';
+import { createIdentityModule, type RedirectPort } from '@dataspace-mgm/identity-core';
+import { InMemorySessionRepository } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
+import { MOCK_PERSONS } from './mock-persons';
+
+export { MOCK_PERSONS } from './mock-persons';
 
 /** The person signed in when VITE_MOCK_PERSON is not set. */
 export const DEFAULT_MOCK_PERSON = 'pia';
-
-/**
- * The test persons of mock mode, by their key in the backend test data (testdata/persons-<osp>.json). VITE_MOCK_PERSON
- * picks one; a key that is not here (e.g. `none`) starts signed out. Add a person when a page needs other permissions.
- */
-export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
-  pia: PIA_SESSION,
-};
 
 /** Mock mode has no BFF: "sign in" reloads the page, which starts a new mock session. */
 class ReloadRedirect implements RedirectPort {
@@ -62,6 +58,8 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
       sessions: new InMemorySessionRepository(session),
       redirect: new ReloadRedirect(),
     }),
-    c3m1: { getOwnCompany: new GetOwnCompanyUseCase(new InMemoryCompanyRepository([OSP_A_COMPANY])) },
+    // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
+    c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
+    c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
   };
 }
