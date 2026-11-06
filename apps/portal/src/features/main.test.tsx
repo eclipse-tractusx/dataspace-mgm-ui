@@ -51,10 +51,13 @@ describe('feature registry', () => {
 
   it('routes the built features outside mock mode', () => {
     expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
-      'index',
+      'index', 'onboarding/reviews/*',
+      'participants',
+      'access-control',
       'notifications',
       'onboarding/reviews/*',
-      'participants',
+      'access-control/technical-users',
+      'access-control/iam',
     ]);
   });
 

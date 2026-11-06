@@ -1,4 +1,14 @@
 {
+  "mockEudi": {
+    "title": "EUDI Wallet sign-in",
+    "explanation": "Sign in through Portal IAM and the EBW-Connector with your EUDI Wallet, or switch to standard backend authentication.",
+    "noWallet": "Identity attributes and permissions are resolved from the Portal IAM session response.",
+    "normalLoginLabel": "Use standard backend login (/auth/login)",
+    "specResponseLabel": "Use spec-compliant /me session response",
+    "continueBackend": "Continue with standard login",
+    "continueAs": "Continue as {{name}}",
+    "cancel": "Cancel"
+  },
   "brand": {
     "tractusx": "Eclipse Tractus-X",
     "product": "Dataspace Management"
@@ -129,6 +139,10 @@
     "onboarding-review": {
       "name": "Application review",
       "description": "Review, approve or decline the registration applications of companies."
+    },
+    "access-control": {
+      "name": "People and access",
+      "description": "Manage company users, technical users and access."
     },
     "participants": {
       "name": "Participant management",

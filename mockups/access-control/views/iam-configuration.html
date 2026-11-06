@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: OpenAI GPT-6.1 Terra
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People and access · Portal IAM configuration — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <style>
+    .iam-stack { display: grid; gap: 20px; }
+    .iam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+    .iam-row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .iam-value { overflow-wrap: anywhere; }
+    .iam-section { margin-top: 24px; }
+    .iam-section h2 { margin-bottom: 12px; }
+    .iam-detail { margin-top: 12px; }
+    .iam-detail summary { cursor: pointer; }
+    .iam-table { overflow-x: auto; }
+    .iam-label { color: var(--muted); font-size: .875rem; margin-bottom: 4px; }
+    .iam-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body data-active="/access-control" data-view="Portal IAM configuration" data-states="loaded,loading,not-found,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">People and access</div>
+    <h1 class="tx-title" id="view-title">Portal IAM configuration</h1>
+    <p class="tx-muted">Reference for the Portal IAM of an installation.</p>
+    <div class="tx-alert tx-alert--info">
+      <div><strong>Read-only design reference</strong><br>Values below illustrate the C2-M5 specification, not the running installation. Configuration changes are deployed through a versioned realm file; this view cannot edit or verify them.</div>
+    </div>
+
+    <section data-show-state="loaded" class="iam-stack iam-section" aria-label="IAM configuration reference">
+      <div class="iam-actions" role="group" aria-label="Reference sections">
+        <button class="tx-btn tx-btn--outlined" type="button" data-jump="discovery">Discovery</button>
+        <button class="tx-btn tx-btn--outlined" type="button" data-jump="realm">Realm settings</button>
+        <button class="tx-btn tx-btn--outlined" type="button" data-jump="identity">Identity provider</button>
+      </div>
+      <section id="discovery" aria-labelledby="discovery-title">
+        <h2 class="tx-h2" id="discovery-title">OpenID discovery</h2>
+        <p class="tx-muted">Illustrative OSP A metadata from <code>getOpenIdConfiguration</code>. Discovery does not return the realm settings below.</p>
+        <div data-variant="layout:cards" data-dimension="Metadata layout" data-variant-label="Cards" class="iam-grid" data-cards></div>
+        <div data-variant="layout:table" data-variant-label="Table" class="tx-card iam-table">
+          <table class="tx-table"><thead><tr><th scope="col">Metadata field</th><th scope="col">Illustrative value</th></tr></thead><tbody data-rows></tbody></table>
+        </div>
+      </section>
+      <section id="realm" aria-labelledby="realm-title">
+        <h2 class="tx-h2" id="realm-title">Realm settings</h2>
+        <p class="tx-muted">Specified configuration and example deployment values, not observed runtime settings.</p>
+        <div data-variant="detail:expanded" data-dimension="Reference details" data-variant-label="Expanded" class="iam-grid" data-reference-cards></div>
+        <div data-variant="detail:disclosure" data-variant-label="Expandable sections" class="iam-stack" data-reference-details></div>
+      </section>
+      <section id="identity" class="tx-card" aria-labelledby="identity-title">
+        <h2 class="tx-h3" id="identity-title">Identity provider</h2>
+        <div class="tx-fields">
+          <div><div class="iam-label">Display name</div><strong>EUDI-Wallet</strong></div>
+          <div><div class="iam-label">Alias</div><code>ebw-connector</code></div>
+          <div><div class="iam-label">Authentication</div><code>private_key_jwt</code> · ES256</div>
+        </div>
+        <p class="tx-muted">The EBW-Connector is the specified identity provider. Its address is configured at deployment.</p>
+      </section>
+      <div class="tx-alert tx-alert--info"><div><strong>Frontend scope decision</strong><br>This mock-only reference is not a live configuration screen. Realm configuration changes are deployed through the versioned realm file.</div></div>
+    </section>
+    <section data-show-state="loading" class="iam-section" role="status" aria-label="Loading discovery metadata">
+      <div class="tx-row" data-variant="loading:spinner" data-dimension="Loading display" data-variant-label="Spinner"><span class="tx-spinner"></span><span>Loading discovery metadata…</span></div>
+      <div class="users-skeleton" data-variant="loading:skeleton" data-variant-label="Skeleton">
+        <p class="tx-muted">Loading discovery metadata…</p>
+        <div class="tx-card" data-variant="layout:table" aria-hidden="true">
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+        </div>
+        <div class="users-skeleton-grid" data-variant="layout:cards" aria-hidden="true">
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line"></span></div>
+        </div>
+      </div>
+    </section>
+    <section data-show-state="not-found" class="iam-section"><div class="tx-alert tx-alert--warning" role="alert"><div><strong>Realm not found</strong><p>The discovery endpoint returned HTTP 404. Check the installation's IAM URL and realm.</p></div></div></section>
+    <section data-show-state="error" class="iam-section"><div class="tx-alert tx-alert--error" role="alert"><div><strong>Discovery metadata unavailable</strong><p>The request could not be completed. No error format is specified for this case.</p><button type="button" class="tx-btn tx-btn--outlined" data-retry>Try again</button></div></div></section>
+  </main>
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      // C2-M5 OpenAPI discovery example; these are not live values.
+      const base = 'https://iam.osp-a.example.org/auth/realms/CX-Central';
+      const metadata = [
+        ['issuer', base],
+        ['authorization_endpoint', base + '/protocol/openid-connect/auth'],
+        ['token_endpoint', base + '/protocol/openid-connect/token'],
+        ['jwks_uri', base + '/protocol/openid-connect/certs'],
+      ];
+      // C2-M5 README sections 4 and 5: specification, not discovery response.
+      const sections = [
+        ['Deployment', [['Realm', 'CX-Central (default)'], ['Configuration version', '0.2.0'], ['Source', 'Versioned realm file']]],
+        ['Sessions', [['Access token lifespan', '300 seconds (example)'], ['SSO idle timeout', '1800 seconds (example)'], ['SSO maximum lifespan', '36000 seconds (example)']]],
+        ['Sign-in and keys', [['Browser flow', 'browser-ebw'], ['Direct grant', 'Denied'], ['Token signing', 'RS256']]],
+      ];
+      const fields = (entries) => entries.map(([label, value]) => '<div class="iam-detail"><div class="iam-label">' + label + '</div><div class="iam-value">' + value + '</div></div>').join('');
+      mock.render('[data-cards]', metadata, ([label, value]) => '<div class="tx-card"><div class="iam-label">' + label + '</div><div class="iam-value">' + value + '</div></div>');
+      mock.render('[data-rows]', metadata, ([label, value]) => '<tr><th scope="row">' + label + '</th><td class="iam-value">' + value + '</td></tr>');
+      mock.render('[data-reference-cards]', sections, ([title, entries]) => '<div class="tx-card"><h3 class="tx-h3">' + title + '</h3>' + fields(entries) + '</div>');
+      mock.render('[data-reference-details]', sections, ([title, entries]) => '<details class="tx-card"><summary><strong>' + title + '</strong></summary>' + fields(entries) + '</details>');
+      mock.on('click', '[data-jump]', (event, button) => document.getElementById(button.dataset.jump).scrollIntoView({ behavior: 'smooth' }));
+      // State switch only: this offline mockup makes no network requests.
+      mock.on('click', '[data-retry]', () => { mock.setState('loaded'); mock.toast('Showing illustrative metadata'); });
+    })();
+  </script>
+</body>
+</html>
