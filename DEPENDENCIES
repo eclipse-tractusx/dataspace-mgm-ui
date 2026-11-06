@@ -197,6 +197,7 @@ npm/npmjs/-/react-i18next/17.0.15, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/16.13.1, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/17.0.2, MIT, approved, clearlydefined
 npm/npmjs/-/react-is/19.3.1, MIT, approved, #32310
+npm/npmjs/-/react-redux/9.3.1, , restricted, clearlydefined
 npm/npmjs/-/react-router-dom/7.18.5, , restricted, clearlydefined
 npm/npmjs/-/react-router/7.18.5, , restricted, clearlydefined
 npm/npmjs/-/react-transition-group/4.4.5, BSD-3-Clause, approved, CQ22955
@@ -204,8 +205,11 @@ npm/npmjs/-/react/19.3.1, MIT, approved, #32496
 npm/npmjs/-/readable-stream/3.6.2, MIT, approved, CQ22627
 npm/npmjs/-/readdirp/5.1.1, MIT, approved, #30178
 npm/npmjs/-/redent/3.0.0, MIT, approved, clearlydefined
+npm/npmjs/-/redux-thunk/3.1.0, MIT, approved, clearlydefined
+npm/npmjs/-/redux/5.0.1, MIT, approved, clearlydefined
 npm/npmjs/-/require-directory/2.1.1, MIT, approved, #31415
 npm/npmjs/-/require-from-string/2.0.2, MIT, approved, #24815
+npm/npmjs/-/reselect/5.3.0, MIT, approved, clearlydefined
 npm/npmjs/-/resolve-from/4.0.0, MIT, approved, clearlydefined
 npm/npmjs/-/resolve.exports/2.0.3, MIT, approved, #18688
 npm/npmjs/-/resolve/1.22.14, MIT AND ISC, approved, #29249
@@ -385,6 +389,7 @@ npm/npmjs/@parcel/watcher-win32-arm64/2.6.0, MIT, approved, #29865
 npm/npmjs/@parcel/watcher-win32-x64/2.6.0, MIT, approved, #29857
 npm/npmjs/@parcel/watcher/2.6.0, MIT, approved, #29861
 npm/npmjs/@popperjs/core/2.11.8, MIT, approved, clearlydefined
+npm/npmjs/@reduxjs/toolkit/2.14.0, , restricted, clearlydefined
 npm/npmjs/@rolldown/binding-android-arm-eabi/1.2.16, MIT, approved, #30516
 npm/npmjs/@rolldown/binding-android-arm64/1.2.16, MIT, approved, #30518
 npm/npmjs/@rolldown/binding-darwin-arm64/1.2.16, MIT, approved, #30396
@@ -401,6 +406,8 @@ npm/npmjs/@rolldown/binding-openharmony-arm64/1.2.16, MIT, approved, #30392
 npm/npmjs/@rolldown/binding-win32-arm64-msvc/1.2.16, MIT, approved, #30404
 npm/npmjs/@rolldown/binding-win32-x64-msvc/1.2.16, MIT AND (EPL-1.0 AND MIT), approved, #30401
 npm/npmjs/@rolldown/pluginutils/1.0.1, MIT, approved, #25896
+npm/npmjs/@standard-schema/spec/1.1.0, MIT, approved, clearlydefined
+npm/npmjs/@standard-schema/utils/0.3.0, MIT, approved, clearlydefined
 npm/npmjs/@testing-library/dom/10.4.2, MIT, approved, #15966
 npm/npmjs/@testing-library/jest-dom/7.0.1, , restricted, clearlydefined
 npm/npmjs/@testing-library/react/16.3.3, MIT, approved, clearlydefined
@@ -417,6 +424,7 @@ npm/npmjs/@types/prop-types/15.7.15, MIT, approved, #16176
 npm/npmjs/@types/react-dom/19.3.0, MIT, approved, #31775
 npm/npmjs/@types/react-transition-group/4.4.12, MIT, approved, #8416
 npm/npmjs/@types/react/19.3.0, MIT, approved, clearlydefined
+npm/npmjs/@types/use-sync-external-store/0.0.6, MIT, approved, clearlydefined
 npm/npmjs/@typescript-eslint/eslint-plugin/8.72.1, MIT, approved, #32968
 npm/npmjs/@typescript-eslint/parser/8.72.1, MIT, approved, #32966
 npm/npmjs/@typescript-eslint/project-service/8.72.1, MIT, approved, #32969

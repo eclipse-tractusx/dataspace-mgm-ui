@@ -45,4 +45,9 @@ export class CompanyHttpRepository implements CompanyRepository {
       throw error;
     }
   }
+
+  public async updateShortName(companyId: string, shortName: string | null): Promise<CompanyAnemic> {
+    const dto = await ensureData(this.client.PATCH('/companies/{companyId}', { params: { path: { companyId } }, body: { shortName } }));
+    return CompanyMapper.toAnemic(dto);
+  }
 }

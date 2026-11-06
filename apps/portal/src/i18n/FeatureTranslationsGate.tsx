@@ -34,7 +34,8 @@ import type { FeatureTranslations } from './lazyFeatureTranslations';
  */
 export function FeatureTranslationsGate({ translations, children }: { translations: FeatureTranslations; children: ReactNode }) {
   const { t } = useTranslation();
-  const [ready, setReady] = useState(translations.isLoaded);
+  const [, setTick] = useState(0);
+  const ready = translations.isLoaded();
 
   useEffect(() => {
     if (ready) {
@@ -43,7 +44,7 @@ export function FeatureTranslationsGate({ translations, children }: { translatio
     let active = true;
     translations.load().then(() => {
       if (active) {
-        setReady(true);
+        setTick((tick) => tick + 1);
       }
     });
     return () => {

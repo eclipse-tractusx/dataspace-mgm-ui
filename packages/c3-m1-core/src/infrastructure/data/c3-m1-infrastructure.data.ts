@@ -27,5 +27,19 @@
 import type { Client } from 'openapi-fetch';
 import type { components, paths } from '../../generated/c3-m1-api';
 
+type Schemas = components['schemas'];
+
 export type C3M1Client = Client<paths>;
-export type CompanyDto = components['schemas']['Company'];
+export type CompanyDto = Schemas['Company'];
+export type CompanyDetailDto = Schemas['CompanyDetail'];
+export type CompanySummaryDto = Schemas['CompanySummary'];
+export type CompanyPageDto = Schemas['CompanyPage'];
+export type AddressDto = Schemas['Address'];
+export type AddressFieldsDto = Schemas['AddressFields'];
+export type IdentifierDto = Schemas['Identifier'];
+export type CompanyCorrectionDto = Schemas['CompanyCorrection'];
+export type ChangeRequestDto = Schemas['ChangeRequest'];
+export type ChangeRequestDetailDto = Schemas['ChangeRequestDetail'];
+export type ChangeRequestPageDto = Schemas['ChangeRequestPage'];
+export type ChangeRequestChangesDto = Schemas['ChangeRequestChanges'];
+export type CompanyRoleStateDto = Schemas['CompanyRoleState'];

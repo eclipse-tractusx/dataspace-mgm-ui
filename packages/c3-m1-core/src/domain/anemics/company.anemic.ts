@@ -24,6 +24,10 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import type { CompanyStatus, CoreDataSource } from '../data/c3-m1-values.data';
+import type { AddressAnemic } from './address.anemic';
+import type { IdentifierAnemic } from './identifier.anemic';
+
 /** The company as its own people see it (C3-M1 `Company`), in the shape the UI works with. */
 export type CompanyAnemic = Readonly<{
   id: string;
@@ -31,8 +35,10 @@ export type CompanyAnemic = Readonly<{
   shortName: string | null;
   /** BPNL; null until the CSP has assigned it. */
   bpn: string | null;
-  status: 'REQUESTED' | 'ACTIVE' | 'REJECTED' | 'INACTIVE';
-  coreDataSource: 'EBW' | 'MANUAL';
+  status: CompanyStatus;
+  coreDataSource: CoreDataSource;
+  /** When the core data was last verified (Business Wallet or onboarding service provider). */
+  coreDataVerifiedAt: string | null;
   dataspaceName: string | null;
   address: Readonly<{
     /** One line, e.g. "Am Prüfstand 1". */
@@ -41,8 +47,11 @@ export type CompanyAnemic = Readonly<{
     city: string;
     countryCode: string;
   }>;
-  identifiers: ReadonlyArray<Readonly<{ type: string; value: string; verified: boolean }>>;
+  /** The address in its parts, as the API has it (forms start from it). */
+  postalAddress: AddressAnemic;
+  identifiers: ReadonlyArray<IdentifierAnemic>;
   /** The active company roles, e.g. ACTIVE_PARTICIPANT. */
   companyRoles: ReadonlyArray<string>;
   createdAt: string;
+  activatedAt: string | null;
 }>;

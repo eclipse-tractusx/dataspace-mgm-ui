@@ -24,148 +24,42 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import type { ReactNode } from 'react';
-import type { CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
-import {
-  Alert,
-  Box,
-  BusinessOutlinedIcon,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Container,
-  Grid,
-  LoginIcon,
-  Stack,
-  Typography,
-  VerifiedUserOutlinedIcon,
-  alpha,
-  tractusx,
-} from '@dataspace-mgm/ui-mui';
+import { useState, type ReactNode } from 'react';
+import { ChangeRequestDomain, CompanyDomain, type CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
+import type { SessionAnemic } from '@dataspace-mgm/identity-core';
+import { Alert, BlockOutlinedIcon, Button, EditOutlinedIcon, Link, PendingActionsOutlinedIcon, Stack } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
-import { useCoreModules } from '../../../core/CoreModulesContext';
+import { Navigate, Link as RouterLink } from 'react-router-dom';
+import { useCoreModules, useSession } from '../../../core/CoreModulesContext';
+import { CompanyCard } from '../components/company/CompanyCard';
+import { LoadingState } from '../components/LoadingState';
+import { PageHeader } from '../components/PageHeader';
+import { ParticipantsPage } from '../components/ParticipantsPage';
+import { failureText } from '../components/problems';
+import { useLoad } from '../hooks/useLoad';
 import { useOwnCompany } from '../hooks/useOwnCompany';
+import { hasPermission } from '../hooks/useParticipantSession';
 import { PARTICIPANTS_NS } from '../i18n';
+import { participantsPath } from '../paths';
+import { changeSummary } from '../utils/change-summary';
+import { formatDate } from '../utils/format';
 
-const STATUS_COLOR = { ACTIVE: 'success', REQUESTED: 'warning', REJECTED: 'error', INACTIVE: 'default' } as const;
-
-/** A value of the API without a translation yet (a new company role), readable: ACTIVE_PARTICIPANT → Active participant. */
-const readable = (value: string) => value.charAt(0) + value.slice(1).toLowerCase().replaceAll('_', ' ');
-
-function Field({ name, children }: { name: string; children: ReactNode }) {
-  return (
-    <Box component="div" role="group" aria-label={name}>
-      <Typography variant="overline" color="text.secondary" component="div">
-        {name}
-      </Typography>
-      <Typography component="div">{children}</Typography>
-    </Box>
-  );
-}
-
-function CompanyCard({ company }: { company: CompanyAnemic }) {
-  const { t } = useTranslation(PARTICIPANTS_NS);
-  return (
-    <Card sx={{ borderRadius: '10px', boxShadow: `0 0 32px ${alpha(tractusx.orange, 0.12)}` }}>
-      <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: { sm: 'center' }, mb: 4 }}>
-          <Box
-            aria-hidden
-            sx={{ width: 52, height: 52, borderRadius: '10px', display: 'grid', placeItems: 'center', color: tractusx.orange, bgcolor: alpha(tractusx.orange, 0.15) }}
-          >
-            <BusinessOutlinedIcon />
-          </Box>
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography id="company-name" variant="h2" component="h2" sx={{ fontSize: 28 }}>
-              {company.name}
-            </Typography>
-            {company.dataspaceName && (
-              <Typography color="text.secondary">{t('participantOf', { dataspace: company.dataspaceName })}</Typography>
-            )}
-          </Box>
-          <Chip label={t(`status.${company.status}`)} color={STATUS_COLOR[company.status]} variant="outlined" sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }} />
-        </Stack>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Field name={t('fields.bpn')}>{company.bpn ?? t('bpnNotAssigned')}</Field>
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Field name={t('fields.address')}>
-              {company.address.street}
-              <br />
-              {company.address.city}, {company.address.countryCode}
-            </Field>
-          </Grid>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Field name={t('fields.coreData')}>{t(`coreDataSource.${company.coreDataSource}`)}</Field>
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Field name={t('fields.identifiers')}>
-              <Stack component="ul" spacing={0.5} sx={{ listStyle: 'none', p: 0, m: 0 }}>
-                {company.identifiers.map((identifier) => (
-                  <Stack component="li" key={`${identifier.type}-${identifier.value}`} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                    <span>
-                      {t('identifier', {
-                        type: t(`identifierTypes.${identifier.type}`, { defaultValue: identifier.type.replaceAll('_', ' ') }),
-                        value: identifier.value,
-                      })}
-                    </span>
-                    {identifier.verified && <VerifiedUserOutlinedIcon fontSize="small" titleAccess={t('verified')} />}
-                  </Stack>
-                ))}
-              </Stack>
-            </Field>
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Field name={t('fields.roles')}>
-              <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap', pt: 0.5 }}>
-                {company.companyRoles.map((role) => (
-                  <Chip key={role} label={t(`roles.${role}`, { defaultValue: readable(role) })} size="small" />
-                ))}
-              </Stack>
-            </Field>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
-}
-
-/**
- * Participant management, first page: the company of the signed-in person, read from C3-M1 Company Profile
- * (GET /api/c3-m1/companies/{companyId}). The example for the hackathon: docs/developers/integrate-a-backend-module.md.
- */
-export default function CompanyProfile() {
-  const { t } = useTranslation(PARTICIPANTS_NS);
+function OwnCompany({ session }: { session: SessionAnemic }) {
+  const { t, i18n } = useTranslation(PARTICIPANTS_NS);
+  const { c3m1 } = useCoreModules();
   const state = useOwnCompany();
-  const { identity } = useCoreModules();
+  const [saved, setSaved] = useState<CompanyAnemic | null>(null);
+  const companyId = state.status === 'found' ? state.company.id : null;
+  // The open change request: a second call until Company carries openChangeRequestId (open point C3-M1).
+  const requests = useLoad(companyId ? `open-requests:${companyId}` : null, () => c3m1.listOwnChangeRequests.execute(companyId ?? '', { page: 0, size: 20 }));
 
   let body: ReactNode;
+  let actions: ReactNode = null;
   switch (state.status) {
     case 'loading':
-      body = (
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }} role="status">
-          <CircularProgress size={24} />
-          <Typography>{t('loading')}</Typography>
-        </Stack>
-      );
+      body = <LoadingState text={t('loading')} />;
       break;
     case 'signed-out':
-      body = (
-        <Alert
-          severity="info"
-          action={
-            <Button color="inherit" startIcon={<LoginIcon />} onClick={() => identity.login.execute('/participants')}>
-              {t('signIn')}
-            </Button>
-          }
-        >
-          {t('signInPrompt')}
-        </Alert>
-      );
-      break;
     case 'no-company':
       body = <Alert severity="info">{t('noCompany')}</Alert>;
       break;
@@ -175,30 +69,89 @@ export default function CompanyProfile() {
     case 'failed':
       body = (
         <Alert severity="error">
-          {state.error.status
-            ? t('failedWithStatus', { status: state.error.status, message: state.error.message })
-            : t('failed', { message: state.error.message })}
-          {state.error.problemType && (
-            <Typography variant="body2" component="div" sx={{ fontFamily: 'monospace', mt: 0.5 }}>
-              {state.error.problemType}
-            </Typography>
-          )}
+          {t('profile.failed', { reason: failureText(t, state.error) })}
+          {state.error.problemType && <div style={{ fontFamily: 'monospace', marginTop: 4 }}>{state.error.problemType}</div>}
         </Alert>
       );
       break;
-    default:
-      body = <CompanyCard company={state.company} />;
+    default: {
+      const company = saved && saved.id === state.company.id ? saved : state.company;
+      const editable = hasPermission(session, 'edit_company') && CompanyDomain.canEdit(company);
+      const open = requests.value?.status === 'success' ? requests.value.data.items.find(ChangeRequestDomain.isOpen) : undefined;
+      if (editable) {
+        actions = (
+          <Button variant="contained" component={RouterLink} to={participantsPath.changeCompany()} startIcon={<EditOutlinedIcon />}>
+            {t('profile.changeData')}
+          </Button>
+        );
+      }
+      body = (
+        <Stack spacing={3}>
+          {company.status === 'INACTIVE' && (
+            <Alert severity="warning" icon={<BlockOutlinedIcon />}>
+              {t('profile.inactive')}
+            </Alert>
+          )}
+          {open && company.status !== 'INACTIVE' && (
+            <Alert
+              severity="info"
+              icon={<PendingActionsOutlinedIcon />}
+              action={
+                <Button color="inherit" size="small" component={RouterLink} to={participantsPath.ownChangeRequests()}>
+                  {t('actions.view')}
+                </Button>
+              }
+            >
+              {t('profile.openRequest', { date: formatDate(open.createdAt, i18n.language), summary: changeSummary(t, open.changes, { ...company, address: company.postalAddress }) })}
+            </Alert>
+          )}
+          <CompanyCard
+            company={company}
+            canEditShortName={editable}
+            canManageRoles={hasPermission(session, 'edit_company_roles') && CompanyDomain.canEdit(company)}
+            onSaveShortName={async (shortName) => {
+              const result = await c3m1.updateShortName.execute(company.id, shortName);
+              if (result.status === 'success') {
+                setSaved(result.data);
+              }
+              return result;
+            }}
+          />
+          <Link component={RouterLink} to={participantsPath.ownChangeRequests()}>
+            {t('profile.allChangeRequests')}
+          </Link>
+        </Stack>
+      );
+    }
   }
 
   return (
-    <Container component="article" maxWidth="lg" aria-labelledby="participants-title" sx={{ py: { xs: 4, md: 6 } }}>
-      <Typography variant="overline" color="text.secondary">
-        {t('overline')}
-      </Typography>
-      <Typography id="participants-title" variant="h1" component="h1" sx={{ fontSize: 'clamp(2rem, 2vw + 1rem, 2.75rem)', mb: 4 }}>
-        {t('title')}
-      </Typography>
+    <>
+      <PageHeader overline={t('overline')} title={t('title')} actions={actions} />
       {body}
-    </Container>
+    </>
+  );
+}
+
+/**
+ * View 1 "Your company" (C3-M1 `getCompany`, `updateCompany`, `listOwnChangeRequests`). Provisional configurator
+ * choice of the mockup: layout=hero · verification=badge · shortname=inline · action=header.
+ */
+export default function CompanyProfile() {
+  const { t } = useTranslation(PARTICIPANTS_NS);
+  const state = useSession();
+  // The entry of the navigation: OSP staff without a company of their own start in their area (UI only; no data shown).
+  if (state.status === 'signed-in' && !hasPermission(state.session, 'view_company')) {
+    if (hasPermission(state.session, 'view_companies')) {
+      return <Navigate to={participantsPath.companies()} replace />;
+    }
+    if (hasPermission(state.session, 'review_company_changes')) {
+      return <Navigate to={participantsPath.reviewQueue()} replace />;
+    }
+  }
+  return (
+    <ParticipantsPage overline={t('overline')} title={t('title')} permission="view_company" forbiddenText={t('profile.forbidden')} returnTo={participantsPath.company()}>
+      {(session) => <OwnCompany session={session} />}
+    </ParticipantsPage>
   );
 }

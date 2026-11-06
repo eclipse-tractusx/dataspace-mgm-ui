@@ -1,0 +1,247 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · My application — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .ma-head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+    .ma-banner { display: flex; gap: 20px; align-items: center; }
+    .ma-hsteps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .ma-hsteps > div { display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 0.875rem; position: relative; }
+    .ma-hsteps > div::after { content: ""; position: absolute; top: 16px; left: 40px; right: 0; height: 1px; background: var(--card-border); }
+    .ma-hsteps > div:last-child::after { display: none; }
+    .ma-hsteps > div[data-done]::after { background: var(--tx-orange); }
+    .ma-hsteps > div[data-done], .ma-hsteps > div[data-current], .ma-hsteps > div[data-failed] { color: var(--text); }
+    .ma-hsteps .ob-dot { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--card-border); color: var(--muted); }
+    .ma-hsteps [data-done] .ob-dot { background: var(--accent-tint); border-color: transparent; color: var(--tx-orange); }
+    .ma-hsteps [data-current] .ob-dot { background: var(--tx-orange); border-color: var(--tx-orange); color: var(--tx-black); }
+    .ma-hsteps [data-failed] .ob-dot { background: var(--error-tint); border-color: transparent; color: var(--error); }
+    .ma-menu { position: relative; }
+    .ma-menu ul { position: absolute; right: 0; top: 100%; list-style: none; margin: 4px 0 0; padding: 8px 0; min-width: 220px; background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--radius); box-shadow: var(--glow); z-index: 5; }
+    .ma-menu li button { width: 100%; text-align: left; background: transparent; border: 0; color: inherit; font: inherit; padding: 10px 16px; cursor: pointer; }
+    .ma-menu li button:hover { background: var(--accent-hover); }
+    .ma-danger { border-color: var(--error); }
+    .ma-off { display: none !important; }
+  </style>
+</head>
+<!-- Erika Mustermann (or Hans Beispiel for "declined") opens Onboarding after creating or submitting the application.
+     GET /applications (listApplications) finds it, GET /applications/{id} (getApplication) shows it with reviewStatus.
+     States: CREATED, SUBMITTED with the review case OPEN or APPROVED, COMPLETED, DECLINED, WITHDRAWN, none, and the
+     409 already-decided of POST …/withdraw. -->
+<body data-active="/onboarding" data-view="My application" data-states="created,in-review,approved,completed,declined,withdrawn,withdraw-refused,none,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">My application</h1>
+
+    <section class="tx-stack" data-show-state="created in-review approved completed declined withdrawn withdraw-refused">
+      <div class="tx-alert tx-alert--warning" role="alert" data-show-state="withdraw-refused">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div><div><strong>The application can no longer be withdrawn.</strong> OSP staff have already approved it.</div>
+          <code data-problem="decided"></code> · reviewStatus <code>APPROVED</code></div>
+      </div>
+      <div class="tx-alert tx-alert--error" role="alert" data-show-state="declined">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div><div><strong>OSP staff declined the application.</strong></div><div data-decline-reason></div></div>
+        <a class="tx-btn tx-btn--outlined tx-alert__action" href="start.html">Start a new application</a>
+      </div>
+
+      <div class="tx-card tx-stack">
+        <div class="ma-head">
+          <div class="tx-stack">
+            <h2 class="tx-h2" data-company></h2>
+            <div class="tx-row"><span class="tx-chip tx-status" data-status-chip></span><span class="tx-muted tx-body2" data-meta></span></div>
+          </div>
+          <div class="tx-row">
+            <a class="tx-btn" href="terms-submit.html" data-continue>Continue</a>
+            <!-- Withdraw: a button in the header, a section at the bottom, or an entry of a menu. -->
+            <button class="tx-btn tx-btn--outlined" type="button" data-withdraw-open data-can-withdraw data-variant="withdraw:header" data-dimension="Withdraw" data-variant-label="Button in the header">Withdraw</button>
+            <div class="ma-menu" data-variant="withdraw:menu" data-variant-label="In a menu" data-can-withdraw>
+              <button class="tx-btn tx-btn--text" type="button" aria-label="More actions" aria-haspopup="true" data-menu></button>
+              <ul hidden data-menu-list><li><button type="button" data-withdraw-open>Withdraw application</button></li></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status: a timeline, a banner, or a horizontal stepper. -->
+        <ol class="ob-timeline" data-variant="status:timeline" data-dimension="Status" data-variant-label="Timeline" data-timeline></ol>
+        <div class="tx-alert ma-banner" data-variant="status:banner" data-variant-label="Banner" data-banner></div>
+        <div class="ma-hsteps" data-variant="status:stepper" data-variant-label="Horizontal stepper" data-hsteps></div>
+      </div>
+
+      <!-- Details: tabs, sections one below the other, or collapsed sections. -->
+      <div class="tx-card tx-stack" data-variant="details:tabs" data-dimension="Details" data-variant-label="Tabs">
+        <div class="tx-tabs" role="tablist">
+          <button class="tx-tab" role="tab" aria-selected="true" data-tab="company">Company</button>
+          <button class="tx-tab" role="tab" aria-selected="false" data-tab="terms">Roles and terms</button>
+          <button class="tx-tab" role="tab" aria-selected="false" data-tab="proof">Verification</button>
+        </div>
+        <div data-pane="company"><dl class="ob-dl" data-company-dl></dl></div>
+        <div data-pane="terms" hidden data-terms></div>
+        <div data-pane="proof" hidden data-proof></div>
+      </div>
+      <div class="tx-stack" data-variant="details:sections" data-variant-label="One below the other">
+        <div class="tx-card tx-stack"><h3 class="tx-h3">Company</h3><dl class="ob-dl" data-company-dl></dl></div>
+        <div class="tx-card tx-stack"><h3 class="tx-h3">Roles and terms</h3><div data-terms></div></div>
+        <div class="tx-card tx-stack"><h3 class="tx-h3">Verification</h3><div data-proof></div></div>
+      </div>
+      <div class="tx-stack" data-variant="details:collapsed" data-variant-label="Collapsed sections">
+        <details class="ob-section" open><summary>Company</summary><dl class="ob-dl" data-company-dl></dl></details>
+        <details class="ob-section"><summary>Roles and terms</summary><div data-terms></div></details>
+        <details class="ob-section"><summary>Verification</summary><div data-proof></div></details>
+      </div>
+
+      <div class="tx-card tx-stack ma-danger" data-variant="withdraw:bottom" data-variant-label="Section at the bottom" data-can-withdraw>
+        <h3 class="tx-h3">Withdraw the application</h3>
+        <p class="tx-muted tx-body2">Possible until OSP staff have decided. You can start a new application afterwards.</p>
+        <div><button class="tx-btn tx-btn--outlined" type="button" data-withdraw-open>Withdraw application</button></div>
+      </div>
+    </section>
+
+    <section data-show-state="none">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="AppRegistrationOutlined"></div>
+        <h2 class="tx-h3">You have no application yet</h2>
+        <p>Register your company at OSP A to join the dataspace.</p>
+        <a class="tx-btn" href="start.html">Start application</a>
+      </div>
+    </section>
+    <section data-show-state="loading" role="status"><div class="tx-row"><span class="tx-spinner"></span><span>Loading your application…</span></div></section>
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert"><span data-icon="ErrorOutlineOutlined"></span>
+        <div><div>Your application could not be loaded (HTTP 502).</div><code data-problem="upstream"></code></div></div>
+    </section>
+
+    <dialog class="tx-dialog" id="withdraw" aria-labelledby="withdraw-title">
+      <div class="tx-dialog__body tx-stack">
+        <h2 class="tx-h3" id="withdraw-title">Withdraw the application?</h2>
+        <p>The application of <strong data-company></strong> ends. OSP staff stop the review. This cannot be undone.</p>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Keep application</button>
+        <button class="tx-btn" type="button" data-withdraw>Withdraw</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const c1m2 = mock.data.c1m2;
+      const L = c1m2.labels;
+      const erika = c1m2.erikaApplication;
+      const submitted = { ...erika, status: 'SUBMITTED', consents: c1m2.erikaConsents, submittedAt: '2026-10-28T08:20:00.000Z', changedAt: '2026-10-28T08:20:00.000Z' };
+      // canWithdraw is NOT in the spec: the page must not decide from status and reviewStatus (open question).
+      const byState = {
+        created: { ...erika, canWithdraw: true },
+        'in-review': { ...submitted, reviewStatus: 'OPEN', canWithdraw: true },
+        approved: { ...submitted, reviewStatus: 'APPROVED', canWithdraw: false },
+        'withdraw-refused': { ...submitted, reviewStatus: 'APPROVED', canWithdraw: false },
+        completed: { ...submitted, status: 'COMPLETED', reviewStatus: 'APPROVED', completedAt: '2026-11-02T10:00:00.000Z', canWithdraw: false },
+        declined: { ...c1m2.hansApplication, id: 'a0000003-0000-4000-8000-000000000003', status: 'DECLINED', reviewStatus: 'DECLINED', documents: [], representationDeclared: true,
+          consents: c1m2.erikaConsents, submittedAt: '2026-10-20T14:00:00.000Z', closedAt: '2026-10-22T09:00:00.000Z', declineReason: c1m2.declineReason, canWithdraw: false },
+        withdrawn: { ...erika, status: 'WITHDRAWN', withdrawnAt: '2026-10-29T10:00:00.000Z', canWithdraw: false },
+      };
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      document.querySelector('[data-menu]').innerHTML = mock.icon('MoreVert');
+
+      const chipClass = { CREATED: 'tx-status--info', SUBMITTED: 'tx-status--warning', COMPLETED: 'tx-status--success', DECLINED: 'tx-status--error', WITHDRAWN: 'tx-status--default' };
+      // The steps the person sees, from status and reviewStatus as the API returns them (a display mapping, no rule).
+      function steps(app) {
+        const decided = app.reviewStatus === 'APPROVED' || app.status === 'COMPLETED';
+        return [
+          { label: 'Created', when: app.createdAt, done: true },
+          { label: app.status === 'WITHDRAWN' ? 'Withdrawn' : 'Submitted', when: app.withdrawnAt || app.submittedAt, done: Boolean(app.submittedAt || app.withdrawnAt), failed: app.status === 'WITHDRAWN' },
+          { label: app.status === 'DECLINED' ? 'Declined' : (decided ? 'Approved' : (app.reviewStatus === 'NONE' ? 'Review' : L.reviewStatus[app.reviewStatus])), when: app.closedAt, done: decided || app.status === 'DECLINED', current: app.reviewStatus === 'OPEN' || app.reviewStatus === 'AWAITING_SECOND_APPROVAL', failed: app.status === 'DECLINED' },
+          { label: app.status === 'COMPLETED' ? 'Company active' : 'Company set up', when: app.completedAt, done: app.status === 'COMPLETED', current: app.reviewStatus === 'APPROVED' && app.status === 'SUBMITTED' },
+        ];
+      }
+      // The icon of a step, the same in the timeline and the horizontal stepper.
+      const dot = (x) => (x.failed ? mock.icon('Close', 'sm') : (x.done ? mock.icon('Check', 'sm') : mock.icon('Schedule', 'sm')));
+      function render() {
+        const state = document.body.dataset.state;
+        const app = byState[state];
+        if (!app) { return; }
+        document.querySelectorAll('[data-company]').forEach((el) => { el.textContent = app.companyData.legalName; });
+        const chip = document.querySelector('[data-status-chip]');
+        chip.className = `tx-chip tx-status ${chipClass[app.status]}`;
+        chip.textContent = L.status[app.status];
+        document.querySelector('[data-meta]').textContent = `${L.kind[app.kind]} · ${L.verification[app.verification]} · review: ${L.reviewStatus[app.reviewStatus]}`;
+        document.querySelector('[data-continue]').hidden = app.status !== 'CREATED';
+        document.querySelectorAll('[data-can-withdraw]').forEach((el) => { el.classList.toggle('ma-off', !app.canWithdraw); });
+        document.querySelector('[data-decline-reason]').textContent = app.declineReason ? `Reason: ${app.declineReason}` : '';
+        const s = steps(app);
+        mock.render('[data-timeline]', s, (x) => `<li ${x.done && !x.failed ? 'data-done' : ''} ${x.current ? 'data-current' : ''} ${x.failed ? 'data-failed' : ''}>
+          <span class="ob-dot">${dot(x)}</span><span><strong>${x.label}</strong><br><span class="tx-muted tx-body2">${x.when ? mock.date(x.when) : ''}</span></span></li>`);
+        mock.render('[data-hsteps]', s, (x) => `<div ${x.done && !x.failed ? 'data-done' : ''} ${x.current ? 'data-current' : ''} ${x.failed ? 'data-failed' : ''}>
+          <span class="ob-dot">${dot(x)}</span><span><strong>${x.label}</strong><br>${x.when ? mock.date(x.when) : ''}</span></div>`);
+        const current = s.filter((x) => x.done || x.current).pop();
+        const banner = document.querySelector('[data-banner]');
+        banner.className = `tx-alert ma-banner tx-alert--${app.status === 'DECLINED' ? 'error' : (app.status === 'COMPLETED' ? 'success' : 'info')}`;
+        banner.innerHTML = `${app.status === 'COMPLETED' ? mock.icon('CheckCircleOutlined') : mock.icon('InfoOutlined')}<div><strong>${current.label}</strong>${current.when ? ` · ${mock.date(current.when)}` : ''}<br><span class="tx-body2">${
+          { CREATED: 'Not submitted yet. Continue to submit it.', SUBMITTED: app.reviewStatus === 'APPROVED' ? 'Approved. OSP A is setting up your company.' : 'OSP staff are reviewing your application.',
+            COMPLETED: 'Your company is active. You are its Company Admin.', DECLINED: 'See the reason above.', WITHDRAWN: 'You withdrew this application.' }[app.status]}</span></div>`;
+        const a = app.companyData.address;
+        document.querySelectorAll('[data-company-dl]').forEach((dl) => {
+          dl.innerHTML = [['Legal name', app.companyData.legalName], ['Address', `${a.streetName} ${a.streetNumber || ''}, ${a.postalCode || ''} ${a.city}`],
+            ...app.companyData.identifiers.map((i) => [L.identifier[i.type], `<span class="ob-mono">${i.value}</span>`])]
+            .map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd><dd></dd>`).join('');
+        });
+        const consents = app.consents.length
+          ? `<ul class="tx-list">${app.consents.map((c) => `<li>${mock.icon('CheckCircleOutlined', 'sm')}<span>${c.agreementKey} ${c.version} · ${c.language.toUpperCase()} · ${mock.date(c.givenAt)}</span></li>`).join('')}</ul>`
+          : '<p class="tx-muted">No consents yet; you give them at submission.</p>';
+        document.querySelectorAll('[data-terms]').forEach((el) => {
+          el.innerHTML = `<p>${app.companyRoles.map((r) => `<span class="tx-chip">${c1m2.companyRoles.find((x) => x.role === r).name}</span>`).join(' ')}</p>${consents}`;
+        });
+        document.querySelectorAll('[data-proof]').forEach((el) => {
+          el.innerHTML = app.attestation
+            ? `<p>Business Wallet, verified on ${mock.date(app.attestation.verifiedAt)} for ${app.attestation.person.givenName} ${app.attestation.person.familyName} (${app.attestation.representation.role}).</p>`
+            : `<p>Supporting documents${app.documents.length ? `: ${app.documents.map((x) => x.fileName).join(', ')}` : ''}.</p>`;
+        });
+      }
+      mock.on('click', '[data-tab]', (e, el) => {
+        document.querySelectorAll('[data-tab]').forEach((t) => t.setAttribute('aria-selected', String(t === el)));
+        document.querySelectorAll('[data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== el.dataset.tab; });
+      });
+      mock.on('click', '[data-menu]', () => { const list = document.querySelector('[data-menu-list]'); list.hidden = !list.hidden; });
+      mock.on('click', '[data-withdraw-open]', () => { document.querySelector('[data-menu-list]').hidden = true; document.getElementById('withdraw').showModal(); });
+      mock.on('click', '[data-close]', () => document.getElementById('withdraw').close());
+      mock.on('click', '[data-withdraw]', () => { document.getElementById('withdraw').close(); mock.setState('withdrawn'); render(); mock.toast('Application withdrawn'); });
+      document.addEventListener('click', (e) => { if (e.target.closest('[data-state-button]')) { setTimeout(render); } });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

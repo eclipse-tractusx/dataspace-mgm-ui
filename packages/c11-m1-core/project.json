@@ -1,0 +1,32 @@
+{
+  "name": "c11-m1-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/c11-m1-core/src",
+  "tags": ["type:core", "scope:c11-m1"],
+  "targets": {
+    "generate-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx --yes openapi-typescript@7.13.0 ../../specs/c11-m1/openapi.yaml -o src/generated/c11-m1-api.d.ts",
+        "cwd": "packages/c11-m1-core"
+      }
+    },
+    "check-api": {
+      "executor": "nx:run-commands",
+      "options": { "command": "nx run c11-m1-core:generate-api && git diff --exit-code -- packages/c11-m1-core/src/generated" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tsconfig.json", "cwd": "packages/c11-m1-core" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run", "cwd": "packages/c11-m1-core" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint packages/c11-m1-core" }
+    }
+  }
+}

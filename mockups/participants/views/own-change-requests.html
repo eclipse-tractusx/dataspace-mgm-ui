@@ -1,0 +1,260 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Your change requests — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .oc-item { display: grid; gap: 12px; }
+    .oc-item__top { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+    .oc-item__title { font-weight: 700; font-size: 1.0625rem; }
+    .oc-item__meta { color: var(--muted); font-size: 0.875rem; }
+    .oc-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .oc-detail { display: grid; gap: 20px; padding: 20px; border: 1px solid var(--subtle-border); border-radius: var(--radius); background: var(--bg); }
+    .oc-table-detail td { padding: 0 16px 16px; }
+    .oc-table-detail td .oc-detail { margin-top: 0; }
+    .oc-quote { margin: 0; padding: 10px 14px; border-left: 3px solid var(--card-border); color: var(--text); }
+    .oc-h { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+    .oc-reason { display: flex; gap: 8px; align-items: flex-start; }
+    .oc-note { color: var(--muted); font-size: 0.8125rem; margin-top: 8px; }
+    .oc-timeline .tx-card { padding: 20px 24px; }
+    .oc-cards .tx-card { cursor: default; }
+    .oc-cards .tx-card:hover { border-color: var(--card-border); }
+  </style>
+</head>
+<!-- C3-M1 7.5 GET /companies/{companyId}/change-requests (view_company) and
+     7.6 POST /companies/{companyId}/change-requests/{changeRequestId}/withdraw (edit_company), scope company. -->
+<body data-active="/participants" data-view="Your change requests" data-states="loaded,read-only,empty,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="layout:timeline" data-dimension="Layout" data-variant-label="Timeline"></span>
+      <span data-variant="layout:table" data-variant-label="Table"></span>
+      <span data-variant="layout:cards" data-variant-label="Cards"></span>
+      <span data-variant="detail:expand" data-dimension="Details of a request" data-variant-label="Open in place"></span>
+      <span data-variant="detail:drawer" data-variant-label="Side drawer"></span>
+      <span data-variant="withdraw:row" data-dimension="Withdraw" data-variant-label="Button at each request"></span>
+      <span data-variant="withdraw:detail" data-variant-label="Only in the details"></span>
+    </div>
+
+    <a class="px-back" href="company-profile.html"><span data-icon="ArrowBack" data-size="sm"></span>Your company</a>
+    <div class="px-head">
+      <div>
+        <div class="tx-overline">Participant management</div>
+        <h1 class="tx-title" id="view-title">Your change requests</h1>
+        <p class="px-sub">Changes of your company data with supporting documents. Your onboarding service provider decides on them.</p>
+      </div>
+      <div class="px-head__actions" id="head-actions"></div>
+    </div>
+
+    <section data-show-state="loaded read-only" id="content"></section>
+
+    <section data-show-state="empty">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="DifferenceOutlined"></div>
+        <h2 class="tx-h3">No change requests yet</h2>
+        <p>To change identifiers such as the VAT ID or the LEI code, send a change request with supporting documents.</p>
+        <a class="tx-btn" href="change-company-data.html"><span data-icon="EditOutlined"></span>Change company data</a>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading your change requests">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading your change requests…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div>
+          <div>Your change requests could not be loaded (HTTP 404): your company was not found at your onboarding service provider.</div>
+          <code>urn:c3-m1:problem:not-found</code>
+        </div>
+      </div>
+    </section>
+
+    <div id="drawer-slot"></div>
+
+    <dialog class="tx-dialog" id="withdraw-dialog" aria-labelledby="withdraw-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="withdraw-title">Withdraw the change request?</h2>
+        <p class="tx-muted" id="withdraw-text" style="margin-bottom: 0"></p>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn tx-btn--danger" type="button" data-withdraw-confirm>Withdraw</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = px;
+      const data = mock.data;
+      const company = data.companies[data.ids.u1];
+      // GET /change-requests: newest first; the company does not get decidedBy (C3-M1 7.5).
+      const requests = data.changeRequests.filter((cr) => cr.companyId === company.id)
+        .map((cr) => ({ ...cr, decidedBy: undefined }))
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      let openId = null;
+      let withdrawId = null;
+
+      const v = (k) => mock.variant(k);
+      const ctx = () => {
+        const state = document.body.dataset.state;
+        const personKey = state === 'read-only' ? 'max' : 'erika';
+        return { state, personKey, canEdit: data.permissions[personKey].includes('edit_company') };
+      };
+      // Shown only for OPEN: a UX pre-check; the API answers 409 invalid-state for APPROVED and DECLINED (open question: a flag).
+      const canWithdraw = (cr, c) => c.canEdit && cr.status === 'OPEN';
+      const dotTone = { OPEN: 'open', APPROVED: 'approved', DECLINED: 'declined', WITHDRAWN: '' };
+
+      const withdrawButton = (cr) => `<button class="tx-btn tx-btn--outlined tx-btn--sm" type="button" data-withdraw="${cr.id}">${mock.icon('UndoOutlined', 'sm')}Withdraw</button>`;
+      const detailButton = (cr) => {
+        const open = openId === cr.id && v('detail') === 'expand';
+        return `<button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-open="${cr.id}" aria-expanded="${open}">${open ? mock.icon('ExpandLess', 'sm') : mock.icon('ExpandMore', 'sm')}${open ? 'Hide details' : 'Details'}</button>`;
+      };
+      const rowActions = (cr, c) => `<div class="oc-actions">${detailButton(cr)}${v('withdraw') === 'row' && canWithdraw(cr, c) ? withdrawButton(cr) : ''}</div>`;
+
+      const decision = (cr) => {
+        if (cr.status === 'DECLINED') {
+          return `<div class="tx-alert tx-alert--error">${mock.icon('CancelOutlined')}<div><div><strong>Declined</strong> on ${px.dateTime(cr.closedAt)}</div><div>${esc(cr.decisionReason)}</div></div></div>`;
+        }
+        if (cr.status === 'APPROVED') {
+          return `<div class="tx-alert tx-alert--success">${mock.icon('CheckCircleOutlined')}<div><strong>Approved</strong> on ${px.dateTime(cr.closedAt)}. Your company data was changed.</div></div>`;
+        }
+        if (cr.status === 'WITHDRAWN') {
+          return `<div class="tx-alert tx-alert--info">${mock.icon('UndoOutlined')}<div>Withdrawn on ${px.dateTime(cr.closedAt)}.</div></div>`;
+        }
+        return `<div class="tx-alert tx-alert--info">${mock.icon('PendingActionsOutlined')}<div>${esc(data.installation.name)} is checking your change request.</div></div>`;
+      };
+
+      const detail = (cr, c) => {
+        const rows = px.changeRows(cr.changes, company);
+        return `<div class="oc-detail">
+          ${decision(cr)}
+          <div><h3 class="oc-h">What changes</h3>
+            <div class="tx-table-wrap"><table class="px-diff"><thead><tr><th scope="col">Field</th><th scope="col">Now</th><th scope="col">Requested</th></tr></thead>
+            <tbody>${rows.map((r) => `<tr class="${r.changed ? 'px-changed' : ''}"><td class="px-diff__field">${esc(r.field)}</td><td>${r.current}</td><td>${r.changed ? r.requested : '<span class="tx-muted">unchanged</span>'}</td></tr>`).join('')}</tbody></table></div></div>
+          <div><h3 class="oc-h">Comment</h3><p class="oc-quote">${esc(cr.comment)}</p>
+            <div class="oc-note">Sent by ${esc(px.personName(cr.requestedBy))} on ${px.dateTime(cr.createdAt)}</div></div>
+          <div><h3 class="oc-h">Supporting documents</h3>
+            <ul class="px-files">${cr.documents.map((d) => `<li class="px-file"><span class="px-file__icon">${px.fileIcon(d.mediaType)}</span><span class="px-file__name">${esc(d.fileName)}</span><span class="px-file__meta">${px.bytes(d.sizeBytes)}</span></li>`).join('')}</ul>
+            <div class="oc-note">Only your onboarding service provider opens the documents.</div></div>
+          ${canWithdraw(cr, c) ? `<div class="oc-actions">${withdrawButton(cr)}</div>` : ''}
+        </div>`;
+      };
+
+      const summary = (cr) => esc(px.changeSummary(cr.changes, company));
+      const docsCount = (cr) => `${cr.documents.length} document${cr.documents.length === 1 ? '' : 's'}`;
+      const inPlace = (cr, c) => (openId === cr.id && v('detail') === 'expand' ? detail(cr, c) : '');
+
+      const layouts = {
+        timeline: (c) => `<ol class="px-timeline oc-timeline">${requests.map((cr) => `
+          <li><span class="px-tl-dot px-tl-dot--${dotTone[cr.status]}" aria-hidden="true"></span>
+            <div class="tx-card oc-item">
+              <div class="oc-item__top"><div><div class="oc-item__title">${summary(cr)}</div>
+                <div class="oc-item__meta">${px.dateTime(cr.createdAt)} · ${docsCount(cr)}</div></div>${px.chip('changeRequestStatus', cr.status)}</div>
+              ${cr.status === 'DECLINED' && openId !== cr.id ? `<div class="tx-body2 tx-muted oc-reason">${mock.icon('InfoOutlined', 'sm')}<span>${esc(cr.decisionReason)}</span></div>` : ''}
+              ${rowActions(cr, c)}${inPlace(cr, c)}
+            </div></li>`).join('')}</ol>`,
+
+        table: (c) => `<div class="tx-card" style="padding: 8px 0"><div class="tx-table-wrap"><table class="tx-table">
+          <thead><tr><th scope="col">Sent</th><th scope="col">Changes</th><th scope="col">Documents</th><th scope="col">Status</th><th scope="col"><span class="px-markers">Actions</span></th></tr></thead>
+          <tbody>${requests.map((cr) => `<tr data-open="${cr.id}"><td>${px.date(cr.createdAt)}</td><td class="px-cell-main">${summary(cr)}</td><td>${docsCount(cr)}</td><td>${px.chip('changeRequestStatus', cr.status)}</td>
+              <td style="text-align: right">${v('withdraw') === 'row' && canWithdraw(cr, c) ? withdrawButton(cr) : (openId === cr.id && v('detail') === 'expand' ? mock.icon('ExpandLess', 'sm') : mock.icon('ExpandMore', 'sm'))}</td></tr>
+            ${inPlace(cr, c) ? `<tr class="oc-table-detail"><td colspan="5">${inPlace(cr, c)}</td></tr>` : ''}`).join('')}</tbody>
+        </table></div><div class="px-pager"><span>1–${requests.length} of ${requests.length}</span><span>Newest first</span></div></div>`,
+
+        cards: (c) => `<div class="px-cards oc-cards">${requests.map((cr) => `
+          <article class="tx-card"><div class="oc-item__top"><span class="tx-tile" style="width: 44px; height: 44px">${mock.icon('DifferenceOutlined', 'sm')}</span>${px.chip('changeRequestStatus', cr.status)}</div>
+            <div><div class="oc-item__title">${summary(cr)}</div><div class="oc-item__meta">${px.dateTime(cr.createdAt)} · ${docsCount(cr)}</div></div>
+            ${cr.status === 'DECLINED' && openId !== cr.id ? `<div class="tx-body2 tx-muted">${esc(cr.decisionReason)}</div>` : ''}
+            ${inPlace(cr, c)}
+            <div class="px-card-foot">${rowActions(cr, c)}</div></article>`).join('')}</div>`,
+      };
+
+      function drawer(c) {
+        const cr = requests.find((r) => r.id === openId);
+        if (!cr || v('detail') !== 'drawer') { return ''; }
+        return `<div class="px-drawer-backdrop" data-close-drawer></div>
+          <aside class="px-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+            <div class="px-drawer__head"><div><div class="tx-overline">Change request</div><h2 class="tx-h3" id="drawer-title">${summary(cr)}</h2>
+              <div class="oc-item__meta" style="margin-top: 6px">${px.chip('changeRequestStatus', cr.status)}</div></div>
+              <button class="tx-iconbtn" type="button" data-close-drawer title="Close">${mock.icon('CloseOutlined')}</button></div>
+            ${detail(cr, c)}
+          </aside>`;
+      }
+
+      function render() {
+        const c = ctx();
+        document.getElementById('persona').innerHTML = px.persona(c.personKey);
+        document.getElementById('head-actions').innerHTML = c.canEdit && c.state === 'loaded'
+          ? `<a class="tx-btn" href="change-company-data.html">${mock.icon('Add')}New change request</a>` : '';
+        document.getElementById('content').innerHTML = layouts[v('layout')](c);
+        document.getElementById('drawer-slot').innerHTML = ['loaded', 'read-only'].includes(c.state) ? drawer(c) : '';
+      }
+
+      mock.on('click', '[data-open]', (event, el) => {
+        if (event.target.closest('[data-withdraw]')) { return; }
+        openId = openId === el.dataset.open ? null : el.dataset.open;
+        render();
+      });
+      mock.on('click', '[data-close-drawer]', () => { openId = null; render(); });
+      mock.on('click', '[data-withdraw]', (_e, el) => {
+        withdrawId = el.dataset.withdraw;
+        const cr = requests.find((r) => r.id === withdrawId);
+        document.getElementById('withdraw-text').textContent = `${data.installation.name} will not decide on “${px.changeSummary(cr.changes, company)}”. You can send a new change request afterwards.`;
+        document.getElementById('withdraw-dialog').showModal();
+      });
+      mock.on('click', '[data-withdraw-confirm]', () => {
+        const cr = requests.find((r) => r.id === withdrawId);
+        cr.status = 'WITHDRAWN';
+        cr.closedAt = '2026-11-06T10:20:00Z';
+        document.getElementById('withdraw-dialog').close();
+        mock.toast('Change request withdrawn');
+        render();
+      });
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

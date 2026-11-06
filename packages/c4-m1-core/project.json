@@ -1,0 +1,21 @@
+{
+  "name": "c4-m1-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/c4-m1-core/src",
+  "tags": ["type:core", "scope:c4-m1"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tsconfig.json", "cwd": "packages/c4-m1-core" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run", "cwd": "packages/c4-m1-core" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint packages/c4-m1-core" }
+    }
+  }
+}

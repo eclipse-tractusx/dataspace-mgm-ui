@@ -26,16 +26,26 @@
 
 import {
   AccountBalanceWalletOutlinedIcon,
-  AppRegistrationOutlinedIcon,
   CableOutlinedIcon,
+  HowToRegOutlinedIcon,
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
+import { lazy, Suspense } from 'react';
 import { MOCK_MODE } from '../core/mock-mode';
 import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
+import { accessControlFeature } from './access-control';
 import { homeFeature } from './home/routes';
+import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
+import { lazy, Suspense } from 'react';
+import { notificationsFeature } from './notifications/routes';
+import { onboardingFeature } from './onboarding/routes';
+import { participantsFeature } from './participants/routes';
+import { walletsFeature } from './wallets/routes';
+
+const ReviewRoutes = lazy(() => import('./review/review-routes'));
 
 /**
  * Whether a feature can be opened: not disabled, and a proof of concept (`stage: 'poc'`) only in mock mode, because it
@@ -72,14 +82,38 @@ const upcoming = (
  * pages/, i18n/ (its namespace), routes.tsx (one FeatureConfig) and index.ts, add `features.<id>` to the shell's
  * common.json in every language, then add it to this list.
  * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All services" views.
- * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
+ * Notifications are a feature (the inbox page) and also have the shell's bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
+  notificationsFeature,
+  onboardingFeature,
+  {
+    id: 'onboarding-review',
+    version: '0.2.0',
+    category: 'onboarding',
+    icon: <HowToRegOutlinedIcon />,
+    navigationPath: '/onboarding/reviews',
+    disabled: false,
+    routes: [
+      {
+        path: 'onboarding/reviews/*',
+        element: (
+          <Suspense fallback={null}>
+            <ReviewRoutes />
+          </Suspense>
+        ),
+        meta: {
+          title: 'features.onboarding-review.name',
+          description: 'features.onboarding-review.description',
+        },
+      },
+    ],
+  },
   participantsFeature,
+  accessControlFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
-  upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),
+  walletsFeature,
   upcoming('marketplace', 'as-a-service', <StorefrontOutlinedIcon />, '/marketplace', '0.2.0'),
   upcoming('network', 'network', <HubOutlinedIcon />, '/network', '0.1.0'),
 ];
@@ -97,7 +131,16 @@ export const features: NavigationEntry[] = allFeatures.map((feature) => ({
 /** A route that renders once its feature's translations are there. */
 const translated = (feature: FeatureConfig, route: FeatureRoute): FeatureRoute =>
   feature.translations
-    ? { ...route, element: <FeatureTranslationsGate translations={feature.translations}>{route.element}</FeatureTranslationsGate> }
+    ? {
+        ...route,
+        // One gate per feature (`key`): React would otherwise keep the gate of the page before, already `ready`, and
+        // render the next feature without loading its namespace (raw keys after a click in the sidebar).
+        element: (
+          <FeatureTranslationsGate key={feature.id} translations={feature.translations}>
+            {route.element}
+          </FeatureTranslationsGate>
+        ),
+      }
     : route;
 
 /** The routes of all enabled features. */

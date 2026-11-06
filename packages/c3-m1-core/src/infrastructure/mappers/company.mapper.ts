@@ -25,12 +25,26 @@
  ********************************************************************************/
 
 import type { CompanyAnemic } from '../../domain/anemics/company.anemic';
-import type { CompanyDto } from '../data/c3-m1-infrastructure.data';
+import type { CompanyDetailAnemic } from '../../domain/anemics/company-detail.anemic';
+import type { CompanySummaryAnemic } from '../../domain/anemics/company-summary.anemic';
+import type { IdentifierAnemic } from '../../domain/anemics/identifier.anemic';
+import type { PageAnemic } from '../../domain/anemics/page.anemic';
+import type { CompanyDetailDto, CompanyDto, CompanyPageDto, CompanySummaryDto, IdentifierDto } from '../data/c3-m1-infrastructure.data';
+import { AddressMapper } from './address.mapper';
 
 const joined = (...parts: ReadonlyArray<string | null | undefined>) => parts.filter((part) => part).join(' ');
 
 /** C3-M1 `Company` (DTO of the API) → the anemic of the UI. The shape of the domain is our decision, not the API's. */
 export class CompanyMapper {
+  public static identifierToAnemic(identifier: IdentifierDto): IdentifierAnemic {
+    return {
+      type: identifier.type,
+      value: identifier.value,
+      source: identifier.source,
+      verified: identifier.source === 'BUSINESS_WALLET',
+    };
+  }
+
   public static toAnemic(dto: CompanyDto): CompanyAnemic {
     return {
       id: dto.id,
@@ -39,19 +53,50 @@ export class CompanyMapper {
       bpn: dto.bpn ?? null,
       status: dto.status,
       coreDataSource: dto.coreDataSource,
+      coreDataVerifiedAt: dto.coreDataVerifiedAt ?? null,
       dataspaceName: dto.dataspaceName ?? null,
       address: {
         street: joined(dto.address.street, dto.address.houseNumber),
         city: joined(dto.address.postalCode, dto.address.city),
         countryCode: dto.address.countryCode,
       },
-      identifiers: dto.identifiers.map((identifier) => ({
-        type: identifier.type,
-        value: identifier.value,
-        verified: identifier.source === 'BUSINESS_WALLET',
-      })),
+      postalAddress: AddressMapper.toAnemic(dto.address),
+      identifiers: dto.identifiers.map(CompanyMapper.identifierToAnemic),
       companyRoles: dto.companyRoles.filter((role) => role.status === 'ACTIVE').map((role) => role.companyRole),
       createdAt: dto.createdAt,
+      activatedAt: dto.activatedAt ?? null,
     };
+  }
+
+  public static detailToAnemic(dto: CompanyDetailDto): CompanyDetailAnemic {
+    return {
+      ...CompanyMapper.toAnemic(dto),
+      changedAt: dto.changedAt ?? null,
+      applicationId: dto.applicationId ?? null,
+      verificationRef: dto.verificationRef ?? null,
+      bpnAssignedAt: dto.bpnAssignedAt ?? null,
+      deactivationReason: dto.deactivationReason ?? null,
+      rejectedAt: dto.rejectedAt ?? null,
+      deactivatedAt: dto.deactivatedAt ?? null,
+      reactivatedAt: dto.reactivatedAt ?? null,
+      openChangeRequestId: dto.openChangeRequestId ?? null,
+    };
+  }
+
+  public static summaryToAnemic(dto: CompanySummaryDto): CompanySummaryAnemic {
+    return {
+      id: dto.id,
+      name: dto.name,
+      status: dto.status,
+      bpn: dto.bpn ?? null,
+      coreDataSource: dto.coreDataSource,
+      countryCode: dto.countryCode,
+      companyRoles: dto.companyRoles ?? [],
+      createdAt: dto.createdAt,
+    };
+  }
+
+  public static pageToAnemic(dto: CompanyPageDto): PageAnemic<CompanySummaryAnemic> {
+    return { items: dto.items.map(CompanyMapper.summaryToAnemic), page: dto.page, size: dto.size, total: dto.total };
   }
 }

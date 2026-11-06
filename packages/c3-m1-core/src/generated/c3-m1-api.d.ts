@@ -1057,77 +1057,109 @@ export interface components {
                 changedFields: string[];
             };
         };
-        /** @description Common fields of every event. Events never contain secrets or personal data. */
+        /**
+         * @description CloudEvent (CloudEvents 1.0, JSON event format, FRAMEWORK 6). `type` is the event name,
+         *     the content is in `data`. Events never contain secrets or personal data.
+         */
         EventBase: {
+            /** @constant */
+            specversion: "1.0";
             /** Format: uuid */
-            eventId: string;
-            eventType: string;
+            id: string;
+            /** @constant */
+            source: "urn:c3-m1";
+            type: string;
             /** Format: date-time */
-            occurredAt: string;
+            time: string;
+            /** @constant */
+            datacontenttype: "application/json";
+            data: Record<string, never>;
+        };
+        /** @description Common content in `data` of every event of this module. */
+        EventCompanyFields: {
             /** Format: uuid */
             companyId: string;
         };
         EventCompanyCreated: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyCreated";
-            /** Format: uuid */
-            applicationId: string;
-            coreDataSource: components["schemas"]["CoreDataSource"];
+            type?: "CompanyCreated";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                /** Format: uuid */
+                applicationId: string;
+                coreDataSource: components["schemas"]["CoreDataSource"];
+            };
         };
         EventCompanyIdentifierAssigned: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyIdentifierAssigned";
-            bpn: components["schemas"]["Bpn"];
+            type?: "CompanyIdentifierAssigned";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                bpn: components["schemas"]["Bpn"];
+            };
         };
         EventCompanyActivated: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyActivated";
-            bpn: components["schemas"]["Bpn"];
-            companyRoles: components["schemas"]["CompanyRoleName"][];
+            type?: "CompanyActivated";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                bpn: components["schemas"]["Bpn"];
+                companyRoles: components["schemas"]["CompanyRoleName"][];
+            };
         };
         EventCompanyRejected: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyRejected";
+            type?: "CompanyRejected";
+            data?: components["schemas"]["EventCompanyFields"];
         };
         EventCompanyDeactivated: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyDeactivated";
-            reason: components["schemas"]["DeactivationReason"];
+            type?: "CompanyDeactivated";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                reason: components["schemas"]["DeactivationReason"];
+            };
         };
         EventCompanyReactivated: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyReactivated";
-            bpn: components["schemas"]["Bpn"];
-            companyRoles: components["schemas"]["CompanyRoleName"][];
+            type?: "CompanyReactivated";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                bpn: components["schemas"]["Bpn"];
+                companyRoles: components["schemas"]["CompanyRoleName"][];
+            };
         };
         EventCompanyRolesChanged: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyRolesChanged";
-            /** @description All active roles after the change. */
-            companyRoles: components["schemas"]["CompanyRoleName"][];
+            type?: "CompanyRolesChanged";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                /** @description All active roles after the change. */
+                companyRoles: components["schemas"]["CompanyRoleName"][];
+            };
         };
         EventCompanyDataChanged: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyDataChanged";
-            /** @description Names of the changed fields, without values, for example shortName, name, address, identifiers, coreDataSource. */
-            changedFields: string[];
-            /** @description true if core data was changed; Process Orchestration then passes it to the CSP through C3-M2. */
-            coreDataChanged: boolean;
-            coreDataSource: components["schemas"]["CoreDataSource"];
+            type?: "CompanyDataChanged";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                /** @description Names of the changed fields, without values, for example shortName, name, address, identifiers, coreDataSource. */
+                changedFields: string[];
+                /** @description true if core data was changed; Process Orchestration then passes it to the CSP through C3-M2. */
+                coreDataChanged: boolean;
+                coreDataSource: components["schemas"]["CoreDataSource"];
+            };
         };
         EventCompanyChangeRequestSubmitted: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyChangeRequestSubmitted";
-            /** Format: uuid */
-            changeRequestId: string;
+            type?: "CompanyChangeRequestSubmitted";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                /** Format: uuid */
+                changeRequestId: string;
+            };
         };
         EventCompanyChangeRequestClosed: components["schemas"]["EventBase"] & {
             /** @constant */
-            eventType?: "CompanyChangeRequestClosed";
-            /** Format: uuid */
-            changeRequestId: string;
-            /** @enum {string} */
-            outcome: "APPROVED" | "DECLINED" | "WITHDRAWN";
+            type?: "CompanyChangeRequestClosed";
+            data?: components["schemas"]["EventCompanyFields"] & {
+                /** Format: uuid */
+                changeRequestId: string;
+                /** @enum {string} */
+                outcome: "APPROVED" | "DECLINED" | "WITHDRAWN";
+            };
         };
         Problem: {
             /** @description Identifier, for example urn:c3-m1:problem:attestation-invalid (list in README section 12). */

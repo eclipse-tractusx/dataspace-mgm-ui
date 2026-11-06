@@ -257,7 +257,9 @@ dialog.tx-dialog::backdrop { background: var(--backdrop); }
 .mock-config button { font: inherit; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; cursor: pointer; background: transparent; color: var(--muted); border: 1px solid var(--subtle-border); }
 .mock-config button[aria-pressed="true"] { color: var(--tx-black); background: var(--tx-orange); border-color: var(--tx-orange); }
 .mock-config__foot { display: flex; gap: 8px; align-items: center; justify-content: space-between; border-top: 1px solid var(--subtle-border); padding-top: 10px; }
-.mock-config__foot code { color: var(--text); word-break: break-word; }
+.mock-config__foot code { color: var(--text); word-break: break-word; white-space: pre-wrap; }
+.mock-config__suggestion { display: grid; gap: 6px; font-weight: 700; }
+.mock-config__suggestion textarea { box-sizing: border-box; width: 100%; resize: vertical; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--subtle-border); border-radius: 6px; padding: 8px; }
 @media (min-width: 900px) { body.mock-config-open .tx-canvas { padding-right: 296px; } }
 @media (max-width: 899.98px) { .mock-config { top: auto; bottom: 140px; right: 8px; left: 8px; width: auto; max-height: 40vh; } }
 @media print { .mock-bar, .mock-config { display: none; } }

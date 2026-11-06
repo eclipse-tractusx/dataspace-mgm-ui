@@ -1,0 +1,178 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People and access — Mockups</title>
+  <!-- The settings of this mockup; the mockup script reads them. -->
+  <meta name="mockup-title" content="People and access">
+  <meta name="mockup-module" content="c2-m2">
+  <meta name="mockup-path" content="/access-control">
+  <meta name="mockup-nav-name" content="People and access">
+  <meta name="mockup-nav-icon" content="People">
+  <meta name="mockup-states" content="loaded,empty,loading,error">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="shared/shell.css">
+  <link rel="stylesheet" href="shared/hub.css">
+</head>
+<!-- The hub of the mockup, by view. Each <section class="hub-view"> carries data-status: open | decided | deferred.
+     `mockup.py status access-control` reads it; the proof of concept starts when no view is open. -->
+<body data-hub-page>
+  <div class="hub-layout">
+    <nav class="hub-toc" aria-label="Views">
+      <div class="hub-toc__h">Views</div>
+
+      <a href="#view-users"><span class="hub-num">1</span>Users and app access</a>
+      <a href="#view-technical-users"><span class="hub-num">2</span>Technical users</a>
+      <a href="#view-iam-configuration"><span class="hub-num">3</span>Portal IAM configuration</a>
+      <div class="hub-toc__sep"></div>
+      <button class="tx-btn tx-btn--outlined hub-toc__theme" type="button" data-theme-toggle></button>
+    </nav>
+
+    <main class="hub">
+      <div class="tx-overline">Dataspace Management · mockup · phase 1 of 3</div>
+      <h1 class="tx-title">People and access</h1>
+      <p class="hub-lead">Explore how company administrators manage people and technical access, and how OSP administrators might understand Portal IAM configuration. Choose a layout in each screen before starting the proof of concept.</p>
+      <dl class="hub-facts">
+        <div><dt>Backend modules</dt><dd><code>C2-M2</code>, <code>C2-M3</code>, <code>C2-M5</code></dd></div>
+        <div><dt>Navigation</dt><dd>Proposed: <code>/access-control</code></dd></div>
+        <div><dt>Started</dt><dd>2026-11-06</dd></div>
+        <div><dt>Contract reference</dt><dd>portal-backend-spec <code>76587a6</code></dd></div>
+      </dl>
+
+
+
+      <section class="hub-view" id="view-users" data-view="users" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">1</span>
+          <h2 class="tx-h2">Users and app access</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>A company administrator reviews company users, invitations and application access from People and access.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/users.html#invite=header&filter=buttons&layout=cards&loading=skeleton">
+            <span class="hub-card__frame"><iframe src="views/users.html" title="Preview of Users and app access" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>listCompanyUsers</code> and <code>getCompanyUser</code>: <code>view_company_users</code>, company scope.</li>
+              <li><code>createInvitation</code>, <code>listInvitations</code> and <code>setCompanyUserPortalRoles</code>: <code>manage_company_users</code>, company scope.</li>
+              <li><code>getCompanyAppRoles</code>: <code>view_app_roles</code>; <code>setUserAppRoles</code>: <code>assign_app_roles</code>, company scope.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>Which list and detail layout should be selected? How should company and OSP administration be navigated?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: invite=header · filter=buttons · layout=cards · loading=skeleton. Use minimal invite button padding, glass-like skeletons and improved spacing. <a href="views/users.html">Open default view</a>.</p>
+      </section>
+
+      <section class="hub-view" id="view-technical-users" data-view="technical-users" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">2</span>
+          <h2 class="tx-h2">Technical users</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>A company administrator reviews and manages technical users and their credentials.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/technical-users.html">
+            <span class="hub-card__frame"><iframe src="views/technical-users.html" title="Preview of Technical users" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>listTechnicalUsers</code>, <code>getTechnicalUser</code>, <code>listAssignableRoles</code>: <code>view_technical_users</code>, company scope.</li>
+              <li><code>createTechnicalUser</code>, <code>updateTechnicalUser</code>, <code>rotateCredentials</code>: <code>manage_technical_users</code>; <code>deleteTechnicalUser</code>: <code>delete_technical_users</code>, company scope.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>Which layout and credential-management interaction should be selected?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: action=header · filters=inline · layout=table · loading=skeleton. Use minimal create button padding.</p>
+      </section>
+
+      <section class="hub-view" id="view-iam-configuration" data-view="iam-configuration" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">3</span>
+          <h2 class="tx-h2">Portal IAM configuration</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>An OSP administrator explores a possible configuration overview. This is a discussion sketch, not an implemented management capability.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/iam-configuration.html">
+            <span class="hub-card__frame"><iframe src="views/iam-configuration.html" title="Preview of Portal IAM configuration" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li>C2-M5 defines OIDC discovery, JWKS and token endpoints; it does not define a portal configuration-management API.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li>Frontend decision: no IAM configuration editor or live configuration screen in this iteration. The selected page is a mock-only specification reference; see <code>apps/portal/src/features/access-control/C2-M5-DECISIONS.md</code>.</li>
+              <li data-open>C2-M5 README describes browser token exchange; the frontend architecture requires a BFF-managed session with no browser tokens. Reconcile the integration before implementation.</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=cards · detail=expanded · loading=skeleton. Illustrative reference only; no configuration API is specified.</p>
+      </section>
+
+      <section class="hub-next">
+        <h2 class="tx-h3">Next: the proof of concept</h2>
+        <p>When no view is open, the skill <code>build-poc</code> builds the decided views into
+          <code>apps/portal/src/features/</code> as a feature with <code>stage: 'poc'</code>, on the in-memory adapter of
+          the module's core package (<code>VITE_USE_MOCKS=true npm start</code>). The data of
+          <code>shared/data.js</code> becomes its fixtures; every open point below goes to the backend team.</p>
+      </section>
+    </main>
+  </div>
+  <script src="shared/icons.js"></script>
+  <script src="shared/shell.js"></script>
+</body>
+</html>
