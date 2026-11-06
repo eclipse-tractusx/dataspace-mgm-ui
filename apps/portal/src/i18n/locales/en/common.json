@@ -77,7 +77,8 @@
       "CREDENTIAL_REVOKED": "A credential was revoked",
       "CONNECTOR_REGISTERED": "Connector registered",
       "PROCESS_STEP_FAILED": "A process step failed"
-    }
+    },
+    "showAll": "Show all notifications"
   },
   "services": {
     "carousel": "Services",
@@ -116,6 +117,10 @@
     "home": {
       "name": "Home",
       "description": "Start page of the Dataspace Management."
+    },
+    "notifications": {
+      "name": "Notifications",
+      "description": "Your inbox: information and tasks from all services, live."
     },
     "onboarding": {
       "name": "Onboarding",

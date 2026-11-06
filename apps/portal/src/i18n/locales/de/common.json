@@ -77,7 +77,8 @@
       "CREDENTIAL_REVOKED": "Ein Nachweis wurde widerrufen",
       "CONNECTOR_REGISTERED": "Connector registriert",
       "PROCESS_STEP_FAILED": "Ein Prozessschritt ist fehlgeschlagen"
-    }
+    },
+    "showAll": "Alle Benachrichtigungen anzeigen"
   },
   "services": {
     "carousel": "Services",
@@ -116,6 +117,10 @@
     "home": {
       "name": "Startseite",
       "description": "Startseite des Dataspace Managements."
+    },
+    "notifications": {
+      "name": "Benachrichtigungen",
+      "description": "Ihr Posteingang: Informationen und Aufgaben aus allen Diensten, live."
     },
     "onboarding": {
       "name": "Onboarding",

@@ -50,7 +50,12 @@ describe('feature registry', () => {
   });
 
   it('routes the built features outside mock mode', () => {
-    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual(['index', 'onboarding/reviews/*', 'participants']);
+    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
+      'index',
+      'notifications',
+      'onboarding/reviews/*',
+      'participants',
+    ]);
   });
 
   it('gives every feature its own translations gate, so a click in the sidebar loads the next namespace', () => {
@@ -58,6 +63,6 @@ describe('feature registry', () => {
     const gated = getAllRoutes()
       .map((route) => route.element.key)
       .filter((key) => key !== null);
-    expect(gated).toEqual(['home', 'participants']);
+    expect(gated).toEqual(['home', 'notifications', 'participants']);
   });
 });

@@ -24,19 +24,19 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useEffect, useRef, useState } from "react";
-import type { NotificationAnemic } from "@dataspace-mgm/c11-m1-core";
-import { useCoreModules, useSession } from "../../core/CoreModulesContext";
+import { useEffect, useRef, useState } from 'react';
+import type { NotificationAnemic } from '@dataspace-mgm/c11-m1-core';
+import { useCoreModules, useSession } from '../../core/CoreModulesContext';
 
 /** How many notifications the bell menu shows. */
 export const INBOX_MENU_SIZE = 8;
 
 export type InboxState =
-  | { status: "signed-out" }
-  | { status: "loading" }
-  | { status: "failed"; message: string }
+  | { status: 'signed-out' }
+  | { status: 'loading' }
+  | { status: 'failed'; message: string }
   | {
-      status: "ready";
+      status: 'ready';
       items: ReadonlyArray<NotificationAnemic>;
       unread: number;
       total: number;
@@ -59,8 +59,7 @@ export interface Inbox {
 export function useInbox(): Inbox {
   const { c11m1 } = useCoreModules();
   const session = useSession();
-  const personId =
-    session.status === "signed-in" ? session.session.user.id : null;
+  const personId = session.status === 'signed-in' ? session.session.user.id : null;
   // Kept per person, so that a change of person shows `loading` instead of the inbox of the one before.
   const [inbox, setInbox] = useState<{
     personId: string;
@@ -87,7 +86,7 @@ export function useInbox(): Inbox {
             ? previous
             : {
                 personId,
-                state: { status: "loading" } as InboxState,
+                state: { status: 'loading' } as InboxState,
                 arrivedLive: new Set<string>(),
               };
         return { ...current, ...change(current.arrivedLive) };
@@ -102,20 +101,17 @@ export function useInbox(): Inbox {
       if (abort.signal.aborted || run !== loads.current) {
         return;
       }
-      if (list.status === "failed") {
+      if (list.status === 'failed') {
         update(() => ({
-          state: { status: "failed", message: list.error.message },
+          state: { status: 'failed', message: list.error.message },
         }));
         return;
       }
       // Until C11-M1 has GET /notifications/count (501 today), count the unread ones of the loaded page.
-      const unread =
-        count.status === "found"
-          ? count.count.unread
-          : list.page.items.filter((n) => !n.read).length;
+      const unread = count.status === 'found' ? count.count.unread : list.page.items.filter((n) => !n.read).length;
       update(() => ({
         state: {
-          status: "ready",
+          status: 'ready',
           items: list.page.items,
           unread,
           total: list.page.total,
@@ -128,7 +124,7 @@ export function useInbox(): Inbox {
         {
           onEvent: (event) => {
             setLive(true);
-            if (event.kind === "created") {
+            if (event.kind === 'created') {
               update((arrived) => ({
                 arrivedLive: new Set(arrived).add(event.notificationId),
               }));
@@ -141,9 +137,9 @@ export function useInbox(): Inbox {
       )
       .then((end) => {
         setLive(false);
-        if (end.status === "stopped" && !abort.signal.aborted) {
+        if (end.status === 'stopped' && !abort.signal.aborted) {
           update(() => ({
-            state: { status: "failed", message: end.error.message },
+            state: { status: 'failed', message: end.error.message },
           }));
         }
       });
@@ -151,14 +147,14 @@ export function useInbox(): Inbox {
   }, [c11m1, personId]);
 
   const none: ReadonlySet<string> = new Set();
-  if (session.status === "loading") {
-    return { state: { status: "loading" }, live: false, arrivedLive: none };
+  if (session.status === 'loading') {
+    return { state: { status: 'loading' }, live: false, arrivedLive: none };
   }
   if (personId === null) {
-    return { state: { status: "signed-out" }, live: false, arrivedLive: none };
+    return { state: { status: 'signed-out' }, live: false, arrivedLive: none };
   }
   if (inbox?.personId !== personId) {
-    return { state: { status: "loading" }, live, arrivedLive: none };
+    return { state: { status: 'loading' }, live, arrivedLive: none };
   }
   return { state: inbox.state, live, arrivedLive: inbox.arrivedLive };
 }
