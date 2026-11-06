@@ -29,6 +29,7 @@ import { ERIKA_SESSION, MAX_APPLICATION_REACTIVATION, MAX_SESSION } from '@datas
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { features, getAllRoutes } from '../main';
+import { onboardingFeature } from './routes';
 import { onboardingTranslations } from './i18n';
 import { renderOnboarding } from './test-utils';
 
@@ -37,7 +38,8 @@ beforeAll(() => onboardingTranslations.load());
 describe('Onboarding: start application (C1-M2, proof of concept)', () => {
   it('is a proof of concept: closed outside mock mode', () => {
     expect(features.find((feature) => feature.id === 'onboarding')?.disabled).toBe(true);
-    expect(getAllRoutes().some((route) => route.path?.startsWith('onboarding'))).toBe(false);
+    const ownPaths = onboardingFeature.routes.map((route) => route.path);
+    expect(getAllRoutes().some((route) => ownPaths.includes(route.path))).toBe(false);
   });
 
   it('keeps the goal cards visible and shows the proof below them, steps at the side', async () => {

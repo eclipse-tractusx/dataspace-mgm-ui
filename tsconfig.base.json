@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
@@ -24,7 +28,11 @@
       "@dataspace-mgm/c3-m1-core": ["./packages/c3-m1-core/src/index.ts"],
       "@dataspace-mgm/c3-m1-core/testing": ["./packages/c3-m1-core/src/testing.ts"],
       "@dataspace-mgm/c1-m2-core": ["./packages/c1-m2-core/src/index.ts"],
-      "@dataspace-mgm/c1-m2-core/testing": ["./packages/c1-m2-core/src/testing.ts"]
+      "@dataspace-mgm/c1-m2-core/testing": ["./packages/c1-m2-core/src/testing.ts"],
+      "@dataspace-mgm/c1-m3-core": ["./packages/c1-m3-core/src/index.ts"],
+      "@dataspace-mgm/c1-m3-core/testing": ["./packages/c1-m3-core/src/testing.ts"],
+      "@dataspace-mgm/c1-m3-state": ["./libs/c1-m3/state/src/index.ts"],
+      "@dataspace-mgm/c1-m3-feature": ["./libs/c1-m3/feature/src/index.ts"]
     }
   }
 }
