@@ -38,6 +38,7 @@ export { BrandBackdrop } from './components/BrandBackdrop';
 export { SpaceGlow } from './components/SpaceGlow';
 
 // MUI components, re-exported unchanged until a feature needs a Tractus-X specific wrapper.
+export { default as Alert } from '@mui/material/Alert';
 export { default as AppBar } from '@mui/material/AppBar';
 export { default as Avatar } from '@mui/material/Avatar';
 export { default as BottomNavigation } from '@mui/material/BottomNavigation';
@@ -51,6 +52,7 @@ export { default as CardActions } from '@mui/material/CardActions';
 export { default as CardContent } from '@mui/material/CardContent';
 export { default as CardHeader } from '@mui/material/CardHeader';
 export { default as Chip } from '@mui/material/Chip';
+export { default as CircularProgress } from '@mui/material/CircularProgress';
 export { default as Collapse } from '@mui/material/Collapse';
 export { default as Container } from '@mui/material/Container';
 export { default as Dialog } from '@mui/material/Dialog';
@@ -85,6 +87,7 @@ export { default as BusinessOutlinedIcon } from '@mui/icons-material/BusinessOut
 export { default as CableOutlinedIcon } from '@mui/icons-material/CableOutlined';
 export { default as CloseIcon } from '@mui/icons-material/Close';
 export { default as LoginIcon } from '@mui/icons-material/Login';
+export { default as LogoutIcon } from '@mui/icons-material/Logout';
 export { default as ManageAccountsOutlinedIcon } from '@mui/icons-material/ManageAccountsOutlined';
 export { default as MoreVertIcon } from '@mui/icons-material/MoreVert';
 export { default as NotificationsOutlinedIcon } from '@mui/icons-material/NotificationsOutlined';

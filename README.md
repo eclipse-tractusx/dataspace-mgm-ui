@@ -78,6 +78,9 @@ Notifications, the profile and All services sit at the bottom left.
 |---|---|
 | [`docs/user`](docs/user/README.md) | End user manual |
 | [`docs/architecture`](docs/architecture/README.md) | Architecture of the UI |
+| [`docs/developers`](docs/developers/integrate-a-backend-module.md) | Hackathon guide: connect the UI to a backend module |
+| [`packages`](packages) | Framework-free core packages: `core-http`, `identity-core`, `c3-m1-core` |
+| [`specs`](specs) | OpenAPI of the backend modules the UI calls, copied from the spec |
 | [`Dockerfile`](Dockerfile), [`docker/nginx.conf`](docker/nginx.conf), [`DOCKER_NOTICE.md`](DOCKER_NOTICE.md) | Container image, nginx configuration and notice for DockerHub |
 | [`charts`](charts/README.md) | Pointer to the product Helm chart in the leading repository |
 | [`.github`](.github) | Workflows (build, CodeQL, KICS, Trivy, TruffleHog, Eclipse Dash), Dependabot, templates |
@@ -115,6 +118,10 @@ npm ci
 npx nx serve portal
 ```
 
+With the backend running on `localhost:8000`, `npm start` also runs a development BFF that signs you in as a test
+person and forwards `/api` to the backend. See
+[Hackathon: connect the UI to a backend module](docs/developers/integrate-a-backend-module.md).
+
 ## Container images
 
 The images are published on DockerHub: [`tractusx/dataspace-mgm-ui`](https://hub.docker.com/r/tractusx/dataspace-mgm-ui).
@@ -139,6 +146,8 @@ space and manage their membership. Built at the Tractus-X Hackathon II.
 
 - Architecture and rules: [portal-frontend-spec](https://github.com/tx-arena-events/portal-frontend-spec)
   (start with `HACKATHON-FRONTEND.md`, example `architecture/14-example-registration.md`)
+- **Connect a page to your backend module:** [docs/developers/integrate-a-backend-module.md](docs/developers/integrate-a-backend-module.md)
+  (example: Participant management → Your company, C3-M1)
 - Backend: [dataspace-mgm-service](https://github.com/eclipse-tractusx/dataspace-mgm-service),
   its specification: [portal-backend-spec](https://github.com/tx-arena-events/portal-backend-spec)
 

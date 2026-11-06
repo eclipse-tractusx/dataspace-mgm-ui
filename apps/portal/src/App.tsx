@@ -24,21 +24,27 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import { useMemo } from 'react';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { ConfigContext } from './config/ConfigContext';
+import { createCoreModules } from './core/container';
+import { CoreModulesProvider } from './core/CoreModulesContext';
 import { FavouritesProvider } from './contexts/FavouritesContext';
 import { features } from './features/main';
 import type { RuntimeConfig } from './config';
 import AppRoutes from './routes';
 
 export default function App({ config }: { config: RuntimeConfig }) {
+  const modules = useMemo(() => createCoreModules(config), [config]);
   return (
     <ConfigContext.Provider value={config}>
-      <ColorModeProvider>
-        <FavouritesProvider items={features}>
-          <AppRoutes />
-        </FavouritesProvider>
-      </ColorModeProvider>
+      <CoreModulesProvider modules={modules}>
+        <ColorModeProvider>
+          <FavouritesProvider items={features}>
+            <AppRoutes />
+          </FavouritesProvider>
+        </ColorModeProvider>
+      </CoreModulesProvider>
     </ConfigContext.Provider>
   );
 }

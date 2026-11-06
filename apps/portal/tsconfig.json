@@ -3,5 +3,5 @@
   "compilerOptions": {
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "vite.config.ts", "../../libs/shared/ui-mui/src"]
+  "include": ["src", "dev-bff", "vite.config.ts", "../../workspace.aliases.ts", "../../libs/shared/ui-mui/src"]
 }
