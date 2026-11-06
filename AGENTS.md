@@ -120,8 +120,10 @@ Core package rules:
 - Use `createCoreClient`, `ensureData`, `ensureOk` from `@dataspace-mgm/core-http` in repository adapters.
 - Only `index.ts` imports `infrastructure/`. It exposes `create<Module>Module(config)` and the public types.
   `testing.ts` exposes in-memory adapters and fixtures as `@dataspace-mgm/<module>-core/testing`.
-- Never deep-import into another package or lib; use its barrel (`index.ts`). Package boundaries are enforced by
-  `@nx/enforce-module-boundaries` with the tags `type:*` and `scope:*` in `project.json`.
+- Never deep-import into another package or lib; use its barrel (`index.ts`). ESLint already blocks `@mui/*` outside
+  `libs/shared/ui-mui`, `openapi-fetch` outside core infrastructure, and React, MUI or Redux in core packages. Keep the
+  tags `type:*` and `scope:*` in `project.json`; `@nx/enforce-module-boundaries` is the planned check for package
+  boundaries but is not configured yet, so respect them yourself.
 - UI code uses only `@dataspace-mgm/ui-mui`; no `@mui/*`, no `openapi-fetch`, no `create<Module>Module` outside the
   app's container.
 
