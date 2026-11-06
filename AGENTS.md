@@ -134,6 +134,11 @@ Core package rules:
 
 ## Code style
 
+- UI is built with Material UI (MUI), imported only through `@dataspace-mgm/ui-mui`. Style with the MUI theme and
+  `sx`/`styled`, using the theme tokens (colors, spacing, typography); no hard-coded colors or fonts.
+- Where plain stylesheets are needed, use SCSS (`*.scss`, next to the component, with variables or theme tokens
+  instead of literals). `sass` is not a dependency yet: add it in the PR that first needs it and say so in the PR
+  description. No other CSS-in-JS or CSS framework.
 - One class or type per file; only `data/` folders may group related interfaces.
 - `if` always with braces and the body on its own line (`curly: ['error', 'all']`).
 - File names are `kebab-case` with a type suffix: `app.anemic.ts`, `bpn.value-object.ts`, `bpn.factory.ts`,
