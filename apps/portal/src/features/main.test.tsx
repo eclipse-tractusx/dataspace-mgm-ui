@@ -50,8 +50,23 @@ describe('feature registry', () => {
   });
 
   it('routes the built features outside mock mode', () => {
-    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual(
-      ['index', 'onboarding/reviews/*', 'participants', 'participants/company/change', 'participants/company/change-requests', 'participants/company/roles', 'participants/companies', 'participants/companies/:companyId', 'participants/companies/:companyId/csp', 'participants/change-requests', 'participants/change-requests/:changeRequestId'],
-    );
+    expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
+      'index', 'onboarding/reviews/*',
+      'participants',
+'participants/company/change', 'participants/company/change-requests', 'participants/company/roles', 'participants/companies', 'participants/companies/:companyId', 'participants/companies/:companyId/csp', 'participants/change-requests', 'participants/change-requests/:changeRequestId',
+      'access-control',
+      'notifications',
+      'onboarding/reviews/*',
+      'access-control/technical-users',
+      'access-control/iam',
+    ]);
+  });
+
+  it('gives every feature its own translations gate, so a click in the sidebar loads the next namespace', () => {
+    // Only features with their own translations have a gate (the review of onboarding has none).
+    const gated = getAllRoutes()
+      .map((route) => route.element.key)
+      .filter((key) => key !== null);
+    expect(gated).toEqual(['home', 'notifications', 'participants']);
   });
 });

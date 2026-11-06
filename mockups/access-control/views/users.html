@@ -1,0 +1,138 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ AI Disclosure: This file was entirely AI-generated. The AI-generated portions
+ are made available under CC0-1.0. The human contributor has reviewed it.
+ Assisted-By: OpenAI GPT-6.1 Terra
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access control · Company users — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <style>
+    .users-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .users-filters { display:flex; gap:1rem; align-items:end; flex-wrap:wrap; margin:1rem 0; }
+    .users-filters button { padding:.3rem .6rem; }
+    .users-filters label { display:grid; gap:.35rem; }
+    .users-filters select, .users-filters input { padding:.65rem; border:1px solid var(--tx-border); border-radius:var(--tx-radius-sm, 4px); background:var(--tx-surface); color:inherit; font:inherit; }
+    .users-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%, 260px),1fr)); gap:1rem; }
+    .users-scroll { overflow-x:auto; }
+    .users-detail { margin-top:1rem; }
+    .users-actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .users-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%, 180px),1fr)); gap:1rem; }
+    .users-fields dt { font-weight:600; }
+    .users-fields dd { margin:.25rem 0 0; overflow-wrap:anywhere; }
+    .users-dialog { max-width:32rem; width:calc(100% - 2rem); }
+    .users-state-action { margin-top:1rem; }
+  </style>
+</head>
+<body data-active="/access-control" data-view="Company users" data-states="loaded,empty,loading,forbidden,not-found,error,conflict">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Access control</div>
+    <div class="users-head"><div><h1 class="tx-title" id="view-title">Company users</h1><p class="tx-muted" id="company-name"></p></div>
+      <button class="tx-btn" type="button" data-invite data-variant="invite:header" data-dimension="Invitation action" data-variant-label="In the header">Invite a person</button>
+    </div>
+    <section data-show-state="loaded">
+      <div class="users-filters" data-variant="filter:select" data-dimension="Status filter" data-variant-label="Dropdown">
+        <label>Status <select data-status><option value="">Active and disabled</option><option value="ACTIVE">Active</option><option value="DISABLED">Disabled</option><option value="REMOVED">Removed</option></select></label>
+      </div>
+      <div class="users-filters" data-variant="filter:buttons" data-variant-label="Buttons" role="group" aria-label="Status filter">
+        <button class="tx-btn tx-btn--outlined" type="button" data-filter="">Active and disabled</button><button class="tx-btn tx-btn--outlined" type="button" data-filter="ACTIVE">Active</button><button class="tx-btn tx-btn--outlined" type="button" data-filter="DISABLED">Disabled</button><button class="tx-btn tx-btn--outlined" type="button" data-filter="REMOVED">Removed</button>
+      </div>
+      <div class="tx-card users-scroll" data-variant="layout:table" data-dimension="Users layout" data-variant-label="Table">
+        <table class="tx-table"><thead><tr><th>Name</th><th>Portal roles</th><th>Status</th><th><span class="tx-muted">Details</span></th></tr></thead><tbody id="user-rows"></tbody></table>
+        <p id="table-empty" hidden>No users match this status.</p>
+      </div>
+      <div data-variant="layout:cards" data-variant-label="Cards"><div class="users-grid" id="user-cards"></div><p id="cards-empty" hidden>No users match this status.</p></div>
+      <div class="users-actions" data-variant="invite:footer" data-variant-label="Below the list"><button class="tx-btn" type="button" data-invite>Invite a person</button></div>
+      <section class="tx-card users-detail" id="detail" hidden aria-labelledby="detail-title">
+        <div class="users-head"><h2 class="tx-h3" id="detail-title">User details</h2><button class="tx-btn tx-btn--outlined" type="button" data-close>Close</button></div>
+        <dl class="users-fields" id="detail-fields"></dl><div class="users-actions"><button class="tx-btn tx-btn--outlined" type="button" data-edit>Edit portal roles</button><button class="tx-btn tx-btn--outlined" type="button" data-remove>Remove from company</button></div>
+      </section>
+    </section>
+    <section data-show-state="empty"><div class="tx-card tx-empty"><h2 class="tx-h3">No company users</h2><p>Invite a person to join the company.</p><button class="tx-btn" type="button" data-invite>Invite a person</button></div></section>
+    <section data-show-state="loading" role="status" aria-label="Loading users">
+      <div data-variant="loading:spinner" data-dimension="Loading display" data-variant-label="Spinner" class="tx-row"><span class="tx-spinner"></span>Loading users…</div>
+      <div data-variant="loading:skeleton" data-variant-label="User skeleton" class="users-skeleton">
+        <p class="tx-muted">Loading users…</p>
+        <div class="tx-card" data-variant="layout:table" aria-hidden="true">
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+        </div>
+        <div class="users-grid" data-variant="layout:cards" aria-hidden="true">
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+        </div>
+      </div>
+    </section>
+    <section data-show-state="forbidden"><div class="tx-alert tx-alert--error" role="alert">You do not have permission to view company users (HTTP 403).</div></section>
+    <section data-show-state="not-found"><div class="tx-alert tx-alert--error" role="alert">The company or user was not found (HTTP 404).</div></section>
+    <section data-show-state="error"><div class="tx-alert tx-alert--error" role="alert">Users could not be loaded (HTTP 502). Please try again.</div><button class="tx-btn tx-btn--outlined users-state-action" type="button" data-retry>Try again</button></section>
+    <section data-show-state="conflict"><div class="tx-alert tx-alert--error" role="alert">The last Company Admin cannot be removed or lose that role. <code>urn:c2-m2:problem:last-company-admin</code></div><button class="tx-btn tx-btn--outlined users-state-action" type="button" data-retry>Back to users</button></section>
+    <dialog class="tx-dialog users-dialog" id="roles-dialog"><form id="roles-form"><h2 class="tx-h3">Edit portal roles</h2><p>Choose the complete set of portal roles for this person.</p><div id="role-options"></div><p id="role-error" role="alert" hidden>Select at least one role.</p><div class="users-actions"><button class="tx-btn" type="submit">Save roles</button><button class="tx-btn tx-btn--outlined" type="button" data-cancel>Cancel</button></div></form></dialog>
+    <dialog class="tx-dialog users-dialog" id="remove-dialog"><h2 class="tx-h3">Remove from company?</h2><p>The account remains, but its company binding, company portal roles and app roles are removed and its sessions end.</p><div class="users-actions"><button class="tx-btn" type="button" data-confirm-remove>Remove person</button><button class="tx-btn tx-btn--outlined" type="button" data-cancel>Cancel</button></div></dialog>
+    <dialog class="tx-dialog users-dialog" id="invite-dialog"><h2 class="tx-h3">Invite a person</h2><p>The invitation flow is not sketched yet. C2-M2 returns an invitation code once; sharing the invitation is a separate step.</p><button class="tx-btn tx-btn--outlined" type="button" data-cancel>Close</button></dialog>
+  </main>
+  <script src="../shared/icons.js"></script><script src="../shared/nav.js"></script><script src="../shared/data.js"></script><script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const data = mock.data;
+      const company = data.companies?.maschinenbau || {};
+      const persons = data.persons || {};
+      // Fallback bindings demonstrate the contract when the shared module fixtures are not yet available.
+      const fallback = [persons.erika, persons.max].filter(Boolean).map((person, index) => ({ userId: person.id, companyId: company.id, givenName: person.name.split(' ')[0], familyName: person.name.split(' ').slice(1).join(' '), status: 'ACTIVE', joinedVia: index ? 'INVITATION' : 'ONBOARDING', portalRoles: [index ? 'Member' : 'Company Admin'] }));
+      let users = (Array.isArray(data.companyUsers) ? data.companyUsers : fallback).map((user) => ({ ...user, portalRoles: [...user.portalRoles] }));
+      let status = '';
+      let selected = null;
+      const escape = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+      const name = (user) => [user.givenName, user.familyName].filter(Boolean).join(' ') || 'Name unavailable';
+      document.getElementById('company-name').textContent = company.name || 'Your company';
+      function render() {
+        const shown = users.filter((user) => status ? user.status === status : ['ACTIVE', 'DISABLED'].includes(user.status));
+        mock.render('#user-rows', shown, (user) => `<tr><td>${escape(name(user))}</td><td>${escape(user.portalRoles.join(', ') || '—')}</td><td>${escape(user.status)}</td><td>${user.status === 'REMOVED' ? '—' : `<button class="tx-btn tx-btn--outlined" type="button" data-user="${escape(user.userId)}">View</button>`}</td></tr>`);
+        mock.render('#user-cards', shown, (user) => `<article class="tx-card"><h2 class="tx-h3">${escape(name(user))}</h2><p>${escape(user.portalRoles.join(', ') || 'No portal roles')}</p><p>${escape(user.status)}</p>${user.status === 'REMOVED' ? '' : `<button class="tx-btn tx-btn--outlined" type="button" data-user="${escape(user.userId)}">View details</button>`}</article>`);
+        document.getElementById('table-empty').hidden = shown.length > 0;
+        document.getElementById('cards-empty').hidden = shown.length > 0;
+        document.querySelectorAll('[data-filter]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.filter === status)));
+        document.querySelector('[data-status]').value = status;
+      }
+      function details() {
+        if (!selected) { return; }
+        document.getElementById('detail-title').textContent = name(selected);
+        const fields = [['User ID', selected.userId], ['Status', selected.status], ['Portal roles', selected.portalRoles.join(', ') || 'None'], ['Joined via', selected.joinedVia], ['App roles', 'Open the user detail to load app role assignments']];
+        document.getElementById('detail-fields').innerHTML = fields.map(([label, value]) => `<div><dt>${escape(label)}</dt><dd>${escape(value)}</dd></div>`).join('');
+        document.getElementById('detail').hidden = false;
+      }
+      mock.on('click', '[data-user]', (_, button) => { selected = users.find((user) => user.userId === button.dataset.user); details(); });
+      mock.on('click', '[data-close]', () => { document.getElementById('detail').hidden = true; });
+      mock.on('change', '[data-status]', (_, input) => { status = input.value; document.getElementById('detail').hidden = true; render(); });
+      mock.on('click', '[data-filter]', (_, button) => { status = button.dataset.filter; document.getElementById('detail').hidden = true; render(); });
+      mock.on('click', '[data-edit]', () => {
+        const roles = [...new Set(['Company Admin', 'IT Admin', 'Member', ...selected.portalRoles])];
+        document.getElementById('role-options').innerHTML = roles.map((role) => `<label><input type="checkbox" name="role" value="${escape(role)}" ${selected.portalRoles.includes(role) ? 'checked' : ''}> ${escape(role)}</label><br>`).join('');
+        document.getElementById('role-error').hidden = true;
+        document.getElementById('roles-dialog').showModal();
+      });
+      document.getElementById('roles-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const roles = [...event.currentTarget.querySelectorAll('input:checked')].map((input) => input.value);
+        if (!roles.length) { document.getElementById('role-error').hidden = false; return; }
+        selected.portalRoles = roles; document.getElementById('roles-dialog').close(); details(); render(); mock.toast('Portal roles saved in this mockup');
+      });
+      mock.on('click', '[data-remove]', () => document.getElementById('remove-dialog').showModal());
+      mock.on('click', '[data-invite]', () => document.getElementById('invite-dialog').showModal());
+      mock.on('click', '[data-cancel]', (_, button) => button.closest('dialog').close());
+      mock.on('click', '[data-confirm-remove]', () => { users = users.filter((user) => user !== selected); selected = null; document.getElementById('remove-dialog').close(); document.getElementById('detail').hidden = true; render(); mock.toast('Person removed in this mockup'); });
+      mock.on('click', '[data-retry]', () => mock.setState('loaded'));
+      render();
+    })();
+  </script>
+</body>
+</html>

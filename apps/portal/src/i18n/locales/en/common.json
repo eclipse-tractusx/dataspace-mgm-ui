@@ -1,4 +1,14 @@
 {
+  "mockEudi": {
+    "title": "EUDI Wallet sign-in",
+    "explanation": "Sign in through Portal IAM and the EBW-Connector with your EUDI Wallet, or switch to standard backend authentication.",
+    "noWallet": "Identity attributes and permissions are resolved from the Portal IAM session response.",
+    "normalLoginLabel": "Use standard backend login (/auth/login)",
+    "specResponseLabel": "Use spec-compliant /me session response",
+    "continueBackend": "Continue with standard login",
+    "continueAs": "Continue as {{name}}",
+    "cancel": "Cancel"
+  },
   "brand": {
     "tractusx": "Eclipse Tractus-X",
     "product": "Dataspace Management"
@@ -44,9 +54,41 @@
   },
   "notifications": {
     "label": "Notifications",
+    "labelUnread_one": "Notifications, {{count}} unread",
+    "labelUnread_other": "Notifications, {{count}} unread",
     "nothingNew": "Nothing new",
-    "inbox": "Your inbox",
-    "inboxPending": "Arrives with the notifications module"
+    "live_one": "Live · {{count}} unread",
+    "live_other": "Live · {{count}} unread",
+    "connecting": "Connecting…",
+    "signedOut": "Not signed in",
+    "signInToSee": "Sign in to see your notifications",
+    "loading": "Loading notifications…",
+    "loadFailed": "The notifications could not be loaded",
+    "taskOpen": "Task open",
+    "taskDone": "Task done",
+    "justNow": "New",
+    "unknownType": "Notification ({{type}})",
+    "types": {
+      "APPLICATION_SUBMITTED": "Your application was submitted",
+      "REVIEW_CASE_OPENED": "New application to review",
+      "APPLICATION_DECLINED": "Your application was declined",
+      "APPLICATION_COMPLETED": "Your company is registered",
+      "CHANGE_REQUEST_OPENED": "Change of company data to review",
+      "OFFER_REVIEW_REQUESTED": "New offer to review",
+      "OFFER_APPROVED": "Your offer was approved",
+      "OFFER_DECLINED": "Your offer was declined",
+      "SUBSCRIPTION_REQUESTED": "New subscription request",
+      "SUBSCRIPTION_ACTIVATED": "Subscription activated",
+      "SUBSCRIPTION_DECLINED": "Subscription declined",
+      "SUBSCRIPTION_URL_CHANGED": "Address of a subscription changed",
+      "APP_ROLES_ADDED": "New roles for an app",
+      "TECHNICAL_USER_WALLET_READY": "Wallet of a technical user is ready",
+      "TECHNICAL_USER_WALLET_FAILED": "Wallet of a technical user could not be created",
+      "CREDENTIAL_REVOKED": "A credential was revoked",
+      "CONNECTOR_REGISTERED": "Connector registered",
+      "PROCESS_STEP_FAILED": "A process step failed"
+    },
+    "showAll": "Show all notifications"
   },
   "services": {
     "carousel": "Services",
@@ -86,6 +128,10 @@
       "name": "Home",
       "description": "Start page of the Dataspace Management."
     },
+    "notifications": {
+      "name": "Notifications",
+      "description": "Your inbox: information and tasks from all services, live."
+    },
     "onboarding": {
       "name": "Onboarding",
       "description": "Register companies, review their applications and bring them into the dataspace."
@@ -93,6 +139,10 @@
     "onboarding-review": {
       "name": "Application review",
       "description": "Review, approve or decline the registration applications of companies."
+    },
+    "access-control": {
+      "name": "People and access",
+      "description": "Manage company users, technical users and access."
     },
     "participants": {
       "name": "Participant management",

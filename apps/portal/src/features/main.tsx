@@ -25,6 +25,7 @@
  ********************************************************************************/
 
 import {
+  AccountBalanceWalletOutlinedIcon,
   CableOutlinedIcon,
   HowToRegOutlinedIcon,
   HubOutlinedIcon,
@@ -34,7 +35,12 @@ import { lazy, Suspense } from 'react';
 import { MOCK_MODE } from '../core/mock-mode';
 import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
+import { accessControlFeature } from './access-control';
 import { homeFeature } from './home/routes';
+import { onboardingFeature } from './onboarding/routes';
+import { participantsFeature } from './participants/routes';
+import { lazy, Suspense } from 'react';
+import { notificationsFeature } from './notifications/routes';
 import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
 import { walletsFeature } from './wallets/routes';
@@ -76,10 +82,11 @@ const upcoming = (
  * pages/, i18n/ (its namespace), routes.tsx (one FeatureConfig) and index.ts, add `features.<id>` to the shell's
  * common.json in every language, then add it to this list.
  * The order is the order in the sidebar, the phone's bottom bar (first entries) and the "All services" views.
- * Notifications are not a feature here: the shell has its own bell (sidebar on desktop, header on phones).
+ * Notifications are a feature (the inbox page) and also have the shell's bell (sidebar on desktop, header on phones).
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
+  notificationsFeature,
   onboardingFeature,
   {
     id: 'onboarding-review',
@@ -104,6 +111,7 @@ export const allFeatures: FeatureConfig[] = [
     ],
   },
   participantsFeature,
+  accessControlFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
   walletsFeature,
   upcoming('marketplace', 'as-a-service', <StorefrontOutlinedIcon />, '/marketplace', '0.2.0'),
@@ -123,7 +131,16 @@ export const features: NavigationEntry[] = allFeatures.map((feature) => ({
 /** A route that renders once its feature's translations are there. */
 const translated = (feature: FeatureConfig, route: FeatureRoute): FeatureRoute =>
   feature.translations
-    ? { ...route, element: <FeatureTranslationsGate translations={feature.translations}>{route.element}</FeatureTranslationsGate> }
+    ? {
+        ...route,
+        // One gate per feature (`key`): React would otherwise keep the gate of the page before, already `ready`, and
+        // render the next feature without loading its namespace (raw keys after a click in the sidebar).
+        element: (
+          <FeatureTranslationsGate key={feature.id} translations={feature.translations}>
+            {route.element}
+          </FeatureTranslationsGate>
+        ),
+      }
     : route;
 
 /** The routes of all enabled features. */

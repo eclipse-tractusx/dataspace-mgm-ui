@@ -1,0 +1,139 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+ See the NOTICE file(s) distributed with this work for additional information regarding copyright ownership.
+ This program and the accompanying materials are made available under the terms of the Apache License, Version 2.0.
+ https://www.apache.org/licenses/LICENSE-2.0
+ AI Disclosure: This file was entirely AI-generated. The AI-generated portions are made available under CC0-1.0
+ and not subject to the project's license. The human contributor has reviewed and verified that the content is correct.
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: OpenAI GPT-6.1 Terra
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Technical users · Access control — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <style>
+    .heading, .toolbar, .actions { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .toolbar { justify-content:flex-start; margin:1rem 0; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%, 17rem),1fr)); gap:1rem; }
+    .stack { display:grid; gap:1rem; }
+    .field { display:grid; gap:.35rem; }
+    .field input, .field select, .field textarea, select { font:inherit; color:inherit; background:var(--tx-surface, transparent); border:1px solid var(--tx-border, currentColor); border-radius:.35rem; padding:.6rem; max-width:100%; }
+    .table-wrap { overflow-x:auto; }
+    .details { margin-top:1rem; }
+    .small { font-size:.875rem; }
+    dialog { max-width:min(36rem, 90vw); max-height:85vh; overflow:auto; }
+    .secret-value { overflow-wrap:anywhere; }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body data-active="/access-control" data-view="Technical users" data-states="loaded,empty,loading,error,forbidden,conflict">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Access control</div>
+    <div class="heading">
+      <div><h1 class="tx-title" id="view-title">Technical users</h1><p class="tx-muted">Manage program accounts visible to your company.</p></div>
+      <div data-variant="action:header" data-dimension="Create action" data-variant-label="In the header"><button class="tx-btn" type="button" data-create>Create technical user</button></div>
+    </div>
+    <div data-show-state="loaded empty">
+      <div class="toolbar" data-variant="filters:inline" data-dimension="Filters" data-variant-label="Inline filters">
+        <label>Status <select data-filter="status"><option value="">Default statuses</option><option>ACTIVE</option><option>PENDING</option><option>PENDING_DELETION</option><option>INACTIVE</option><option>DELETED</option></select></label>
+        <label>Origin <select data-filter="origin"><option value="">All</option><option>OWN</option><option>SUBSCRIPTION</option></select></label>
+        <label>Wallet access <select data-filter="walletAccess"><option value="">All</option><option>NONE</option><option>REQUESTED</option><option>ACTIVE</option><option>FAILED</option><option>REMOVING</option></select></label>
+        <button type="button" class="tx-btn tx-btn--outlined" data-clear>Clear filters</button>
+      </div>
+      <details class="tx-card" data-variant="filters:panel" data-variant-label="Collapsible filters"><summary>Filter technical users</summary>
+        <div class="toolbar">
+          <label>Status <select data-filter="status"><option value="">Default statuses</option><option>ACTIVE</option><option>PENDING</option><option>PENDING_DELETION</option><option>INACTIVE</option><option>DELETED</option></select></label>
+          <label>Origin <select data-filter="origin"><option value="">All</option><option>OWN</option><option>SUBSCRIPTION</option></select></label>
+          <label>Wallet access <select data-filter="walletAccess"><option value="">All</option><option>NONE</option><option>REQUESTED</option><option>ACTIVE</option><option>FAILED</option><option>REMOVING</option></select></label>
+          <button type="button" class="tx-btn tx-btn--outlined" data-clear>Clear filters</button>
+        </div>
+      </details>
+      <section data-show-state="loaded" aria-label="Technical users">
+        <div class="tx-card table-wrap" data-variant="layout:table" data-dimension="List layout" data-variant-label="Table">
+          <table class="tx-table"><thead><tr><th>Name</th><th>Client ID</th><th>Status</th><th>Wallet access</th><th>Visibility</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+        </div>
+        <div class="cards" id="cards" data-variant="layout:cards" data-variant-label="Cards"></div>
+        <p class="tx-muted" id="no-results" hidden>No technical users match these filters.</p>
+      </section>
+      <section data-show-state="empty"><div class="tx-card tx-empty"><h2 class="tx-h3">No technical users</h2><p>Create an account for a program that needs access.</p></div></section>
+      <div class="toolbar" data-variant="action:below" data-variant-label="Below the list"><button class="tx-btn" type="button" data-create>Create technical user</button></div>
+      <section id="detail" class="tx-card details" hidden aria-live="polite"></section>
+    </div>
+    <section data-show-state="loading" role="status" aria-label="Loading technical users">
+      <div class="tx-row" data-variant="loading:spinner" data-dimension="Loading display" data-variant-label="Spinner"><span class="tx-spinner"></span> Loading technical users…</div>
+      <div class="users-skeleton" data-variant="loading:skeleton" data-variant-label="Skeleton">
+        <p class="tx-muted">Loading technical users…</p>
+        <div class="tx-card" data-variant="layout:table" aria-hidden="true">
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+          <div class="users-skeleton-row"><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span><span class="users-skeleton-line"></span></div>
+        </div>
+        <div class="users-skeleton-grid" data-variant="layout:cards" aria-hidden="true">
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+          <div class="tx-card users-skeleton-card"><span class="users-skeleton-line"></span><span class="users-skeleton-line users-skeleton-short"></span><span class="users-skeleton-line users-skeleton-short"></span></div>
+        </div>
+      </div>
+    </section>
+    <section data-show-state="error"><div class="tx-alert tx-alert--error" role="alert">Technical users could not be loaded. <code>urn:c2-m3:problem:upstream-error</code></div><button type="button" class="tx-btn tx-btn--outlined" data-retry>Retry</button></section>
+    <section data-show-state="forbidden"><div class="tx-alert tx-alert--error" role="alert">You do not have permission to view technical users. <code>urn:c2-m3:problem:forbidden</code></div></section>
+    <section data-show-state="conflict"><div class="tx-alert tx-alert--warning" role="alert">The account is in use and cannot be deleted. <code>urn:c2-m3:problem:in-use</code></div><button type="button" class="tx-btn tx-btn--outlined" data-retry>Back to technical users</button></section>
+    <dialog class="tx-dialog" id="form-dialog" aria-labelledby="form-title">
+      <form id="user-form" class="stack"><h2 id="form-title">Create technical user</h2>
+        <label class="field">Name <input name="name" maxlength="80" required></label>
+        <label class="field">Description <textarea name="description" maxlength="255"></textarea></label>
+        <fieldset><legend>Assignable roles</legend><label><input type="checkbox" name="roles" value="Dataspace Discovery"> Dataspace Discovery</label><br><label><input type="checkbox" name="roles" value="Identity Wallet Management"> Identity Wallet Management (wallet access)</label><br><label><input type="checkbox" name="roles" value="Semantic Model Management"> Semantic Model Management</label></fieldset>
+        <p class="tx-muted small">Wallet roles cannot be added or removed when editing. Wallet credentials are provided separately by the wallet service.</p>
+        <p id="form-error" role="alert" hidden>Select at least one role.</p>
+        <div class="actions"><button type="button" class="tx-btn tx-btn--outlined" data-close="form-dialog">Cancel</button><button class="tx-btn" type="submit">Save</button></div>
+      </form>
+    </dialog>
+    <dialog class="tx-dialog" id="confirm-dialog" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div class="actions"><button type="button" class="tx-btn tx-btn--outlined" data-close="confirm-dialog">Cancel</button><button type="button" class="tx-btn" id="confirm-action">Confirm</button></div></dialog>
+    <dialog class="tx-dialog" id="credentials-dialog" aria-labelledby="credentials-title"><h2 id="credentials-title">Credentials created</h2><div class="tx-alert tx-alert--warning">The secret is shown only once. Save it before closing this window. This mockup does not generate credentials.</div><p>Client ID: <strong id="credential-client"></strong></p><p>Secret: <span class="secret-value">Not generated in this mockup</span></p><p>Token URL: <span>Provided by the service on creation or rotation</span></p><button type="button" class="tx-btn" data-close="credentials-dialog">I have saved the credentials</button></dialog>
+  </main>
+  <script src="../shared/icons.js"></script><script src="../shared/nav.js"></script><script src="../shared/data.js"></script><script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      // Illustrative accounts follow the C2-M3 acceptance cases; identifiers are local to this mockup.
+      const items = [
+        { name:'Dataspace Discovery', iamClientId:'sa123', status:'ACTIVE', walletAccess:'NONE', origin:'OWN', viewerRole:'OWNER', disabled:false, description:'', roles:['Dataspace Discovery'] },
+        { name:'Wallet access', iamClientId:'sa124', status:'PENDING', walletAccess:'REQUESTED', origin:'OWN', viewerRole:'OWNER', disabled:false, description:'', roles:['Identity Wallet Management'] },
+        { name:'Subscription account', iamClientId:'sa125', status:'ACTIVE', walletAccess:'ACTIVE', origin:'SUBSCRIPTION', viewerRole:'CO_VIEWER', disabled:false, description:'', roles:['Dataspace Discovery', 'Identity Wallet Management'] }
+      ];
+      const filters = { status:'', origin:'', walletAccess:'' };
+      let selected = -1, editing = false, pending = '';
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const dialog = (id) => document.getElementById(id);
+      function render() {
+        const visible = items.map((item, index) => ({item,index})).filter(({item}) => Object.entries(filters).every(([key,value]) => value ? item[key] === value : key !== 'status' || ['ACTIVE','PENDING','PENDING_DELETION'].includes(item.status)));
+        mock.render('#rows', visible, ({item,index}) => `<tr><td>${esc(item.name)}</td><td>${esc(item.iamClientId)}</td><td>${esc(item.status)}${item.disabled ? ' · Disabled' : ''}</td><td>${esc(item.walletAccess)}</td><td>${esc(item.viewerRole)}</td><td><button class="tx-btn tx-btn--outlined" type="button" data-detail="${index}">Details</button></td></tr>`);
+        mock.render('#cards', visible, ({item,index}) => `<article class="tx-card"><h2 class="tx-h3">${esc(item.name)}</h2><p>${esc(item.iamClientId)} · ${esc(item.status)}${item.disabled ? ' · Disabled' : ''}</p><p>Wallet: ${esc(item.walletAccess)}<br>Visibility: ${esc(item.viewerRole)}</p><button class="tx-btn tx-btn--outlined" type="button" data-detail="${index}">Details</button></article>`);
+        document.getElementById('no-results').hidden = visible.length !== 0;
+      }
+      function details() {
+        const item = items[selected], el = document.getElementById('detail');
+        if (!item) { el.hidden = true; return; }
+        el.hidden = false;
+        el.innerHTML = `<div class="heading"><h2 class="tx-h3">${esc(item.name)}</h2><button class="tx-btn tx-btn--outlined" type="button" data-hide-detail>Close</button></div><p>${esc(item.description || 'No description')}</p><p>Client ID: ${esc(item.iamClientId)}<br>Status: ${esc(item.status)}${item.disabled ? ' · Disabled' : ''}<br>Wallet access: ${esc(item.walletAccess)}<br>Origin: ${esc(item.origin)}<br>Visibility: ${esc(item.viewerRole)}<br>Authentication: SECRET<br>Roles: ${item.roles.map(esc).join(', ')}</p><p class="tx-muted small">Details do not include a secret. The service checks whether each action is allowed.</p><div class="toolbar"><button class="tx-btn tx-btn--outlined" type="button" data-edit>Edit</button><button class="tx-btn tx-btn--outlined" type="button" data-rotate>Rotate secret</button><button class="tx-btn tx-btn--outlined" type="button" data-delete>Delete</button></div>`;
+      }
+      mock.on('change', '[data-filter]', (event, el) => { filters[el.dataset.filter] = el.value; document.querySelectorAll(`[data-filter="${el.dataset.filter}"]`).forEach((x) => { x.value = el.value; }); render(); });
+      mock.on('click', '[data-clear]', () => { Object.keys(filters).forEach((key) => { filters[key] = ''; }); document.querySelectorAll('[data-filter]').forEach((el) => { el.value = ''; }); render(); });
+      mock.on('click', '[data-detail]', (event, el) => { selected = Number(el.dataset.detail); details(); });
+      mock.on('click', '[data-hide-detail]', () => { selected = -1; details(); });
+      mock.on('click', '[data-create]', () => { editing = false; const f = document.getElementById('user-form'); f.reset(); document.getElementById('form-title').textContent = 'Create technical user'; document.getElementById('form-error').hidden = true; dialog('form-dialog').showModal(); });
+      mock.on('click', '[data-edit]', () => { editing = true; const f = document.getElementById('user-form'), item = items[selected]; f.reset(); f.elements.name.value = item.name; f.elements.description.value = item.description; f.querySelectorAll('[name="roles"]').forEach((el) => { el.checked = item.roles.includes(el.value); }); document.getElementById('form-title').textContent = 'Edit technical user'; document.getElementById('form-error').hidden = true; dialog('form-dialog').showModal(); });
+      document.getElementById('user-form').addEventListener('submit', (event) => { event.preventDefault(); const form = event.currentTarget, roles = [...form.querySelectorAll('[name="roles"]:checked')].map((el) => el.value); if (!roles.length) { document.getElementById('form-error').hidden = false; return; } dialog('form-dialog').close(); if (editing) { mock.toast('Changes submitted in mockup'); return; } const item = { name:form.elements.name.value, description:form.elements.description.value, roles, iamClientId:'sa126', origin:'OWN', viewerRole:'OWNER', disabled:false, status:roles.includes('Identity Wallet Management') ? 'PENDING' : 'ACTIVE', walletAccess:roles.includes('Identity Wallet Management') ? 'REQUESTED' : 'NONE' }; items.unshift(item); selected = 0; render(); details(); document.getElementById('credential-client').textContent = item.iamClientId; dialog('credentials-dialog').showModal(); });
+      mock.on('click', '[data-rotate], [data-delete]', (event, el) => { pending = el.hasAttribute('data-rotate') ? 'rotate' : 'delete'; document.getElementById('confirm-title').textContent = pending === 'rotate' ? 'Rotate secret?' : 'Delete technical user?'; document.getElementById('confirm-text').textContent = pending === 'rotate' ? 'The old secret will stop working. The new secret is shown once.' : 'The service checks whether the account can be deleted. Wallet access removal may continue in the background.'; dialog('confirm-dialog').showModal(); });
+      document.getElementById('confirm-action').addEventListener('click', () => { dialog('confirm-dialog').close(); if (pending === 'rotate') { document.getElementById('credential-client').textContent = items[selected].iamClientId; dialog('credentials-dialog').showModal(); } else { mock.setState('conflict'); } });
+      mock.on('click', '[data-close]', (event, el) => dialog(el.dataset.close).close());
+      mock.on('click', '[data-retry]', () => mock.setState('loaded'));
+      render();
+    })();
+  </script>
+</body>
+</html>

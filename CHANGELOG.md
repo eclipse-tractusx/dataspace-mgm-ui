@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Notifications from C11-M1: the core package `c11-m1-core` (types generated from `specs/c11-m1/openapi.yaml`, one use case per operation, `followInbox` for the live inbox over Server-Sent Events with `Last-Event-ID` reconnect), the notification bell with the unread count and the newest notifications, and the page Notifications in the left menu, laid out like a mail client (the list of the inbox and the selected notification with its content side by side), with views (all, unread, tasks, information), marking as read or unread and hiding on each line of the list, all updated live without polling, in English and German
+
+### Fixed
+
+- A feature opened from the sidebar loads its translations; it showed raw keys (for example Participant management) until the page was reloaded
 - The container image takes the Alpine security fixes published after its base image was built (Trivy: CRITICAL/HIGH in brotli, curl, expat and zlib), and `DEPENDENCIES` lists `sass` and its dependencies
 
 [Unreleased]: https://github.com/eclipse-tractusx/dataspace-mgm-ui/commits/main

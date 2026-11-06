@@ -25,12 +25,15 @@
  ********************************************************************************/
 
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
+import { useMemo } from 'react';
+import { Provider } from 'react-redux';
 import { ConfigContext } from './config/ConfigContext';
 import type { CoreModules } from './core/container';
 import { CoreModulesProvider } from './core/CoreModulesContext';
 import { FavouritesProvider } from './contexts/FavouritesContext';
 import { I18nProvider } from './i18n/I18nProvider';
 import { features } from './features/main';
+import { createAppStore } from './features/access-control/state/store';
 import type { RuntimeConfig } from './config';
 import AppRoutes from './routes';
 
@@ -39,17 +42,20 @@ import AppRoutes from './routes';
  * I18nProvider starts the translations (src/i18n).
  */
 export default function App({ config, modules }: { config: RuntimeConfig; modules: CoreModules }) {
+  const store = useMemo(() => createAppStore(modules), [modules]);
   return (
-    <I18nProvider>
-      <ConfigContext.Provider value={config}>
-        <CoreModulesProvider modules={modules}>
-          <ColorModeProvider>
-            <FavouritesProvider items={features}>
-              <AppRoutes />
-            </FavouritesProvider>
-          </ColorModeProvider>
-        </CoreModulesProvider>
-      </ConfigContext.Provider>
-    </I18nProvider>
+    <Provider store={store}>
+      <I18nProvider>
+        <ConfigContext.Provider value={config}>
+          <CoreModulesProvider modules={modules}>
+            <ColorModeProvider>
+              <FavouritesProvider items={features}>
+                <AppRoutes />
+              </FavouritesProvider>
+            </ColorModeProvider>
+          </CoreModulesProvider>
+        </ConfigContext.Provider>
+      </I18nProvider>
+    </Provider>
   );
 }

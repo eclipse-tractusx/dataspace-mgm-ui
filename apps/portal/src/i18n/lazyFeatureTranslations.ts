@@ -64,6 +64,9 @@ export function lazyFeatureTranslations<L extends string>(
   };
 
   const loadOne = (language: L): Promise<void> => {
+    if (i18n.hasResourceBundle(language, namespace)) {
+      return Promise.resolve();
+    }
     const pending = loads.get(language);
     if (pending) {
       return pending;
@@ -73,9 +76,8 @@ export function lazyFeatureTranslations<L extends string>(
         // (language, namespace, resources, deep = true, overwrite = false)
         i18n.addResourceBundle(language, namespace, bundle, true, false);
       })
-      .catch((error: unknown) => {
+      .finally(() => {
         loads.delete(language);
-        throw error;
       });
     loads.set(language, next);
     return next;
