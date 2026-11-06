@@ -37,6 +37,10 @@ export const workspaceAliases = [
   { find: '@dataspace-mgm/core-http', replacement: at('./packages/core-http/src/index.ts') },
   { find: '@dataspace-mgm/identity-core/testing', replacement: at('./packages/identity-core/src/testing.ts') },
   { find: '@dataspace-mgm/identity-core', replacement: at('./packages/identity-core/src/index.ts') },
+  { find: '@dataspace-mgm/c2-m2-core/testing', replacement: at('./packages/c2-m2-core/src/testing.ts') },
+  { find: '@dataspace-mgm/c2-m2-core', replacement: at('./packages/c2-m2-core/src/index.ts') },
+  { find: '@dataspace-mgm/c2-m3-core/testing', replacement: at('./packages/c2-m3-core/src/testing.ts') },
+  { find: '@dataspace-mgm/c2-m3-core', replacement: at('./packages/c2-m3-core/src/index.ts') },
   { find: '@dataspace-mgm/c3-m1-core/testing', replacement: at('./packages/c3-m1-core/src/testing.ts') },
   { find: '@dataspace-mgm/c3-m1-core', replacement: at('./packages/c3-m1-core/src/index.ts') },
 ];

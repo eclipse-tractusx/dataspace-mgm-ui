@@ -1,0 +1,45 @@
+{
+  "name": "c2-m3-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/c2-m3-core/src",
+  "tags": [
+    "type:core",
+    "scope:c2-m3"
+  ],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/c2-m3-core"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run",
+        "cwd": "packages/c2-m3-core"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/c2-m3-core"
+      }
+    },
+    "generate-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx --yes openapi-typescript@7.13.0 ../../specs/c2-m3/openapi.yaml -o src/generated/c2-m3-api.d.ts",
+        "cwd": "packages/c2-m3-core"
+      }
+    },
+    "check-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run c2-m3-core:generate-api && git diff --exit-code -- packages/c2-m3-core/src/generated"
+      }
+    }
+  }
+}
