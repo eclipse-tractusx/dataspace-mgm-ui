@@ -58,5 +58,41 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page {{page}} of {{pages}}"
+  },
+  "details": {
+    "show_one": "Show details ({{count}})",
+    "show_other": "Show details ({{count}})",
+    "hide": "Hide details",
+    "yes": "Yes",
+    "no": "No",
+    "fields": {
+      "applicationId": "Application",
+      "companyId": "Company",
+      "kind": "Kind",
+      "existingCompany": "Existing company",
+      "applicantSub": "Applicant",
+      "reason": "Reason",
+      "changeRequestId": "Change request",
+      "offerId": "Offer",
+      "offerType": "Offer type",
+      "offerSubscriptionId": "Subscription",
+      "customerCompanyId": "Customer company",
+      "providerCompanyId": "Provider company",
+      "instanceKind": "Instance",
+      "instanceUrl": "Instance address",
+      "appId": "App",
+      "roles": "Roles",
+      "technicalUserId": "Technical user",
+      "credentialType": "Credential",
+      "connectorId": "Connector",
+      "endpoint": "Endpoint",
+      "processId": "Process",
+      "flowKey": "Flow",
+      "stepKey": "Step",
+      "errorType": "Error",
+      "subjectType": "Subject",
+      "subjectId": "Subject ID",
+      "bpn": "Business partner number"
+    }
   }
 }

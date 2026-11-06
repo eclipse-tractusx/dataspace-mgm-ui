@@ -58,5 +58,41 @@
     "previous": "Zurück",
     "next": "Weiter",
     "page": "Seite {{page}} von {{pages}}"
+  },
+  "details": {
+    "show_one": "Details anzeigen ({{count}})",
+    "show_other": "Details anzeigen ({{count}})",
+    "hide": "Details ausblenden",
+    "yes": "Ja",
+    "no": "Nein",
+    "fields": {
+      "applicationId": "Antrag",
+      "companyId": "Unternehmen",
+      "kind": "Art",
+      "existingCompany": "Bestehendes Unternehmen",
+      "applicantSub": "Antragsteller",
+      "reason": "Grund",
+      "changeRequestId": "Änderungsantrag",
+      "offerId": "Angebot",
+      "offerType": "Angebotsart",
+      "offerSubscriptionId": "Abonnement",
+      "customerCompanyId": "Kundenunternehmen",
+      "providerCompanyId": "Anbieterunternehmen",
+      "instanceKind": "Instanz",
+      "instanceUrl": "Adresse der Instanz",
+      "appId": "App",
+      "roles": "Rollen",
+      "technicalUserId": "Technischer Benutzer",
+      "credentialType": "Nachweis",
+      "connectorId": "Connector",
+      "endpoint": "Endpunkt",
+      "processId": "Prozess",
+      "flowKey": "Ablauf",
+      "stepKey": "Schritt",
+      "errorType": "Fehler",
+      "subjectType": "Gegenstand",
+      "subjectId": "ID des Gegenstands",
+      "bpn": "Business Partner Number"
+    }
   }
 }

@@ -33,6 +33,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { TestCoreModules, testCoreModules } from '../../core/testing';
 import { features } from '../main';
 import { notificationsTranslations } from './i18n';
+import { readableField } from './components/NotificationDetails';
 import NotificationsPage from './pages/NotificationsPage';
 
 beforeAll(() => notificationsTranslations.load());
@@ -124,6 +125,23 @@ describe('Notifications page (C11-M1)', () => {
     expect(
       within(await screen.findByRole('listitem', { name: 'New subscription request' })).getByText('New'),
     ).toBeInTheDocument();
+  });
+
+  it('folds the content into labelled details, with the IDs in full', async () => {
+    show({ session: PIA_SESSION, notifications: [SUBSCRIPTION_REQUESTED_TASK] });
+    const item = await screen.findByRole('listitem', { name: 'New subscription request' });
+    expect(within(item).queryByText('Customer company')).toBeNull();
+    fireEvent.click(within(item).getByRole('button', { name: 'Show details (4)' }));
+    expect(within(item).getByText('Customer company')).toBeInTheDocument();
+    expect(within(item).getByText('Subscription')).toBeInTheDocument();
+    expect(within(item).getByText('c0000001-0000-4000-8000-000000000001')).toBeInTheDocument();
+    fireEvent.click(within(item).getByRole('button', { name: 'Hide details' }));
+    expect(within(item).getByRole('button', { name: 'Show details (4)' })).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('labels a field without a translation readably', () => {
+    expect(readableField('offerSubscriptionId')).toBe('Offer subscription');
+    expect(readableField('instanceKind')).toBe('Instance kind');
   });
 
   it('asks to sign in without a session', async () => {

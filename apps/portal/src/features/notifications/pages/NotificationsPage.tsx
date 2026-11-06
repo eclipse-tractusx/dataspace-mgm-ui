@@ -44,6 +44,7 @@ import {
 } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { useCoreModules } from '../../../core/CoreModulesContext';
+import { NotificationDetails } from '../components/NotificationDetails';
 import {
   PAGE_SIZE,
   useNotificationList,
@@ -91,7 +92,6 @@ function NotificationRow({
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(new Date(notification.createdAt));
-  const details = Object.entries(notification.content).map(([name, value]) => `${name}: ${String(value)}`);
   return (
     <Box
       component="li"
@@ -144,20 +144,7 @@ function NotificationRow({
               {notification.forStaff && <Chip size="small" variant="outlined" label={t('forStaff')} />}
               {isNew && <Chip size="small" color="primary" label={t('new')} />}
             </Stack>
-            {details.length > 0 && (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                component="div"
-                sx={{
-                  fontFamily: 'monospace',
-                  mt: 0.5,
-                  wordBreak: 'break-all',
-                }}
-              >
-                {details.join(' · ')}
-              </Typography>
-            )}
+            <NotificationDetails content={notification.content} />
           </Box>
         </Stack>
         <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
