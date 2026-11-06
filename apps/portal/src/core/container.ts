@@ -25,6 +25,7 @@
  ********************************************************************************/
 
 import type { C1M2Module } from '@dataspace-mgm/c1-m2-core';
+import { createC11M1Module, C11M1_BASE_PATH, type C11M1Module } from '@dataspace-mgm/c11-m1-core';
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
 import { CsrfTokenStore, type CoreModuleConfig } from '@dataspace-mgm/core-http';
 import { createIdentityModule, type IdentityModule } from '@dataspace-mgm/identity-core';
@@ -39,6 +40,7 @@ export interface CoreModules {
    * there (undefined outside mock mode); it becomes required here with createC1M2Module (skill build-feature).
    */
   c1m2?: C1M2Module;
+  c11m1: C11M1Module;
 }
 
 /**
@@ -58,5 +60,6 @@ export function createCoreModules(config: RuntimeConfig): CoreModules {
   return {
     identity,
     c3m1: createC3M1Module(moduleConfig(C3M1_BASE_PATH)),
+    c11m1: createC11M1Module(moduleConfig(C11M1_BASE_PATH)),
   };
 }
