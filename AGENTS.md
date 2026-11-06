@@ -69,7 +69,8 @@ Import aliases are `@dataspace-mgm/<name>` and are kept in sync in `tsconfig.bas
    core package. No `fetch`, `openapi-fetch` or `@dataspace-mgm/core-http` in components, state or `domain`.
 5. **No tokens, no Keycloak in the browser.** Sign-in and session are handled by the backend (BFF); the browser only
    has a session cookie. The frontend gets permission keys from `GET /me` and uses them only to hide UI; the API
-   enforces them. Branding and feature flags come from `GET /config`.
+   enforces them. The target BFF contract provides branding and feature flags through `GET /config`, which the
+   current dev BFF does not implement. Deployment runtime configuration is loaded separately from `/config.json`.
 6. **Redux Toolkit is the only state mechanism.** RTK Query endpoints use `queryFn` calling core use cases
    (`toQueryResult(() => getUseCases(api).<module>.<useCase>.execute(...))`); no `fetchBaseQuery`, no handwritten
    URLs. Slices hold client state only (filters, wizard progress, dialogs), never server data. No React context for
