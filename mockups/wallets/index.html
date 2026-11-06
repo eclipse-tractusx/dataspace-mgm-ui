@@ -110,7 +110,6 @@
           <div>
             <h3 class="hub-h">Open questions</h3>
             <ul class="hub-open">
-              <li data-open>The QR code of the DID on the pass: useful (a partner scans the DID), or only decoration? A real code needs a QR library in <code>libs/shared/ui-mui</code> (a new dependency with a Dash review).</li>
               <li data-open>Card style: one style for every company, or a style per OSP from the branding of <code>GET /config</code>?</li>
               <li data-open>C4-M2: <code>Wallet</code> returns no <code>bpn</code>, although the table has it. Add it, so the page needs no second call to C3-M1 for the header?</li>
               <li data-open>C2-M5: <code>view_dataspace_wallet</code> is a proposal for <code>IT Admin</code> and <code>Company Admin</code> (6.8). Should a <code>Member</code> see the DID and the addresses (they are public anyway)?</li>
@@ -119,7 +118,7 @@
           </div>
         </div>
         <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
-        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=stack · skin=carbon · values=full · nav=tabs. Change asked: the credentials stand on the right as their own stack of passes (the wallet pass, the connector set-up and the wallet accounts on the left), and every credential pass has a slot for the logo of its dataspace (Catena-X next to, for example, a semiconductor dataspace; state two-dataspaces).</p>
+        <p class="hub-decision" data-decision>Decided 2026-11-06: layout=stack · skin=carbon · values=full · nav=tabs. Change asked: the credentials stand on the right as their own stack of passes (the wallet pass, the connector set-up and the wallet accounts on the left), and every credential pass has a slot for the logo of its dataspace (Catena-X next to, for example, a semiconductor dataspace; state two-dataspaces). The wallet pass keeps the QR code of the DID (decided 2026-11-06; drawn with qrcode.react behind QrCode in libs/shared/ui-mui).</p>
       </section>
 
       <section class="hub-view" id="view-credentials" data-view="credentials" data-status="decided">
