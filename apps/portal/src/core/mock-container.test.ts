@@ -42,6 +42,13 @@ describe('mock mode', () => {
     expect(result).toMatchObject({ status: 'found', company: { name: 'OSP A Beispiel GmbH', bpn: 'BPNL00000000OSPA' } });
   });
 
+  it('serves participant management from the fixtures of the mockup (Otto)', async () => {
+    const otto = createMockCoreModules('otto');
+    expect(otto.c3m1).toBeDefined();
+    expect(await otto.c3m1.listCompanies.execute({ page: 0, size: 20 })).toMatchObject({ status: 'success', data: { total: 5 } });
+    expect(await otto.c3m2.getCspRegistration.execute('c0000001-0000-4000-8000-000000000001')).toMatchObject({ status: 'found' });
+  });
+
   it('signs in the test persons of Wallets as a service with the permissions of C4-M1', async () => {
     const signIn = async (person: string) => (await createMockCoreModules(person).identity.getCurrentSession.execute())!;
     expect(await signIn('wallets-erika')).toMatchObject({ user: { name: 'Erika Mustermann' }, bpn: 'BPNLIUK2REMLK3F4', permissions: ['view_credentials'] });

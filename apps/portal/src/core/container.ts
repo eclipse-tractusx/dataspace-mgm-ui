@@ -26,6 +26,7 @@
 
 import type { C1M2Module } from '@dataspace-mgm/c1-m2-core';
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
+import { createC3M2Module, C3M2_BASE_PATH, type C3M2Module } from '@dataspace-mgm/c3-m2-core';
 import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-mgm/c2-m3-core';
 import { createC2M2Module, C2_M2_BASE_PATH, type C2M2Module } from '@dataspace-mgm/c2-m2-core';
 import { createC11M1Module, C11M1_BASE_PATH, type C11M1Module } from '@dataspace-mgm/c11-m1-core';
@@ -40,6 +41,7 @@ import { ConfigurableRedirect, createSpecSessionRepository, isSpecLoginResponseE
 export interface CoreModules {
   identity: IdentityModule;
   c3m1: C3M1Module;
+  c3m2: C3M2Module;
   /**
    * Proof of concept (feature `wallets`, stage 'poc'): C4-M1 Credentials, wired only in mock-container.ts on its
    * in-memory adapters. Pages treat a missing module as "not connected". Required here once its HTTP adapter exists.
@@ -73,6 +75,7 @@ export function createCoreModules(config: RuntimeConfig): CoreModules {
   return {
     identity,
     c3m1: createC3M1Module(moduleConfig(C3M1_BASE_PATH)),
+    c3m2: createC3M2Module(moduleConfig(C3M2_BASE_PATH)),
     c2m2: createC2M2Module(moduleConfig(C2_M2_BASE_PATH)),
     c2m3: createC2M3Module(moduleConfig(C2_M3_BASE_PATH)),
     c11m1: createC11M1Module(moduleConfig(C11M1_BASE_PATH)),

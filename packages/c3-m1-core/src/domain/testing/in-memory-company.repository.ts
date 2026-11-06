@@ -26,15 +26,19 @@
 
 import type { CompanyAnemic } from '../anemics/company.anemic';
 import type { CompanyRepository } from '../repositories/company.repository';
+import { c3m1Problem } from './in-memory-c3-m1.store';
 
 /** In-memory adapter of the port, for tests of use cases and pages without HTTP. */
 export class InMemoryCompanyRepository implements CompanyRepository {
   public readonly calls: string[] = [];
+  private companies: CompanyAnemic[];
 
   constructor(
-    private readonly companies: ReadonlyArray<CompanyAnemic> = [],
+    companies: ReadonlyArray<CompanyAnemic> = [],
     private readonly failure: Error | null = null,
-  ) {}
+  ) {
+    this.companies = [...companies];
+  }
 
   public async getCompany(companyId: string): Promise<CompanyAnemic | null> {
     this.calls.push(companyId);
@@ -42,6 +46,20 @@ export class InMemoryCompanyRepository implements CompanyRepository {
       throw this.failure;
     }
     return this.companies.find((company) => company.id === companyId) ?? null;
+  }
+
+  public async updateShortName(companyId: string, shortName: string | null): Promise<CompanyAnemic> {
+    this.calls.push(`updateShortName ${companyId}`);
+    if (this.failure) {
+      throw this.failure;
+    }
+    const company = this.companies.find((item) => item.id === companyId);
+    if (!company) {
+      throw c3m1Problem(404, 'not-found');
+    }
+    const next = { ...company, shortName };
+    this.companies = this.companies.map((item) => (item.id === companyId ? next : item));
+    return next;
   }
 }
 
@@ -53,9 +71,12 @@ export const OSP_A_COMPANY: CompanyAnemic = {
   bpn: 'BPNL00000000OSPA',
   status: 'ACTIVE',
   coreDataSource: 'MANUAL',
+  coreDataVerifiedAt: null,
   dataspaceName: 'Catena-X',
   address: { street: 'Am Prüfstand 1', city: '70569 Stuttgart', countryCode: 'DE' },
-  identifiers: [{ type: 'VAT_ID', value: 'DE222222222', verified: false }],
+  postalAddress: { street: 'Am Prüfstand', houseNumber: '1', addressAddition: null, postalCode: '70569', city: 'Stuttgart', region: null, countryCode: 'DE' },
+  identifiers: [{ type: 'VAT_ID', value: 'DE222222222', source: 'DECLARED', verified: false }],
   companyRoles: ['ONBOARDING_SERVICE_PROVIDER', 'ACTIVE_PARTICIPANT', 'APP_PROVIDER', 'SERVICE_PROVIDER'],
   createdAt: '2026-11-06T00:00:00+00:00',
+  activatedAt: null,
 };

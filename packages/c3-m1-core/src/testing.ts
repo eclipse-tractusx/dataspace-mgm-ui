@@ -26,3 +26,11 @@
 
 /** Entry point @dataspace-mgm/c3-m1-core/testing: in-memory adapters and test data for tests of pages and use cases. */
 export { InMemoryCompanyRepository, OSP_A_COMPANY } from './domain/testing/in-memory-company.repository';
+export { InMemoryC3M1Store, c3m1Problem, type InMemoryC3M1StoreOptions } from './domain/testing/in-memory-c3-m1.store';
+export { InMemoryOwnCompanyRepository } from './domain/testing/in-memory-own-company.repository';
+export { InMemoryOwnChangeRequestRepository } from './domain/testing/in-memory-own-change-request.repository';
+export { InMemoryCompanyRoleRepository } from './domain/testing/in-memory-company-role.repository';
+export { InMemoryOspCompanyRepository } from './domain/testing/in-memory-osp-company.repository';
+export { InMemoryChangeRequestReviewRepository } from './domain/testing/in-memory-change-request-review.repository';
+export { createInMemoryC3M1Module } from './domain/testing/in-memory-c3-m1.module';
+export * from './domain/testing/participants.fixtures';

@@ -25,6 +25,19 @@
  ********************************************************************************/
 
 import type { ReactNode } from 'react';
+import { c3m1ModuleFrom, type CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
+import {
+  InMemoryC3M1Store,
+  InMemoryChangeRequestReviewRepository,
+  InMemoryCompanyRepository,
+  InMemoryCompanyRoleRepository,
+  InMemoryOspCompanyRepository,
+  InMemoryOwnChangeRequestRepository,
+  InMemoryOwnCompanyRepository,
+  type InMemoryC3M1StoreOptions,
+} from '@dataspace-mgm/c3-m1-core/testing';
+import { GetCspRegistrationUseCase, type CspRegistrationAnemic } from '@dataspace-mgm/c3-m2-core';
+import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
 import { createC1M2UseCases } from '@dataspace-mgm/c1-m2-core';
 import { createMockC1M2Ports, type MockC1M2Options } from '@dataspace-mgm/c1-m2-core/testing';
 import { GetOwnCompanyUseCase, type CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
@@ -65,8 +78,13 @@ import type { CoreModules } from './container';
 
 interface TestModulesOptions {
   session?: SessionAnemic | null;
+  /** The own company from a list (as before); without it, the own company comes from the participants store. */
   companies?: ReadonlyArray<CompanyAnemic>;
   companyFailure?: Error;
+  /** Data and injected answers of the in-memory C3-M1 (participant management); the actor is the session's person. */
+  participants?: Omit<InMemoryC3M1StoreOptions, 'actorId'>;
+  cspRegistrations?: ReadonlyArray<CspRegistrationAnemic>;
+  cspFailure?: Error;
   /** C1-M2 Registration (proof of concept) on its in-memory adapters; absent = `modules.c1m2` is undefined. */
   c1m2?: Pick<MockC1M2Options, 'applications' | 'existingCompanies' | 'agreements' | 'failure' | 'now'>;
 }
@@ -143,6 +161,13 @@ function c4m1Module(option: TestModulesOptions['c4m1']): C4M1Module | undefined 
 /** The core packages with in-memory adapters: pages are tested against the use cases, without HTTP. */
 export function testCoreModules({
   session = null,
+  companies,
+  companyFailure,
+  participants = {},
+  cspRegistrations = CSP_REGISTRATIONS,
+  cspFailure,
+  c1m2,
+  c4m1,
   companies = [],
   companyFailure,
   c1m2,
@@ -151,13 +176,22 @@ export function testCoreModules({
   notificationFailure,
 }: TestModulesOptions = {}) {
   const redirect = new RecordingRedirect();
-  const companyRepository = new InMemoryCompanyRepository(companies, companyFailure ?? null);
+  const companyRepository = new InMemoryCompanyRepository(companies ?? [], companyFailure ?? null);
+  const store = new InMemoryC3M1Store({ ...participants, actorId: session?.user.id });
+  const cspRepository = new InMemoryCspRegistrationRepository(cspRegistrations, cspFailure ?? null);
   const c1m2Ports = c1m2 ? createMockC1M2Ports(session, { ...c1m2, applications: c1m2.applications ?? [] }) : undefined;
   const notificationRepository = new InMemoryNotificationRepository(notifications, notificationFailure ?? null);
   const inboxEvents = new InMemoryInboxEventSource();
   const modules: CoreModules = {
     identity: createIdentityModule({ bffBaseUrl: '', sessions: new InMemorySessionRepository(session), redirect }),
-    c3m1: { getOwnCompany: new GetOwnCompanyUseCase(companyRepository) },
+    c3m1: c3m1ModuleFrom({
+      companies: companies || companyFailure ? companyRepository : new InMemoryOwnCompanyRepository(store),
+      ownChangeRequests: new InMemoryOwnChangeRequestRepository(store),
+      companyRoles: new InMemoryCompanyRoleRepository(store),
+      ospCompanies: new InMemoryOspCompanyRepository(store),
+      reviews: new InMemoryChangeRequestReviewRepository(store),
+    }),
+    c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
     c4m1: c4m1Module(c4m1),
     c1m2: c1m2Ports ? createC1M2UseCases(c1m2Ports) : undefined,
     c11m1: createC11M1ModuleFrom(notificationRepository, inboxEvents),
@@ -170,6 +204,7 @@ export function testCoreModules({
     notificationRepository,
     inboxEvents,
   };
+  return { modules, redirect, companyRepository, store, cspRepository, applicationRepository: c1m2Ports?.applications };
 }
 
 export function TestCoreModules({ modules, children }: { modules?: CoreModules; children: ReactNode }) {

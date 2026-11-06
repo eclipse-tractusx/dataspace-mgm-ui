@@ -9,25 +9,92 @@
   "failed": "Your company could not be loaded: {{message}}",
   "failedWithStatus": "Your company could not be loaded (HTTP {{status}}): {{message}}",
   "participantOf": "Participant of {{dataspace}}",
+  "bpnNotAssigned": "Not assigned yet",
+  "verified": "From the Business Wallet",
+  "identifier": "{{type}}: {{value}}",
+  "identifiersNone": "No identifiers",
+  "copy": "Copy",
+  "copied": "Copied",
+  "copyValue": "Copy {{value}}",
+  "opensInNewTab": "opens in a new tab",
+  "session": {
+    "loading": "Checking your session…",
+    "signInPrompt": "Sign in to open participant management.",
+    "failed": "Your session could not be read: {{message}}"
+  },
+  "nav": {
+    "label": "Areas of participant management",
+    "company": "Your company",
+    "companies": "Companies",
+    "review": "Change requests to review"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "view": "View"
+  },
   "fields": {
+    "name": "Legal name",
+    "shortName": "Short name",
     "bpn": "Business partner number",
     "address": "Address",
+    "street": "Street",
+    "houseNumber": "House number",
+    "addressAddition": "Address addition",
+    "postalCode": "Postal code",
+    "city": "City",
+    "region": "Region",
+    "country": "Country",
     "coreData": "Core data",
     "identifiers": "Identifiers",
-    "roles": "Company roles"
+    "roles": "Company roles",
+    "status": "Status",
+    "memberSince": "Member since"
   },
-  "bpnNotAssigned": "Not assigned yet",
   "coreDataSource": {
     "EBW": "From the Business Wallet",
     "MANUAL": "Checked by the onboarding service provider"
   },
-  "verified": "From the Business Wallet",
-  "identifier": "{{type}}: {{value}}",
+  "identifierSource": {
+    "BUSINESS_WALLET": "Business Wallet",
+    "DECLARED": "Declared"
+  },
   "status": {
     "ACTIVE": "Active",
     "REQUESTED": "Requested",
     "REJECTED": "Rejected",
     "INACTIVE": "Inactive"
+  },
+  "changeRequestStatus": {
+    "OPEN": "Open",
+    "APPROVED": "Approved",
+    "DECLINED": "Declined",
+    "WITHDRAWN": "Withdrawn"
+  },
+  "roleStatus": {
+    "ACTIVE": "Active",
+    "REQUESTED": "Requested",
+    "INACTIVE": "Removed",
+    "NONE": "Not assigned"
+  },
+  "cspStatus": {
+    "PENDING": "Registration running",
+    "REGISTERED": "Registered",
+    "FAILED": "Registration failed",
+    "TRANSFERRED_AWAY": "Moved to another OSP"
+  },
+  "membership": {
+    "NONE": "Not a member",
+    "REGISTERED": "Member",
+    "DEREGISTERED": "Membership ended"
+  },
+  "deactivationReason": {
+    "MANUAL": "Deactivated by the onboarding service provider",
+    "TRANSFERRED": "Moved to another OSP"
+  },
+  "failureReason": {
+    "REGISTERED_AT_OTHER_OSP": "The company is already registered with another onboarding service provider.",
+    "UNKNOWN": "The CSP gave no reason."
   },
   "identifierTypes": {
     "EUID": "EUID",
@@ -42,5 +109,372 @@
     "APP_PROVIDER": "App provider",
     "SERVICE_PROVIDER": "Service provider",
     "ONBOARDING_SERVICE_PROVIDER": "Onboarding service provider"
+  },
+  "compare": {
+    "field": "Field",
+    "now": "Now",
+    "requested": "Requested",
+    "none": "none",
+    "removed": "removed",
+    "new": "new",
+    "unchanged": "unchanged",
+    "noChange": "No change"
+  },
+  "pager": {
+    "rows": "{{from}}–{{to}} of {{count}}",
+    "first": "First page",
+    "last": "Last page",
+    "next": "Next page",
+    "previous": "Previous page"
+  },
+  "errors": {
+    "forbidden": "You do not have the permission for this (HTTP 403).",
+    "notFound": "This was not found (HTTP 404).",
+    "network": "The portal could not be reached. Check your connection and try again.",
+    "unauthorized": "Your session has ended (HTTP 401). Sign in again.",
+    "notImplemented": "This function is not available yet: the backend module answers “not implemented” (HTTP 501).",
+    "upstream": "A service behind the portal did not answer (HTTP 502). Try again later.",
+    "unavailable": "The service is not available right now (HTTP {{status}}). Try again later.",
+    "failed": "The request failed (HTTP {{status}}).",
+    "rejected": "The request was refused (HTTP {{status}})."
+  },
+  "problems": {
+    "validation": "A value is not valid. Check your input.",
+    "attestation-invalid": "The confirmation of your Business Wallet is not valid.",
+    "document-invalid": "A supporting document is missing, too large, of the wrong type, or there are too many. Use PDF, PNG or JPEG files.",
+    "consent-missing": "Accept all terms of the role to add it.",
+    "invalid-state": "This is not possible in the current state.",
+    "conflict": "This conflicts with the current data.",
+    "field-locked": "A field cannot be changed, e.g. the country after the BPN was assigned.",
+    "role-not-assignable": "This role cannot be added or removed here.",
+    "last-role": "This role cannot be removed: your company needs at least one active role.",
+    "company-mismatch": "This Business Wallet belongs to another company. Nothing was changed.",
+    "attestation-used": "This confirmation was already used. Verify again to get a new one.",
+    "attestation-outdated": "This confirmation is older than the current data. Verify again.",
+    "representation-not-confirmed": "The confirmation does not show that the person may represent the company.",
+    "attestation-required": "Legal name and address come from the Business Wallet and change only with it, not with a change request.",
+    "change-request-open": "There is an open change request already. Wait for the decision or withdraw it.",
+    "change-requests-disabled": "Change requests with supporting documents are switched off at this onboarding service provider.",
+    "same-person": "You submitted this change request yourself. Another person of the onboarding service provider must decide it (four-eyes principle).",
+    "upstream-error": "A service behind the portal did not answer (HTTP 502). Try again later."
+  },
+  "validation": {
+    "required": "Required.",
+    "tooLong": "At most {{max}} characters.",
+    "tooMany": "At most {{max}} files.",
+    "tooFew": "Add at least one supporting document.",
+    "fileTooLarge": "{{fileName}} is larger than {{maxMb}} MB.",
+    "fileType": "{{fileName}} is not a PDF, PNG or JPEG file.",
+    "duplicate": "Each type only once.",
+    "nothingChanged": "Change at least one value."
+  },
+  "profile": {
+    "forbidden": "You do not have the permission to see your company (HTTP 403).",
+    "failed": "Your company could not be loaded. {{reason}}",
+    "changeData": "Change company data",
+    "inactive": "Your company is deactivated. Its data cannot be changed. A person with a mandate can apply for reactivation in onboarding.",
+    "openRequest": "A change request is open since {{date}}: {{summary}}. The onboarding service provider is checking it.",
+    "noShortName": "No short name",
+    "editShortName": "Change the short name",
+    "shortNameHelp": "Up to 100 characters. Leave it empty to remove the short name.",
+    "verifiedAt": "Verified {{date}}",
+    "manageRoles": "Manage company roles →",
+    "seeRoles": "See company roles and terms →",
+    "allChangeRequests": "Your change requests →"
+  },
+  "change": {
+    "title": "Change company data",
+    "forbidden": "Only the Company Admin changes the data of the company (HTTP 403).",
+    "notEditable": "The data of your company cannot be changed in its current state.",
+    "wallet": {
+      "tag": "Taken over at once",
+      "title": "Verify with your Business Wallet",
+      "text": "A person who may represent the company confirms with the EUDI Wallet. The current data of your Business Wallet is taken over.",
+      "changes": "Changes: legal name, address, EUID. Country and EBWOID must stay the same.",
+      "unavailableTitle": "Not available yet",
+      "unavailable": "The confirmation with the EUDI Wallet runs through the EBW-Connector of your onboarding service provider. That flow of the portal backend is not specified yet, so the portal cannot start it. Use a change request in the meantime."
+    },
+    "request": {
+      "tag": "Checked by your onboarding service provider",
+      "title": "Request a change with documents",
+      "text": "Send the new values with supporting documents. Your onboarding service provider checks them and decides.",
+      "changes": "Changes: VAT ID, commercial register number, LEI code, EORI; legal name and address only without a Business Wallet."
+    },
+    "coreDataTitle": "Legal name and address",
+    "coreDataLocked": "They come from your Business Wallet and change only with it.",
+    "identifiersHelp": "The complete list after the change. Identifiers from your Business Wallet stay as they are.",
+    "identifierType": "Type",
+    "identifierValue": "Value",
+    "addIdentifier": "Add an identifier",
+    "removeIdentifier": "Remove {{type}}",
+    "whyTitle": "Why the change",
+    "comment": "Comment for your onboarding service provider",
+    "documentsTitle": "Supporting documents",
+    "documentsExample": "For example an extract from the commercial register or the LEI certificate.",
+    "dropFiles": "Drop files here or choose files",
+    "chooseFiles": "Choose files",
+    "chosenFiles": "Chosen files",
+    "documentsHelp": "PDF, PNG or JPEG, up to {{maxMb}} MB each, at most {{max}} files.",
+    "removeFile": "Remove {{fileName}}",
+    "reviewTitle": "Your change request",
+    "nothingYet": "Nothing changed yet.",
+    "reviewMeta_one": "{{count}} supporting document",
+    "reviewMeta_other": "{{count}} supporting documents",
+    "send": "Send the change request",
+    "submittedTitle": "Change request sent",
+    "submittedText": "Your onboarding service provider checks your change request. You see the decision in your change requests.",
+    "toRequests": "Your change requests",
+    "backToCompany": "Back to your company"
+  },
+  "requests": {
+    "title": "Your change requests",
+    "subtitle": "Changes of your company data with supporting documents. Your onboarding service provider decides on them.",
+    "forbidden": "You do not have the permission to see the change requests of your company (HTTP 403).",
+    "loading": "Loading your change requests…",
+    "new": "New change request",
+    "documents_one": "{{count}} document",
+    "documents_other": "{{count}} documents",
+    "details": "Details",
+    "hideDetails": "Hide details",
+    "withdraw": "Withdraw",
+    "declinedOn": "Declined on {{date}}: {{reason}}",
+    "approvedOn": "Approved on {{date}}. Your company data was changed.",
+    "withdrawnOn": "Withdrawn on {{date}}.",
+    "checking": "Your onboarding service provider is checking your change request.",
+    "whatChanges": "What changes",
+    "comment": "Comment",
+    "documentsNote": "Only your onboarding service provider opens the documents.",
+    "emptyTitle": "No change requests yet",
+    "emptyText": "To change identifiers such as the VAT ID or the LEI code, send a change request with supporting documents.",
+    "withdrawTitle": "Withdraw the change request?",
+    "withdrawText": "Your onboarding service provider will not decide on “{{summary}}”. You can send a new change request afterwards.",
+    "withdrawn": "Change request withdrawn"
+  },
+  "roleCards": {
+    "title": "Company roles",
+    "subtitle": "The roles of {{company}} in {{dataspace}}. A role is active once your company has accepted its terms.",
+    "loading": "Loading the company roles…",
+    "terms": "Terms",
+    "accepted": "Version {{version}} accepted on {{date}}",
+    "notAccepted": "Version {{version}} · not accepted yet",
+    "noTerms": "No terms",
+    "add": "Add the role",
+    "remove": "Remove",
+    "addTitle": "Add {{role}}",
+    "acceptFor": "To add the role {{role}}, accept its terms for {{company}}:",
+    "acceptPrefix": "I accept the",
+    "version": "version {{version}}",
+    "removeTitle": "Remove the role?",
+    "removeText": "{{company}} loses the role {{role}}. The consents to its terms are withdrawn, unless another active role needs them.",
+    "added": "{{role}} added",
+    "removed": "{{role}} removed"
+  },
+  "companies": {
+    "overline": "Participant management · Onboarding service provider",
+    "title": "Companies",
+    "subtitle": "Every company of your onboarding service provider, from the application to the deactivation.",
+    "forbidden": "Only staff of the onboarding service provider see all companies (HTTP 403).",
+    "loading": "Loading the companies…",
+    "filters": "Filters",
+    "search": "Search by name or BPN",
+    "searchPlaceholder": "Name or BPN",
+    "allRoles": "All company roles",
+    "anySource": "Any source of core data",
+    "source": {
+      "EBW": "Business Wallet",
+      "MANUAL": "Documents"
+    },
+    "anyBpn": "With and without BPN",
+    "withBpn": "With BPN",
+    "withoutBpn": "Without BPN",
+    "reset": "Reset filters",
+    "count_one": "{{count}} company",
+    "count_other": "{{count}} companies",
+    "columns": {
+      "company": "Company",
+      "roles": "Active company roles",
+      "created": "Created"
+    },
+    "noActiveRoles": "None active",
+    "open": "Open {{name}}",
+    "emptyTitle": "No company matches the filters",
+    "emptyText": "Change or reset the filters."
+  },
+  "detail": {
+    "overline": "Participant management · Company",
+    "title": "Company",
+    "loading": "Loading the company…",
+    "notFound": "There is no company with this ID at your onboarding service provider.",
+    "allCompanies": "All companies",
+    "noBpn": "No BPN yet",
+    "correct": "Correct data",
+    "deactivate": "Deactivate",
+    "inactive": "Deactivated {{date}} · {{reason}}. The data cannot be corrected while the company is deactivated.",
+    "openRequest": "This company has an open change request.",
+    "review": "Review",
+    "coreData": "Core data",
+    "verification": "Verification {{id}}",
+    "companyId": "Company ID",
+    "application": "Application",
+    "seedData": "Seed data",
+    "created": "Created",
+    "bpnAssigned": "BPN assigned",
+    "activated": "Activated",
+    "changed": "Last change",
+    "deactivated": "Deactivated",
+    "reactivated": "Reactivated",
+    "rejected": "Rejected",
+    "record": "Record",
+    "since": "Active since {{date}}",
+    "correctTitle": "Correct the company data",
+    "correctSubtitle": "The correction is stored with your reason in the audit log.",
+    "correctWalletWarning": "The core data of this company comes from its Business Wallet. If you change the legal name or the address, the source becomes “Checked by the onboarding service provider” and the link to the verification is removed.",
+    "countryLocked": "Locked: the CSP knows the company with this country since the BPN was assigned.",
+    "declaredIdentifiers": "Declared identifiers (the complete new list)",
+    "reason": "Reason",
+    "correctReasonPlaceholder": "For example: hint from the application review, register extract of 05 Nov 2026",
+    "correctReasonHelp": "Required, up to 500 characters. Stored in the audit log.",
+    "saveCorrection": "Save correction",
+    "corrected": "Correction saved",
+    "correctedManual": "Correction saved. The core data is now checked by the onboarding service provider.",
+    "deactivateTitle": "Deactivate the company?",
+    "deactivateIntro": "{{name}} stays in the dataspace records, but for as long as it is deactivated:",
+    "consequences": {
+      "accounts": "its people keep their accounts but lose the company, its portal roles and app roles;",
+      "technicalUsers": "its technical users are deactivated, not deleted;",
+      "credential": "its membership credential is revoked; the BPN credential stays;",
+      "membership": "its membership in the dataspace is deregistered at the CSP;",
+      "data": "its data can no longer be changed. Its dataspace wallet remains."
+    },
+    "reactivationHint": "A person with a mandate can apply for reactivation.",
+    "deactivateReasonHelp": "Required, up to 500 characters. Only in the audit log; the company does not see it.",
+    "deactivateConfirm": "Deactivate company",
+    "deactivatedNotice": "Company deactivated"
+  },
+  "csp": {
+    "overline": "Participant management · Core service provider",
+    "title": "CSP registration",
+    "subtitle": "How the core service provider of {{dataspace}} knows {{name}}",
+    "theDataspace": "the dataspace",
+    "loading": "Loading the registration at the CSP…",
+    "forbidden": "Only the OSP Admin sees the registration at the CSP (HTTP 403).",
+    "cardTitle": "At the CSP",
+    "cardSubtitle": "The core service provider knows the company by its BPN, with your onboarding service provider as home OSP.",
+    "registration": "Registration",
+    "did": "DID",
+    "membership": "Membership",
+    "registeredAt": "Registered",
+    "updatedAt": "Last update",
+    "notRegistered": "Not registered",
+    "notRegisteredShort": "Not registered at the CSP yet.",
+    "notRegisteredTitle": "Not registered at the CSP yet",
+    "notRegisteredText": "{{name}} has no registration at the core service provider. The registration starts after the application is approved.",
+    "details": "Details of the registration →",
+    "openCompany": "Open company",
+    "note": "The status is read from the CSP connection of your onboarding service provider. The steps run on their own after the approval of the application; there is nothing to start here.",
+    "banner": {
+      "REGISTERED": {
+        "title": "{{dataspace}} knows {{name}} by {{bpn}}",
+        "text": "Your onboarding service provider is its home OSP. Only it may change the company at the CSP."
+      },
+      "PENDING": {
+        "title": "The CSP is processing the registration",
+        "text": "The BPN arrives when the CSP confirms the registration. The company stays Requested until then."
+      },
+      "FAILED": {
+        "title": "The CSP rejected the registration",
+        "text": "{{reason}} The company stays Requested without a BPN."
+      },
+      "TRANSFERRED_AWAY": {
+        "title": "The company moved to another OSP",
+        "text": "The CSP reported the transfer {{date}}. The BPN stays the same; your onboarding service provider no longer manages the company."
+      }
+    },
+    "stepState": {
+      "done": "done",
+      "waiting": "waiting",
+      "failed": "failed",
+      "none": "not started"
+    },
+    "steps": {
+      "register": {
+        "title": "Registered at the CSP",
+        "help": "The CSP assigns or confirms the business partner number (BPN) and enters the home OSP of the company."
+      },
+      "did": {
+        "title": "DID in the BPN → DID directory",
+        "help": "Partners find the dataspace wallet of the company from its BPN."
+      },
+      "membership": {
+        "title": "Member of {{dataspace}}",
+        "help": "Only members are named in the discovery of the CSP; their connectors can be found.",
+        "NONE": "Not registered at the CSP",
+        "REGISTERED": "Registered at the CSP",
+        "DEREGISTERED": "Deregistered at the CSP"
+      },
+      "registeredAt": "Registered {{date}}",
+      "waitingSince": "Waiting for the CSP since {{date}}",
+      "didEntered": "Entered at the CSP",
+      "didAfterWallet": "Entered after the dataspace wallet exists",
+      "needsRegistration": "Needs the registration first",
+      "newHome": "Now managed by the new home OSP"
+    }
+  },
+  "queue": {
+    "title": "Change requests to review",
+    "subtitle": "Companies ask to change their data with supporting documents. The oldest request comes first.",
+    "forbidden": "Only the staff of the onboarding service provider review change requests (HTTP 403).",
+    "loading": "Loading the change requests…",
+    "tabs": {
+      "OPEN": "Open",
+      "APPROVED": "Approved",
+      "DECLINED": "Declined",
+      "WITHDRAWN": "Withdrawn",
+      "ALL": "All"
+    },
+    "columns": {
+      "change": "Change",
+      "documents": "Documents",
+      "waiting": "Waiting",
+      "date": "Date"
+    },
+    "waitingHours": "{{hours}} h",
+    "waitingDays": "{{days}} d {{hours}} h",
+    "openSince": "Open since {{date}}",
+    "open": "Review the change request of {{name}}",
+    "emptyTitle": "No open change requests",
+    "emptyText": "Every request is decided. New ones appear here.",
+    "noMatchTitle": "No change request matches the filter"
+  },
+  "review": {
+    "title": "Review change request",
+    "loading": "Loading the change request…",
+    "notFound": "This change request does not exist.",
+    "backToList": "Back to the list",
+    "company": "Company",
+    "submitted": "Submitted {{date}} by {{person}}",
+    "requestedChanges": "Requested changes",
+    "effect": {
+      "MANUAL": "On approval the data changes at once and counts as checked by the onboarding service provider today. The new data goes to the CSP.",
+      "EBW": "The core data of this company comes from its Business Wallet. Only the identifiers that were declared can change by request; on approval they change at once."
+    },
+    "companyReason": "Reason of the company",
+    "download": "Download",
+    "downloadFile": "Download {{fileName}}",
+    "auditNote": "Opening a document is written to the audit log.",
+    "decision": "Decision",
+    "decisionText": "Approve to change the data of {{company}}, or decline with a reason.",
+    "approve": "Approve",
+    "decline": "Decline",
+    "approveTitle": "Approve the change request?",
+    "approveText": "{{summary}} of {{company}} change at once.",
+    "comment": "Comment (optional)",
+    "approveHelp": "Only in the audit log, up to 1000 characters. The company does not see it.",
+    "declineTitle": "Decline the change request?",
+    "declineText": "The data of the company stays as it is. The Company Admin sees your reason.",
+    "reason": "Reason",
+    "declineHelp": "Required, up to 1000 characters.",
+    "approved": "Approved. The data of {{company}} is changed ({{date}}).",
+    "declined": "Declined ({{date}}). Reason for the Company Admin: “{{reason}}”"
   }
 }

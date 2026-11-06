@@ -53,6 +53,7 @@ describe('feature registry', () => {
     expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
       'index', 'onboarding/reviews/*',
       'participants',
+'participants/company/change', 'participants/company/change-requests', 'participants/company/roles', 'participants/companies', 'participants/companies/:companyId', 'participants/companies/:companyId/csp', 'participants/change-requests', 'participants/change-requests/:changeRequestId',
       'access-control',
       'notifications',
       'onboarding/reviews/*',

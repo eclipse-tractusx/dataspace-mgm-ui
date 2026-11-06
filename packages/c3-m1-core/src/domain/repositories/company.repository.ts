@@ -26,8 +26,10 @@
 
 import type { CompanyAnemic } from '../anemics/company.anemic';
 
-/** Port: what the use cases need from C3-M1. Only the methods the use cases call. */
+/** Port: what the use cases need from C3-M1 about the own company. Only the methods the use cases call. */
 export interface CompanyRepository {
   /** null = 404 (unknown, or not the caller's own company). Throws on every other error. */
   getCompany(companyId: string): Promise<CompanyAnemic | null>;
+  /** PATCH /companies/{companyId} with `{ shortName }`; null removes it. Throws on every error. */
+  updateShortName(companyId: string, shortName: string | null): Promise<CompanyAnemic>;
 }
