@@ -100,6 +100,10 @@
       "name": "Onboarding",
       "description": "Unternehmen registrieren, ihre Anträge prüfen und sie in den Datenraum aufnehmen."
     },
+    "onboarding-review": {
+      "name": "Antragsprüfung",
+      "description": "Registrierungsanträge von Unternehmen prüfen, genehmigen oder ablehnen."
+    },
     "access-control": {
       "name": "Personen und Zugriff",
       "description": "Verwalten Sie Unternehmensbenutzer, technische Benutzer und Zugriffe."

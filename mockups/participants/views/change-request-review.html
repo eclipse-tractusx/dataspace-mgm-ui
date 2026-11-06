@@ -1,0 +1,363 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Review change request — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .crr-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 0.9375rem; margin-top: 8px; align-items: center; }
+    .crr-meta a { color: var(--link); text-decoration: none; }
+    .crr-quote { margin: 0; padding: 14px 18px; border-left: 3px solid var(--tx-orange); background: var(--accent-hover); border-radius: 0 var(--radius) var(--radius) 0; }
+    .crr-quote footer { color: var(--muted); font-size: 0.8125rem; margin-top: 6px; }
+    .crr-inline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+    .crr-inline li { display: grid; grid-template-columns: minmax(140px, 200px) 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--subtle-border); }
+    .crr-inline li:last-child { border-bottom: 0; }
+    .crr-inline__values { display: grid; gap: 4px; }
+    .crr-docs { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 20px; align-items: start; }
+    @media (max-width: 899.98px) { .crr-docs { grid-template-columns: 1fr; } }
+    .crr-docs .px-file { cursor: pointer; }
+    .crr-decide { display: grid; gap: 16px; }
+    .crr-decide .tx-textarea { min-height: 96px; resize: vertical; }
+    .crr-switch { display: inline-flex; gap: 4px; margin-left: 8px; }
+    .crr-switch button { font: inherit; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; cursor: pointer; background: transparent; color: var(--muted); border: 1px solid var(--subtle-border); }
+    .crr-switch button[aria-pressed="true"] { color: var(--tx-black); background: var(--tx-orange); border-color: var(--tx-orange); }
+    .crr-result { display: flex; gap: 16px; align-items: flex-start; }
+  </style>
+</head>
+<!-- C3-M1 7.15 GET /osp/change-requests/{id} (ChangeRequestDetail), 7.16 GET …/documents/{documentId}, 7.17 POST …/approve,
+     7.18 POST …/decline. All review_company_changes, scope osp. -->
+<body data-active="/participants" data-view="Review change request" data-states="loaded,approved,declined,same-person,attestation-required,loading,not-found">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona"><span id="persona" class="tx-row" style="gap: 8px"></span>
+      <span class="crr-switch" role="group" aria-label="Change request of the mockup">
+        <button type="button" data-request="e0000002">Beispiel Logistik GmbH · name</button>
+        <button type="button" data-request="e0000001">Beispiel Maschinenbau GmbH · LEI code</button>
+      </span>
+    </div>
+
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="compare:table" data-dimension="Compare the data" data-variant-label="Table: now and requested"></span>
+      <span data-variant="compare:cards" data-variant-label="Two cards side by side"></span>
+      <span data-variant="compare:inline" data-variant-label="One list, old value struck"></span>
+      <span data-variant="documents:list" data-dimension="Supporting documents" data-variant-label="List with download"></span>
+      <span data-variant="documents:preview" data-variant-label="List and preview"></span>
+      <span data-variant="decision:bar" data-dimension="Decide" data-variant-label="Bar at the bottom"></span>
+      <span data-variant="decision:panel" data-variant-label="Panel at the side"></span>
+      <span data-variant="decision:header" data-variant-label="Buttons in the header, dialogs"></span>
+    </div>
+
+    <a class="px-back" href="change-request-queue.html"><span data-icon="ArrowBackOutlined" data-size="sm"></span>Change requests to review</a>
+    <div class="px-head" data-show-state="loaded approved declined same-person attestation-required">
+      <div>
+        <div class="tx-overline">Participant management</div>
+        <h1 class="tx-title" id="view-title">Review change request</h1>
+        <div class="crr-meta" id="meta"></div>
+      </div>
+      <div class="px-head__actions" id="head-actions"></div>
+    </div>
+
+    <section data-show-state="loaded approved declined same-person attestation-required" id="content"></section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the change request">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading the change request…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="not-found">
+      <div class="tx-alert tx-alert--warning" role="alert">
+        <span data-icon="WarningAmberOutlined"></span>
+        <div>
+          <div>This change request does not exist.</div>
+          <code>urn:c3-m1:problem:not-found</code>
+        </div>
+        <a class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" href="change-request-queue.html">Back to the list</a>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog" id="approve-dialog" aria-labelledby="approve-title">
+      <div class="tx-dialog__body px-form">
+        <h2 class="tx-h3" id="approve-title">Approve the change request?</h2>
+        <p class="tx-muted" style="margin: 0" id="approve-text"></p>
+        <div>
+          <label class="tx-label" for="approve-comment-dialog">Comment (optional)</label>
+          <textarea class="tx-textarea" id="approve-comment-dialog" maxlength="1000" rows="3"></textarea>
+          <div class="tx-help">Only in the audit log, up to 1000 characters. The company does not see it.</div>
+        </div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-approve="dialog">Approve</button>
+      </div>
+    </dialog>
+
+    <dialog class="tx-dialog" id="decline-dialog" aria-labelledby="decline-title">
+      <div class="tx-dialog__body px-form">
+        <h2 class="tx-h3" id="decline-title">Decline the change request?</h2>
+        <p class="tx-muted" style="margin: 0">The data of the company stays as it is. The Company Admin sees your reason.</p>
+        <div>
+          <label class="tx-label" for="decline-reason-dialog">Reason</label>
+          <textarea class="tx-textarea" id="decline-reason-dialog" maxlength="1000" rows="4" required></textarea>
+          <div class="tx-help" id="decline-help-dialog">Required, up to 1000 characters.</div>
+        </div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn tx-btn--danger" type="button" data-decline="dialog">Decline</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = px;
+      const data = mock.data;
+      const asked = new URLSearchParams(location.search).get('request');
+      let requestId = (data.changeRequests.find((cr) => asked && cr.id.startsWith(asked)) || data.changeRequests[1]).id;
+      let docId = null;
+      let declineReason = '';
+      let approveComment = '';
+      let declineError = false;
+
+      const request = () => data.changeRequests.find((cr) => cr.id === requestId);
+      const reviewer = data.persons.rolf;
+
+      /** The change request as the state switcher shows it (the result of approve or decline). */
+      function current() {
+        const cr = { ...request() };
+        const state = document.body.dataset.state;
+        if (state === 'approved') { Object.assign(cr, { status: 'APPROVED', decidedBy: reviewer.id, closedAt: '2026-11-06T11:58:00Z' }); }
+        if (state === 'declined') { Object.assign(cr, { status: 'DECLINED', decidedBy: reviewer.id, closedAt: '2026-11-06T11:58:00Z', decisionReason: declineReason || 'The extract from the commercial register is older than three months. Please attach a current one.' }); }
+        return cr;
+      }
+
+      // ── pieces ───────────────────────────────────────────────────────────
+      function meta(cr, company) {
+        return `${px.chip('changeRequestStatus', cr.status)}
+          <span>Company <a href="company-detail.html">${esc(company.name)}</a></span>
+          <span>Submitted ${px.dateTime(cr.createdAt)} by ${esc(px.personName(cr.requestedBy))}</span>
+          <span>${px.coreSource(company.coreDataSource)}</span>`;
+      }
+
+      function comparison(cr, company) {
+        const rows = px.changeRows(cr.changes, company);
+        const variant = mock.variant('compare');
+        if (variant === 'cards') {
+          const side = (key) => rows.map((r) => `<div class="px-field"><dt>${r.field}</dt><dd>${r[key]}</dd></div>`).join('');
+          return `<div class="px-compare">
+            <div class="tx-card"><div class="tx-label">Now</div><dl class="px-fields px-fields--1" style="margin-top: 12px">${side('current')}</dl></div>
+            <div class="px-compare__arrow">${mock.icon('ArrowForwardOutlined')}</div>
+            <div class="tx-card px-compare__new"><div class="tx-label">Requested</div><dl class="px-fields px-fields--1" style="margin-top: 12px">${side('requested')}</dl></div>
+          </div>`;
+        }
+        if (variant === 'inline') {
+          return `<ul class="crr-inline">${rows.map((r) => `<li><span class="px-diff__field">${r.field}</span>
+            <span class="crr-inline__values">${r.changed ? `<span class="px-old">${r.current}</span><span><span class="px-new">${r.requested}</span></span>` : `<span>${r.current}</span><span class="tx-muted tx-body2">unchanged</span>`}</span></li>`).join('')}</ul>`;
+        }
+        return `<div class="tx-table-wrap"><table class="px-diff"><thead><tr><th>Field</th><th>Now</th><th>Requested</th></tr></thead>
+          <tbody>${rows.map((r) => `<tr class="${r.changed ? 'px-changed' : ''}"><td class="px-diff__field">${r.field}</td><td>${r.current}</td><td>${r.requested}</td></tr>`).join('')}</tbody></table></div>`;
+      }
+
+      const download = (d, iconOnly) => (iconOnly
+        ? `<button class="px-copy" type="button" data-download="${d.id}" title="Download ${esc(d.fileName)}">${mock.icon('DownloadOutlined', 'sm')}</button>`
+        : `<button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-download="${d.id}" title="Download ${esc(d.fileName)}">${mock.icon('DownloadOutlined', 'sm')}Download</button>`);
+
+      function documents(cr) {
+        if (!docId || !cr.documents.some((d) => d.id === docId)) { docId = cr.documents[0].id; }
+        const files = `<ul class="px-files">${cr.documents.map((d) => `<li class="px-file" data-doc="${d.id}"${mock.variant('documents') === 'preview' ? ` aria-selected="${d.id === docId}"` : ''}>
+          <span class="px-file__icon">${px.fileIcon(d.mediaType)}</span>
+          <span class="px-file__name">${esc(d.fileName)}<br><span class="px-file__meta">${d.mediaType === 'application/pdf' ? 'PDF' : d.mediaType.split('/')[1].toUpperCase()} · ${px.bytes(d.sizeBytes)}</span></span>
+          ${download(d, mock.variant('documents') === 'preview')}</li>`).join('')}</ul>`;
+        const note = '<p class="tx-help" style="margin-top: 12px">Opening a document is written to the audit log.</p>';
+        if (mock.variant('documents') !== 'preview') { return files + note; }
+        const d = cr.documents.find((x) => x.id === docId);
+        return `<div class="crr-docs"><div>${files}${note}</div>
+          <div class="px-preview" aria-label="Preview of ${esc(d.fileName)}">
+            <div class="px-preview__bar"><span class="tx-row" style="gap: 8px">${px.fileIcon(d.mediaType)}${esc(d.fileName)}</span>${download(d)}</div>
+            <div><div class="px-preview__page" aria-hidden="true">
+              <div class="px-preview__line px-preview__line--title"></div><div class="px-preview__line"></div><div class="px-preview__line px-preview__line--short"></div>
+              <div class="px-preview__line px-preview__line--mark"></div><div class="px-preview__line"></div><div class="px-preview__line"></div>
+              <div class="px-preview__line px-preview__line--short"></div><div class="px-preview__line"></div></div></div>
+          </div></div>`;
+      }
+
+      const applyNote = (company) => (company.coreDataSource === 'MANUAL'
+        ? 'On approval the data changes at once and counts as checked by the onboarding service provider today. The new data goes to the CSP.'
+        : 'The core data of this company comes from its Business Wallet. Only the identifiers that were declared can change by request; on approval they change at once.');
+
+      const decideForm = (where) => `<div class="crr-decide">
+        <div>
+          <label class="tx-label" for="decline-reason-${where}">Reason, if you decline</label>
+          <textarea class="tx-textarea" id="decline-reason-${where}" maxlength="1000" data-decline-reason>${esc(declineReason)}</textarea>
+          <div class="tx-help${declineError ? ' tx-help--error' : ''}">${declineError ? 'Give a reason: the Company Admin sees it.' : 'Required to decline. The Company Admin sees it.'}</div>
+        </div>
+        <div>
+          <label class="tx-label" for="approve-comment-${where}">Comment, if you approve (optional)</label>
+          <textarea class="tx-textarea" id="approve-comment-${where}" maxlength="1000" data-approve-comment style="min-height: 64px">${esc(approveComment)}</textarea>
+          <div class="tx-help">Only in the audit log.</div>
+        </div>
+      </div>`;
+
+      const buttons = (where) => `<button class="tx-btn tx-btn--outlined" type="button" data-decline="${where}">${mock.icon('CloseOutlined')}Decline</button>
+        <button class="tx-btn" type="button" data-approve="${where}">${mock.icon('CheckOutlined')}Approve</button>`;
+
+      function outcome(state, cr) {
+        if (state === 'approved') {
+          return `<div class="tx-alert tx-alert--success crr-result" role="status">${mock.icon('TaskAltOutlined')}<div><strong>Approved.</strong> The data of ${esc(cr.companyName)} is changed. Decided by ${esc(reviewer.name)}, ${px.dateTime(cr.closedAt)}.</div></div>`;
+        }
+        if (state === 'declined') {
+          return `<div class="tx-alert tx-alert--error crr-result" role="status">${mock.icon('CancelOutlined')}<div><strong>Declined</strong> by ${esc(reviewer.name)}, ${px.dateTime(cr.closedAt)}. Reason for the Company Admin: “${esc(cr.decisionReason)}”</div></div>`;
+        }
+        if (state === 'same-person') {
+          return `<div class="tx-alert tx-alert--warning" role="alert">${mock.icon('PeopleOutlined')}<div><div>You submitted this change request yourself. Another person of the onboarding service provider must decide it (four-eyes principle).</div><code>urn:c3-m1:problem:same-person</code></div></div>`;
+        }
+        if (state === 'attestation-required') {
+          return `<div class="tx-alert tx-alert--warning" role="alert">${mock.icon('VerifiedUserOutlined')}<div><div>The company has verified its data with its Business Wallet since the request. Name and address now change only with the Business Wallet; decline the request.</div><code>urn:c3-m1:problem:attestation-required</code></div></div>`;
+        }
+        return '';
+      }
+
+      function render() {
+        const state = document.body.dataset.state;
+        if (state === 'loading' || state === 'not-found') { return; }
+        const cr = current();
+        const company = data.companies[cr.companyId];
+        const open = cr.status === 'OPEN';
+        const decision = mock.variant('decision');
+        document.getElementById('persona').innerHTML = px.persona('rolf');
+        document.querySelectorAll('[data-request]').forEach((b) => b.setAttribute('aria-pressed', String(requestId.startsWith(b.dataset.request))));
+        document.getElementById('meta').innerHTML = meta(cr, company);
+        document.getElementById('head-actions').innerHTML = open && decision === 'header' ? buttons('header') : '';
+
+        const main = `
+          ${outcome(state, cr) ? `<div style="margin-bottom: 24px">${outcome(state, cr)}</div>` : ''}
+          <section class="tx-card" aria-labelledby="h-changes" style="margin-bottom: 24px">
+            <div class="px-section__head"><div><h2 class="tx-h3" id="h-changes">Requested changes</h2><p class="tx-muted tx-body2">${applyNote(company)}</p></div></div>
+            ${comparison(cr, company)}
+          </section>
+          <section class="tx-card" aria-labelledby="h-reason" style="margin-bottom: 24px">
+            <div class="px-section__head"><h2 class="tx-h3" id="h-reason">Reason of the company</h2></div>
+            <blockquote class="crr-quote">${esc(cr.comment)}<footer>${esc(px.personName(cr.requestedBy))}, Company Admin of ${esc(company.name)}</footer></blockquote>
+          </section>
+          <section class="tx-card" aria-labelledby="h-docs">
+            <div class="px-section__head"><h2 class="tx-h3" id="h-docs">Supporting documents</h2><span class="px-count">${cr.documents.length}</span></div>
+            ${documents(cr)}
+          </section>`;
+
+        let html;
+        if (decision === 'panel') {
+          html = `<div class="px-split"><div>${main}</div><aside class="px-aside">
+            <section class="tx-card px-card-sm" aria-labelledby="h-decide">
+              <div class="px-section__head"><h2 class="tx-h3" id="h-decide">${open ? 'Your decision' : 'Decision'}</h2></div>
+              ${open ? `${decideForm('panel')}<div class="tx-row" style="margin-top: 20px">${buttons('panel')}</div>`
+                : `<dl class="px-kv"><dt>Status</dt><dd>${px.chip('changeRequestStatus', cr.status)}</dd><dt>Decided by</dt><dd>${esc(px.personName(cr.decidedBy))}</dd><dt>On</dt><dd>${px.dateTime(cr.closedAt)}</dd></dl>`}
+            </section>
+            <section class="tx-card px-card-sm" aria-labelledby="h-company">
+              <div class="px-section__head"><h2 class="tx-h3" id="h-company">The company now</h2></div>
+              <dl class="px-kv"><dt>Status</dt><dd>${px.chip('companyStatus', company.status)}</dd><dt>BPN</dt><dd>${px.copyable(company.bpn)}</dd><dt>Address</dt><dd>${px.address(company.address)}</dd></dl>
+              <div style="margin-top: 16px"><a class="tx-link" href="company-detail.html">Open the company →</a></div>
+            </section></aside></div>`;
+        } else if (decision === 'bar') {
+          html = `${main}${open ? `<div class="px-actionbar" role="region" aria-label="Decision">
+            <span class="tx-muted tx-body2">Approve to change the data of ${esc(company.name)}, or decline with a reason.</span>
+            <span class="tx-row">${buttons('bar')}</span></div>` : ''}`;
+        } else {
+          html = main;
+        }
+        document.getElementById('content').innerHTML = html;
+      }
+
+      // ── actions ──────────────────────────────────────────────────────────
+      function approve(where) {
+        if (where === 'header' || where === 'bar') {
+          const company = data.companies[request().companyId];
+          document.getElementById('approve-text').textContent = `${px.changeSummary(request().changes, company)} of ${company.name} change at once.`;
+          document.getElementById('approve-dialog').showModal();
+          return;
+        }
+        if (where === 'dialog') { document.getElementById('approve-dialog').close(); }
+        mock.setState('approved');
+        mock.toast('Change request approved');
+        render();
+      }
+      function decline(where) {
+        if (where === 'header' || where === 'bar') {
+          document.getElementById('decline-reason-dialog').value = declineReason;
+          document.getElementById('decline-dialog').showModal();
+          return;
+        }
+        const reason = where === 'dialog' ? document.getElementById('decline-reason-dialog').value.trim() : declineReason.trim();
+        if (!reason) {
+          if (where === 'dialog') {
+            document.getElementById('decline-help-dialog').className = 'tx-help tx-help--error';
+            document.getElementById('decline-help-dialog').textContent = 'Give a reason: the Company Admin sees it.';
+          } else {
+            declineError = true;
+            render();
+          }
+          return;
+        }
+        declineReason = reason;
+        declineError = false;
+        if (where === 'dialog') { document.getElementById('decline-dialog').close(); }
+        mock.setState('declined');
+        mock.toast('Change request declined');
+        render();
+      }
+
+      mock.on('click', '[data-approve]', (_e, el) => approve(el.dataset.approve));
+      mock.on('click', '[data-decline]', (_e, el) => decline(el.dataset.decline));
+      mock.on('input', '[data-decline-reason]', (_e, el) => { declineReason = el.value; });
+      mock.on('input', '[data-approve-comment]', (_e, el) => { approveComment = el.value; });
+      mock.on('click', '[data-doc]', (e, el) => { if (!e.target.closest('[data-download]')) { docId = el.dataset.doc; render(); } });
+      mock.on('click', '[data-download]', (_e, el) => {
+        const d = request().documents.find((x) => x.id === el.dataset.download);
+        mock.toast(`Downloading ${d.fileName}`);
+      });
+      mock.on('click', '[data-request]', (_e, el) => {
+        requestId = data.changeRequests.find((cr) => cr.id.startsWith(el.dataset.request)).id;
+        docId = null;
+        mock.setState('loaded');
+        render();
+      });
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

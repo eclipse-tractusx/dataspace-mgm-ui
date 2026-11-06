@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "nx serve portal",
+    "start:mock": "VITE_USE_MOCKS=true VITE_MOCK_PERSON=erika npm start",
     "build": "nx build portal",
     "lint": "nx run-many -t lint",
     "typecheck": "nx run-many -t typecheck",
@@ -40,6 +41,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.2.1",
+    "@vitest/coverage-v8": "^5.1.0",
     "eslint": "^10.14.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.14.0",

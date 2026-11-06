@@ -109,7 +109,6 @@ npm/npmjs/-/ieee754/1.2.1, BSD-3-Clause, approved, #26025
 npm/npmjs/-/ignore/5.3.2, MIT, approved, #11665
 npm/npmjs/-/ignore/7.0.12, MIT, approved, #30871
 npm/npmjs/-/ignore/7.0.14, MIT, approved, #30871
-npm/npmjs/-/immer/11.2.9, , restricted, clearlydefined
 npm/npmjs/-/immutable/5.1.9, MIT, approved, #20384
 npm/npmjs/-/import-fresh/3.3.1, MIT, approved, #19299
 npm/npmjs/-/imurmurhash/0.1.4, MIT, approved, clearlydefined

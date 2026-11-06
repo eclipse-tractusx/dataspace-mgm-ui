@@ -1,0 +1,315 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding — Mockups</title>
+  <!-- The settings of this mockup; the mockup script reads them. -->
+  <meta name="mockup-title" content="Onboarding">
+  <meta name="mockup-module" content="c1-m2">
+  <meta name="mockup-path" content="/onboarding">
+  <meta name="mockup-nav-name" content="">
+  <meta name="mockup-nav-icon" content="">
+  <meta name="mockup-states" content="loaded,empty,loading,error">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <link rel="stylesheet" href="shared/shell.css">
+  <link rel="stylesheet" href="shared/hub.css">
+</head>
+<!-- The hub of the mockup, by view. Each <section class="hub-view"> carries data-status: open | decided | deferred.
+     `mockup.py status onboarding` reads it; the proof of concept starts when no view is open. -->
+<body data-hub-page>
+  <div class="hub-layout">
+    <nav class="hub-toc" aria-label="Views">
+      <div class="hub-toc__h">Views</div>
+
+      <a href="#view-start"><span class="hub-num">1</span>Start application</a>
+      <a href="#view-company-data"><span class="hub-num">2</span>Company data</a>
+      <a href="#view-documents"><span class="hub-num">3</span>Supporting documents</a>
+      <a href="#view-terms-submit"><span class="hub-num">4</span>Roles, terms and submission</a>
+      <a href="#view-my-application"><span class="hub-num">5</span>My application</a>
+      <a href="#view-osp-applications"><span class="hub-num">6</span>Applications</a>
+      <div class="hub-toc__sep"></div>
+      <button class="tx-btn tx-btn--outlined hub-toc__theme" type="button" data-theme-toggle></button>
+    </nav>
+
+    <main class="hub">
+      <div class="tx-overline">Dataspace Management · mockup · phase 1 of 3</div>
+      <h1 class="tx-title">Onboarding</h1>
+      <p class="hub-lead">A person without a company (Erika Mustermann, Hans Beispiel) registers their company at OSP A:
+        they choose what they want to do and how they prove the company (Business Wallet or supporting documents),
+        check the company data, pick the company roles, accept the terms and submit; afterwards they follow the review
+        and may withdraw. OSP staff (Rolf Prüfer, Otto Normalverbraucher) see every application. Backend module
+        <code>c1-m2</code> Registration (<code>specs/c1-m2/openapi.yaml</code>); the use cases and the in-memory adapter
+        already exist in <code>packages/c1-m2-core</code>, and <code>shared/data.js</code> equals its fixtures. Each view
+        below is one screen; decide them one at a time, then build the proof of concept from the decided views.</p>
+      <dl class="hub-facts">
+        <div><dt>Backend module</dt><dd><code>c1-m2</code></dd></div>
+        <div><dt>Navigation</dt><dd><code>/onboarding</code></dd></div>
+        <div><dt>Started</dt><dd>2026-11-06</dd></div>
+      </dl>
+
+
+
+      <section class="hub-view" id="view-start" data-view="start" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">1</span>
+          <h2 class="tx-h2">Start application</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>Erika Mustermann (applicant, no company) opens Onboarding. <strong>Step 1</strong> asks what she wants to
+          do, as cards: the cards stay visible: <em>Register a new company</em> shows step 2 right below them; <em>My company is already
+          in the dataspace</em> first asks what happened to it: <em>Reactivate it at OSP A</em> (BPN required) or <em>Move it from
+          another OSP</em> (which OSP, and the BPN if it was at OSP A before), and step 2 appears below once she chose. <strong>Step 2</strong> asks how she proves
+          the company. With the Business Wallet the wallet step follows and <code>POST /applications</code> creates the
+          application; with documents she continues to the company data, and the application is created with them.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/start.html">
+            <span class="hub-card__frame"><iframe src="views/start.html" title="Preview of Start application" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>POST /api/c1-m2/applications</code> (<code>createApplication</code>, <code>register_company</code>, own): <code>kind</code> (new company → <code>ONBOARDING</code>, reactivate → <code>REACTIVATION</code>, move → <code>TRANSFER</code>), <code>verification</code>, <code>attestation</code>, <code>bpn</code> (reference to a company of OSP A: required for REACTIVATION, only for a return with TRANSFER), <code>companyData</code>, <code>companyRoles</code>.</li>
+              <li>"From which OSP?" (move): <strong>not in the spec</strong>; the options come from FRAMEWORK 7a (OSP B) in <code>shared/data.js</code>.</li>
+              <li>Results shown as states: 201 created / 200 repeated (continue), 409 <code>open-application-exists</code> with <code>existingApplicationId</code>, 403 <code>account-bound</code>, 400 <code>documents-disabled</code>, 502 <code>upstream-error</code>.</li>
+              <li><code>GET /api/c1-m2/applications</code> (<code>listApplications</code>): an open application before offering a new one.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open><strong>Backend/BFF (P0):</strong> how does the browser get the verification attestation of the wallet step? There is no BFF endpoint yet (FRAMEWORK 5.2 step 2).</li>
+              <li data-open><strong>Backend (C1-M2):</strong> <code>companyRoles</code> are required at creation for ONBOARDING, so roles must be chosen before the wallet step, or sent as a default and changed in step 3 with PATCH. Make them optional at creation?</li>
+              <li data-open><strong>Backend (C1-M2):</strong> the UI cannot know before the choice whether the path DOCUMENTS is switched on (<code>DOCUMENTS_ENABLED</code>); it needs a flag, otherwise the person learns it only from 400 <code>documents-disabled</code>.</li>
+              <li data-open><strong>Backend (C1-M2):</strong> REACTIVATION and the return need a <code>companyId</code> or <code>bpn</code>; a person without a company cannot look it up. Is the BPN as free text acceptable?</li>
+              <li data-open><strong>Backend (C1-M2, C1-M3, C3-M2):</strong> the move case asks which OSP the company comes from, but <code>ApplicationCreate</code> has no field for it, and <code>bpn</code> only refers to a company of OSP A (a return). Should C1-M2 take the current OSP (and the BPN the company has at the CSP) for a TRANSFER, or does the C1-M3 pre-check find them at the CSP (README 6.2)? Which operation lists the OSPs to choose from?</li>
+              <li data-open>Decide: check for an open application when the page opens (<code>listApplications</code>), or only react to 409 on create?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: progress=side · choice=tiles. "What do you want to do?" is the first step, as cards that stay visible; the proof appears below them (a new company at once, an existing one after choosing reactivation or move, with their fields).</p>
+      </section>
+
+      <section class="hub-view" id="view-company-data" data-view="company-data" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">2</span>
+          <h2 class="tx-h2">Company data</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>After the wallet step Erika sees what the Business Wallet confirmed and the data of her application, with the
+          comparison per field; she may change the legal name, short name, address and her own identifiers (EBWOID, EUID
+          and country stay the wallet's). Hans Beispiel (DOCUMENTS) enters everything here.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/company-data.html">
+            <span class="hub-card__frame"><iframe src="views/company-data.html" title="Preview of Company data" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /api/c1-m2/applications/{applicationId}</code> (<code>getApplication</code>): <code>companyData.legalName</code>, <code>shortName</code>, <code>address.*</code>, <code>identifiers[].type/value/source</code>, <code>comparison[].field/result</code> (badge: <code>FROM_ATTESTATION</code> "From the wallet", <code>MATCH</code>/<code>MISMATCH</code> "Edited by you, matches/differs", <code>NOT_IN_ATTESTATION</code> "Entered by you, not in the wallet"; short name and identifiers with <code>source</code> <code>APPLICANT</code> "Entered by you"), <code>attestation.person</code>, <code>representation.confirmed/role/validUntil</code>, <code>verifiedAt</code>, <code>expiresAt</code>.</li>
+              <li><code>PATCH …/applications/{applicationId}</code> (<code>updateApplication</code>): <code>legalName</code>, <code>shortName</code>, <code>address</code>, <code>identifiers</code>; 400 <code>attestation-mismatch</code> (<code>fields</code>), 400 <code>validation</code> (<code>errors</code>).</li>
+              <li><code>GET /countries</code>, <code>GET /countries/{countryCode}/identifier-types</code> (<code>pattern</code> shown as format help); DOCUMENTS: <code>POST /applications</code> with <code>companyData</code>.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open><strong>Backend (C1-M2):</strong> the submission also fails 30 days after <code>issuedAt</code> (<code>ATTESTATION_MAX_AGE</code>), earlier than <code>expiresAt</code> may suggest. The page must not compute that date: needs a field such as <code>submittableUntil</code>.</li>
+              <li data-open><strong>Backend (C1-M2):</strong> EBWOID is not allowed in the path DOCUMENTS, but <code>identifier-types</code> lists it; the mockup leaves it out as a pre-check. Should the API say which types fit which path?</li>
+              <li data-open><strong>Backend (C1-M2):</strong> <code>PATCH</code> replaces the address as a whole, so after changing only the street, postal code and city also read "Edited by you" (<code>MATCH</code>), and the backend reports <code>COUNTRY</code> as <code>MATCH</code> although the country cannot be changed; the mockup keeps the country "From the wallet". Should unchanged parts keep <code>FROM_ATTESTATION</code>?</li>
+              <li data-open>Decide: may the person change data the wallet proved (the backend allows it and records MISMATCH), or only fill in what is missing?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: comparison=badges · editing=button. The Edit button switches the read-only view to the form; Save and Cancel switch back; the badges say whether a value is from the wallet or edited by the person.</p>
+      </section>
+
+      <section class="hub-view" id="view-documents" data-view="documents" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">3</span>
+          <h2 class="tx-h2">Supporting documents</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>Hans Beispiel (path DOCUMENTS) uploads the commercial register extract of Beispiel Logistik GmbH and, if
+          it does not name him, a power of attorney. OSP staff check them by hand.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/documents.html">
+            <span class="hub-card__frame"><iframe src="views/documents.html" title="Preview of Supporting documents" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>POST …/applications/{applicationId}/documents</code> (<code>uploadDocument</code>, multipart <code>file</code> + <code>documentType</code>): <code>DocumentInfo</code> <code>documentId</code>, <code>documentType</code>, <code>fileName</code>, <code>sizeBytes</code>, <code>sha256</code>, <code>uploadedAt</code>; 400 <code>validation</code>, 409 <code>invalid-state</code>.</li>
+              <li><code>GET …/documents/{documentId}</code> (<code>getDocument</code>), <code>DELETE …/documents/{documentId}</code> (<code>deleteDocument</code>).</li>
+              <li><code>SubmitRequest.representationDeclared</code> (sent at submission).</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open><strong>Backend (C1-M2):</strong> required document types, maximum size and count are configuration of the module; the page repeats them as text. An API with <code>requiredDocumentTypes</code>, <code>maxBytes</code>, <code>maxCount</code>?</li>
+              <li data-open><strong>Backend (C1-M2):</strong> the UI offers one document per type; the API allows several per type (up to <code>DOCUMENT_MAX_COUNT</code>). Is one per type enough for the review (e.g. a register extract of several pages as one PDF)?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: declaration=here; instead of the upload and list alternatives: one expandable section per document type (commercial register extract, power of attorney, other); without a document it shows the upload area, after the upload the document with Open and Delete. One document per type in the UI (the API allows several).</p>
+      </section>
+
+      <section class="hub-view" id="view-terms-submit" data-view="terms-submit" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">4</span>
+          <h2 class="tx-h2">Roles, terms and submission</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>Erika picks the company roles; the page lists the terms <code>GET /agreements</code> returns for them (the page
+          does not compute which terms apply). Each document has an <em>Open</em> button: a full-screen viewer shows the PDF,
+          with a language selector top right and <em>Cancel</em> / <em>Accept</em> at the bottom; <em>Accept</em> is enabled
+          only after she scrolled to the end, in the language shown. She submits when every document is accepted.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/terms-submit.html">
+            <span class="hub-card__frame"><iframe src="views/terms-submit.html" title="Preview of Roles, terms and submission" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /company-roles</code> (<code>role</code>, <code>name</code>, <code>description</code>, <code>agreementKeys</code>); roles changed with <code>PATCH …</code> <code>companyRoles</code>.</li>
+              <li><code>GET /agreements?companyRole=…</code> (<code>agreementKey</code>, <code>version</code>, <code>party</code>, <code>title</code>, <code>documentUrls.de/en</code>: the viewer's languages are the keys of <code>documentUrls</code>; <code>security-regulations</code> is English only).</li>
+              <li>Accept in the viewer → <code>ConsentInput</code> <code>agreementKey</code>, <code>version</code>, <code>language</code> (the language shown when the person reached the end; switching the language starts the reading over).</li>
+              <li><code>POST …/submit</code> (<code>submitApplication</code>): <code>consents[].agreementKey/version/language</code>, <code>representationDeclared</code>; 400 <code>consents-incomplete</code> (<code>missing</code>), 400 <code>documents-incomplete</code>, 409 <code>attestation-expired</code>; then <code>PUT …/attestation</code> (<code>replaceAttestation</code>).</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open><strong>Phase 2 / backend:</strong> "scrolled to the end" cannot be detected on a PDF shown by the browser's own viewer (and not across origins). Either the portal renders the PDF itself (pdf.js: a new dependency, Eclipse Dash IP check, and CORS on the document hosts), or C1-M2 offers the terms as text/HTML next to <code>documentUrls</code>. Which one?</li>
+              <li data-open>Decide: roles here or at the start (see the open question of view 1).</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: summary=top · roles=checkboxes. Terms: one row per document with its icon and an Open button; Open shows a full-screen viewer with the language selector top right and Cancel / Accept at the bottom; Accept only after scrolling to the end.</p>
+      </section>
+
+      <section class="hub-view" id="view-my-application" data-view="my-application" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">5</span>
+          <h2 class="tx-h2">My application</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>Erika opens Onboarding again after she started: the page shows the status and review status of her application,
+          what she sent, and lets her withdraw until OSP staff decide. Hans Beispiel sees why his earlier application
+          was declined.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/my-application.html">
+            <span class="hub-card__frame"><iframe src="views/my-application.html" title="Preview of My application" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /applications</code> (<code>listApplications</code>) to find it; <code>GET /applications/{applicationId}</code>: <code>status</code>, <code>reviewStatus</code>, <code>declineReason</code>, <code>createdAt</code>, <code>submittedAt</code>, <code>withdrawnAt</code>, <code>closedAt</code>, <code>completedAt</code>, <code>consents[].givenAt</code>.</li>
+              <li><code>POST …/withdraw</code> (<code>withdrawApplication</code>): 200, 409 <code>already-decided</code> (<code>reviewStatus</code>), 409 <code>invalid-state</code>.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open><strong>Backend (C1-M2, P1):</strong> flags <code>canWithdraw</code> (and <code>canContinue</code>): the page must not derive them from <code>status</code> and <code>reviewStatus</code>; the mockup shows them from a field that is not in the spec.</li>
+              <li data-open><strong>Backend (P1):</strong> a live update when <code>reviewStatus</code> or <code>status</code> changes (SSE); C1-M2 has no stream for the applicant.</li>
+              <li data-open><strong>BFF/C2-M5:</strong> after COMPLETED the person is Company Admin; how does the session (<code>/me</code>, <code>companyId</code>) learn it without signing in again?</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: withdraw=bottom · status=stepper · details=tabs. The horizontal stepper has the icons of the timeline.</p>
+      </section>
+
+      <section class="hub-view" id="view-osp-applications" data-view="osp-applications" data-status="decided">
+        <header class="hub-view__head">
+          <span class="hub-num">6</span>
+          <h2 class="tx-h2">Applications</h2>
+          <span class="hub-status">decided</span>
+        </header>
+        <p>Rolf Prüfer (OSP Reviewer) and Otto Normalverbraucher (OSP Admin) see every application of OSP A, filter it,
+          open one and its documents. The decision itself is made in the review case of C1-M3 Application Review.</p>
+        <div class="hub-cards">
+          <a class="hub-card" href="views/osp-applications.html">
+            <span class="hub-card__frame"><iframe src="views/osp-applications.html" title="Preview of Applications" loading="lazy" tabindex="-1"></iframe></span>
+            <span class="hub-card__name">The screen, with its configurator</span>
+          </a>
+        </div>
+        <div class="hub-columns">
+          <div>
+            <h3 class="hub-h">Data from the spec</h3>
+            <ul class="hub-data">
+              <li><code>GET /osp/applications</code> (<code>listAllApplications</code>, <code>view_applications</code>, osp): filters <code>status</code>, <code>kind</code>, <code>verification</code>, <code>companyId</code>, <code>page</code>, <code>size</code>; <code>ApplicationSummary</code> fields.</li>
+              <li><code>GET /osp/applications/{applicationId}</code> (<code>getAnyApplication</code>), <code>GET …/documents/{documentId}</code> (<code>getAnyDocument</code>); 403 <code>forbidden</code> without the permission.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="hub-h">Open questions</h3>
+            <ul class="hub-open">
+              <li data-open>Decide: does this list belong to Onboarding, or to the review feature on C1-M3 (review cases), so that staff have one list?</li>
+              <li data-open><strong>Backend (C1-M2):</strong> no search by company name in <code>listAllApplications</code>; the mockup offers only the filters of the API.</li>
+              <li data-open><strong>Backend (C1-M2/C1-M3):</strong> the application carries no link to its review case (<code>reviewCaseId</code>).</li>
+            </ul>
+          </div>
+        </div>
+        <!-- When decided: the combination copied from the configurator, e.g. "Decided 2026-11-06: layout=list · action=header". -->
+        <p class="hub-decision" data-decision>Decided 2026-11-06: filters=side · layout=table. Filter and list in one card, the count in the filter row; an opened application replaces them in the same card, with a back button top left.</p>
+      </section>
+
+      <section class="hub-next">
+        <h2 class="tx-h3">Next: the proof of concept</h2>
+        <p>When no view is open, the skill <code>build-poc</code> builds the decided views into
+          <code>apps/portal/src/features/</code> as a feature with <code>stage: 'poc'</code>, on the in-memory adapter of
+          the module's core package (<code>VITE_USE_MOCKS=true npm start</code>). The data of
+          <code>shared/data.js</code> becomes its fixtures; every open point below goes to the backend team.</p>
+      </section>
+    </main>
+  </div>
+  <script src="shared/icons.js"></script>
+  <script src="shared/shell.js"></script>
+</body>
+</html>

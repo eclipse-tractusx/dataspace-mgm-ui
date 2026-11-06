@@ -100,6 +100,10 @@
       "name": "Onboarding",
       "description": "Register companies, review their applications and bring them into the dataspace."
     },
+    "onboarding-review": {
+      "name": "Application review",
+      "description": "Review, approve or decline the registration applications of companies."
+    },
     "access-control": {
       "name": "People and access",
       "description": "Manage company users, technical users and access."

@@ -1,0 +1,60 @@
+/********************************************************************************
+ * Copyright (c) 2026 Catena-X Automotive Network e.V.
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * AI Disclosure: This file was entirely AI-generated.
+ * The AI-generated portions are made available under CC0-1.0 and not subject
+ * to the project's license. The human contributor has reviewed and verified
+ * that the code is correct.
+ *
+ * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ * Assisted-By: Claude Code (claude-opus-5-5)
+ ********************************************************************************/
+
+import type { ApplicationSummaryAnemic } from '../anemics/application-summary.anemic';
+import type { ApplicationWithReviewAnemic } from '../anemics/application-with-review.anemic';
+import type { ApplicationAnemic } from '../anemics/application.anemic';
+import type { DocumentInfoAnemic } from '../anemics/document-info.anemic';
+import type { ApplicationCreateInput } from '../data/application-create-input.data';
+import type { ApplicationUpdateInput } from '../data/application-update-input.data';
+import type { CreatedApplicationData } from '../data/created-application.data';
+import type { DocumentContent } from '../data/document-content.data';
+import type { DocumentUploadInput } from '../data/document-upload-input.data';
+import type { AllApplicationsFilter, OwnApplicationsFilter } from '../data/list-filters.data';
+import type { PageData } from '../data/page.data';
+import type { SubmitInput } from '../data/submit-input.data';
+
+/**
+ * Port: the applications of C1-M2 (README 7.2 to 7.14), only what the use cases call. The caller is not a parameter:
+ * over HTTP the session cookie carries the person. Every method returns null for a 404 and throws
+ * `C1M2ProblemException` for the expected 4xx answers and `CoreHttpException` for the rest.
+ */
+export interface ApplicationRepository {
+  create(input: ApplicationCreateInput): Promise<CreatedApplicationData>;
+  listOwn(filter: OwnApplicationsFilter): Promise<PageData<ApplicationSummaryAnemic>>;
+  getOwn(applicationId: string): Promise<ApplicationWithReviewAnemic | null>;
+  update(applicationId: string, input: ApplicationUpdateInput): Promise<ApplicationAnemic | null>;
+  replaceAttestation(applicationId: string, attestation: string): Promise<ApplicationAnemic | null>;
+  uploadDocument(applicationId: string, input: DocumentUploadInput): Promise<DocumentInfoAnemic | null>;
+  getDocument(applicationId: string, documentId: string): Promise<DocumentContent | null>;
+  /** false = 404 (application or document unknown or not visible). */
+  deleteDocument(applicationId: string, documentId: string): Promise<boolean>;
+  submit(applicationId: string, input: SubmitInput): Promise<ApplicationAnemic | null>;
+  withdraw(applicationId: string): Promise<ApplicationAnemic | null>;
+  listAll(filter: AllApplicationsFilter): Promise<PageData<ApplicationSummaryAnemic>>;
+  getAny(applicationId: string): Promise<ApplicationWithReviewAnemic | null>;
+  getAnyDocument(applicationId: string, documentId: string): Promise<DocumentContent | null>;
+}

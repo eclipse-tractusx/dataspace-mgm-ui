@@ -24,6 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import type { C1M2Module } from '@dataspace-mgm/c1-m2-core';
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
 import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-mgm/c2-m3-core';
 import { createC2M2Module, C2_M2_BASE_PATH, type C2M2Module } from '@dataspace-mgm/c2-m2-core';
@@ -36,6 +37,11 @@ import { ConfigurableRedirect, createSpecSessionRepository, isSpecLoginResponseE
 export interface CoreModules {
   identity: IdentityModule;
   c3m1: C3M1Module;
+  /**
+   * C1-M2 Registration, proof of concept: no HTTP adapter yet, wired only in mock-container.ts. Pages check that it is
+   * there (undefined outside mock mode); it becomes required here with createC1M2Module (skill build-feature).
+   */
+  c1m2?: C1M2Module;
   c2m3: C2M3Module;
   c2m2: C2M2Module;
 }

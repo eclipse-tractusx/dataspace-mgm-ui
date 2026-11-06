@@ -1,0 +1,311 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallets as a service · Wallet accounts — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/wallets.css">
+  <style>
+    .wa-lead { color: var(--muted); max-width: 760px; margin: 0 0 28px; }
+    .wa-detail { display: grid; gap: 24px; }
+    .wa-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .wa-dialog { width: min(640px, calc(100vw - 32px)); }
+    .wa-secret-row { display: grid; gap: 6px; }
+    .wa-secret-row .tx-label { margin: 0; }
+  </style>
+</head>
+<!-- C4-M2 7.2 GET /technical-users/{technicalUserId}/wallet-account (getWalletAccount, view_dataspace_wallet) and
+     7.3 POST /technical-users/{technicalUserId}/wallet-account/credentials (retrieveWalletAccountCredentials,
+     retrieve_wallet_credentials), both scope company. The technical users come from C2-M3 (walletAccess not NONE). -->
+<body data-active="/wallets" data-view="Wallet accounts" data-states="loaded,empty,retrieved-meanwhile,loading,forbidden">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <div class="wx-markers" aria-hidden="true">
+      <span data-variant="layout:table" data-dimension="Layout" data-variant-label="Table"></span>
+      <span data-variant="layout:cards" data-variant-label="A card per technical user"></span>
+      <span data-variant="layout:detail" data-variant-label="List and detail"></span>
+      <span data-variant="reveal:dialog" data-dimension="Show the access data" data-variant-label="In a dialog"></span>
+      <span data-variant="reveal:inline" data-variant-label="In the page, below the account"></span>
+      <span data-variant="reveal:download" data-variant-label="Dialog with a download as a file"></span>
+      <span data-variant="confirm:ask" data-dimension="Before retrieving" data-variant-label="Ask first (they are shown once)"></span>
+      <span data-variant="confirm:direct" data-variant-label="Retrieve at once, warn in the result"></span>
+    </div>
+
+    <div class="tx-overline">Wallets as a service</div>
+    <h1 class="tx-title" id="view-title">Wallet accounts</h1>
+    <div id="feature-tabs"></div>
+    <p class="wa-lead" data-show-state="loaded retrieved-meanwhile empty">A connector of your company signs in to your dataspace wallet with the wallet account of its technical user.
+      The access data of a wallet account can be retrieved <strong>once</strong>; enter them into the connector right away.</p>
+
+    <section data-show-state="loaded retrieved-meanwhile" id="content"></section>
+
+    <section data-show-state="empty">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="KeyOutlined"></div>
+        <h2 class="tx-h3">No technical user with wallet access</h2>
+        <p>Create a technical user with the role for wallet access in Technical users. Its wallet account then appears here.</p>
+        <a class="tx-btn tx-btn--outlined" href="#" aria-disabled="true" title="Technical users (C2-M3), coming soon">Technical users</a>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading the wallet accounts">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading the wallet accounts…</span></div>
+        <div class="wx-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>You may not see the wallet accounts of your company (HTTP 403). Ask your Company Admin for the role IT Admin.</div>
+          <code>urn:c4-m2:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog wa-dialog" id="confirm-dialog" aria-labelledby="confirm-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="confirm-title">Retrieve the access data?</h2>
+        <p class="tx-muted" id="confirm-text"></p>
+        <div class="tx-alert tx-alert--warning"><span data-icon="WarningAmberOutlined"></span>
+          <div>They are shown <strong>only once</strong>. After that, nobody can retrieve them again, also not your onboarding service provider.</div></div>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-confirm-retrieve>Retrieve now</button>
+      </div>
+    </dialog>
+
+    <dialog class="tx-dialog wa-dialog" id="secret-dialog" aria-labelledby="secret-title">
+      <div class="tx-dialog__body">
+        <h2 class="tx-h3" id="secret-title">Access data of the wallet account</h2>
+        <div id="secret-body"></div>
+      </div>
+      <div class="tx-dialog__actions" id="secret-actions"></div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/wallets.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = wx;
+      const data = mock.data;
+      const users = data.technicalUsers.filter((u) => u.walletAccess !== 'NONE');
+      const accounts = JSON.parse(JSON.stringify(data.walletAccounts));
+      let selected = users[0].id;
+      let pending = null;     // technical user whose retrieval waits for the confirmation
+      let revealed = null;    // technical user whose access data are shown inline
+      let showSecret = false;
+
+      const account = (u) => accounts[u.id];
+      const canRetrieve = data.permissions.erika.includes('retrieve_wallet_credentials');
+
+      // ── pieces ───────────────────────────────────────────────────────────
+      const stateText = (a) => ({
+        AVAILABLE: `Ready to retrieve until ${wx.date(a.credentialsExpireAt)}.`,
+        RETRIEVED: 'Retrieved. If they are lost, delete the technical user and create it again.',
+        EXPIRED: 'Not retrieved in time and deleted. Delete the technical user and create it again.',
+        NONE: 'No access data while the account is not active.',
+      }[a.credentialsState]);
+
+      const action = (u, small) => {
+        const a = account(u);
+        if (a.credentialsState !== 'AVAILABLE' || !canRetrieve) { return ''; }
+        return `<button class="tx-btn${small ? ' tx-btn--sm' : ''}" type="button" data-retrieve="${u.id}">${mock.icon('KeyOutlined', 'sm')}Retrieve access data</button>`;
+      };
+
+      const secretFields = () => {
+        const s = data.walletAccountCredentials;
+        const secret = showSecret ? esc(s.clientSecret) : '<span class="wx-secret__mask">••••••••••••••••••••</span>';
+        return `<div class="wx-secret">
+            <div class="wx-once">${mock.icon('WarningAmberOutlined', 'sm')}Shown only once. Copy them into the connector now.</div>
+            <div class="wa-secret-row"><span class="tx-label">Token address (STS)</span>${wx.valueBlock(s.tokenUrl)}</div>
+            <div class="wa-secret-row"><span class="tx-label">Client ID</span>${wx.valueBlock(s.clientId)}</div>
+            <div class="wa-secret-row"><span class="tx-label">Client secret</span>
+              <div class="wx-value-block"><span class="wx-mono">${secret}</span>
+                <button class="wx-copy" type="button" data-toggle-secret title="${showSecret ? 'Hide' : 'Show'}" aria-label="${showSecret ? 'Hide' : 'Show'} the client secret">${mock.icon(showSecret ? 'VisibilityOffOutlined' : 'VisibilityOutlined', 'sm')}</button>
+                <button class="wx-copy" type="button" data-copy="${esc(s.clientSecret)}" title="Copy" aria-label="Copy the client secret">${mock.icon('ContentCopyOutlined', 'sm')}</button></div></div>
+            <div class="wa-secret-row"><span class="tx-label">DID of your company</span>${wx.valueBlock(s.did)}</div>
+            <div class="wa-secret-row"><span class="tx-label">Credential service</span>${wx.valueBlock(s.credentialServiceUrl)}</div>
+          </div>`;
+      };
+
+      const inlineReveal = (u) => (revealed === u.id && mock.variant('reveal') === 'inline'
+        ? `<div class="wx-reveal">${secretFields()}<div class="wa-actions" style="margin-top: 16px"><button class="tx-btn tx-btn--outlined tx-btn--sm" type="button" data-done>I have entered them</button></div></div>`
+        : '');
+
+      // ── layouts ──────────────────────────────────────────────────────────
+      const layouts = {
+        table: () => `<div class="tx-card" style="padding: 8px 0">
+            <div class="tx-table-wrap"><table class="tx-table">
+              <thead><tr><th>Technical user</th><th>Wallet account</th><th>Access data</th><th>Created</th><th></th></tr></thead>
+              <tbody>${users.map((u) => {
+                const a = account(u);
+                return `<tr><td><div class="wx-cell-main">${esc(u.name)}</div><div class="wx-cell-sub wx-mono">${esc(u.iamClientId)}</div></td>
+                  <td>${wx.chip('accountStatus', a.status)}</td>
+                  <td>${wx.chip('credentialsState', a.credentialsState)}<div class="wx-cell-sub" style="margin-top: 4px">${a.credentialsState === 'AVAILABLE' ? `until ${wx.date(a.credentialsExpireAt)}` : ''}</div></td>
+                  <td>${wx.date(a.createdAt)}</td>
+                  <td style="text-align: right">${action(u, true)}</td></tr>
+                  ${revealed === u.id && mock.variant('reveal') === 'inline' ? `<tr><td colspan="5">${inlineReveal(u)}</td></tr>` : ''}`;
+              }).join('')}</tbody>
+            </table></div>
+          </div>`,
+
+        cards: () => `<div class="wx-cards">${users.map((u) => {
+            const a = account(u);
+            return `<article class="tx-card" style="cursor: default">
+                <div class="tx-row tx-row--between"><span class="tx-tile" aria-hidden="true">${mock.icon('SmartToyOutlined')}</span>${wx.chip('credentialsState', a.credentialsState)}</div>
+                <div><div class="tx-h3">${esc(u.name)}</div><div class="wx-account__meta"><span class="wx-mono">${esc(u.iamClientId)}</span><span>${esc(wx.labels.providerShort[a.provider])}</span><span>Account ${esc(wx.labels.accountStatus[a.status].toLowerCase())}</span></div></div>
+                <p class="tx-muted tx-body2" style="margin: 0">${stateText(a)}</p>
+                <div class="wx-card-foot">${action(u, true) || `<span>Created ${wx.date(a.createdAt)}</span>`}</div>
+                ${inlineReveal(u)}
+              </article>`;
+          }).join('')}</div>`,
+
+        detail: () => {
+          const u = users.find((x) => x.id === selected);
+          const a = account(u);
+          return `<div class="wx-md">
+              <div class="tx-card wx-md__list" role="list">${users.map((x) => `
+                <button class="wx-md__item" type="button" role="listitem" data-select="${x.id}" aria-current="${x.id === selected}">
+                  <span class="tx-row tx-row--between"><span class="wx-cell-main">${esc(x.name)}</span>${wx.chip('credentialsState', account(x).credentialsState)}</span>
+                  <span class="wx-cell-sub wx-mono">${esc(x.iamClientId)}</span>
+                </button>`).join('')}</div>
+              <section class="tx-card wa-detail" aria-labelledby="h-account">
+                <div class="wx-section__head" style="margin: 0"><div><h2 class="tx-h3" id="h-account">${esc(u.name)}</h2><p class="tx-muted tx-body2">${esc(u.description || 'Technical user of your company')}</p></div>${wx.chip('accountStatus', a.status)}</div>
+                <dl class="wx-fields wx-fields--2">
+                  <div class="wx-field"><dt>Client ID in the portal</dt><dd>${wx.copyable(u.iamClientId)}</dd></div>
+                  <div class="wx-field"><dt>Wallet</dt><dd>${esc(wx.labels.provider[a.provider])}</dd></div>
+                  <div class="wx-field"><dt>Access data</dt><dd>${wx.chip('credentialsState', a.credentialsState)}</dd></div>
+                  <div class="wx-field"><dt>Retrievable until</dt><dd>${a.credentialsState === 'AVAILABLE' ? wx.dateTime(a.credentialsExpireAt) : '–'}</dd></div>
+                  <div class="wx-field"><dt>Created</dt><dd>${wx.dateTime(a.createdAt)}</dd></div>
+                  <div class="wx-field"><dt>Wallet account</dt><dd>${wx.copyable(a.walletAccountRef, { short: 8 })}</dd></div>
+                </dl>
+                <div class="tx-alert tx-alert--${a.credentialsState === 'AVAILABLE' ? 'info' : 'success'}">${mock.icon(a.credentialsState === 'AVAILABLE' ? 'KeyOutlined' : 'CheckCircleOutlined')}<div>${stateText(a)}</div></div>
+                ${action(u) ? `<div class="wa-actions">${action(u)}</div>` : ''}
+                ${inlineReveal(u)}
+              </section>
+            </div>`;
+        },
+      };
+
+      function render() {
+        const state = document.body.dataset.state;
+        document.getElementById('persona').innerHTML = wx.persona(state === 'forbidden' ? 'max' : 'erika');
+        document.getElementById('feature-tabs').innerHTML = wx.tabs('wallet-accounts.html');
+        if (state === 'loaded' || state === 'retrieved-meanwhile') {
+          document.getElementById('content').innerHTML = layouts[mock.variant('layout')]();
+        }
+      }
+
+      // ── retrieval (POST …/wallet-account/credentials) ────────────────────
+      function retrieve(userId) {
+        const u = users.find((x) => x.id === userId);
+        if (document.body.dataset.state === 'retrieved-meanwhile') {
+          // 410 already-retrieved: someone else got them first (row lock, C4-M2 7.3).
+          accounts[userId].credentialsState = 'RETRIEVED';
+          document.getElementById('secret-title').textContent = 'Already retrieved';
+          document.getElementById('secret-body').innerHTML = `<div class="tx-alert tx-alert--warning" role="alert">${mock.icon('WarningAmberOutlined')}
+              <div><div>Another person of your company retrieved the access data of ${esc(u.name)} a moment ago (HTTP 410).</div><code>urn:c4-m2:problem:already-retrieved</code></div></div>`;
+          document.getElementById('secret-actions').innerHTML = '<button class="tx-btn" type="button" data-close>Close</button>';
+          document.getElementById('secret-dialog').showModal();
+          render();
+          return;
+        }
+        accounts[userId].credentialsState = 'RETRIEVED';
+        accounts[userId].credentialsExpireAt = null;
+        showSecret = false;
+        if (mock.variant('reveal') === 'inline') {
+          revealed = userId;
+          selected = userId;
+          render();
+          return;
+        }
+        document.getElementById('secret-title').textContent = `Access data of ${u.name}`;
+        document.getElementById('secret-body').innerHTML = secretFields();
+        document.getElementById('secret-actions').innerHTML = mock.variant('reveal') === 'download'
+          ? `<button class="tx-btn tx-btn--outlined" type="button" data-close data-done>Close</button><button class="tx-btn" type="button" data-download>${mock.icon('DownloadOutlined', 'sm')}Download as a file</button>`
+          : '<button class="tx-btn" type="button" data-close data-done>I have entered them</button>';
+        document.getElementById('secret-dialog').showModal();
+        render();
+      }
+
+      mock.on('click', '[data-retrieve]', (_e, el) => {
+        const u = users.find((x) => x.id === el.dataset.retrieve);
+        if (mock.variant('confirm') === 'ask') {
+          pending = u.id;
+          document.getElementById('confirm-text').textContent = `The token address, client ID and client secret of ${u.name} for your dataspace wallet.`;
+          document.getElementById('confirm-dialog').showModal();
+        } else {
+          retrieve(u.id);
+        }
+      });
+      mock.on('click', '[data-confirm-retrieve]', () => {
+        document.getElementById('confirm-dialog').close();
+        retrieve(pending);
+      });
+      mock.on('click', '[data-toggle-secret]', () => {
+        showSecret = !showSecret;
+        if (document.getElementById('secret-dialog').open) {
+          document.getElementById('secret-body').innerHTML = secretFields();
+        } else {
+          render();
+        }
+      });
+      mock.on('click', '[data-download]', () => {
+        const s = data.walletAccountCredentials;
+        const blob = new Blob([JSON.stringify(s, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `wallet-account-${s.walletAccountRef}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        mock.toast('Downloaded');
+      });
+      mock.on('click', '[data-done]', () => { revealed = null; showSecret = false; render(); });
+      mock.on('click', '[data-select]', (_e, el) => { selected = el.dataset.select; revealed = null; render(); });
+      mock.on('click', '[data-state-button]', () => {
+        Object.assign(accounts, JSON.parse(JSON.stringify(data.walletAccounts)));
+        revealed = null;
+        setTimeout(render);
+      });
+      mock.onConfigure(() => { revealed = null; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "name": "c1-m3-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/c1-m3-core/src",
+  "tags": [
+    "type:core",
+    "scope:c1-m3"
+  ],
+  "targets": {
+    "generate-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx --yes --package=openapi-typescript@7.13.0 openapi-typescript ../../specs/c1-m3/openapi.yaml -o src/generated/c1-m3-api.d.ts && npx --yes --package=openapi-typescript@7.13.0 openapi-typescript ../../specs/c1-m3/registration.openapi.yaml -o src/generated/registration-api.d.ts",
+        "cwd": "packages/c1-m3-core"
+      }
+    },
+    "check-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "python3 packages/c1-m3-core/check-api.py"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -p tsconfig.json",
+        "cwd": "packages/c1-m3-core"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run",
+        "cwd": "packages/c1-m3-core"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint packages/c1-m3-core"
+      }
+    }
+  }
+}
