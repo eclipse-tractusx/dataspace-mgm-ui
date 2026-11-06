@@ -41,7 +41,8 @@
   "actions": {
     "markRead": "Als gelesen markieren",
     "markUnread": "Als ungelesen markieren",
-    "hide": "Ausblenden"
+    "hide": "Ausblenden",
+    "labelFor": "Aktionen für {{title}}"
   },
   "outcome": {
     "changed": {
@@ -93,6 +94,9 @@
       "subjectType": "Gegenstand",
       "subjectId": "ID des Gegenstands",
       "bpn": "Business Partner Number"
-    }
-  }
+    },
+    "label": "Details",
+    "none": "Keine weiteren Details."
+  },
+  "backToList": "Zurück zur Liste"
 }
