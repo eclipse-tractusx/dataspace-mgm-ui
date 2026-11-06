@@ -46,6 +46,26 @@ import {
   InMemoryCredentialRepository,
 } from '@dataspace-mgm/c4-m1-core/testing';
 import type { CompanyAnemic } from '@dataspace-mgm/c3-m1-core';
+import { BEISPIEL_MASCHINENBAU } from '@dataspace-mgm/c3-m1-core/testing';
+import {
+  GetOwnWalletUseCase,
+  ListWalletAccountsUseCase,
+  RetrieveWalletAccountCredentialsUseCase,
+  type C4M2Module,
+  type TechnicalUserRefAnemic,
+  type WalletAccountAnemic,
+  type WalletAnemic,
+} from '@dataspace-mgm/c4-m2-core';
+import {
+  BEISPIEL_MASCHINENBAU_COMPANY_ID,
+  BEISPIEL_MASCHINENBAU_TECHNICAL_USERS,
+  BEISPIEL_MASCHINENBAU_WALLET,
+  BEISPIEL_MASCHINENBAU_WALLET_ACCOUNTS,
+  InMemoryTechnicalUserDirectory,
+  InMemoryWalletAccountRepository,
+  InMemoryWalletRepository,
+  WALLET_ACCOUNT_CREDENTIALS,
+} from '@dataspace-mgm/c4-m2-core/testing';
 import type { SessionAnemic } from '@dataspace-mgm/identity-core';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render } from '@testing-library/react';
@@ -59,6 +79,8 @@ export const ERIKA = MOCK_PERSONS['wallets-erika'];
 export const MAX = MOCK_PERSONS['wallets-max'];
 export const OTTO = MOCK_PERSONS['wallets-otto'];
 export const ROLF = MOCK_PERSONS['wallets-rolf'];
+/** Beispiel Maschinenbau GmbH in C3-M1 (the fixtures of participant management), the company of Erika and Max. */
+export const ERIKAS_COMPANY: CompanyAnemic = BEISPIEL_MASCHINENBAU;
 
 /** "Now" of the mockup for the page (relative times) and the adapters (open orders, revocation time). */
 export function atFixturesNow() {
@@ -95,6 +117,30 @@ export function recordingC4M1(options: RecordingOptions = {}) {
     listOpenItems: new ListOpenItemsUseCase(credentialRepository),
   };
   return { module, companyRepository, credentialRepository };
+}
+
+interface RecordingC4M2Options {
+  wallets?: ReadonlyArray<WalletAnemic>;
+  walletFailure?: Error;
+  technicalUsers?: ReadonlyArray<TechnicalUserRefAnemic>;
+  technicalUserFailure?: Error;
+  walletAccounts?: ReadonlyArray<WalletAccountAnemic>;
+}
+
+/** C4-M2 on in-memory adapters whose calls the test can read (the access data of sa201 can be retrieved once). */
+export function recordingC4M2(options: RecordingC4M2Options = {}) {
+  const walletRepository = new InMemoryWalletRepository(options.wallets ?? [BEISPIEL_MASCHINENBAU_WALLET], options.walletFailure ?? null);
+  const directory = new InMemoryTechnicalUserDirectory(
+    { [BEISPIEL_MASCHINENBAU_COMPANY_ID]: options.technicalUsers ?? BEISPIEL_MASCHINENBAU_TECHNICAL_USERS },
+    options.technicalUserFailure ?? null,
+  );
+  const accountRepository = new InMemoryWalletAccountRepository(options.walletAccounts ?? BEISPIEL_MASCHINENBAU_WALLET_ACCOUNTS, [WALLET_ACCOUNT_CREDENTIALS]);
+  const module: C4M2Module = {
+    getOwnWallet: new GetOwnWalletUseCase(walletRepository),
+    listWalletAccounts: new ListWalletAccountsUseCase(directory, accountRepository),
+    retrieveWalletAccountCredentials: new RetrieveWalletAccountCredentialsUseCase(accountRepository),
+  };
+  return { module, accountRepository };
 }
 
 function LocationProbe() {

@@ -65,6 +65,15 @@ describe('mock mode', () => {
     expect(all?.status === 'found' && all.page.total).toBe(16);
   });
 
+  it('serves the dataspace wallet and the wallet accounts of C4-M2 from the fixtures of the mockup (proof of concept)', async () => {
+    const { c3m1, c4m2 } = createMockCoreModules('wallets-erika');
+    const { companyId } = MOCK_PERSONS['wallets-erika'];
+    expect(await c4m2?.getOwnWallet.execute(companyId)).toMatchObject({ status: 'found', wallet: { provider: 'CSP', status: 'ACTIVE' } });
+    const accounts = await c4m2?.listWalletAccounts.execute(companyId);
+    expect(accounts?.status === 'found' && accounts.items.map((item) => item.technicalUser.iamClientId)).toEqual(['sa201', 'sa202']);
+    expect(await c3m1.getOwnCompany.execute(companyId)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH', bpn: 'BPNLIUK2REMLK3F4' } });
+  });
+
   it('starts signed out for a person key it does not know', async () => {
     const modules = createMockCoreModules('none');
     expect(await modules.identity.getCurrentSession.execute()).toBeNull();

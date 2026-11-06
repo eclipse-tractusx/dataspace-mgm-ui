@@ -79,6 +79,7 @@ describe('Wallets as a service: registry', () => {
       'wallets/credentials',
       'wallets/all-credentials',
       'wallets/all-credentials/:credentialId',
+      'wallets/wallet-accounts',
     ]);
   });
 });
