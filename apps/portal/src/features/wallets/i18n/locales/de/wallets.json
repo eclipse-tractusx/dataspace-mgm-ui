@@ -1,0 +1,209 @@
+{
+  "overline": "Wallets as a Service",
+  "tabs": {
+    "label": "Wallets as a Service",
+    "credentials": "Nachweise",
+    "allCredentials": "Nachweise aller Unternehmen"
+  },
+  "common": {
+    "signInPrompt": "Melden Sie sich an, um die Wallets und Nachweise zu sehen.",
+    "signIn": "Anmelden",
+    "sessionFailed": "Ihre Sitzung konnte nicht gelesen werden: {{message}}",
+    "notConnected": "Wallets as a Service ist in dieser Installation noch nicht an sein Backend angebunden.",
+    "failed": "Die Nachweise konnten nicht geladen werden: {{message}}",
+    "failedWithStatus": "Die Nachweise konnten nicht geladen werden (HTTP {{status}}): {{message}}",
+    "none": "–",
+    "notKnown": "Noch nicht bekannt",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "copyValue": "{{value}} kopieren"
+  },
+  "landing": {
+    "title": "Wallets as a Service",
+    "loading": "Wallets as a Service wird geöffnet…",
+    "noAccess": "Sie dürfen die Nachweise und Wallets nicht sehen. Bitten Sie Ihren Company Admin um die Rolle IT Admin."
+  },
+  "credentialType": {
+    "BPN": "BPN-Nachweis",
+    "MEMBERSHIP": "Mitgliedschaftsnachweis"
+  },
+  "credentialTypeShort": {
+    "BPN": "BPN",
+    "MEMBERSHIP": "Mitgliedschaft"
+  },
+  "credentialTypeTech": {
+    "BPN": "BpnCredential",
+    "MEMBERSHIP": "MembershipCredential"
+  },
+  "credentialDescription": {
+    "BPN": "Weist den Konnektoren Ihrer Partner die Business Partner Number Ihres Unternehmens nach.",
+    "MEMBERSHIP": "Weist nach, dass Ihr Unternehmen Mitglied des Datenraums ist. Konnektoren teilen Daten nur mit Mitgliedern."
+  },
+  "credentialStatus": {
+    "NONE": "Noch nicht angefordert",
+    "REQUESTED": "Wird ausgestellt",
+    "ISSUED": "Ausgestellt",
+    "FAILED": "Fehlgeschlagen",
+    "CANCELLED": "Abgebrochen",
+    "REVOCATION_PENDING": "Widerruf ausstehend",
+    "REVOKED": "Widerrufen"
+  },
+  "route": {
+    "CREDENTIAL_ISSUER": "Credential Issuer",
+    "ISSUER_SERVICE": "IssuerService",
+    "CSP_ISSUER": "Aussteller des CSP",
+    "STUB": "Platzhalter"
+  },
+  "walletProvider": {
+    "CSP": "Datenraum-Wallet des CSP",
+    "SAP_DIV": "SAP DIV",
+    "IDENTITY_HUB": "IdentityHub Ihres Onboarding-Service-Providers",
+    "BRING_YOUR_OWN": "Eigene Wallet",
+    "STUB": "Platzhalter"
+  },
+  "revocationReason": {
+    "COMPANY_DEACTIVATED": "Unternehmen deaktiviert",
+    "OTHER": "Anderer Grund"
+  },
+  "ago": {
+    "minutes_one": "vor {{count}} Min.",
+    "minutes_other": "vor {{count}} Min.",
+    "hours_one": "vor {{count}} Std.",
+    "hours_other": "vor {{count}} Std.",
+    "days_one": "vor {{count}} Tag",
+    "days_other": "vor {{count}} Tagen"
+  },
+  "duration": {
+    "minutes_one": "{{count}} Min.",
+    "minutes_other": "{{count}} Min.",
+    "hours_one": "{{count}} Std.",
+    "hours_other": "{{count}} Std.",
+    "days_one": "{{count}} Tag",
+    "days_other": "{{count}} Tagen"
+  },
+  "pass": {
+    "label": "{{name}} von {{dataspace}}",
+    "whatIs": "Was ist der {{name}}?",
+    "bpn": "Business Partner Number",
+    "memberOf": "Mitglied von",
+    "requested": "Angefordert",
+    "issued": "Ausgestellt",
+    "revoked": "Widerrufen",
+    "statusLine": {
+      "NONE": "Wird beim Onboarding angefordert, nachdem Ihre Datenraum-Wallet eingerichtet ist.",
+      "REQUESTED": "Angefordert {{ago}}. Der Aussteller legt ihn in Ihre Wallet; das dauert meist wenige Minuten.",
+      "ISSUED": "Seit {{dateTime}} in Ihrer Wallet.",
+      "FAILED": "Der Aussteller konnte ihn nicht ausstellen. Ihr Onboarding-Service-Provider kann einen neuen Versuch starten.",
+      "CANCELLED": "Die Anforderung wurde abgebrochen.",
+      "REVOCATION_PENDING": "Ihr Onboarding-Service-Provider widerruft ihn.",
+      "REVOKED": "Widerrufen am {{dateTime}}. Konnektoren akzeptieren ihn nicht mehr."
+    }
+  },
+  "yourCredentials": {
+    "title": "Ihre Nachweise",
+    "loading": "Ihre Nachweise werden geladen…",
+    "noAccess": "Sie dürfen die Nachweise Ihres Unternehmens nicht sehen. Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "forbidden": "Sie dürfen die Nachweise Ihres Unternehmens nicht sehen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "noCompany": "Ihr Konto ist keinem Unternehmen zugeordnet. Die Nachweise gehören den Unternehmen des Datenraums.",
+    "notFound": "Die Nachweise Ihres Unternehmens wurden bei Ihrem Onboarding-Service-Provider nicht gefunden."
+  },
+  "allCredentials": {
+    "title": "Nachweise aller Unternehmen",
+    "lead": "Die BPN- und Mitgliedschaftsnachweise, die dieser Onboarding-Service-Provider angestoßen hat, neueste Änderung zuerst.",
+    "loading": "Die Nachweise werden geladen…",
+    "noAccess": "Sie dürfen die Nachweise der Unternehmen nicht sehen. Dafür ist die Rolle OSP Admin nötig.",
+    "forbidden": "Sie dürfen die Nachweise der Unternehmen nicht sehen (HTTP 403). Dafür ist die Rolle OSP Admin nötig.",
+    "invalid": "Der Onboarding-Service-Provider hat die Filter nicht angenommen (HTTP 400).",
+    "needsAttention": "Braucht Aufmerksamkeit",
+    "attentionItem": "{{credential}} von {{company}}",
+    "all": "Alle Nachweise"
+  },
+  "note": {
+    "revokeByHand": "Beim Credential Issuer von Hand widerrufen, dann bestätigen",
+    "openFor": "seit {{duration}}",
+    "openForAttempt": "seit {{duration}} · Versuch {{attempt}}"
+  },
+  "filters": {
+    "label": "Filter",
+    "openOnly": "Länger als {{hours}} Std. offen",
+    "credentialType": "Nachweisart",
+    "allCredentialTypes": "Alle Nachweisarten"
+  },
+  "table": {
+    "company": "Unternehmen",
+    "credential": "Nachweis",
+    "status": "Status",
+    "route": "Weg",
+    "changed": "Geändert"
+  },
+  "pager": {
+    "label": "Seiten",
+    "total_one": "{{count}} Nachweis",
+    "total_other": "{{count}} Nachweise",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {{page}} von {{pages}}"
+  },
+  "noResults": {
+    "title": "Kein Nachweis passt zu den Filtern",
+    "text": "Ändern Sie die Filter oder setzen Sie sie zurück.",
+    "reset": "Filter zurücksetzen"
+  },
+  "credential": {
+    "title": "Nachweis",
+    "back": "Nachweise aller Unternehmen",
+    "loading": "Der Nachweis wird geladen…",
+    "notFound": "Diesen Nachweis gibt es bei diesem Onboarding-Service-Provider nicht.",
+    "companyLine": "{{name}} · {{bpn}}",
+    "alert": {
+      "failedTitle": "Meldung des Ausstellers",
+      "failedNext": "Die Process Orchestration sendet beim nächsten Versuch nur diesen Nachweis erneut.",
+      "pending": "<strong>Widerrufen Sie diesen Nachweis von Hand beim Credential Issuer.</strong> Der Weg {{route}} kann ihn nicht selbst widerrufen. Bestätigen Sie den Widerruf danach hier.",
+      "waiting": "Wartet seit {{dateTime}} auf die Statusmeldung des Ausstellers (Versuch {{attempt}})."
+    },
+    "facts": {
+      "status": "Status",
+      "credentialType": "Nachweisart",
+      "company": "Unternehmen",
+      "attempt": "Versuch",
+      "revocationReason": "Grund des Widerrufs"
+    },
+    "issuer": {
+      "title": "Aussteller und Inhaber",
+      "route": "Weg",
+      "issuer": "Aussteller",
+      "ospIssuer": "Credential Issuer dieses OSP (für diesen Weg keine DID)",
+      "wallet": "Wallet des Inhabers",
+      "holderDid": "DID des Inhabers",
+      "order": "Auftrag beim Weg",
+      "noOrder": "Für diesen Weg keiner",
+      "id": "Nachweis-ID"
+    },
+    "lifeCycle": {
+      "title": "Lebenszyklus",
+      "requested": "Angefordert (Versuch {{attempt}})",
+      "failed": "Fehlgeschlagen",
+      "issued": "Ausgestellt",
+      "pending": "Widerruf ausstehend",
+      "revoked": "Widerrufen"
+    }
+  },
+  "confirm": {
+    "button": "Widerruf bestätigen",
+    "title": "Den Widerruf bestätigen",
+    "lead": "Erst nachdem Sie den {{credential}} von {{company}} beim Credential Issuer widerrufen haben.",
+    "noteLabel": "Notiz zum Widerruf",
+    "notePlaceholder": "Wann und wo er widerrufen wurde, zum Beispiel das Ticket",
+    "noteHelp": "Wird in der Historie des Nachweises gespeichert. Keine Namen von Personen.",
+    "count": "{{length}} / {{max}}",
+    "cancel": "Abbrechen",
+    "done": "Widerruf bestätigt",
+    "conflict": "Der Nachweis wartet nicht mehr auf einen Widerruf (HTTP 409). Laden Sie ihn neu, um seinen Status zu sehen.",
+    "forbidden": "Sie dürfen keine Widerrufe bestätigen (HTTP 403). Dafür ist die Rolle OSP Admin nötig."
+  },
+  "validation": {
+    "revocationNoteRequired": "Geben Sie eine Notiz mit 1 bis 500 Zeichen ein.",
+    "revocationNoteTooLong": "Die Notiz darf höchstens 500 Zeichen haben.",
+    "revocationNoteRejected": "Der Onboarding-Service-Provider hat die Notiz nicht angenommen (HTTP 400)."
+  }
+}
