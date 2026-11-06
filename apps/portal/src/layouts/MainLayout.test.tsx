@@ -30,6 +30,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import ErrorNotFound from '../components/general/ErrorNotFound';
 import { FavouritesProvider } from '../contexts/FavouritesContext';
+import { TestCoreModules } from '../core/testing';
 import { features } from '../features/main';
 import Home from '../features/home/pages/Home';
 import AllServicesPage from '../pages/AllServicesPage';
@@ -39,15 +40,17 @@ const at = (path: string) =>
   render(
     <ColorModeProvider>
       <MemoryRouter initialEntries={[path]}>
-        <FavouritesProvider items={features}>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />} />
-              <Route path="all-services" element={<AllServicesPage />} />
-              <Route path="*" element={<ErrorNotFound />} />
-            </Route>
-          </Routes>
-        </FavouritesProvider>
+        <TestCoreModules>
+          <FavouritesProvider items={features}>
+            <Routes>
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<Home />} />
+                <Route path="all-services" element={<AllServicesPage />} />
+                <Route path="*" element={<ErrorNotFound />} />
+              </Route>
+            </Routes>
+          </FavouritesProvider>
+        </TestCoreModules>
       </MemoryRouter>
     </ColorModeProvider>,
   );

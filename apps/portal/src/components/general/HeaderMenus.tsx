@@ -32,6 +32,7 @@ import {
   ListItemIcon,
   ListItemText,
   LoginIcon,
+  LogoutIcon,
   Menu,
   MenuItem,
   NotificationsOutlinedIcon,
@@ -41,6 +42,8 @@ import {
   alpha,
   tractusx,
 } from '@dataspace-mgm/ui-mui';
+import { useLocation } from 'react-router-dom';
+import { useCoreModules, useSession } from '../../core/CoreModulesContext';
 
 /**
  * Where a menu button sits, which decides where its menu opens: below it in the header, above it in the
@@ -82,11 +85,19 @@ function useMenu() {
 }
 
 /**
- * Profile of the signed-in person. Sign-in is handled by the backend (BFF session, GET /me) and is not
- * wired yet, so the menu shows the guest state.
+ * Profile of the signed-in person, from the session of the BFF (GET /me through identity-core). Sign-in and sign-out
+ * leave the app for the BFF; the UI has no login screen and never sees a token.
  */
 export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacement }) {
   const menu = useMenu();
+  const session = useSession();
+  const { identity } = useCoreModules();
+  const { pathname } = useLocation();
+  const person = session.status === 'signed-in' ? session.session : null;
+  const signOut = () => {
+    menu.hide();
+    identity.logout.execute().then(() => window.location.assign('/'));
+  };
   return (
     <>
       <Tooltip title="Profile" placement={placement === 'rail' ? 'right' : 'bottom'}>
@@ -111,9 +122,9 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
         {...originsFor(placement)}
       >
         <MenuItem disabled sx={{ opacity: '1 !important', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <Typography sx={{ fontWeight: 700 }}>Guest</Typography>
+          <Typography sx={{ fontWeight: 700 }}>{person ? person.user.name : 'Guest'}</Typography>
           <Typography variant="body2" color="text.secondary">
-            Not signed in
+            {person ? (person.bpn ?? 'No company yet') : session.status === 'loading' ? 'Checking the session…' : 'Not signed in'}
           </Typography>
         </MenuItem>
         <Divider />
@@ -123,12 +134,21 @@ export function ProfileMenu({ placement = 'header' }: { placement?: MenuPlacemen
           </ListItemIcon>
           <ListItemText primary="My profile" secondary="Coming soon" />
         </MenuItem>
-        <MenuItem disabled>
-          <ListItemIcon>
-            <LoginIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Sign in" secondary="Arrives with the identity module" />
-        </MenuItem>
+        {person ? (
+          <MenuItem onClick={signOut}>
+            <ListItemIcon>
+              <LogoutIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Sign out" />
+          </MenuItem>
+        ) : (
+          <MenuItem disabled={session.status === 'loading'} onClick={() => identity.login.execute(pathname)}>
+            <ListItemIcon>
+              <LoginIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Sign in" />
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

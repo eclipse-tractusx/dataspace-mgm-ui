@@ -28,12 +28,12 @@ import {
   AccountBalanceWalletOutlinedIcon,
   AppRegistrationOutlinedIcon,
   CableOutlinedIcon,
-  GroupsOutlinedIcon,
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
 import type { FeatureCategory, FeatureConfig, NavigationItem } from '../types/routing';
 import { homeFeature } from './home/routes';
+import { participantsFeature } from './participants/routes';
 
 /**
  * Features that are announced but not built yet: shown greyed out as "coming soon", without routes. Their version
@@ -74,14 +74,7 @@ export const allFeatures: FeatureConfig[] = [
     '/onboarding',
     '0.2.0',
   ),
-  upcoming(
-    'Participant management',
-    'Company data, business partner numbers, users and technical users of every participant.',
-    'participants',
-    <GroupsOutlinedIcon />,
-    '/participants',
-    '0.2.0',
-  ),
+  participantsFeature,
   upcoming(
     'Connectors as a service',
     'Run and monitor dataspace connectors for your participants, so they do not have to host their own.',

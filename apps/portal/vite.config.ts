@@ -27,19 +27,22 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
+import { workspaceAliases } from '../../workspace.aliases';
+import { devBff, devBffOptions } from './dev-bff/dev-bff';
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 const { version } = JSON.parse(readFileSync(here('../../package.json'), 'utf8')) as { version: string };
 
-export default defineConfig({
+// `npm start` runs the dev BFF (dev-bff/dev-bff.ts): /me, /auth/* and /api → the backend, with the token of a test
+// person. Its settings come from DEV_BFF_* in the environment or in apps/portal/.env.local (git-ignored).
+export default defineConfig(({ mode }) => ({
   root: here('.'),
   cacheDir: here('../../node_modules/.vite/apps/portal'),
-  plugins: [react()],
+  plugins: [react(), devBff(devBffOptions(loadEnv(mode, here('.'), 'DEV_BFF_'), here('../..')))],
   define: { __APP_VERSION__: JSON.stringify(version) },
-  resolve: {
-    alias: { '@dataspace-mgm/ui-mui': here('../../libs/shared/ui-mui/src/index.ts') },
-  },
+  resolve: { alias: workspaceAliases },
   server: { host: 'localhost', port: 4200 },
   preview: { host: 'localhost', port: 4300 },
   build: {
@@ -50,6 +53,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'dev-bff/**/*.test.ts'],
   },
-});
+}));

@@ -33,6 +33,23 @@ export default defineConfig([
           patterns: [
             { group: ['@mui/*'], message: 'Import MUI only inside libs/shared/ui-mui; use @dataspace-mgm/ui-mui.' },
             { group: ['**/libs/shared/*/src/*'], message: 'Import a library by its alias, not by a deep path.' },
+            { group: ['**/packages/*/src/*'], message: 'Import a core package by its alias, not by a deep path.' },
+            { group: ['openapi-fetch'], message: 'Call a backend module only through a use case of its core package.' },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Core packages are framework-free (docs/architecture/README.md): no React, no UI library, no state library.
+    files: ['packages/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['react', 'react-*', 'react/*', '@mui/*', '@dataspace-mgm/ui-mui', '@reduxjs/*'], message: 'Core packages are framework-free.' },
+            { group: ['**/packages/*/src/*'], message: 'Import another core package by its alias, not by a deep path.' },
           ],
         },
       ],

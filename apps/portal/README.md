@@ -64,7 +64,13 @@ apps/portal/src/
 
 When a feature talks to a backend module, its calls go through the framework-free core package of that module
 (`packages/<module>-core`, generated from `specs/<module>/openapi.yaml`), never directly from a page
-([architecture rules](../../docs/architecture/README.md#rules)).
+([architecture rules](../../docs/architecture/README.md#rules)). The example is the feature
+[participants](src/features/participants): it reads the own company from C3-M1 through
+[packages/c3-m1-core](../../packages/c3-m1-core), wired in [src/core/container.ts](src/core/container.ts). The
+step-by-step guide is [docs/developers/integrate-a-backend-module.md](../../docs/developers/integrate-a-backend-module.md).
+
+`npm start` runs the development BFF of [dev-bff/dev-bff.ts](dev-bff/dev-bff.ts) (`/me`, `/auth/*`, `/api` →
+backend with the token of a test person); its settings are in [.env.example](.env.example).
 
 ## Rules enforced by the linter
 

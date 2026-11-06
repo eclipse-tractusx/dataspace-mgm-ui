@@ -1,0 +1,21 @@
+{
+  "name": "core-http",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/core-http/src",
+  "tags": ["type:core", "scope:shared"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -p tsconfig.json", "cwd": "packages/core-http" }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run", "cwd": "packages/core-http" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "command": "eslint packages/core-http" }
+    }
+  }
+}

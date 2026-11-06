@@ -37,6 +37,7 @@ import {
   favouritesOf,
   toggleHidden,
 } from '../../contexts/FavouritesContext';
+import { TestCoreModules } from '../../core/testing';
 import { features } from '../../features/main';
 import ServiceTiles from '../services/ServiceTiles';
 import BottomBar from './BottomBar';
@@ -47,7 +48,9 @@ const wrap = (ui: ReactElement, path = '/') =>
   render(
     <ColorModeProvider>
       <MemoryRouter initialEntries={[path]}>
-        <FavouritesProvider items={features}>{ui}</FavouritesProvider>
+        <TestCoreModules>
+          <FavouritesProvider items={features}>{ui}</FavouritesProvider>
+        </TestCoreModules>
       </MemoryRouter>
     </ColorModeProvider>,
   );
@@ -136,7 +139,8 @@ describe('All services on desktop', () => {
     const carousel = screen.getByRole('region', { name: 'Services' });
     expect(within(carousel).getAllByRole('listitem')).toHaveLength(features.length);
     expect(within(carousel).getByRole('button', { name: 'Open Home' })).toBeEnabled();
-    expect(within(carousel).getByRole('button', { name: 'Participant management, coming soon' })).toBeDisabled();
+    expect(within(carousel).getByRole('button', { name: 'Open Participant management' })).toBeEnabled();
+    expect(within(carousel).getByRole('button', { name: 'Onboarding, coming soon' })).toBeDisabled();
 
     // The description is not on the card: it shows in the tooltip of the info button, with the version.
     const wallets = features.find((service) => service.path === '/wallets')!;
