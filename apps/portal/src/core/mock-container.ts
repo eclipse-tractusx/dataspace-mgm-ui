@@ -290,6 +290,7 @@ export class ConfigurableRedirect implements RedirectPort {
  * Pia is the Company Admin of OSP A with the permission keys of the spec's /me response (SPEC_ME_RESPONSES).
  * Erika, Max and Hans are applicants (C1-M2 Registration); `erika-c3`, `max-c3`, `hans-c3` are the same persons after
  * onboarding, bound to their companies (participant management, C3-M1); `wallets-*` are the persons of C4-M1.
+ * The spec login response (`SPEC_ME_RESPONSES`) is a separate set: the GET /me bodies of the backend test data.
  */
 export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: toSessionAnemic(SPEC_ME_RESPONSES.pia),
@@ -362,7 +363,8 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
   return {
     identity: createIdentityModule({
       bffBaseUrl: '',
-      sessions: persistentSessionRepository(session),
+      // The person of MOCK_PERSONS, the one the fixtures below are bound to; the GET /me body of the spec on request.
+      sessions: isSpecLoginResponseEnabled() ? createSpecSessionRepository(person) : persistentSessionRepository(session),
       redirect: new ConfigurableRedirect('', 'eudi'),
     }),
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.

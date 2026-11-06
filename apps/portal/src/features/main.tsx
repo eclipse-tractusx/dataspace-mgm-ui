@@ -36,9 +36,9 @@ import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
 import { accessControlFeature } from './access-control';
 import { homeFeature } from './home/routes';
-import { notificationsFeature } from './notifications/routes';
 import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
+import { notificationsFeature } from './notifications/routes';
 import { walletsFeature } from './wallets/routes';
 
 const ReviewRoutes = lazy(() => import('./review/review-routes'));
