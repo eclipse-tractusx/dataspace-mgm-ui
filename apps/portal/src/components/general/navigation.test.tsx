@@ -27,6 +27,7 @@
 import type { ReactElement } from 'react';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import i18n from 'i18next';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
@@ -56,6 +57,9 @@ const wrap = (ui: ReactElement, path = '/') =>
   );
 
 beforeEach(() => localStorage.clear());
+
+/** A feature's name or description in the language of the test (English). */
+const text = (id: string, field: 'name' | 'description' = 'name') => i18n.t(`features.${id}.${field}`);
 
 describe('favourites', () => {
   it('are every feature until one is taken out, with Home always first', () => {
@@ -124,9 +128,9 @@ describe('Bottom bar', () => {
 
 describe('All services on phones', () => {
   it('shows every service as a tile and marks the upcoming ones, then the settings', () => {
-    wrap(<ServiceTiles services={features} />, '/all-services');
+    wrap(<ServiceTiles services={features.map((item) => ({ ...item, name: text(item.id), description: text(item.id, 'description') }))} />, '/all-services');
     for (const item of features) {
-      expect(screen.getByRole('button', { name: new RegExp(`^${item.name}`) })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: new RegExp(`^${text(item.id)}`) })).toBeInTheDocument();
     }
     expect(screen.getAllByText('Coming soon')).toHaveLength(features.filter((item) => item.disabled).length);
     expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument();
@@ -144,10 +148,10 @@ describe('All services on desktop', () => {
 
     // The description is not on the card: it shows in the tooltip of the info button, with the version.
     const wallets = features.find((service) => service.path === '/wallets')!;
-    expect(within(carousel).queryByText(wallets.description)).toBeNull();
+    expect(within(carousel).queryByText(text(wallets.id, 'description'))).toBeNull();
     fireEvent.mouseOver(within(carousel).getByRole('button', { name: 'About Wallets as a service' }));
     const tooltip = await screen.findByRole('tooltip');
-    expect(tooltip).toHaveTextContent(wallets.description);
+    expect(tooltip).toHaveTextContent(text(wallets.id, 'description'));
     expect(tooltip).toHaveTextContent(`v${wallets.version}`);
 
     fireEvent.click(within(screen.getByRole('group', { name: 'Filter services' })).getByRole('button', { name: /^As a service/ }));

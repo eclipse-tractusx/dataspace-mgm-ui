@@ -55,10 +55,14 @@ $G --strict        # exit 1 on a blocker or high finding
 | `new WebSocket(` | high | 01.8 (SSE only) |
 | `src/generated/` changed without a change in `specs/` | high | 01.7 (never edit generated code) |
 | new import of `@catena-x/portal-shared-components`, deep import `@portal/<x>/src/…` | high | 12, 01.7 |
+| a text in a `.tsx` (JSX text, or a string in `aria-label`, `title`, `label`, `placeholder`, `alt`, `primary`, `secondary`, `titleAccess`, `helperText`) instead of an i18n key | high | [translations](../../../docs/developers/translations.md) |
+| a locale file (`…/locales/<language>/<file>.json`) changed in one language but not in the others of its folder | high | [translations](../../../docs/developers/translations.md) |
 | `package.json` / `package-lock.json` changed without `DEPENDENCIES` | high | TRG 7.04 |
 | secrets in added lines; license headers on new files; AI co-author instead of `Assisted-by`; Conventional Commits | as in the service | TRG 7.02, 1.03 |
 
-Test files (`*.spec.*`, `*.test.*`), `mocks/` and `testing/` are exempt from the architecture rules.
+Test files (`*.spec.*`, `*.test.*`), `mocks/` and `testing/` are exempt from the architecture rules. The text check is
+a heuristic on added lines: a line that must keep a literal carries the comment `i18n-exempt`. Strings in plain
+TypeScript (a ternary in JSX, a constant) slip through; the tests catch keys without a text, the review the rest.
 
 When `specs/` changed, also run `contract-seam vendored`: a copy that differs from the backend spec breaks on the first
 integration.

@@ -28,8 +28,7 @@ import type { FeatureConfig } from '../types/routing';
 import { getAllRoutes, isOpen } from './main';
 
 const feature = (overrides: Partial<FeatureConfig>): FeatureConfig => ({
-  name: 'Onboarding',
-  description: 'Register companies.',
+  id: 'onboarding',
   version: '0.2.0',
   category: 'onboarding',
   icon: <span />,

@@ -41,12 +41,31 @@ including when you are not explicitly selected as that agent.
 
 ## The rules of this repository come first
 
-The UI follows the frontend architecture (portal-frontend-spec: `HACKATHON-FRONTEND.md`, `architecture/01` to `14`):
-no business decisions in the UI (the API returns flags), no tokens and no Keycloak in the browser (the BFF holds the
+The UI follows the frontend architecture (portal-frontend-spec: `HACKATHON-FRONTEND.md`, `architecture/01` to `14`): no
+business decisions in the UI (the API returns flags), no tokens and no Keycloak in the browser (the BFF holds the
 session), every call through a use case of a framework-free core package, types generated from
 `specs/<module>/openapi.yaml` and never edited, RTK Query endpoints with `queryFn`, SSE instead of WebSockets or
-polling, texts and errors as i18n keys, one type per file, `if` always with braces. The backend contract is the backend
-spec (portal-backend-spec); where the two disagree, name the seam with the `contract-seam` skill.
+polling, texts and errors as i18n keys in every supported language (below), one type per file, `if` always with braces.
+The backend contract is the backend spec (portal-backend-spec); where the two disagree, name the seam with the
+`contract-seam` skill.
+
+## Translations: always, in every language
+
+Every text a person can see or hear in the UI is an i18n key, and every change that adds or changes one carries the
+text in **every supported language** (`SUPPORTED_LANGUAGES` in `apps/portal/src/i18n/index.ts`: today English and
+German) in the same commit. Never leave a language for later, never hard-code a string "for now", never ship a key
+that only English has. The guide is [`docs/developers/translations.md`](../docs/developers/translations.md):
+
+- Shell texts (header, navigation, footer, `features.<id>.name` / `.description`) go to
+  `apps/portal/src/i18n/locales/<language>/common.json`; a feature's own texts to
+  `apps/portal/src/features/<feature>/i18n/locales/<language>/<feature>.json`, the namespace loaded lazily through
+  `translations` in its `FeatureConfig`. A new feature copies `features/participants/i18n/`.
+- Keys, not strings, also for `aria-label`, `title`, `alt`, `placeholder`, tooltips, chips, alerts and the loading,
+  empty and error states; values by interpolation (`{{name}}`), counts by plurals (`_one` / `_other`), values of the
+  API as keys (`status.ACTIVE`), dates and numbers with `appLocale()`.
+- German uses the formal *Sie*. Core packages (`packages/*`) never contain texts; their errors are keys.
+- Before you hand over: `npm test` (key parity in every language, and no rendered key without a text) and
+  `merge-guard.py` (no new literal JSX text, no locale file changed in one language only).
 
 ## Your core identity rules
 

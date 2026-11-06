@@ -123,6 +123,12 @@ problem.* My mission: get every crew, backend and frontend alike, to the same ha
 8. **Respect the contract.** Never invent a name the spec does not have. When the spec is unclear, the reading goes into
    `modules/<id>/OPEN-QUESTIONS.md` (service) or the core package README (UI), and a cross-module question becomes an
    issue on the spec repository.
+9. **Translate every text, in every language.** When I write or change UI code, every text a person can see or hear
+   (also `aria-label`, `title`, tooltips, alerts, empty and error states) is an i18n key, and I add its text to every
+   supported language (`SUPPORTED_LANGUAGES` in `apps/portal/src/i18n/index.ts`: English and German) in the same
+   change: shell texts in `apps/portal/src/i18n/locales/<language>/common.json`, a feature's in
+   `apps/portal/src/features/<feature>/i18n/locales/<language>/<feature>.json`. No hard-coded string "for now", no
+   language left for later. German uses the formal *Sie*. The guide: `docs/developers/translations.md`.
 
 ---
 
@@ -184,6 +190,7 @@ it is not, I read it on GitHub. I never assume that the other side matches.
 | Shared React | `libs/shared/{state-core,infrastructure-config,ui-mui,ui-layout,ui-feedback,i18n,util}` |
 | Vendored backend specs | `specs/<module>/openapi.yaml` (copied from the backend spec; `generate-api`, `check-api`) |
 | Runtime configuration | `/config.json` from a ConfigMap (`api_base_url`, `environment`), `GET /config` for branding and flags |
+| Translations | `apps/portal/src/i18n/` (i18next; the shell's namespace `common`, `SUPPORTED_LANGUAGES` en + de) and `apps/portal/src/features/<feature>/i18n/` (one lazily loaded namespace per feature); guide `docs/developers/translations.md` |
 | Mockups and mock mode | `mockups/<feature>/` (phase 1, skill `create-mockup`); `VITE_USE_MOCKS=true` runs the app on `apps/portal/src/core/mock-container.ts`, where proofs of concept (`stage: 'poc'`) open |
 | TRG set-up | `.tractusx`, `DEPENDENCIES` (from `package-lock.json`), `Dockerfile`, `docker/nginx.conf`, `docs/architecture/README.md` |
 
@@ -250,7 +257,7 @@ C3-M1 `assign-identifier` → C4-M2 `create-wallet` (DID) → C3-M2 `register-di
 **The UI.** As dumb as possible: no business decisions (the API returns flags), no tokens and no Keycloak in the
 browser (a BFF holds the session; the browser has an HttpOnly cookie), every operation is a use case of a
 framework-free core package generated from the module's `openapi.yaml`, RTK Query endpoints call use cases with
-`queryFn`, live updates come as SSE, texts and error messages are i18n keys.
+`queryFn`, live updates come as SSE, texts and error messages are i18n keys with a text in every supported language.
 
 **The seams I watch** (skill `contract-seam` shows the current state): base paths (`/api/c1-m2` vs the frontend's
 `/api/registration`), JSON casing (camelCase vs the frontend's snake_case), validation errors (400 Problem Details vs
@@ -313,7 +320,8 @@ before and after. Rules: `AGENTS.md`. Proof: `uv run pytest -q && uv run python 
 person sees and does, decided per view, `mockup.py status <feature> --ready`), `build-poc` (the feature in the real
 app on mock data) and `build-feature` (the HTTP adapter, the feature open, the open points for the backend). Frontend
 architecture 12 (recipe) and 14 (registration example) are the background; `portal-spec-sources ops <module>` gives the
-operations and `contract-seam` the real paths and fields. Every call goes through a use case of `packages/<module>-core`.
+operations and `contract-seam` the real paths and fields. Every call goes through a use case of `packages/<module>-core`,
+and every text of the feature is a key of its namespace (`features/<feature>/i18n/`) in every supported language.
 
 **"Will UI and backend fit?" / "Before the merge window"** → `contract-seam summary` from either repository.
 

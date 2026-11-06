@@ -45,6 +45,7 @@ import argparse
 import datetime as _dt
 import functools
 import html
+import json
 import http.server
 import re
 import shutil
@@ -241,25 +242,31 @@ def _field(text: str, name: str) -> str | None:
 
 
 def read_nav() -> list[dict]:
+    """The registry of features/main.tsx, with the English names and descriptions of the shell's common.json."""
     features = repo() / "apps/portal/src/features"
     main = (features / "main.tsx").read_text(encoding="utf-8")
     block = re.search(r"export const allFeatures[^=]*=\s*\[(.*?)\n\];", main, re.S)
     if not block:
         sys.exit("mockup.py: `export const allFeatures` not found in apps/portal/src/features/main.tsx")
+    common = repo() / "apps/portal/src/i18n/locales/en/common.json"
+    texts = json.loads(common.read_text(encoding="utf-8")).get("features", {}) if common.is_file() else {}
+
+    def text(feature_id: str, field: str) -> str:
+        return texts.get(feature_id, {}).get(field, "")
+
     imports = dict(re.findall(r"import \{ (\w+) \} from '\./([\w-]+)/routes';", main))
     nav = []
-    upcoming = re.compile(r"upcoming\(\s*'((?:[^'\\]|\\.)*)',\s*'((?:[^'\\]|\\.)*)',\s*'([\w-]+)',\s*<(\w+?)Icon\s*/>,"
-                          r"\s*'([^']+)',\s*'([^']+)',?\s*\)", re.S)
+    upcoming = re.compile(r"upcoming\(\s*'([\w-]+)',\s*'([\w-]+)',\s*<(\w+?)Icon\s*/>,\s*'([^']+)',\s*'([^']+)',?\s*\)", re.S)
     pos = 0
-    text = block.group(1)
+    body = block.group(1)
     token = re.compile(r"upcoming\(|\b(\w+Feature)\b")
-    while (found := token.search(text, pos)):
+    while (found := token.search(body, pos)):
         if found.group(0) == "upcoming(":
-            entry = upcoming.match(text, found.start())
+            entry = upcoming.match(body, found.start())
             if not entry:
-                sys.exit(f"mockup.py: cannot read the upcoming(...) entry near: {text[found.start():found.start() + 80]!r}")
-            name, description, category, icon, path, _version = entry.groups()
-            nav.append({"name": name.replace("\\'", "'"), "description": description.replace("\\'", "'"),
+                sys.exit(f"mockup.py: cannot read the upcoming(...) entry near: {body[found.start():found.start() + 80]!r}")
+            feature_id, category, icon, path, _version = entry.groups()
+            nav.append({"name": text(feature_id, "name") or feature_id, "description": text(feature_id, "description"),
                         "category": category, "icon": icon, "path": path, "disabled": True})
             pos = entry.end()
             continue
@@ -272,7 +279,8 @@ def read_nav() -> list[dict]:
         icon = re.search(r"\bicon:\s*<(\w+?)Icon\s*/>", routes)
         disabled = re.search(r"\bdisabled:\s*(true|false)", routes)
         poc = re.search(r"\bstage:\s*'poc'", routes)
-        nav.append({"name": _field(routes, "name") or variable, "description": _field(routes, "description") or "",
+        feature_id = _field(routes, "id") or folder
+        nav.append({"name": text(feature_id, "name") or variable, "description": text(feature_id, "description"),
                     "category": _field(routes, "category") or "", "icon": icon.group(1) if icon else "AppsOutlined",
                     "path": _field(routes, "navigationPath") or "/",
                     "disabled": bool(disabled and disabled.group(1) == "true") or bool(poc)})

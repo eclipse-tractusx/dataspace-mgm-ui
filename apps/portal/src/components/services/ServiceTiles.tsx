@@ -24,13 +24,14 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useId, type ReactNode } from 'react';
+import { useId, useState, type MouseEvent, type ReactNode } from 'react';
 import {
   Box,
   ButtonBase,
   DarkModeOutlinedIcon,
   GitHubIcon,
   LightModeOutlinedIcon,
+  TranslateOutlinedIcon,
   Stack,
   Typography,
   alpha,
@@ -38,8 +39,11 @@ import {
   useColorMode,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { LANGUAGE_NAMES, currentLanguage } from '../../i18n';
 import type { NavigationItem } from '../../types/routing';
+import { LanguageOptions } from '../general/LanguageMenu';
 
 const SOURCE_URL = 'https://github.com/eclipse-tractusx/dataspace-mgm-ui';
 
@@ -47,13 +51,17 @@ interface TileProps {
   label: string;
   icon: ReactNode;
   note?: string;
+  /** The name for screen readers when it is more than the label and the note. */
+  ariaLabel?: string;
+  /** For a tile that opens a menu. */
+  menu?: string;
   active?: boolean;
   disabled?: boolean;
-  onSelect: () => void;
+  onSelect: (event: MouseEvent<HTMLElement>) => void;
 }
 
 /** One tile of the launcher: a service, or a setting on phones. Tiles in a row share their height. */
-function Tile({ label, icon, note, active = false, disabled = false, onSelect }: TileProps) {
+function Tile({ label, icon, note, ariaLabel, menu, active = false, disabled = false, onSelect }: TileProps) {
   const theme = useTheme();
   const iconColor = theme.palette.mode === 'dark' ? tractusx.orange : tractusx.orangeDarkest;
   return (
@@ -61,7 +69,9 @@ function Tile({ label, icon, note, active = false, disabled = false, onSelect }:
       onClick={onSelect}
       disabled={disabled}
       aria-current={active ? 'page' : undefined}
-      aria-label={note ? `${label}, ${note.toLowerCase()}` : label}
+      aria-label={ariaLabel ?? (note ? `${label}, ${note}` : label)}
+      aria-haspopup={menu ? 'menu' : undefined}
+      aria-controls={menu}
       sx={{
         width: '100%',
         minHeight: 120,
@@ -96,7 +106,7 @@ function Tile({ label, icon, note, active = false, disabled = false, onSelect }:
       >
         {icon}
       </Box>
-      <Typography component="span" sx={{ fontWeight: 700, fontSize: 14, lineHeight: 1.25 }}>
+      <Typography component="span" sx={{ fontWeight: 700, fontSize: 14, lineHeight: 1.25, maxWidth: '100%', hyphens: 'auto', overflowWrap: 'break-word' }}>
         {label}
       </Typography>
       {note && (
@@ -124,9 +134,11 @@ function TileGrid({ children }: { children: ReactNode }) {
 
 /**
  * All services on phones and tablets, inside the canvas between the header and the bottom bar: every service as
- * a tile, then the settings (theme, source code). Opening a service goes to its page.
+ * a tile, then the settings (language, theme, source code). Opening a service goes to its page.
  */
 export default function ServiceTiles({ services }: { services: NavigationItem[] }) {
+  const { t } = useTranslation();
+  const [languageAnchor, setLanguageAnchor] = useState<HTMLElement | null>(null);
   const navigate = useNavigate();
   const { mode, toggle } = useColorMode();
   const servicesHeading = useId();
@@ -136,7 +148,7 @@ export default function ServiceTiles({ services }: { services: NavigationItem[] 
     <Stack spacing={4}>
       <Box component="section" aria-labelledby={servicesHeading} sx={{ display: 'grid', gap: 2 }}>
         <Typography id={servicesHeading} component="h2" variant="overline" color="text.secondary">
-          Services
+          {t('services.heading')}
         </Typography>
         <TileGrid>
           {services.map((service) => (
@@ -144,7 +156,8 @@ export default function ServiceTiles({ services }: { services: NavigationItem[] 
               key={service.path}
               label={service.name}
               icon={service.icon}
-              note={service.disabled ? 'Coming soon' : undefined}
+              note={service.disabled ? t('navigation.comingSoon') : undefined}
+              ariaLabel={service.disabled ? t('navigation.itemComingSoonLabel', { name: service.name }) : undefined}
               disabled={service.disabled}
               onSelect={() => navigate(service.path)}
             />
@@ -153,20 +166,34 @@ export default function ServiceTiles({ services }: { services: NavigationItem[] 
       </Box>
       <Box component="section" aria-labelledby={settingsHeading} sx={{ display: 'grid', gap: 2 }}>
         <Typography id={settingsHeading} component="h2" variant="overline" color="text.secondary">
-          Settings
+          {t('services.settings')}
         </Typography>
         <TileGrid>
           <Tile
-            label={mode === 'light' ? 'Dark mode' : 'Light mode'}
+            label={t('language.label')}
+            note={LANGUAGE_NAMES[currentLanguage()]}
+            icon={<TranslateOutlinedIcon />}
+            menu={languageAnchor ? 'language-menu-tiles' : undefined}
+            onSelect={(event) => setLanguageAnchor(event.currentTarget)}
+          />
+          <Tile
+            label={mode === 'light' ? t('services.darkMode') : t('services.lightMode')}
             icon={mode === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
             onSelect={toggle}
           />
           <Tile
-            label="Source code"
+            label={t('services.sourceCode')}
             icon={<GitHubIcon />}
             onSelect={() => globalThis.open?.(SOURCE_URL, '_blank', 'noopener,noreferrer')}
           />
         </TileGrid>
+        <LanguageOptions
+          id="language-menu-tiles"
+          anchor={languageAnchor}
+          onClose={() => setLanguageAnchor(null)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        />
       </Box>
     </Stack>
   );

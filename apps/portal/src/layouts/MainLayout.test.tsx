@@ -27,14 +27,17 @@
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import ErrorNotFound from '../components/general/ErrorNotFound';
 import { FavouritesProvider } from '../contexts/FavouritesContext';
 import { TestCoreModules } from '../core/testing';
 import { features } from '../features/main';
+import { homeTranslations } from '../features/home/i18n';
 import Home from '../features/home/pages/Home';
 import AllServicesPage from '../pages/AllServicesPage';
 import MainLayout from './MainLayout';
+
+beforeAll(() => homeTranslations.load());
 
 const at = (path: string) =>
   render(

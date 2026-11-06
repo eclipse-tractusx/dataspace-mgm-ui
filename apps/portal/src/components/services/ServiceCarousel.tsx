@@ -26,6 +26,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowBackIcon, ArrowForwardIcon, Box, IconButton, Stack, Typography, useTheme } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useFavourites } from '../../contexts/FavouritesContext';
 import type { NavigationItem } from '../../types/routing';
@@ -37,7 +38,8 @@ const GAP = 32;
  * Services as a row of cards that scrolls sideways and snaps from card to card, with round previous and next
  * buttons that turn off at the ends. Used on the home page and in All services.
  */
-export default function ServiceCarousel({ services, label = 'Services' }: { services: NavigationItem[]; label?: string }) {
+export default function ServiceCarousel({ services, label }: { services: NavigationItem[]; label?: string }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isFavourite } = useFavourites();
   const { palette } = useTheme();
@@ -82,15 +84,15 @@ export default function ServiceCarousel({ services, label = 'Services' }: { serv
   } as const;
 
   return (
-    <Box component="section" aria-roledescription="carousel" aria-label={label}>
+    <Box component="section" aria-roledescription="carousel" aria-label={label ?? t('services.carousel')}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 3 }}>
         <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }} aria-live="polite">
-          {services.length} {services.length === 1 ? 'service' : 'services'}
+          {t('services.count', { count: services.length })}
         </Typography>
-        <IconButton onClick={() => page(-1)} disabled={edges.start} aria-label="Previous services" sx={arrow}>
+        <IconButton onClick={() => page(-1)} disabled={edges.start} aria-label={t('services.previous')} sx={arrow}>
           <ArrowBackIcon fontSize="small" />
         </IconButton>
-        <IconButton onClick={() => page(1)} disabled={edges.end} aria-label="Next services" sx={arrow}>
+        <IconButton onClick={() => page(1)} disabled={edges.end} aria-label={t('services.next')} sx={arrow}>
           <ArrowForwardIcon fontSize="small" />
         </IconButton>
       </Stack>

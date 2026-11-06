@@ -47,7 +47,9 @@ Vite, Vitest, Playwright and MSW for API mocks.
 - No business decisions in the UI: the API returns flags and step keys; Process Orchestration decides the next step.
 - The UI never calls the API directly, always through a use case of a core package.
 - No tokens and no Keycloak in the browser: sign-in and session are handled by the backend; the browser only has a session cookie.
-- Texts are i18n keys; error and validation messages from the API are keys that the UI translates.
+- Texts are i18n keys, with a text in every supported language (English, German) in the same change; error and
+  validation messages from the API are keys that the UI translates. The shell's namespace `common` is bundled, every
+  feature loads its own namespace lazily ([translations](../developers/translations.md)).
 - Live updates via Server-Sent Events, never WebSockets and never polling.
 
 ## Runtime configuration and deployment

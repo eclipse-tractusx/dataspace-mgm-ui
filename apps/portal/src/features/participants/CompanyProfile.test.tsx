@@ -30,10 +30,13 @@ import { PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { TestCoreModules, testCoreModules } from '../../core/testing';
 import { features, getAllRoutes } from '../main';
+import { participantsTranslations } from './i18n';
 import CompanyProfile from './pages/CompanyProfile';
+
+beforeAll(() => participantsTranslations.load());
 
 const show = (options: Parameters<typeof testCoreModules>[0]) => {
   const test = testCoreModules(options);

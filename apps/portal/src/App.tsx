@@ -29,21 +29,27 @@ import { ConfigContext } from './config/ConfigContext';
 import type { CoreModules } from './core/container';
 import { CoreModulesProvider } from './core/CoreModulesContext';
 import { FavouritesProvider } from './contexts/FavouritesContext';
+import { I18nProvider } from './i18n/I18nProvider';
 import { features } from './features/main';
 import type { RuntimeConfig } from './config';
 import AppRoutes from './routes';
 
-/** The app around the router. main.tsx creates the core packages once (real ones, or the mock ones in mock mode). */
+/**
+ * The app around the router. main.tsx creates the core packages once (real ones, or the mock ones in mock mode);
+ * I18nProvider starts the translations (src/i18n).
+ */
 export default function App({ config, modules }: { config: RuntimeConfig; modules: CoreModules }) {
   return (
-    <ConfigContext.Provider value={config}>
-      <CoreModulesProvider modules={modules}>
-        <ColorModeProvider>
-          <FavouritesProvider items={features}>
-            <AppRoutes />
-          </FavouritesProvider>
-        </ColorModeProvider>
-      </CoreModulesProvider>
-    </ConfigContext.Provider>
+    <I18nProvider>
+      <ConfigContext.Provider value={config}>
+        <CoreModulesProvider modules={modules}>
+          <ColorModeProvider>
+            <FavouritesProvider items={features}>
+              <AppRoutes />
+            </FavouritesProvider>
+          </ColorModeProvider>
+        </CoreModulesProvider>
+      </ConfigContext.Provider>
+    </I18nProvider>
   );
 }

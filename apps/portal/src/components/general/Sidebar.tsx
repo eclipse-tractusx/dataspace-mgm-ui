@@ -39,6 +39,7 @@ import {
   tractusx,
   useTheme,
 } from '@dataspace-mgm/ui-mui';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useFavourites } from '../../contexts/FavouritesContext';
 import { ALL_SERVICES_PATH } from '../../pages/AllServicesPage';
@@ -65,6 +66,7 @@ function RailSlot({ children }: { children: React.ReactNode }) {
  * On phones and tablets the BottomBar shows the same favourites.
  */
 export default function Sidebar() {
+  const { t } = useTranslation();
   const { favourites } = useFavourites();
   // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
   const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
@@ -74,7 +76,7 @@ export default function Sidebar() {
     <Drawer
       variant="permanent"
       component="nav"
-      aria-label="Features"
+      aria-label={t('navigation.features')}
       sx={{
         width: RAIL_WIDTH,
         flexShrink: 0,
@@ -88,10 +90,10 @@ export default function Sidebar() {
         },
       }}
     >
-      <List aria-label="Favourites" sx={{ py: 2, flex: 1, overflowY: 'auto' }}>
+      <List aria-label={t('navigation.favourites')} sx={{ py: 2, flex: 1, overflowY: 'auto' }}>
         {favourites.map((item) => (
           <RailSlot key={item.path}>
-            <Tooltip title={item.disabled ? `${item.name} (coming soon)` : item.name} placement="right">
+            <Tooltip title={item.disabled ? t('navigation.itemComingSoon', { name: item.name }) : item.name} placement="right">
               <ListItemButton
                 component={NavLink}
                 to={item.path}
@@ -130,11 +132,11 @@ export default function Sidebar() {
       <Box sx={{ py: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
         <NotificationsMenu placement="rail" />
         <ProfileMenu placement="rail" />
-        <Tooltip title="All services" placement="right">
+        <Tooltip title={t('navigation.allServices')} placement="right">
           <IconButton
             component={NavLink}
             to={ALL_SERVICES_PATH}
-            aria-label="All services"
+            aria-label={t('navigation.allServices')}
             sx={{
               ...railButtonSx,
               '&:hover': hover,

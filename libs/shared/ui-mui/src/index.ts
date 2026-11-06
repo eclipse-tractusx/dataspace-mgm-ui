@@ -111,6 +111,7 @@ export { default as HomeOutlinedIcon } from '@mui/icons-material/HomeOutlined';
 export { default as HowToRegOutlinedIcon } from '@mui/icons-material/HowToRegOutlined';
 export { default as HubOutlinedIcon } from '@mui/icons-material/HubOutlined';
 export { default as InfoOutlinedIcon } from '@mui/icons-material/InfoOutlined';
+export { default as TranslateOutlinedIcon } from '@mui/icons-material/TranslateOutlined';
 export { default as LightModeOutlinedIcon } from '@mui/icons-material/LightModeOutlined';
 export { default as ArrowBackIcon } from '@mui/icons-material/ArrowBack';
 export { default as OpenInNewIcon } from '@mui/icons-material/OpenInNew';

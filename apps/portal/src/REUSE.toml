@@ -1,0 +1,8 @@
+version = 1
+
+[[annotations]]
+# Translation files (JSON has no comments): AI-generated texts, reviewed by the contributor.
+path = ["i18n/locales/**/*.json", "features/**/i18n/locales/**/*.json"]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Contributors to the Eclipse Foundation"
+SPDX-License-Identifier = "Apache-2.0 AND CC0-1.0"
