@@ -277,5 +277,81 @@
       "show": "Show the {{name}} of {{dataspace}}",
       "hint": "Select a card to bring it to the front."
     }
+  },
+  "accountStatus": {
+    "REQUESTED": "Being created",
+    "ACTIVE": "Active",
+    "FAILED": "Failed",
+    "DELETING": "Being deleted",
+    "DELETED": "Deleted"
+  },
+  "credentialsState": {
+    "NONE": "No access data",
+    "AVAILABLE": "Ready to retrieve",
+    "RETRIEVED": "Retrieved",
+    "EXPIRED": "Expired"
+  },
+  "walletAccounts": {
+    "title": "Wallet accounts",
+    "lead": "A connector of your company signs in to your dataspace wallet with the wallet account of its technical user. The access data of a wallet account can be retrieved <strong>once</strong>; enter them into the connector right away.",
+    "loading": "Loading the wallet accounts…",
+    "noAccess": "You may not see the wallet accounts of your company. Ask your Company Admin for the role IT Admin.",
+    "forbidden": "You may not see the wallet accounts of your company (HTTP 403). Ask your Company Admin for the role IT Admin.",
+    "noCompany": "Your account is not bound to a company. Wallet accounts belong to the technical users of a company.",
+    "failed": "The wallet accounts could not be loaded: {{message}}",
+    "failedWithStatus": "The wallet accounts could not be loaded (HTTP {{status}}): {{message}}",
+    "listLabel": "Technical users with wallet access",
+    "noDescription": "Technical user of your company",
+    "noAccount": "No wallet account",
+    "noAccountText": "This technical user has no wallet account yet. Your onboarding service provider creates it.",
+    "fields": {
+      "clientId": "Client ID in the portal",
+      "wallet": "Wallet",
+      "accessData": "Access data",
+      "retrievableUntil": "Retrievable until",
+      "created": "Created",
+      "walletAccountRef": "Wallet account"
+    },
+    "stateText": {
+      "AVAILABLE": "Ready to retrieve until {{date}}.",
+      "RETRIEVED": "Retrieved. If they are lost, delete the technical user and create it again.",
+      "EXPIRED": "Not retrieved in time and deleted. Delete the technical user and create it again.",
+      "NONE": "No access data while the account is not active."
+    },
+    "retrieve": "Retrieve access data",
+    "confirm": {
+      "title": "Retrieve the access data?",
+      "text": "The token address, client ID and client secret of {{name}} for your dataspace wallet.",
+      "once": "They are shown <strong>only once</strong>. After that, nobody can retrieve them again, also not your onboarding service provider.",
+      "cancel": "Cancel",
+      "retrieveNow": "Retrieve now"
+    },
+    "access": {
+      "title": "Access data of the wallet account",
+      "once": "Shown only once. Copy them into the connector now.",
+      "tokenUrl": "Token address (STS)",
+      "clientId": "Client ID",
+      "clientSecret": "Client secret",
+      "did": "DID of your company",
+      "credentialService": "Credential service",
+      "show": "Show the client secret",
+      "hide": "Hide the client secret",
+      "copy": "Copy {{label}}",
+      "done": "I have entered them"
+    },
+    "problem": {
+      "already-retrieved": "Another person of your company retrieved the access data of {{name}} a moment ago (HTTP 410).",
+      "expired": "The access data of {{name}} were not retrieved in time and are deleted (HTTP 410).",
+      "no-credentials": "The wallet account of {{name}} has no access data to retrieve (HTTP 409).",
+      "invalid-state": "The wallet account of {{name}} is not active (HTTP 409).",
+      "forbidden": "You may not retrieve access data of wallet accounts (HTTP 403). Ask your Company Admin for the role IT Admin.",
+      "not-found": "{{name}} has no wallet account at your onboarding service provider (HTTP 404)."
+    },
+    "empty": {
+      "title": "No technical user with wallet access",
+      "text": "Create a technical user with the role for wallet access in Technical users. Its wallet account then appears here.",
+      "technicalUsers": "Technical users",
+      "comingSoon": "Technical users (C2-M3), coming soon"
+    }
   }
 }

@@ -29,6 +29,7 @@ import type { FeatureConfig } from '../../types/routing';
 import { walletsTranslations } from './i18n';
 import AllCredentials from './pages/AllCredentials';
 import Credential from './pages/Credential';
+import WalletAccounts from './pages/WalletAccounts';
 import WalletsLanding from './pages/WalletsLanding';
 import YourCredentials from './pages/YourCredentials';
 
@@ -47,11 +48,14 @@ export const walletsFeature: FeatureConfig = {
   stage: 'poc',
   translations: walletsTranslations,
   routes: [
+    // The dataspace wallet with view_dataspace_wallet (C4-M2 getWallet), else the first tab the person may see.
     { path: 'wallets', element: <WalletsLanding />, meta: { title: 'landing.title' } },
     // Permission view_credentials (C4-M1 listCompanyCredentials).
     { path: 'wallets/credentials', element: <YourCredentials />, meta: { title: 'yourCredentials.title' } },
     // Permission manage_credentials (C4-M1 listCredentials, confirmRevocation).
     { path: 'wallets/all-credentials', element: <AllCredentials />, meta: { title: 'allCredentials.title', description: 'allCredentials.lead' } },
     { path: 'wallets/all-credentials/:credentialId', element: <Credential />, meta: { title: 'credential.title' } },
+    // Permission view_dataspace_wallet (C4-M2 getWalletAccount); the retrieval needs retrieve_wallet_credentials.
+    { path: 'wallets/wallet-accounts', element: <WalletAccounts />, meta: { title: 'walletAccounts.title' } },
   ],
 };

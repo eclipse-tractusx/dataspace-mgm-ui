@@ -277,5 +277,81 @@
       "show": "{{name}} von {{dataspace}} anzeigen",
       "hint": "Wählen Sie eine Karte, um sie nach vorn zu holen."
     }
+  },
+  "accountStatus": {
+    "REQUESTED": "Wird angelegt",
+    "ACTIVE": "Aktiv",
+    "FAILED": "Fehlgeschlagen",
+    "DELETING": "Wird gelöscht",
+    "DELETED": "Gelöscht"
+  },
+  "credentialsState": {
+    "NONE": "Keine Zugangsdaten",
+    "AVAILABLE": "Bereit zum Abrufen",
+    "RETRIEVED": "Abgerufen",
+    "EXPIRED": "Abgelaufen"
+  },
+  "walletAccounts": {
+    "title": "Wallet-Konten",
+    "lead": "Ein Konnektor Ihres Unternehmens meldet sich mit dem Wallet-Konto seines technischen Benutzers an Ihrer Datenraum-Wallet an. Die Zugangsdaten eines Wallet-Kontos können Sie <strong>einmal</strong> abrufen; tragen Sie sie sofort in den Konnektor ein.",
+    "loading": "Die Wallet-Konten werden geladen…",
+    "noAccess": "Sie dürfen die Wallet-Konten Ihres Unternehmens nicht sehen. Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "forbidden": "Sie dürfen die Wallet-Konten Ihres Unternehmens nicht sehen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+    "noCompany": "Ihr Konto ist keinem Unternehmen zugeordnet. Wallet-Konten gehören den technischen Benutzern eines Unternehmens.",
+    "failed": "Die Wallet-Konten konnten nicht geladen werden: {{message}}",
+    "failedWithStatus": "Die Wallet-Konten konnten nicht geladen werden (HTTP {{status}}): {{message}}",
+    "listLabel": "Technische Benutzer mit Wallet-Zugang",
+    "noDescription": "Technischer Benutzer Ihres Unternehmens",
+    "noAccount": "Kein Wallet-Konto",
+    "noAccountText": "Dieser technische Benutzer hat noch kein Wallet-Konto. Ihr Onboarding-Service-Provider legt es an.",
+    "fields": {
+      "clientId": "Client-ID im Portal",
+      "wallet": "Wallet",
+      "accessData": "Zugangsdaten",
+      "retrievableUntil": "Abrufbar bis",
+      "created": "Angelegt",
+      "walletAccountRef": "Wallet-Konto"
+    },
+    "stateText": {
+      "AVAILABLE": "Bereit zum Abrufen bis {{date}}.",
+      "RETRIEVED": "Abgerufen. Wenn sie verloren sind, löschen Sie den technischen Benutzer und legen Sie ihn neu an.",
+      "EXPIRED": "Nicht rechtzeitig abgerufen und gelöscht. Löschen Sie den technischen Benutzer und legen Sie ihn neu an.",
+      "NONE": "Keine Zugangsdaten, solange das Konto nicht aktiv ist."
+    },
+    "retrieve": "Zugangsdaten abrufen",
+    "confirm": {
+      "title": "Zugangsdaten abrufen?",
+      "text": "Die Token-Adresse, Client-ID und das Client-Secret von {{name}} für Ihre Datenraum-Wallet.",
+      "once": "Sie werden <strong>nur einmal</strong> angezeigt. Danach kann sie niemand mehr abrufen, auch nicht Ihr Onboarding-Service-Provider.",
+      "cancel": "Abbrechen",
+      "retrieveNow": "Jetzt abrufen"
+    },
+    "access": {
+      "title": "Zugangsdaten des Wallet-Kontos",
+      "once": "Nur einmal angezeigt. Kopieren Sie sie jetzt in den Konnektor.",
+      "tokenUrl": "Token-Adresse (STS)",
+      "clientId": "Client-ID",
+      "clientSecret": "Client-Secret",
+      "did": "DID Ihres Unternehmens",
+      "credentialService": "Credential Service",
+      "show": "Client-Secret anzeigen",
+      "hide": "Client-Secret verbergen",
+      "copy": "{{label}} kopieren",
+      "done": "Ich habe sie eingetragen"
+    },
+    "problem": {
+      "already-retrieved": "Eine andere Person Ihres Unternehmens hat die Zugangsdaten von {{name}} gerade abgerufen (HTTP 410).",
+      "expired": "Die Zugangsdaten von {{name}} wurden nicht rechtzeitig abgerufen und sind gelöscht (HTTP 410).",
+      "no-credentials": "Das Wallet-Konto von {{name}} hat keine Zugangsdaten zum Abrufen (HTTP 409).",
+      "invalid-state": "Das Wallet-Konto von {{name}} ist nicht aktiv (HTTP 409).",
+      "forbidden": "Sie dürfen keine Zugangsdaten von Wallet-Konten abrufen (HTTP 403). Bitten Sie Ihren Company Admin um die Rolle IT Admin.",
+      "not-found": "{{name}} hat kein Wallet-Konto bei Ihrem Onboarding-Service-Provider (HTTP 404)."
+    },
+    "empty": {
+      "title": "Kein technischer Benutzer mit Wallet-Zugang",
+      "text": "Legen Sie unter Technische Benutzer einen technischen Benutzer mit der Rolle für den Wallet-Zugang an. Sein Wallet-Konto erscheint dann hier.",
+      "technicalUsers": "Technische Benutzer",
+      "comingSoon": "Technische Benutzer (C2-M3), bald verfügbar"
+    }
   }
 }
