@@ -24,18 +24,17 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useMemo } from 'react';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { ConfigContext } from './config/ConfigContext';
-import { createCoreModules } from './core/container';
+import type { CoreModules } from './core/container';
 import { CoreModulesProvider } from './core/CoreModulesContext';
 import { FavouritesProvider } from './contexts/FavouritesContext';
 import { features } from './features/main';
 import type { RuntimeConfig } from './config';
 import AppRoutes from './routes';
 
-export default function App({ config }: { config: RuntimeConfig }) {
-  const modules = useMemo(() => createCoreModules(config), [config]);
+/** The app around the router. main.tsx creates the core packages once (real ones, or the mock ones in mock mode). */
+export default function App({ config, modules }: { config: RuntimeConfig; modules: CoreModules }) {
   return (
     <ConfigContext.Provider value={config}>
       <CoreModulesProvider modules={modules}>

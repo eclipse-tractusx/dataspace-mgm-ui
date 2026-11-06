@@ -111,6 +111,9 @@ Then `npm run lint && npm run typecheck && npm test` and try it in the browser a
   `CsrfTokenStore`; the dev BFF refuses a write without it with 403 `urn:dev-bff:problem:csrf`.
 - **501 Not Implemented** means the stand-in of the module does not cover the operation yet. That is where the backend
   team of the module comes in; the UI renders the error until then.
+- **No backend at hand:** `VITE_USE_MOCKS=true npm start` runs the portal on the in-memory adapters
+  (`apps/portal/src/core/mock-container.ts`), signed in as Pia. A page built before its module is connected is a proof
+  of concept: `stage: 'poc'` in its `routes.tsx` opens it only in mock mode.
 - **Live updates** (Server-Sent Events, e.g. `GET /api/c11-m1/notifications/events`) go through the same proxy.
 
 ### Settings of the dev BFF

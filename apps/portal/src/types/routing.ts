@@ -55,6 +55,11 @@ export interface FeatureConfig {
   icon: ReactElement;
   navigationPath: string;
   disabled: boolean;
+  /**
+   * 'poc': a proof of concept on mock data (skill build-poc). It is routed only in mock mode (VITE_USE_MOCKS=true)
+   * and shows as "coming soon" otherwise. Remove it once the feature talks to its backend module (skill build-feature).
+   */
+  stage?: 'poc';
   routes: FeatureRoute[];
 }
 

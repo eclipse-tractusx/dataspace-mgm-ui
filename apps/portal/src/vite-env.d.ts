@@ -26,3 +26,11 @@
 
 /** The version of the portal, from the workspace's package.json (see vite.config.ts). */
 declare const __APP_VERSION__: string;
+
+/** Build-time settings of the portal (VITE_* from the environment or apps/portal/.env.local). */
+interface ImportMetaEnv {
+  /** 'true' runs the portal on mock data, without backend and BFF (src/core/mock-mode.ts). */
+  readonly VITE_USE_MOCKS?: string;
+  /** The test person of mock mode, a key of MOCK_PERSONS in src/core/mock-container.ts (default pia). */
+  readonly VITE_MOCK_PERSON?: string;
+}

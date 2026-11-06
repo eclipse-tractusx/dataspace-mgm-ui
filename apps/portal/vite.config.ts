@@ -37,11 +37,18 @@ const { version } = JSON.parse(readFileSync(here('../../package.json'), 'utf8'))
 
 // `npm start` runs the dev BFF (dev-bff/dev-bff.ts): /me, /auth/* and /api → the backend, with the token of a test
 // person. Its settings come from DEV_BFF_* in the environment or in apps/portal/.env.local (git-ignored).
+// VITE_USE_MOCKS=true runs the portal on mock data (src/core/mock-mode.ts). It is defined as a constant, so a build
+// without it drops the mock container entirely instead of shipping it as an unused chunk.
 export default defineConfig(({ mode }) => ({
   root: here('.'),
   cacheDir: here('../../node_modules/.vite/apps/portal'),
   plugins: [react(), devBff(devBffOptions(loadEnv(mode, here('.'), 'DEV_BFF_'), here('../..')))],
-  define: { __APP_VERSION__: JSON.stringify(version) },
+  define: {
+    __APP_VERSION__: JSON.stringify(version),
+    'import.meta.env.VITE_USE_MOCKS': JSON.stringify(
+      loadEnv(mode, here('.'), 'VITE_').VITE_USE_MOCKS === 'true' ? 'true' : '',
+    ),
+  },
   resolve: { alias: workspaceAliases },
   server: { host: 'localhost', port: 4200 },
   preview: { host: 'localhost', port: 4300 },
