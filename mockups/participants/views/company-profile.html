@@ -1,0 +1,334 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Your company — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .cp-hero { box-shadow: var(--hero-glow); }
+    .cp-hero--full .px-company { margin-bottom: 32px; }
+    .cp-split { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+    @media (max-width: 899.98px) { .cp-split { grid-template-columns: 1fr; } }
+    .cp-tabpanel { padding-top: 4px; }
+    .cp-verify { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .cp-verify__text { flex: 1; min-width: 240px; }
+    .cp-verify__title { font-weight: 700; }
+    .cp-open-cr { margin-bottom: 24px; }
+  </style>
+</head>
+<!-- C3-M1 7.1 GET /companies/{companyId} (view_company) and 7.2 PATCH /companies/{companyId} (edit_company, shortName). -->
+<body data-active="/participants" data-view="Your company" data-states="loaded,read-only,inactive,loading,not-found,forbidden">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="layout:hero" data-dimension="Layout" data-variant-label="One card (today)"></span>
+      <span data-variant="layout:sections" data-variant-label="Cards by topic + side panel"></span>
+      <span data-variant="layout:tabs" data-variant-label="Tabs"></span>
+      <span data-variant="verification:badge" data-dimension="Verified core data" data-variant-label="Chip at the name"></span>
+      <span data-variant="verification:banner" data-variant-label="Banner with date and action"></span>
+      <span data-variant="verification:fields" data-variant-label="Mark at each verified value"></span>
+      <span data-variant="shortname:inline" data-dimension="Edit the short name" data-variant-label="In place"></span>
+      <span data-variant="shortname:dialog" data-variant-label="In a dialog"></span>
+      <span data-variant="action:header" data-dimension="Change company data" data-variant-label="Button in the page header"></span>
+      <span data-variant="action:section" data-variant-label="Inside the core data"></span>
+    </div>
+
+    <div class="px-head">
+      <div>
+        <div class="tx-overline">Participant management</div>
+        <h1 class="tx-title" id="view-title">Your company</h1>
+      </div>
+      <div class="px-head__actions" id="head-actions" data-show-state="loaded"></div>
+    </div>
+
+    <section data-show-state="loaded read-only inactive" id="content"></section>
+
+    <section data-show-state="loading" role="status" aria-label="Loading your company">
+      <div class="tx-card">
+        <div class="tx-row" style="margin-bottom: 24px"><span class="tx-spinner"></span><span>Loading your company…</span></div>
+        <div class="px-skel-row"><div class="tx-skeleton"></div><div class="tx-skeleton"></div><div class="tx-skeleton"></div></div>
+      </div>
+    </section>
+
+    <section data-show-state="not-found">
+      <div class="tx-alert tx-alert--warning" role="alert">
+        <span data-icon="WarningAmberOutlined"></span>
+        <div>
+          <div>Your company was not found at your onboarding service provider.</div>
+          <code>urn:c3-m1:problem:not-found</code>
+        </div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-alert tx-alert--error" role="alert">
+        <span data-icon="LockOutlined"></span>
+        <div>
+          <div>You may not see the data of your company (HTTP 403). Ask the Company Admin for the role Member.</div>
+          <code>urn:c3-m1:problem:forbidden</code>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="tx-dialog" id="shortname-dialog" aria-labelledby="shortname-dialog-title">
+      <form method="dialog" class="tx-dialog__body px-form">
+        <h2 class="tx-h3" id="shortname-dialog-title">Change the short name</h2>
+        <p class="tx-muted" style="margin: 0">The short name is shown in the portal and the marketplace. The legal name stays as verified.</p>
+        <div>
+          <label class="tx-label" for="shortname-input">Short name</label>
+          <input class="tx-input" id="shortname-input" maxlength="100">
+          <div class="tx-help">Up to 100 characters. Leave it empty to remove the short name.</div>
+        </div>
+      </form>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Cancel</button>
+        <button class="tx-btn" type="button" data-save-shortname="dialog">Save</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc } = px;
+      const data = mock.data;
+      const base = data.companies[data.ids.u1];
+      const openRequest = data.changeRequests.find((cr) => cr.companyId === base.id && cr.status === 'OPEN');
+      let shortName = base.shortName;
+      let editingInline = false;
+      let tab = 'overview';
+
+      const view = () => {
+        const state = document.body.dataset.state;
+        const personKey = state === 'read-only' ? 'max' : 'erika';
+        const company = { ...base, shortName, status: state === 'inactive' ? 'INACTIVE' : base.status };
+        const perms = data.permissions[personKey];
+        // Hidden by permission from GET /me (allowed). Hidden by status: open question, the API should return a flag.
+        const canEdit = perms.includes('edit_company') && company.status === 'ACTIVE';
+        const canRoles = perms.includes('edit_company_roles') && company.status === 'ACTIVE';
+        return { state, personKey, company, canEdit, canRoles, v: (k) => mock.variant(k) };
+      };
+
+      // ── pieces ───────────────────────────────────────────────────────────
+      const changeButton = (cls) => `<a class="tx-btn ${cls || ''}" href="change-company-data.html">${mock.icon('EditOutlined')}Change company data</a>`;
+
+      const companyHead = (ctx) => {
+        const c = ctx.company;
+        const badge = ctx.v('verification') === 'badge' ? px.coreSource(c.coreDataSource) : '';
+        return `<div class="px-company">
+          <div class="tx-tile" aria-hidden="true">${mock.icon('BusinessOutlined')}</div>
+          <div class="px-company__main">
+            <h2 class="px-company__name">${esc(c.name)}${ctx.v('verification') === 'fields' && c.coreDataSource === 'EBW' ? ` ${px.verifiedIcon()}` : ''}</h2>
+            <div class="px-company__meta"><span>Participant of ${esc(c.dataspaceName)}</span>${c.shortName ? `<span>Short name: ${esc(c.shortName)}</span>` : ''}</div>
+          </div>
+          <div class="tx-row">${badge}${px.chip('companyStatus', c.status)}</div>
+        </div>`;
+      };
+
+      const verificationBanner = (ctx) => {
+        if (ctx.v('verification') !== 'banner') { return ''; }
+        const c = ctx.company;
+        const ebw = c.coreDataSource === 'EBW';
+        return `<div class="tx-alert tx-alert--${ebw ? 'success' : 'info'} cp-verify" style="margin-bottom: 24px">
+          ${ebw ? mock.icon('VerifiedUserOutlined') : mock.icon('FactCheckOutlined')}
+          <div class="cp-verify__text">
+            <div class="cp-verify__title">${ebw ? 'Core data verified with your Business Wallet' : 'Core data checked by the onboarding service provider'}</div>
+            <div class="tx-muted tx-body2">Last verified ${px.dateTime(c.coreDataVerifiedAt)}. Legal name, address, EUID and EBWOID come from
+              ${ebw ? 'the legal person identification data (LPID) of your Business Wallet' : 'the documents you sent'}.</div>
+          </div>
+          ${ctx.canEdit ? `<a class="tx-btn tx-btn--outlined tx-btn--sm" href="change-company-data.html">${ebw ? 'Verify again' : 'Request a change'}</a>` : ''}
+        </div>`;
+      };
+
+      const shortNameValue = (ctx) => {
+        const c = ctx.company;
+        const value = c.shortName ? esc(c.shortName) : '<span class="px-none">No short name</span>';
+        if (!ctx.canEdit) { return value; }
+        if (ctx.v('shortname') === 'inline' && editingInline) {
+          return `<span class="px-inline-edit"><input class="tx-input" id="shortname-inline" maxlength="100" value="${esc(c.shortName || '')}" aria-label="Short name">
+            <button class="tx-btn tx-btn--sm" type="button" data-save-shortname="inline">Save</button>
+            <button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-cancel-shortname>Cancel</button></span>`;
+        }
+        return `<span class="px-value">${value}<button class="px-copy" type="button" data-edit-shortname title="Change the short name">${mock.icon('EditOutlined', 'sm')}</button></span>`;
+      };
+
+      const mark = (ctx) => (ctx.v('verification') === 'fields' && ctx.company.coreDataSource === 'EBW' ? ` ${px.verifiedIcon()}` : '');
+
+      const coreFields = (ctx, cols) => {
+        const c = ctx.company;
+        return `<dl class="px-fields${cols ? ` px-fields--${cols}` : ''}">
+          <div class="px-field"><dt>Legal name</dt><dd><span class="px-value">${esc(c.name)}${mark(ctx)}</span></dd></div>
+          <div class="px-field"><dt>Short name</dt><dd>${shortNameValue(ctx)}</dd></div>
+          <div class="px-field"><dt>Business partner number</dt><dd>${px.copyable(c.bpn)}</dd></div>
+          <div class="px-field"><dt>Address</dt><dd><span class="px-value" style="align-items: flex-start">${px.address(c.address)}${mark(ctx)}</span></dd></div>
+          <div class="px-field"><dt>Core data</dt><dd>${px.coreSource(c.coreDataSource)}<div class="tx-muted tx-body2" style="margin-top: 4px">Verified ${px.dateTime(c.coreDataVerifiedAt)}</div></dd></div>
+          <div class="px-field"><dt>Member since</dt><dd>${px.date(c.activatedAt)}</dd></div>
+        </dl>`;
+      };
+
+      const identifierList = (ctx) => px.identifiers(ctx.company.identifiers);
+
+      const roleList = (ctx) => `<div class="px-chips">${ctx.company.companyRoles.map((r) => px.roleChip(r.companyRole, r.status !== 'ACTIVE')).join('')}</div>
+        <div style="margin-top: 16px"><a class="tx-link" href="company-roles.html">${ctx.canRoles ? 'Manage company roles' : 'See company roles and terms'} →</a></div>`;
+
+      const openRequestAlert = (ctx) => (openRequest && ctx.state !== 'inactive'
+        ? `<div class="tx-alert tx-alert--info cp-open-cr">${mock.icon('PendingActionsOutlined')}
+            <div>A change request is open since ${px.date(openRequest.createdAt)}: ${esc(px.changeSummary(openRequest.changes, ctx.company))}. The onboarding service provider is checking it.</div>
+            <a class="tx-btn tx-btn--text tx-btn--sm tx-alert__action" href="own-change-requests.html">View</a></div>`
+        : '');
+
+      const inactiveAlert = (ctx) => (ctx.state === 'inactive'
+        ? `<div class="tx-alert tx-alert--warning" style="margin-bottom: 24px">${mock.icon('BlockOutlined')}
+            <div><div><strong>Your company is deactivated.</strong> Its data cannot be changed. A person with a mandate can apply for reactivation in onboarding.</div></div></div>`
+        : '');
+
+      const sectionAction = (ctx) => (ctx.canEdit && ctx.v('action') === 'section' ? changeButton('tx-btn--outlined tx-btn--sm') : '');
+
+      // ── layouts ──────────────────────────────────────────────────────────
+      const layouts = {
+        hero: (ctx) => `${inactiveAlert(ctx)}${openRequestAlert(ctx)}${verificationBanner(ctx)}
+          <div class="tx-card cp-hero cp-hero--full">
+            ${companyHead(ctx)}
+            ${coreFields(ctx)}
+            <hr class="px-divider">
+            <dl class="px-fields cp-split">
+              <div class="px-field"><dt>Identifiers</dt><dd>${identifierList(ctx)}</dd></div>
+              <div class="px-field"><dt>Company roles</dt><dd>${roleList(ctx)}</dd></div>
+            </dl>
+            ${sectionAction(ctx) ? `<hr class="px-divider"><div class="tx-row">${sectionAction(ctx)}<span class="tx-muted tx-body2">Name, address and identifiers change with your Business Wallet or a change request.</span></div>` : ''}
+          </div>`,
+
+        sections: (ctx) => `${inactiveAlert(ctx)}${openRequestAlert(ctx)}${verificationBanner(ctx)}
+          <div class="tx-card cp-hero" style="margin-bottom: 24px">${companyHead(ctx)}</div>
+          <div class="px-split">
+            <div class="px-sections">
+              <section class="tx-card" aria-labelledby="h-core">
+                <div class="px-section__head"><div><h2 class="tx-h3" id="h-core">Core data</h2><p class="tx-muted tx-body2">The data the dataspace knows your company by.</p></div>${sectionAction(ctx)}</div>
+                ${coreFields(ctx, 2)}
+              </section>
+              <section class="tx-card" aria-labelledby="h-ids">
+                <div class="px-section__head"><h2 class="tx-h3" id="h-ids">Identifiers</h2></div>
+                ${identifierList(ctx)}
+              </section>
+            </div>
+            <aside class="px-aside">
+              <section class="tx-card px-card-sm" aria-labelledby="h-roles">
+                <div class="px-section__head"><h2 class="tx-h3" id="h-roles">Company roles</h2></div>
+                ${roleList(ctx)}
+              </section>
+              <section class="tx-card px-card-sm" aria-labelledby="h-ds">
+                <div class="px-section__head"><h2 class="tx-h3" id="h-ds">In the dataspace</h2></div>
+                <dl class="px-kv">
+                  <dt>Dataspace</dt><dd>${esc(ctx.company.dataspaceName)}</dd>
+                  <dt>BPN</dt><dd>${px.copyable(ctx.company.bpn)}</dd>
+                  <dt>Status</dt><dd>${px.chip('companyStatus', ctx.company.status)}</dd>
+                  <dt>Member since</dt><dd>${px.date(ctx.company.activatedAt)}</dd>
+                </dl>
+              </section>
+            </aside>
+          </div>`,
+
+        tabs: (ctx) => {
+          const panels = {
+            overview: () => `<div class="tx-card">${sectionAction(ctx) ? `<div class="px-section__head"><span></span>${sectionAction(ctx)}</div>` : ''}${coreFields(ctx)}</div>`,
+            identifiers: () => `<div class="tx-card">${identifierList(ctx)}</div>`,
+            roles: () => `<div class="tx-card">${roleList(ctx)}</div>`,
+            requests: () => `<div class="tx-card"><ul class="tx-list">${data.changeRequests.filter((cr) => cr.companyId === base.id).map((cr) => `
+                <li><span class="tx-tile" style="width: 40px; height: 40px">${mock.icon('DifferenceOutlined', 'sm')}</span>
+                  <span style="flex: 1"><span class="px-cell-main">${esc(px.changeSummary(cr.changes, ctx.company))}</span><br><span class="px-cell-sub">${px.date(cr.createdAt)}</span></span>
+                  ${px.chip('changeRequestStatus', cr.status)}</li>`).join('')}</ul>
+                <div style="margin-top: 16px"><a class="tx-link" href="own-change-requests.html">All change requests →</a></div></div>`,
+          };
+          const tabs = [['overview', 'Overview'], ['identifiers', 'Identifiers'], ['roles', 'Company roles'], ['requests', 'Change requests']];
+          return `${inactiveAlert(ctx)}${openRequestAlert(ctx)}${verificationBanner(ctx)}
+            <div class="tx-card cp-hero" style="margin-bottom: 24px">${companyHead(ctx)}</div>
+            <div class="tx-tabs" role="tablist">${tabs.map(([key, label]) => `<button class="tx-tab" role="tab" type="button" data-tab="${key}" aria-selected="${tab === key}">${label}</button>`).join('')}</div>
+            <div class="cp-tabpanel" role="tabpanel">${panels[tab]()}</div>`;
+        },
+      };
+
+      function render() {
+        const ctx = view();
+        document.getElementById('persona').innerHTML = px.persona(ctx.personKey, ctx.state === 'inactive' ? 'company deactivated' : '');
+        document.getElementById('head-actions').innerHTML = ctx.canEdit && ctx.v('action') === 'header' ? changeButton() : '';
+        document.getElementById('content').innerHTML = layouts[ctx.v('layout')](ctx);
+        const inline = document.getElementById('shortname-inline');
+        if (inline) { inline.focus(); }
+      }
+
+      function saveShortName(value) {
+        const next = value.trim() || null;
+        if (next === shortName) {
+          mock.toast('No change');
+        } else {
+          shortName = next;
+          mock.toast('Short name saved');
+        }
+        editingInline = false;
+        render();
+      }
+
+      mock.on('click', '[data-edit-shortname]', () => {
+        if (mock.variant('shortname') === 'dialog') {
+          document.getElementById('shortname-input').value = shortName || '';
+          document.getElementById('shortname-dialog').showModal();
+        } else {
+          editingInline = true;
+          render();
+        }
+      });
+      mock.on('click', '[data-cancel-shortname]', () => { editingInline = false; render(); });
+      mock.on('click', '[data-save-shortname]', (_e, el) => {
+        if (el.dataset.saveShortname === 'dialog') {
+          document.getElementById('shortname-dialog').close();
+          saveShortName(document.getElementById('shortname-input').value);
+        } else {
+          saveShortName(document.getElementById('shortname-inline').value);
+        }
+      });
+      mock.on('keydown', '#shortname-inline', (event, el) => {
+        if (event.key === 'Enter') { saveShortName(el.value); }
+        if (event.key === 'Escape') { editingInline = false; render(); }
+      });
+      mock.on('click', '[data-tab]', (_e, el) => { tab = el.dataset.tab; render(); });
+      mock.on('click', '[data-state-button]', () => setTimeout(render));
+      mock.onConfigure(() => { editingInline = false; render(); });
+      render();
+    })();
+  </script>
+</body>
+</html>

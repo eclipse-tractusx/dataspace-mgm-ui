@@ -1,0 +1,422 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant management · Change company data — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/participants.css">
+  <style>
+    .cd-flow { display: grid; gap: 24px; }
+    .cd-choice-title { font-weight: 700; font-size: 1.25rem; line-height: 1.3; }
+    .cd-choice-text { color: var(--muted); font-size: 0.9375rem; }
+    .cd-choice-label { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .cd-choice-keep { font-size: 0.875rem; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+    .cd-choice-keep .tx-icon { width: 16px; height: 16px; }
+    .cd-choice .tx-row { justify-content: space-between; }
+    .cd-wallet-text { display: grid; gap: 12px; }
+    .cd-wallet-text p { margin: 0; }
+    .cd-wait { display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 0.9375rem; }
+    .cd-shared { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.9375rem; }
+    .cd-id-row { display: grid; grid-template-columns: minmax(160px, 240px) minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+    .cd-id-row .tx-select, .cd-id-row .tx-input { padding: 10px 12px; }
+    .cd-id-fixed { display: grid; grid-template-columns: minmax(160px, 240px) minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--subtle-border); }
+    @media (max-width: 599.98px) { .cd-id-row, .cd-id-fixed { grid-template-columns: 1fr auto; } .cd-id-row .tx-select, .cd-id-fixed .px-ids__type { grid-column: 1 / -1; } }
+    .cd-ids { display: grid; gap: 12px; }
+    .cd-counter { text-align: right; }
+    .cd-nav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .cd-nav__end { display: flex; gap: 12px; margin-left: auto; flex-wrap: wrap; }
+    .cd-result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .cd-file-error { border-color: var(--error); }
+    .cd-file-error .px-file__icon { color: var(--error); }
+    .cd-compare-list { margin: 0; display: grid; gap: 14px; }
+    .cd-compare-list dt { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .cd-compare-list dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+    .cd-compare-head { font-weight: 700; margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+    .mock-only { border-style: dashed; }
+    .cd-flow .px-locked { display: flex; }
+    .cd-steps-wrap .tx-step + .tx-step::before { width: 16px; }
+  </style>
+</head>
+<!-- C3-M1 7.3 POST /companies/{companyId}/attestation-updates and 7.4 POST /companies/{companyId}/change-requests
+     (both edit_company, scope company). -->
+<body data-active="/participants" data-view="Change company data"
+      data-states="loaded,updated,submitted,company-mismatch,attestation-used,attestation-required,change-request-open,document-invalid">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="mock-persona" id="persona"></div>
+
+    <!-- Configurator dimensions: the alternatives are drawn by the script below (mock.variant). -->
+    <div class="px-markers" aria-hidden="true">
+      <span data-variant="path:choice" data-dimension="How the way is chosen" data-variant-label="Two cards, one page"></span>
+      <span data-variant="path:wizard" data-variant-label="A wizard with steps"></span>
+      <span data-variant="wallet:qr" data-dimension="Confirm with the wallet" data-variant-label="QR code on this screen"></span>
+      <span data-variant="wallet:redirect" data-variant-label="Continue to the EBW-Connector"></span>
+      <span data-variant="upload:dropzone" data-dimension="Supporting documents" data-variant-label="Drop zone"></span>
+      <span data-variant="upload:button" data-variant-label="Button and list"></span>
+      <span data-variant="review:compare" data-dimension="Show the changes" data-variant-label="Now and new side by side"></span>
+      <span data-variant="review:diff" data-variant-label="Table of changes"></span>
+    </div>
+
+    <a class="px-back" href="company-profile.html"><span data-icon="ArrowBack" data-size="sm"></span>Your company</a>
+    <div class="tx-overline">Participant management</div>
+    <h1 class="tx-title" id="view-title">Change company data</h1>
+
+    <section id="content" class="cd-flow"></section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script src="../shared/participants.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const { esc, labels } = px;
+      const data = mock.data;
+      const company = data.companies[data.ids.u1];
+      const openRequest = data.changeRequests.find((cr) => cr.companyId === company.id && cr.status === 'OPEN');
+      // What the Business Wallet returns in the mock (C3-M1 14, attestation T1), mapped as in C3-M1 6.3.
+      const fromWallet = {
+        name: 'Beispiel Maschinenbau AG',
+        address: { street: 'Industriestraße 10', houseNumber: null, addressAddition: null, postalCode: '70565', city: 'Stuttgart', region: null },
+      };
+      const walletTypes = company.identifiers.filter((i) => i.source === 'BUSINESS_WALLET').map((i) => i.type);
+      const declarableTypes = ['VAT_ID', 'COMMERCIAL_REG_NUMBER', 'LEI_CODE', 'EORI', 'EUID', 'EBWOID'].filter((t) => !walletTypes.includes(t));
+      const freshDraft = () => ({
+        identifiers: [...company.identifiers.filter((i) => i.source === 'DECLARED').map(({ type, value }) => ({ type, value })), { type: 'LEI_CODE', value: '529900T8BM49AURSDO55' }],
+        comment: 'We add our LEI. The LEI certificate of the Global LEI Index is attached.',
+        documents: [{ fileName: 'lei-zertifikat.pdf', mediaType: 'application/pdf', sizeBytes: 184320 }],
+      });
+
+      let method = null;
+      let step = 1;
+      let draft = freshDraft();
+
+      const state = () => document.body.dataset.state;
+      const v = (k) => mock.variant(k);
+      const walletStates = ['company-mismatch', 'attestation-used'];
+      const requestStates = ['attestation-required', 'change-request-open', 'document-invalid'];
+
+      // ── pieces ───────────────────────────────────────────────────────────
+      const problem = (tone, iconSvg, text, type, extra) => `<div class="tx-alert tx-alert--${tone}" role="alert">${iconSvg}
+        <div><div>${text}</div><code>urn:c3-m1:problem:${type}</code>${extra || ''}</div></div>`;
+
+      const choiceCards = () => `<div class="px-choices" role="group" aria-label="How to change the data">
+        <div class="px-choice cd-choice" role="button" tabindex="0" data-method="wallet" aria-pressed="${method === 'wallet'}">
+          <div class="tx-row"><span class="tx-tile" aria-hidden="true">${mock.icon('VerifiedUserOutlined')}</span><span class="tx-chip tx-chip--outlined px-choice__tag">Taken over at once</span></div>
+          <div class="cd-choice-title">Verify with your Business Wallet</div>
+          <div class="cd-choice-text">A person who may represent the company confirms with the EUDI Wallet. The current data of your Business Wallet is taken over.</div>
+          <div class="cd-choice-label">Changes</div>
+          <ul><li>Legal name</li><li>Address</li><li>EUID</li></ul>
+          <div class="cd-choice-keep">${mock.icon('LockOutlined')}Country and EBWOID must stay the same</div>
+        </div>
+        <div class="px-choice cd-choice" role="button" tabindex="0" data-method="request" aria-pressed="${method === 'request'}">
+          <div class="tx-row"><span class="tx-tile" aria-hidden="true">${mock.icon('UploadFileOutlined')}</span><span class="tx-chip tx-chip--outlined px-choice__tag">Checked by ${esc(data.installation.name)}</span></div>
+          <div class="cd-choice-title">Request a change with documents</div>
+          <div class="cd-choice-text">Send the new values with supporting documents. Your onboarding service provider checks them and decides.</div>
+          <div class="cd-choice-label">Changes</div>
+          <ul><li>VAT ID, commercial register number, LEI code, EORI</li><li>EUID and EBWOID, if you declared them</li></ul>
+          <div class="cd-choice-keep">${mock.icon('LockOutlined')}Legal name and address come from your Business Wallet</div>
+        </div>
+      </div>`;
+
+      const walletError = () => {
+        if (state() === 'company-mismatch') {
+          return problem('error', mock.icon('ErrorOutlineOutlined'), 'This Business Wallet belongs to another company: its EBWOID is not EBWOID-DE-0000000001. Nothing was changed.', 'company-mismatch', '<div class="tx-help">fields: EBWOID</div>');
+        }
+        if (state() === 'attestation-used') {
+          return problem('warning', mock.icon('WarningAmberOutlined'), 'This confirmation was already used. Verify again to get a new one.', 'attestation-used');
+        }
+        return '';
+      };
+
+      const walletPanel = () => {
+        const intro = `<p class="tx-muted">The EBW-Connector of ${esc(data.installation.name)} reads the legal person identification data (LPID) of your Business Wallet. The new data is taken over at once, without a check by your onboarding service provider, and passed on to the core service provider.</p>`;
+        const qr = `<div class="tx-card"><div class="px-wallet-panel">
+            ${px.qr(`attestation-${company.id}`)}
+            <div class="cd-wallet-text">
+              <h2 class="tx-h3">Scan with your EUDI Wallet</h2>
+              <p>You, or a person who may represent ${esc(company.name)}, scan the code and confirm.</p>
+              ${intro}
+              <div class="cd-wait"><span class="tx-spinner"></span>Waiting for the confirmation…</div>
+              <div class="tx-row">
+                <button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-redirect>${mock.icon('OpenInNewOutlined', 'sm')}Use the wallet on this device</button>
+                <button class="tx-btn tx-btn--outlined tx-btn--sm mock-only" type="button" data-confirm>Mockup: confirm in the wallet</button>
+              </div>
+            </div></div></div>`;
+        const redirect = `<div class="tx-card"><div class="cd-wallet-text">
+            <div class="tx-row"><span class="tx-tile" aria-hidden="true">${mock.icon('AccountBalanceWalletOutlined')}</span><h2 class="tx-h3">Confirm at the EBW-Connector</h2></div>
+            <p>You leave the portal for the EBW-Connector of ${esc(data.installation.name)}. You, or a person who may represent the company, confirm there with the EUDI Wallet. Then you come back here.</p>
+            ${intro}
+            <div class="cd-choice-label">Shared with ${esc(data.installation.name)}</div>
+            <ul class="cd-shared"><li>Your person identification data and your mandate</li><li>The legal person identification data of ${esc(company.name)}</li></ul>
+            <div class="tx-row"><button class="tx-btn" type="button" data-confirm>${mock.icon('OpenInNewOutlined')}Continue to the EBW-Connector</button></div>
+          </div></div>`;
+        return `${walletError()}${v('wallet') === 'qr' ? qr : redirect}`;
+      };
+
+      const typeOptions = (current) => declarableTypes.map((t) => `<option value="${t}"${t === current ? ' selected' : ''}>${esc(labels.identifierType[t])}</option>`).join('');
+
+      const coreSection = () => `<section class="tx-card" aria-labelledby="h-core">
+          <div class="px-section__head"><div><h2 class="tx-h3" id="h-core">Legal name and address</h2>
+            <p class="tx-muted tx-body2">They come from your Business Wallet and change only with it.</p></div>
+            <button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-method="wallet">${mock.icon('VerifiedUserOutlined', 'sm')}Verify with your Business Wallet</button></div>
+          <dl class="px-fields px-fields--2">
+            <div class="px-field"><dt>Legal name</dt><dd>${esc(company.name)}<div class="px-locked">${mock.icon('LockOutlined')}From your Business Wallet</div></dd></div>
+            <div class="px-field"><dt>Address</dt><dd>${px.address(company.address)}<div class="px-locked">${mock.icon('LockOutlined')}From your Business Wallet</div></dd></div>
+          </dl>
+        </section>`;
+
+      const identifierSection = () => `<section class="tx-card" aria-labelledby="h-ids">
+          <div class="px-section__head"><div><h2 class="tx-h3" id="h-ids">Identifiers</h2>
+            <p class="tx-muted tx-body2">The complete list after the change. Identifiers from your Business Wallet stay as they are.</p></div></div>
+          <div class="cd-ids">
+            ${company.identifiers.filter((i) => i.source === 'BUSINESS_WALLET').map((i) => `<div class="cd-id-fixed"><span class="px-ids__type">${esc(labels.identifierType[i.type])}</span><span class="px-mono">${esc(i.value)}</span>${px.source(i.source)}</div>`).join('')}
+            ${draft.identifiers.map((i, n) => `<div class="cd-id-row">
+                <select class="tx-select" data-id-type="${n}" aria-label="Type">${typeOptions(i.type)}</select>
+                <input class="tx-input px-mono" data-id-value="${n}" value="${esc(i.value)}" aria-label="${esc(labels.identifierType[i.type])}">
+                <button class="px-copy" type="button" data-id-remove="${n}" title="Remove">${mock.icon('DeleteOutlined')}</button></div>`).join('')}
+            <div><button class="tx-btn tx-btn--text tx-btn--sm" type="button" data-id-add>${mock.icon('Add', 'sm')}Add an identifier</button></div>
+          </div>
+        </section>`;
+
+      const commentSection = () => `<section class="tx-card" aria-labelledby="h-comment">
+          <div class="px-section__head"><h2 class="tx-h3" id="h-comment">Why the change</h2></div>
+          <label class="tx-label" for="cr-comment">Comment for your onboarding service provider</label>
+          <textarea class="tx-textarea" id="cr-comment" rows="3" maxlength="1000">${esc(draft.comment)}</textarea>
+          <div class="tx-help cd-counter" id="cr-counter">${draft.comment.length} / 1000</div>
+        </section>`;
+
+      const fileList = () => `<ul class="px-files">${draft.documents.map((f, n) => {
+        const bad = state() === 'document-invalid' && n === draft.documents.length - 1;
+        return `<li class="px-file${bad ? ' cd-file-error' : ''}"><span class="px-file__icon">${bad ? mock.icon('ErrorOutlineOutlined') : px.fileIcon(f.mediaType)}</span>
+          <span class="px-file__name">${esc(f.fileName)}</span><span class="px-file__meta">${px.bytes(f.sizeBytes)}</span>
+          <button class="px-copy" type="button" data-file-remove="${n}" title="Remove">${mock.icon('CloseOutlined', 'sm')}</button></li>`;
+      }).join('')}</ul>`;
+
+      const limits = `PDF, PNG or JPEG, up to ${px.bytes(data.settings.changeRequestMaxDocumentBytes)} each, at most ${data.settings.changeRequestMaxDocuments} files.`;
+
+      const documentSection = () => {
+        const full = draft.documents.length >= data.settings.changeRequestMaxDocuments;
+        const picker = v('upload') === 'dropzone'
+          ? `<div class="px-dropzone" role="button" tabindex="0" data-file-add${full ? ' aria-disabled="true"' : ''}>
+              <div class="tx-tile">${mock.icon('UploadFileOutlined')}</div>
+              <div><strong>Drop files here</strong> or choose files</div><div class="tx-help">${limits}</div></div>`
+          : `<div class="tx-row"><button class="tx-btn tx-btn--outlined" type="button" data-file-add${full ? ' disabled' : ''}>${mock.icon('AttachFileOutlined')}Add a document</button><span class="tx-help">${limits}</span></div>`;
+        const error = state() === 'document-invalid'
+          ? problem('error', mock.icon('ErrorOutlineOutlined'), 'auszug.pdf is not a PDF, PNG or JPEG file. Remove it or choose another file.', 'document-invalid')
+          : '';
+        const list = draft.documents.length ? fileList() : '<p class="px-none" style="margin: 0">No document yet</p>';
+        return `<section class="tx-card" aria-labelledby="h-docs">
+          <div class="px-section__head"><div><h2 class="tx-h3" id="h-docs">Supporting documents</h2>
+            <p class="tx-muted tx-body2">For example an extract from the commercial register or the LEI certificate.</p></div></div>
+          <div class="px-form">${error}${v('upload') === 'dropzone' ? `${picker}${draft.documents.length ? fileList() : ''}` : `${list}${picker}`}</div>
+        </section>`;
+      };
+
+      /** The changes: now and new side by side, or a table. */
+      const changesView = (rows) => {
+        const changed = rows.filter((r) => r.changed);
+        if (v('review') === 'compare') {
+          return `<div class="px-compare">
+            <div class="tx-card"><div class="cd-compare-head">${mock.icon('HistoryOutlined', 'sm')}Now</div>
+              <dl class="cd-compare-list">${changed.map((r) => `<div><dt>${esc(r.field)}</dt><dd>${r.current}</dd></div>`).join('')}</dl></div>
+            <div class="px-compare__arrow">${mock.icon('ArrowForward')}</div>
+            <div class="tx-card px-compare__new"><div class="cd-compare-head">${mock.icon('EditNoteOutlined', 'sm')}New</div>
+              <dl class="cd-compare-list">${changed.map((r) => `<div><dt>${esc(r.field)}</dt><dd>${r.requested}</dd></div>`).join('')}</dl></div>
+          </div>`;
+        }
+        return `<div class="tx-card" style="padding: 8px 0"><div class="tx-table-wrap"><table class="px-diff">
+          <thead><tr><th scope="col">Field</th><th scope="col">Now</th><th scope="col">New</th></tr></thead>
+          <tbody>${rows.map((r) => `<tr class="${r.changed ? 'px-changed' : ''}"><td class="px-diff__field">${esc(r.field)}</td><td>${r.changed && !r.current.includes('px-none') ? `<span class="px-old">${r.current}</span>` : r.current}</td><td>${r.changed ? r.requested : '<span class="tx-muted">unchanged</span>'}</td></tr>`).join('')}</tbody>
+        </table></div></div>`;
+      };
+
+      const requestRows = () => px.changeRows({ identifiers: draft.identifiers.filter((i) => i.value.trim()) }, company);
+
+      const reviewSection = () => {
+        const problems = {
+          'attestation-required': problem('error', mock.icon('ErrorOutlineOutlined'), 'Legal name and address of your company come from your Business Wallet. Change them with your Business Wallet, not with a change request.', 'attestation-required'),
+          'change-request-open': problem('warning', mock.icon('PendingActionsOutlined'), `There is an open change request already (${esc(px.changeSummary(openRequest.changes, company))}, since ${px.date(openRequest.createdAt)}). Wait for the decision or withdraw it.`, 'change-request-open', '<div style="margin-top: 6px"><a class="tx-link" href="own-change-requests.html">Your change requests →</a></div>'),
+        };
+        return `<section class="px-form" aria-labelledby="h-review">
+          <h2 class="tx-h3" id="h-review">Your change request</h2>
+          ${changesView(requestRows())}
+          <div class="tx-muted tx-body2">${draft.documents.length} supporting document${draft.documents.length === 1 ? '' : 's'} · comment: “${esc(draft.comment)}”</div>
+          ${problems[state()] || ''}
+        </section>`;
+      };
+
+      const submitButton = () => `<button class="tx-btn" type="button" data-submit>${mock.icon('SendOutlined')}Send the change request</button>`;
+
+      // ── one page with two cards ──────────────────────────────────────────
+      function onePage() {
+        let body = '';
+        if (method === 'wallet') {
+          body = walletPanel();
+        } else if (method === 'request') {
+          body = `${coreSection()}${identifierSection()}${commentSection()}${documentSection()}${reviewSection()}
+            <div class="cd-nav"><span></span><div class="cd-nav__end"><a class="tx-btn tx-btn--outlined" href="company-profile.html">Cancel</a>${submitButton()}</div></div>`;
+        }
+        return `${choiceCards()}${body}`;
+      }
+
+      // ── wizard ───────────────────────────────────────────────────────────
+      function wizard() {
+        const names = method === 'request'
+          ? ['How to change', 'Changes', 'Documents', 'Review and send']
+          : ['How to change', 'Confirm with your wallet', 'Result'];
+        const steps = `<ol class="tx-steps" style="margin: 0">${names.map((name, i) => {
+          const n = i + 1;
+          const attrs = n === step ? ' aria-current="step"' : '';
+          return `<li class="tx-step${n < step ? ' tx-step--done' : ''}"${attrs}><span class="tx-step__n">${n < step ? mock.icon('Check', 'sm') : n}</span>${name}</li>`;
+        }).join('')}</ol>`;
+        let body;
+        if (step === 1) {
+          body = choiceCards();
+        } else if (method === 'wallet') {
+          body = walletPanel();
+        } else if (step === 2) {
+          body = `${coreSection()}${identifierSection()}${commentSection()}`;
+        } else if (step === 3) {
+          body = documentSection();
+        } else {
+          body = reviewSection();
+        }
+        const last = method === 'request' && step === 4;
+        let next = '';
+        if (step === 1) {
+          next = `<button class="tx-btn" type="button" data-next${method ? '' : ' disabled'}>Next${mock.icon('ArrowForward', 'sm')}</button>`;
+        } else if (method === 'request' && !last) {
+          next = `<button class="tx-btn" type="button" data-next>Next${mock.icon('ArrowForward', 'sm')}</button>`;
+        }
+        const nav = `<div class="cd-nav">${step > 1 ? `<button class="tx-btn tx-btn--outlined" type="button" data-back>${mock.icon('ArrowBack', 'sm')}Back</button>` : '<a class="tx-btn tx-btn--outlined" href="company-profile.html">Cancel</a>'}
+          <div class="cd-nav__end">${next}${last ? submitButton() : ''}</div></div>`;
+        return `${steps}${body}${nav}`;
+      }
+
+      // ── results ──────────────────────────────────────────────────────────
+      const back = '<a class="tx-btn tx-btn--outlined" href="company-profile.html">Back to your company</a>';
+      function updated() {
+        const rows = px.changeRows({ name: fromWallet.name, address: fromWallet.address }, company);
+        return `<div class="px-banner px-banner--success"><span class="tx-tile">${mock.icon('CheckCircleOutlined')}</span>
+            <div class="px-banner__main"><div class="px-banner__title">Your company data was updated</div>
+              <div class="tx-muted">Taken over from your Business Wallet on ${px.dateTime('2026-11-06T10:12:00Z')}. Changed: ${rows.filter((r) => r.changed).map((r) => esc(r.field)).join(', ')}. The core service provider gets the new data.</div></div></div>
+          ${changesView(rows)}
+          <div class="cd-result-actions">${back}</div>`;
+      }
+      function submitted() {
+        return `<div class="px-banner px-banner--success"><span class="tx-tile">${mock.icon('MarkEmailReadOutlined')}</span>
+            <div class="px-banner__main"><div class="px-banner__title">Change request sent</div>
+              <div class="tx-muted">${esc(data.installation.name)} checks your change request. You see the decision in your change requests.</div></div>
+            ${px.chip('changeRequestStatus', 'OPEN')}</div>
+          ${changesView(requestRows())}
+          <div class="cd-result-actions"><a class="tx-btn" href="own-change-requests.html">Your change requests</a>${back}</div>`;
+      }
+
+      function render() {
+        document.getElementById('persona').innerHTML = px.persona('erika');
+        const s = state();
+        let html;
+        if (s === 'updated') {
+          html = updated();
+        } else if (s === 'submitted') {
+          html = submitted();
+        } else {
+          html = v('path') === 'wizard' ? wizard() : onePage();
+        }
+        document.getElementById('content').innerHTML = html;
+      }
+
+      /** Each state of the mockup opens the screen where its result appears. */
+      function enterState() {
+        const s = state();
+        if (walletStates.includes(s)) {
+          method = 'wallet';
+          step = 2;
+        } else if (requestStates.includes(s)) {
+          method = 'request';
+          step = s === 'document-invalid' ? 3 : 4;
+          draft = freshDraft();
+          if (s === 'document-invalid') {
+            draft.documents.push({ fileName: 'auszug.pdf', mediaType: 'application/pdf', sizeBytes: 2048 });
+          }
+        } else if (s === 'loaded') {
+          method = null;
+          step = 1;
+          draft = freshDraft();
+        }
+        render();
+      }
+
+      const go = (next) => { mock.setState(next); render(); };
+
+      mock.on('click', '[data-method]', (_e, el) => {
+        method = el.dataset.method;
+        if (state() !== 'loaded') { mock.setState('loaded'); }
+        if (v('path') === 'wizard' && step > 1) { step = 2; }
+        render();
+      });
+      mock.on('keydown', '[data-method]', (event, el) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); el.click(); }
+      });
+      mock.on('click', '[data-next]', () => { step += 1; render(); });
+      mock.on('click', '[data-back]', () => { step -= 1; render(); });
+      mock.on('click', '[data-confirm]', () => go('updated'));
+      mock.on('click', '[data-redirect]', () => mock.toast('Opens the EUDI Wallet on this device'));
+      mock.on('click', '[data-submit]', () => {
+        if (!draft.comment.trim()) { mock.toast('Write why the change is needed'); return; }
+        if (!draft.documents.length) { mock.toast('Add at least one supporting document'); return; }
+        go('submitted');
+      });
+      mock.on('change', '[data-id-type]', (_e, el) => { draft.identifiers[Number(el.dataset.idType)].type = el.value; });
+      mock.on('input', '[data-id-value]', (_e, el) => { draft.identifiers[Number(el.dataset.idValue)].value = el.value; });
+      mock.on('click', '[data-id-remove]', (_e, el) => { draft.identifiers.splice(Number(el.dataset.idRemove), 1); render(); });
+      mock.on('click', '[data-id-add]', () => {
+        const used = draft.identifiers.map((i) => i.type);
+        draft.identifiers.push({ type: declarableTypes.find((t) => !used.includes(t)) || 'EORI', value: '' });
+        render();
+      });
+      mock.on('input', '#cr-comment', (_e, el) => {
+        draft.comment = el.value;
+        document.getElementById('cr-counter').textContent = `${el.value.length} / 1000`;
+      });
+      mock.on('click', '[data-file-add]', (_e, el) => {
+        if (el.getAttribute('aria-disabled') === 'true') { return; }
+        draft.documents.push({ fileName: 'handelsregisterauszug-hrb-100001.pdf', mediaType: 'application/pdf', sizeBytes: 256000 });
+        render();
+      });
+      mock.on('click', '[data-file-remove]', (_e, el) => { draft.documents.splice(Number(el.dataset.fileRemove), 1); render(); });
+      mock.on('click', '[data-state-button]', () => setTimeout(enterState));
+      mock.onConfigure(render);
+      enterState();
+    })();
+  </script>
+</body>
+</html>
