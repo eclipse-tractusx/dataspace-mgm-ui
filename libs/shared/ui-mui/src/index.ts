@@ -87,6 +87,11 @@ export { default as DialogTitle } from '@mui/material/DialogTitle';
 export { default as FormControlLabel } from '@mui/material/FormControlLabel';
 export { default as InputAdornment } from '@mui/material/InputAdornment';
 export { default as Skeleton } from '@mui/material/Skeleton';
+// Added for the onboarding proof of concept (C1-M2 Registration).
+export { default as Accordion } from '@mui/material/Accordion';
+export { default as AccordionDetails } from '@mui/material/AccordionDetails';
+export { default as AccordionSummary } from '@mui/material/AccordionSummary';
+export { default as FormGroup } from '@mui/material/FormGroup';
 export { default as Snackbar } from '@mui/material/Snackbar';
 export { default as Tab } from '@mui/material/Tab';
 export { default as Table } from '@mui/material/Table';
@@ -158,4 +163,10 @@ export { default as ScheduleIcon } from '@mui/icons-material/Schedule';
 export { default as SearchIcon } from '@mui/icons-material/Search';
 export { default as SendIcon } from '@mui/icons-material/Send';
 export { default as UndoIcon } from '@mui/icons-material/Undo';
+// Icons added for the onboarding proof of concept (C1-M2 Registration).
+export { default as AddBusinessOutlinedIcon } from '@mui/icons-material/AddBusinessOutlined';
+export { default as AutorenewOutlinedIcon } from '@mui/icons-material/AutorenewOutlined';
+export { default as ErrorOutlineOutlinedIcon } from '@mui/icons-material/ErrorOutlineOutlined';
+export { default as HelpOutlineOutlinedIcon } from '@mui/icons-material/HelpOutlineOutlined';
+export { default as SendOutlinedIcon } from '@mui/icons-material/SendOutlined';
 export { default as UploadFileOutlinedIcon } from '@mui/icons-material/UploadFileOutlined';

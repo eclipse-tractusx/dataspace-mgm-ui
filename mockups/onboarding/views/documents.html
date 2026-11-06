@@ -1,0 +1,188 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · Supporting documents — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .dc-summary { display: flex; gap: 16px; align-items: center; list-style: none; }
+    .dc-summary::-webkit-details-marker { display: none; }
+    .dc-summary .dc-title { flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; }
+    .dc-summary .dc-chevron { transition: transform 0.2s ease; color: var(--muted); }
+    details[open] > .dc-summary .dc-chevron { transform: rotate(180deg); }
+    .dc-file { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .dc-file .dc-file__text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+    .dc-uploaded { color: var(--success); display: inline-flex; gap: 6px; align-items: center; font-size: 0.875rem; }
+  </style>
+</head>
+<!-- Hans Beispiel, path DOCUMENTS, application CREATED (Beispiel Logistik GmbH), after the company data.
+     Decided 2026-11-06: one expandable section per document type; without a document it shows the upload area, after
+     the upload the document with Open (GET …/documents/{id}) and Delete (DELETE …/documents/{id}); the declaration of
+     representation on this page. States = results of POST/GET/DELETE /applications/{id}/documents. -->
+<body data-active="/onboarding" data-view="Supporting documents" data-states="loaded,empty,rejected,submitted,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">Supporting documents</h1>
+    <ol class="tx-steps">
+      <li class="tx-step tx-step--done"><span class="tx-step__n">1</span>Application</li>
+      <li class="tx-step tx-step--done"><span class="tx-step__n">2</span>Proof</li>
+      <li class="tx-step tx-step--done"><span class="tx-step__n">3</span>Company data</li>
+      <li class="tx-step" aria-current="step"><span class="tx-step__n">4</span>Documents</li>
+      <li class="tx-step"><span class="tx-step__n">5</span>Roles, terms and submission</li>
+    </ol>
+
+    <section class="tx-stack" data-show-state="loaded empty rejected submitted">
+      <p class="tx-muted">Upload the commercial register extract of <strong data-company></strong>. If the extract does
+        not name you as a representative, add a power of attorney. PDF, PNG or JPEG, up to 10 MB each.</p>
+
+      <div class="tx-alert tx-alert--error" role="alert" data-show-state="rejected">
+        <span data-icon="ErrorOutlineOutlined"></span>
+        <div><div><strong>vollmacht.docx was not uploaded.</strong> Only PDF, PNG or JPEG (checked by the content of the file).</div>
+          <code data-problem="validation"></code> · <code>file</code></div>
+      </div>
+      <div class="tx-alert tx-alert--info" data-show-state="submitted">
+        <span data-icon="InfoOutlined"></span>
+        <div><div>Your application is submitted; its documents can no longer be changed.</div><code data-problem="invalidState"></code></div>
+      </div>
+
+      <!-- One section per document type (decided). -->
+      <div class="tx-stack" data-sections></div>
+
+      <!-- Declaration of representation: on this page (decided), sent with POST …/submit. -->
+      <div class="tx-card" data-variant="declaration:here" data-dimension="Declaration of representation" data-variant-label="On this page">
+        <label class="ob-check"><input type="checkbox" data-declare><span>I declare that I may represent <strong data-company></strong> and file this application for it.</span></label>
+      </div>
+      <p class="tx-muted tx-body2" data-variant="declaration:submit" data-variant-label="At submission">You confirm that you may represent the company when you submit.</p>
+
+      <div class="ob-actions">
+        <a class="tx-btn tx-btn--outlined" href="company-data.html#path=documents">Back</a>
+        <a class="tx-btn" href="terms-submit.html#path=documents"><span data-icon="ArrowForward"></span>Continue</a>
+      </div>
+    </section>
+
+    <section data-show-state="loading" role="status"><div class="tx-row"><span class="tx-spinner"></span><span>Uploading handelsregisterauszug-hrb-200002.pdf…</span></div></section>
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert"><span data-icon="ErrorOutlineOutlined"></span>
+        <div><div>The documents could not be loaded (HTTP 502).</div><code data-problem="upstream"></code></div></div>
+    </section>
+    <input class="ob-hidden-input" type="file" accept="application/pdf,image/png,image/jpeg" id="file" aria-label="File">
+
+    <dialog class="tx-dialog" id="delete" aria-labelledby="delete-title">
+      <div class="tx-dialog__body tx-stack">
+        <h2 class="tx-h3" id="delete-title">Delete the document?</h2>
+        <p data-delete-name></p>
+      </div>
+      <div class="tx-dialog__actions">
+        <button class="tx-btn tx-btn--outlined" type="button" data-close>Keep</button>
+        <button class="tx-btn" type="button" data-confirm-delete>Delete</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const c1m2 = mock.data.c1m2;
+      const L = c1m2.labels;
+      const app = c1m2.hansApplication;
+      let docs = app.documents.map((doc) => ({ ...doc }));
+      let pendingType = null;
+      let toDelete = null;
+      const opened = new Set(['COMMERCIAL_REGISTER_EXTRACT']);
+      document.querySelectorAll('[data-company]').forEach((el) => { el.textContent = app.companyData.legalName; });
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      const hints = {
+        COMMERCIAL_REGISTER_EXTRACT: 'Needed for the review.',
+        POWER_OF_ATTORNEY: 'Only if the register extract does not name you as a representative.',
+        OTHER: 'Any further document that helps OSP staff.',
+      };
+      const size = (bytes) => (bytes < 1024 ? `${bytes} B` : `${Math.round(bytes / 1024)} KB`);
+
+      function render() {
+        const state = document.body.dataset.state;
+        const shown = state === 'empty' ? [] : docs;
+        const locked = state === 'submitted';
+        document.querySelector('[data-sections]').innerHTML = Object.keys(L.documentType).map((type) => {
+          const doc = shown.find((d) => d.documentType === type);
+          const body = doc
+            ? `<div class="dc-file"><span class="tx-tile">${mock.icon('DescriptionOutlined')}</span>
+                 <span class="dc-file__text"><strong>${doc.fileName}</strong><span class="tx-muted tx-body2">${size(doc.sizeBytes)} · uploaded ${mock.date(doc.uploadedAt)}</span></span>
+                 <button class="tx-btn tx-btn--outlined" type="button" data-open-doc="${doc.documentId}">${mock.icon('OpenInNew', 'sm')}Open</button>
+                 ${locked ? '' : `<button class="tx-btn tx-btn--text" type="button" data-delete="${doc.documentId}">${mock.icon('DeleteOutlined', 'sm')}Delete</button>`}</div>`
+            : `<div class="ob-drop"><span class="tx-tile">${mock.icon('UploadFileOutlined')}</span><strong>Drop a file here</strong>
+                 <span class="tx-muted tx-body2">PDF, PNG or JPEG, up to 10 MB</span>
+                 <button class="tx-btn tx-btn--outlined" type="button" data-pick="${type}">Choose file</button></div>`;
+          return `<details class="ob-section" data-section="${type}" ${opened.has(type) ? 'open' : ''}>
+            <summary class="dc-summary"><span class="tx-tile">${mock.icon('DescriptionOutlined')}</span>
+              <span class="dc-title"><span>${L.documentType[type]}</span><span class="tx-muted tx-body2">${hints[type]}</span></span>
+              ${doc ? `<span class="dc-uploaded">${mock.icon('CheckCircleOutlined', 'sm')}Uploaded</span>` : '<span class="tx-muted tx-body2">Not uploaded</span>'}
+              <span class="dc-chevron">${mock.icon('ExpandMore')}</span></summary>
+            ${body}</details>`;
+        }).join('');
+      }
+      document.addEventListener('toggle', (e) => {
+        const section = e.target.closest && e.target.closest('[data-section]');
+        if (section) { if (section.open) { opened.add(section.dataset.section); } else { opened.delete(section.dataset.section); } }
+      }, true);
+      mock.on('click', '[data-pick]', (e, el) => { pendingType = el.dataset.pick; document.getElementById('file').click(); });
+      document.getElementById('file').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) { return; }
+        if (!/\.(pdf|png|jpe?g)$/i.test(file.name)) { mock.setState('rejected'); render(); return; }
+        docs.push({ documentId: crypto.randomUUID(), documentType: pendingType, fileName: file.name, contentType: file.type, sizeBytes: file.size, sha256: '0'.repeat(64), uploadedAt: new Date().toISOString() });
+        opened.add(pendingType);
+        mock.setState('loaded');
+        render();
+        mock.toast(`${file.name} uploaded`);
+      });
+      mock.on('click', '[data-open-doc]', () => mock.toast('The document opens in a new tab'));
+      mock.on('click', '[data-delete]', (e, el) => {
+        toDelete = docs.find((d) => d.documentId === el.dataset.delete);
+        document.querySelector('[data-delete-name]').textContent = `${toDelete.fileName} is removed from the application.`;
+        document.getElementById('delete').showModal();
+      });
+      mock.on('click', '[data-close]', () => document.getElementById('delete').close());
+      mock.on('click', '[data-confirm-delete]', () => {
+        docs = docs.filter((d) => d !== toDelete);
+        document.getElementById('delete').close();
+        render();
+        mock.toast('Document deleted');
+      });
+      document.addEventListener('click', (e) => { if (e.target.closest('[data-state-button]')) { setTimeout(render); } });
+      render();
+    })();
+  </script>
+</body>
+</html>

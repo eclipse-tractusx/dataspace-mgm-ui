@@ -26,8 +26,8 @@
 
 import {
   AccountBalanceWalletOutlinedIcon,
-  AppRegistrationOutlinedIcon,
   CableOutlinedIcon,
+  HowToRegOutlinedIcon,
   HubOutlinedIcon,
   StorefrontOutlinedIcon,
 } from '@dataspace-mgm/ui-mui';
@@ -35,7 +35,10 @@ import { MOCK_MODE } from '../core/mock-mode';
 import { FeatureTranslationsGate } from '../i18n/FeatureTranslationsGate';
 import type { FeatureCategory, FeatureConfig, FeatureRoute, NavigationEntry } from '../types/routing';
 import { homeFeature } from './home/routes';
+import { onboardingFeature } from './onboarding/routes';
 import { participantsFeature } from './participants/routes';
+import { lazy, Suspense } from 'react';
+const ReviewRoutes = lazy(() => import('./review/review-routes'));
 
 /**
  * Whether a feature can be opened: not disabled, and a proof of concept (`stage: 'poc'`) only in mock mode, because it
@@ -76,7 +79,29 @@ const upcoming = (
  */
 export const allFeatures: FeatureConfig[] = [
   homeFeature,
-  upcoming('onboarding', 'onboarding', <AppRegistrationOutlinedIcon />, '/onboarding', '0.2.0'),
+  onboardingFeature,
+  {
+    id: 'onboarding-review',
+    version: '0.2.0',
+    category: 'onboarding',
+    icon: <HowToRegOutlinedIcon />,
+    navigationPath: '/onboarding/reviews',
+    disabled: false,
+    routes: [
+      {
+        path: 'onboarding/reviews/*',
+        element: (
+          <Suspense fallback={null}>
+            <ReviewRoutes />
+          </Suspense>
+        ),
+        meta: {
+          title: 'features.onboarding-review.name',
+          description: 'features.onboarding-review.description',
+        },
+      },
+    ],
+  },
   participantsFeature,
   upcoming('connectors', 'as-a-service', <CableOutlinedIcon />, '/connectors', '0.2.0'),
   upcoming('wallets', 'as-a-service', <AccountBalanceWalletOutlinedIcon />, '/wallets', '0.2.0'),

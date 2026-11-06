@@ -39,9 +39,9 @@ const person = (
 /**
  * The test persons of mock mode (FRAMEWORK 7a, backend testdata/persons-osp-a.json) with the permission keys of C3-M1
  * README 6.8 and C3-M2 README 6.3, as GET /me would list them (mockups/participants/shared/data.js).
- * `VITE_MOCK_PERSON=<key>` picks one; an unknown key (e.g. `none`) starts signed out.
+ * mock-container.ts combines them with the persons of onboarding into MOCK_PERSONS; page tests use them directly.
  */
-export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
+export const C3_MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   pia: PIA_SESSION,
   erika: person('erika', 'Erika Mustermann', COMPANY_IDS.u1, 'BPNLIUK2REMLK3F4', ['view_company', 'edit_company', 'edit_company_roles']),
   max: person('max', 'Max Mustermann', COMPANY_IDS.u1, 'BPNLIUK2REMLK3F4', ['view_company']),

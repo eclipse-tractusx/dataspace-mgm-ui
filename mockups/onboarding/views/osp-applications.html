@@ -1,0 +1,199 @@
+<!doctype html>
+<!--
+ Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0.
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ AI Disclosure: This file was entirely AI-generated.
+ The AI-generated portions are made available under CC0-1.0 and not subject
+ to the project's license. The human contributor has reviewed and verified
+ that the code is correct.
+
+ SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
+ Assisted-By: Claude Code (claude-opus-5-5)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding · Applications — Mockup</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <link rel="stylesheet" href="../shared/shell.css">
+  <link rel="stylesheet" href="../shared/onboarding.css">
+  <style>
+    .oa-toolbar { display: flex; gap: 16px; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; }
+    .oa-toolbar > :first-child { flex: 1 1 auto; min-width: 0; }
+    .oa-count { white-space: nowrap; padding-bottom: 6px; }
+    .oa-body { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); }
+    .oa-body > * { min-width: 0; }
+    .oa-body--side { grid-template-columns: 220px minmax(0, 1fr); align-items: start; }
+    .oa-side { border-right: 1px solid var(--subtle-border); padding-right: 24px; }
+    @media (max-width: 899.98px) { .oa-body--side { grid-template-columns: 1fr; } .oa-side { border-right: 0; padding-right: 0; border-bottom: 1px solid var(--subtle-border); padding-bottom: 16px; } }
+    .oa-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .oa-chip { font: inherit; cursor: pointer; height: 32px; padding: 0 12px; border-radius: var(--chip-radius); border: 1px solid var(--card-border); background: transparent; color: inherit; }
+    .oa-chip[aria-pressed="true"] { background: var(--accent-tint); border-color: var(--tx-orange); }
+    .oa-selects { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .oa-cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .oa-card { display: flex; flex-direction: column; gap: 8px; cursor: pointer; padding: 20px; text-align: left; font: inherit; color: inherit; }
+    .oa-row { cursor: pointer; }
+    .oa-detail-head { display: flex; flex-direction: column; gap: 16px; }
+    .oa-detail-head .tx-btn { align-self: flex-start; margin-left: -12px; }
+    .oa-detail-grid { display: grid; gap: 32px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    @media (max-width: 1199.98px) { .oa-detail-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<!-- Rolf Prüfer (OSP Reviewer, view_applications) looks at every application of OSP A: GET /osp/applications
+     (listAllApplications), one of them with GET /osp/applications/{id} (getAnyApplication) and its documents.
+     States: loaded, no match for the filter, 403 for a person without view_applications. -->
+<body data-active="/onboarding" data-view="Applications" data-states="loaded,empty,forbidden,loading,error">
+  <main class="tx-page" aria-labelledby="view-title">
+    <div class="tx-overline">Onboarding</div>
+    <h1 class="tx-title" id="view-title">Applications</h1>
+
+    <!-- One card: filter and list; an opened application replaces them in the same card (decided). -->
+    <section class="tx-card tx-stack" data-show-state="loaded empty" data-main-card>
+      <div class="tx-stack" data-list-mode>
+        <!-- Filters: chips, a side panel, or selects. Only the filters of the API: status, kind, verification. -->
+        <div class="oa-toolbar">
+          <div>
+            <div class="tx-stack" data-variant="filters:chips" data-dimension="Filters" data-variant-label="Chips above">
+              <div class="oa-chips" data-chips="status"></div>
+              <div class="oa-chips" data-chips="verification"></div>
+            </div>
+            <div class="oa-selects" data-variant="filters:selects" data-variant-label="Selects">
+              <div><label class="tx-label" for="f-status">Status</label><select class="tx-select" id="f-status" data-select="status"></select></div>
+              <div><label class="tx-label" for="f-kind">Kind</label><select class="tx-select" id="f-kind" data-select="kind"></select></div>
+              <div><label class="tx-label" for="f-ver">Proven with</label><select class="tx-select" id="f-ver" data-select="verification"></select></div>
+            </div>
+          </div>
+          <span class="tx-muted tx-body2 oa-count" data-count></span>
+        </div>
+
+        <div class="oa-body" id="body">
+          <aside class="tx-stack oa-side" data-variant="filters:side" data-variant-label="Side panel">
+            <div><span class="tx-label">Status</span><div class="tx-stack" data-checks="status"></div></div>
+            <div><span class="tx-label">Kind</span><div class="tx-stack" data-checks="kind"></div></div>
+            <div><span class="tx-label">Proven with</span><div class="tx-stack" data-checks="verification"></div></div>
+          </aside>
+          <div class="tx-stack">
+            <!-- Layout: a table or cards. -->
+            <div class="tx-table-wrap" data-variant="layout:table" data-dimension="Layout" data-variant-label="Table" data-show-state="loaded">
+              <table class="tx-table"><thead><tr><th>Company</th><th>Kind</th><th>Proven with</th><th>Status</th><th>Created</th><th>Submitted</th></tr></thead><tbody data-rows></tbody></table>
+            </div>
+            <div class="oa-cards" data-variant="layout:cards" data-variant-label="Cards" data-show-state="loaded" data-cards></div>
+            <div class="tx-empty" data-show-state="empty">
+              <div class="tx-tile" data-icon="InfoOutlined"></div>
+              <h2 class="tx-h3">No application matches the filter</h2>
+              <button class="tx-btn tx-btn--outlined" type="button" data-reset>Reset filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tx-stack" data-detail-mode hidden>
+        <div class="oa-detail-head">
+          <button class="tx-btn tx-btn--text" type="button" data-back><span data-icon="ArrowBack"></span>Applications</button>
+          <div data-detail-title></div>
+        </div>
+        <div data-detail></div>
+      </div>
+    </section>
+
+    <section data-show-state="forbidden">
+      <div class="tx-card tx-empty">
+        <div class="tx-tile" data-icon="LockOutlined"></div>
+        <h2 class="tx-h3">No access</h2>
+        <p>Only OSP staff see the applications of OSP A.</p>
+        <code data-problem="forbidden"></code>
+      </div>
+    </section>
+    <section data-show-state="loading" role="status"><div class="tx-row"><span class="tx-spinner"></span><span>Loading applications…</span></div></section>
+    <section data-show-state="error">
+      <div class="tx-alert tx-alert--error" role="alert"><span data-icon="ErrorOutlineOutlined"></span>
+        <div><div>The applications could not be loaded (HTTP 502).</div><code data-problem="upstream"></code></div></div>
+    </section>
+  </main>
+
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/nav.js"></script>
+  <script src="../shared/data.js"></script>
+  <script src="../shared/shell.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const c1m2 = mock.data.c1m2;
+      const L = c1m2.labels;
+      const all = c1m2.allApplications;
+      // GET /osp/applications/{id} for the two applications the mockup has in full; the others show their summary.
+      const full = { [c1m2.erikaApplication.id]: { ...c1m2.erikaApplication, status: 'SUBMITTED', reviewStatus: 'OPEN', consents: c1m2.erikaConsents, submittedAt: '2026-10-28T08:20:00.000Z' },
+        [c1m2.hansApplication.id]: c1m2.hansApplication };
+      const filter = { status: [], kind: [], verification: [] };
+      const options = { status: Object.keys(L.status), kind: Object.keys(L.kind), verification: Object.keys(L.verification) };
+      const label = (key, value) => L[key][value];
+      let selected = null;
+      document.querySelectorAll('[data-problem]').forEach((el) => { el.textContent = c1m2.problems[el.dataset.problem]; });
+      const chipClass = { CREATED: 'tx-status--info', SUBMITTED: 'tx-status--warning', COMPLETED: 'tx-status--success', DECLINED: 'tx-status--error', WITHDRAWN: 'tx-status--default' };
+      const statusChip = (s) => `<span class="tx-chip tx-status ${chipClass[s]}">${L.status[s]}</span>`;
+      const roleName = (r) => (c1m2.companyRoles.find((x) => x.role === r) || { name: r }).name;
+      const dl = (rows) => `<dl class="ob-dl">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd><dd></dd>`).join('')}</dl>`;
+      // The list is what GET /osp/applications?status=…&kind=…&verification=… returns; filtering here only simulates it.
+      const shown = () => all.filter((a) => Object.entries(filter).every(([k, v]) => !v.length || v.includes(a[k])));
+
+      function detail(s) {
+        const app = full[s.id];
+        const left = `<div class="tx-stack"><h3 class="tx-h3">Application</h3>${dl([
+          ['Kind', L.kind[s.kind]], ['Proven with', L.verification[s.verification]], ['Company roles', s.companyRoles.map(roleName).join(', ')],
+          ['Created', mock.date(s.createdAt)], ['Submitted', s.submittedAt ? mock.date(s.submittedAt) : '–'],
+          ...(app ? [['Applicant', `${app.applicant.givenName} ${app.applicant.familyName}`], ['Review case', L.reviewStatus[app.reviewStatus]]] : []),
+          ['Company ID', `<span class="ob-mono">${s.companyId}</span>`]])}</div>`;
+        const right = app ? `<div class="tx-stack"><h3 class="tx-h3">Company data</h3>${dl([
+          ['Address', `${app.companyData.address.streetName} ${app.companyData.address.streetNumber}, ${app.companyData.address.postalCode} ${app.companyData.address.city}`],
+          ...app.companyData.identifiers.map((i) => [L.identifier[i.type], `<span class="ob-mono">${i.value}</span>`])])}
+          ${app.comparison.length ? `<h3 class="tx-h3">Comparison with the wallet</h3><ul class="tx-list">${app.comparison.map((c) => `<li>${L.field[c.field]}: ${L.comparison[c.result]}</li>`).join('')}</ul>` : ''}
+          ${app.documents.length ? `<h3 class="tx-h3">Documents</h3><ul class="tx-list">${app.documents.map((x) => `<li>${mock.icon('DescriptionOutlined', 'sm')}<a class="tx-link" href="#">${x.fileName}</a> · ${L.documentType[x.documentType]}</li>`).join('')}</ul>` : ''}</div>` : '';
+        return `<div class="oa-detail-grid">${left}${right}</div>
+          <p class="tx-muted tx-body2">The decision is made in the review case (C1-M3 Application Review), not here.</p>`;
+      }
+      function render() {
+        const rows = shown();
+        if (['loaded', 'empty'].includes(document.body.dataset.state)) { mock.setState(rows.length ? 'loaded' : 'empty'); }
+        document.querySelector('[data-count]').textContent = `${rows.length} of ${all.length} applications`;
+        mock.render('[data-rows]', rows, (a) => `<tr class="oa-row" tabindex="0" data-open="${a.id}"><td><strong>${a.legalName}</strong></td><td>${L.kind[a.kind]}</td><td>${L.verification[a.verification]}</td><td>${statusChip(a.status)}</td><td>${mock.date(a.createdAt)}</td><td>${a.submittedAt ? mock.date(a.submittedAt) : '–'}</td></tr>`);
+        mock.render('[data-cards]', rows, (a) => `<button class="tx-card oa-card" type="button" data-open="${a.id}"><div class="tx-row tx-row--between"><strong>${a.legalName}</strong>${statusChip(a.status)}</div><span class="tx-muted tx-body2">${L.kind[a.kind]} · ${L.verification[a.verification]}</span><span class="tx-muted tx-body2">Created ${mock.date(a.createdAt)}</span></button>`);
+        document.querySelectorAll('[data-chips]').forEach((el) => { const k = el.dataset.chips; el.innerHTML = options[k].map((v) => `<button class="oa-chip" type="button" aria-pressed="${filter[k].includes(v)}" data-toggle="${k}:${v}">${label(k, v)}</button>`).join(''); });
+        document.querySelectorAll('[data-checks]').forEach((el) => { const k = el.dataset.checks; el.innerHTML = options[k].map((v) => `<label class="ob-check"><input type="checkbox" ${filter[k].includes(v) ? 'checked' : ''} data-toggle="${k}:${v}"><span>${label(k, v)}</span></label>`).join(''); });
+        document.querySelectorAll('[data-select]').forEach((el) => { const k = el.dataset.select; el.innerHTML = `<option value="">All</option>${options[k].map((v) => `<option value="${v}" ${filter[k][0] === v ? 'selected' : ''}>${label(k, v)}</option>`).join('')}`; });
+        document.getElementById('body').classList.toggle('oa-body--side', mock.variant('filters') === 'side');
+        // An opened application replaces filter and list in the same card.
+        const s = all.find((a) => a.id === selected);
+        document.querySelector('[data-list-mode]').hidden = Boolean(s);
+        document.querySelector('[data-detail-mode]').hidden = !s;
+        if (s) {
+          document.querySelector('[data-detail-title]').innerHTML = `<div class="tx-row tx-row--between"><h2 class="tx-h2">${s.legalName}</h2>${statusChip(s.status)}</div>`;
+          document.querySelector('[data-detail]').innerHTML = detail(s);
+        }
+      }
+      const toTop = () => document.querySelector('[data-main-card]').scrollIntoView({ block: 'nearest' });
+      mock.on('click', '[data-toggle]', (e, el) => { const [k, v] = el.dataset.toggle.split(':'); filter[k] = filter[k].includes(v) ? filter[k].filter((x) => x !== v) : [...filter[k], v]; render(); });
+      mock.on('change', '[data-select]', (e, el) => { filter[el.dataset.select] = el.value ? [el.value] : []; render(); });
+      mock.on('click', '[data-open]', (e, el) => { selected = el.dataset.open; render(); toTop(); });
+      mock.on('keydown', '[data-open]', (e, el) => { if (e.key === 'Enter') { selected = el.dataset.open; render(); toTop(); } });
+      mock.on('click', '[data-back]', () => { selected = null; render(); toTop(); });
+      mock.on('click', '[data-reset]', () => { filter.status = []; filter.kind = []; filter.verification = []; mock.setState('loaded'); render(); });
+      mock.onConfigure(render);
+      render();
+    })();
+  </script>
+</body>
+</html>

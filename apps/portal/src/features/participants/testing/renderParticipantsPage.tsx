@@ -28,7 +28,7 @@ import type { ReactElement } from 'react';
 import { ColorModeProvider } from '@dataspace-mgm/ui-mui';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { MOCK_PERSONS } from '../../../core/mock-persons';
+import { C3_MOCK_PERSONS as MOCK_PERSONS } from '../../../core/mock-persons';
 import { TestCoreModules, testCoreModules } from '../../../core/testing';
 
 type Options = Parameters<typeof testCoreModules>[0];

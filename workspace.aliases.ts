@@ -33,6 +33,11 @@ const at = (path: string) => fileURLToPath(new URL(path, import.meta.url));
  * tsconfig.base.json. More specific entries first (`…/testing` before the package).
  */
 export const workspaceAliases = [
+  { find: '@dataspace-mgm/c1-m3-state', replacement: at('./libs/c1-m3/state/src/index.ts') },
+  { find: '@dataspace-mgm/c1-m3-feature', replacement: at('./libs/c1-m3/feature/src/index.ts') },
+  { find: '@dataspace-mgm/c1-m3-core/testing', replacement: at('./packages/c1-m3-core/src/testing.ts') },
+  { find: '@dataspace-mgm/c1-m3-core', replacement: at('./packages/c1-m3-core/src/index.ts') },
+
   { find: '@dataspace-mgm/ui-mui', replacement: at('./libs/shared/ui-mui/src/index.ts') },
   { find: '@dataspace-mgm/core-http', replacement: at('./packages/core-http/src/index.ts') },
   { find: '@dataspace-mgm/identity-core/testing', replacement: at('./packages/identity-core/src/testing.ts') },
@@ -41,4 +46,6 @@ export const workspaceAliases = [
   { find: '@dataspace-mgm/c3-m1-core', replacement: at('./packages/c3-m1-core/src/index.ts') },
   { find: '@dataspace-mgm/c3-m2-core/testing', replacement: at('./packages/c3-m2-core/src/testing.ts') },
   { find: '@dataspace-mgm/c3-m2-core', replacement: at('./packages/c3-m2-core/src/index.ts') },
+  { find: '@dataspace-mgm/c1-m2-core/testing', replacement: at('./packages/c1-m2-core/src/testing.ts') },
+  { find: '@dataspace-mgm/c1-m2-core', replacement: at('./packages/c1-m2-core/src/index.ts') },
 ];

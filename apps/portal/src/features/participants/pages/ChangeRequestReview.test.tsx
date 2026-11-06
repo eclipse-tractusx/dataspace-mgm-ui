@@ -28,7 +28,7 @@ import { CoreHttpException } from '@dataspace-mgm/core-http';
 import { c3m1Problem } from '@dataspace-mgm/c3-m1-core/testing';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { MOCK_PERSONS } from '../../../core/mock-persons';
+import { C3_MOCK_PERSONS as MOCK_PERSONS } from '../../../core/mock-persons';
 import { participantsTranslations } from '../i18n';
 import { PARTICIPANTS_ROUTES } from '../paths';
 import { renderParticipantsPage } from '../testing/renderParticipantsPage';

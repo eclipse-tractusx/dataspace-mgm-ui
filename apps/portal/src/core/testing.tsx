@@ -38,6 +38,8 @@ import {
 } from '@dataspace-mgm/c3-m1-core/testing';
 import { GetCspRegistrationUseCase, type CspRegistrationAnemic } from '@dataspace-mgm/c3-m2-core';
 import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
+import { createC1M2UseCases } from '@dataspace-mgm/c1-m2-core';
+import { createMockC1M2Ports, type MockC1M2Options } from '@dataspace-mgm/c1-m2-core/testing';
 import { createIdentityModule, type SessionAnemic } from '@dataspace-mgm/identity-core';
 import { InMemorySessionRepository, RecordingRedirect } from '@dataspace-mgm/identity-core/testing';
 import { CoreModulesProvider } from './CoreModulesContext';
@@ -52,6 +54,8 @@ interface TestModulesOptions {
   participants?: Omit<InMemoryC3M1StoreOptions, 'actorId'>;
   cspRegistrations?: ReadonlyArray<CspRegistrationAnemic>;
   cspFailure?: Error;
+  /** C1-M2 Registration (proof of concept) on its in-memory adapters; absent = `modules.c1m2` is undefined. */
+  c1m2?: Pick<MockC1M2Options, 'applications' | 'existingCompanies' | 'agreements' | 'failure' | 'now'>;
 }
 
 /** The core packages with in-memory adapters: pages are tested against the use cases, without HTTP. */
@@ -62,11 +66,13 @@ export function testCoreModules({
   participants = {},
   cspRegistrations = CSP_REGISTRATIONS,
   cspFailure,
+  c1m2,
 }: TestModulesOptions = {}) {
   const redirect = new RecordingRedirect();
   const companyRepository = new InMemoryCompanyRepository(companies ?? [], companyFailure ?? null);
   const store = new InMemoryC3M1Store({ ...participants, actorId: session?.user.id });
   const cspRepository = new InMemoryCspRegistrationRepository(cspRegistrations, cspFailure ?? null);
+  const c1m2Ports = c1m2 ? createMockC1M2Ports(session, { ...c1m2, applications: c1m2.applications ?? [] }) : undefined;
   const modules: CoreModules = {
     identity: createIdentityModule({ bffBaseUrl: '', sessions: new InMemorySessionRepository(session), redirect }),
     c3m1: c3m1ModuleFrom({
@@ -77,8 +83,9 @@ export function testCoreModules({
       reviews: new InMemoryChangeRequestReviewRepository(store),
     }),
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
+    c1m2: c1m2Ports ? createC1M2UseCases(c1m2Ports) : undefined,
   };
-  return { modules, redirect, companyRepository, store, cspRepository };
+  return { modules, redirect, companyRepository, store, cspRepository, applicationRepository: c1m2Ports?.applications };
 }
 
 export function TestCoreModules({ modules, children }: { modules?: CoreModules; children: ReactNode }) {

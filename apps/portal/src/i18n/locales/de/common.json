@@ -90,6 +90,10 @@
       "name": "Onboarding",
       "description": "Unternehmen registrieren, ihre Anträge prüfen und sie in den Datenraum aufnehmen."
     },
+    "onboarding-review": {
+      "name": "Antragsprüfung",
+      "description": "Registrierungsanträge von Unternehmen prüfen, genehmigen oder ablehnen."
+    },
     "participants": {
       "name": "Teilnehmerverwaltung",
       "description": "Unternehmensdaten, Business Partner Numbers, Benutzer und technische Benutzer aller Teilnehmer."
