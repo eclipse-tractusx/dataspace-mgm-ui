@@ -40,8 +40,8 @@ import {
   useTheme,
 } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
-import { useFavourites } from '../../contexts/FavouritesContext';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { activePath, useFavourites } from '../../contexts/FavouritesContext';
 import { ALL_SERVICES_PATH } from '../../pages/AllServicesPage';
 import FavouritesMenu from './FavouritesMenu';
 import { NotificationsMenu, ProfileMenu, railButtonSx } from './HeaderMenus';
@@ -68,6 +68,12 @@ function RailSlot({ children }: { children: React.ReactNode }) {
 export default function Sidebar() {
   const { t } = useTranslation();
   const { favourites } = useFavourites();
+  // One active item: the favourite whose path is the longest match of the page (/onboarding/reviews is the review,
+  // not also onboarding). NavLink would mark every parent path.
+  const current = activePath(
+    useLocation().pathname,
+    favourites.map((item) => item.path),
+  );
   // Orange on white is below 3:1, so the light theme marks the active item with the bar and a tint.
   const activeColor = useTheme().palette.mode === 'dark' ? tractusx.orange : tractusx.black;
   const hover = { color: activeColor, bgcolor: alpha(tractusx.orange, 0.08) };
@@ -95,9 +101,10 @@ export default function Sidebar() {
           <RailSlot key={item.path}>
             <Tooltip title={item.disabled ? t('navigation.itemComingSoon', { name: item.name }) : item.name} placement="right">
               <ListItemButton
-                component={NavLink}
+                component={Link}
                 to={item.path}
-                end={item.path === '/'}
+                className={item.path === current ? 'active' : undefined}
+                aria-current={item.path === current ? 'page' : undefined}
                 disabled={item.disabled}
                 aria-label={item.name}
                 sx={{
