@@ -59,6 +59,9 @@ import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-
 import type { CoreModules } from './container';
 import { C3_MOCK_PERSONS } from './mock-persons';
 
+/** How long the mock Business Wallet takes to answer: the dialog's three approvals plus a moment on "approved". */
+export const MOCK_WALLET_DELAY_MS = 3600;
+
 /** The person signed in when VITE_MOCK_PERSON is not set. */
 export const DEFAULT_MOCK_PERSON = 'pia';
 
@@ -376,7 +379,8 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
     c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
-    c1m2: createMockC1M2Module(session),
+    // The wallet answers after the approvals the wallet dialog shows one by one (WalletDialog, APPROVAL_STEP_MS).
+    c1m2: createMockC1M2Module(session, { walletDelayMs: MOCK_WALLET_DELAY_MS }),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
       getCompanyUser: new GetCompanyUserUseCase(companyUsers),

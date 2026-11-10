@@ -86,6 +86,11 @@
     "scanTitle": "Scan with your wallet",
     "scanHint": "Scan the code with your EUDI Wallet on your phone, or open the wallet on this device.",
     "qrLabel": "QR code of the wallet request of the EBW-Connector",
+    "approving": "Confirm the request in your wallet…",
+    "pidShared": "Personal ID (PID) shared",
+    "mandateShared": "Mandate to represent the company confirmed",
+    "lpidShared": "Legal person ID (LPID) of the company shared",
+    "approved": "Approved. Your company data is filled in from the wallet…",
     "cancelled": "The verification in the wallet was cancelled."
   },
   "company": {

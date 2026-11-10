@@ -86,6 +86,11 @@
     "scanTitle": "Mit Ihrer Wallet scannen",
     "scanHint": "Scannen Sie den Code mit der EUDI Wallet auf Ihrem Smartphone oder öffnen Sie die Wallet auf diesem Gerät.",
     "qrLabel": "QR-Code der Wallet-Anfrage des EBW-Connectors",
+    "approving": "Bestätigen Sie die Anfrage in Ihrer Wallet…",
+    "pidShared": "Personalausweis (PID) geteilt",
+    "mandateShared": "Vollmacht zur Vertretung des Unternehmens bestätigt",
+    "lpidShared": "Identitätsnachweis des Unternehmens (LPID) geteilt",
+    "approved": "Bestätigt. Ihre Unternehmensdaten werden aus der Wallet übernommen…",
     "cancelled": "Der Nachweis in der Wallet wurde abgebrochen."
   },
   "company": {
