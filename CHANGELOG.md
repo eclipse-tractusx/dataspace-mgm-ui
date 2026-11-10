@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Tables on MUI X Data Grid community (`DataTable` in `ui-mui`) with a Cards | Table toggle; Application review with a status dashboard, a two-column detail page and a decision panel; Access control in the style of the wallet pages; in mock mode, applications submitted in onboarding reach Application review and its decision reaches the applicant
 - Mock mode: the preview person `demo` (Erika Mustermann, Company Admin of Beispiel Maschinenbau GmbH) that `npm run start:mock` signs in, so company profile, company and technical users, credentials and the dataspace wallet show their fixtures; the onboarding wallet dialog shows the OpenID4VP request of the EBW-Connector as a QR code and, in mock mode, the approvals in the wallet one by one before the company data opens prefilled
 - Participant management (C3-M1, C3-M2): the nine views of mockups/participants as pages, the use cases and HTTP adapters of `c3-m1-core`, the new core package `c3-m2-core`, mock mode with the test persons of FRAMEWORK 7a
 - Repository set-up according to the [Tractus-X Release Guidelines](https://eclipse-tractusx.github.io/docs/release): legal documentation, `.tractusx` metadata file, contribution templates, Dependabot and security scans (CodeQL, KICS, Trivy, TruffleHog), container build and documentation structure ([dataspace-mgm-ui#1](https://github.com/eclipse-tractusx/dataspace-mgm-ui/issues/1))
