@@ -37,7 +37,7 @@ const termsOf = (id: string) => `/onboarding/application/${id}/terms`;
 
 /** Opens each terms document, scrolls it to the end and accepts it. */
 async function acceptAll() {
-  const buttons = await screen.findAllByRole('button', { name: /^Open: / });
+  const buttons = await screen.findAllByRole('button', { name: /^Read and accept: / });
   for (const name of buttons.map((button) => button.getAttribute('aria-label') as string)) {
     fireEvent.click(screen.getByRole('button', { name }));
     const dialog = await screen.findByRole('dialog');
@@ -52,23 +52,27 @@ describe('Onboarding: roles, terms and submission', () => {
   it('lists the required terms of the roles with Open; Accept only at the end of the document', async () => {
     renderOnboarding(termsOf(ERIKA_APPLICATION_CREATED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_CREATED] } });
     expect(await screen.findByRole('heading', { name: 'Your application' })).toBeInTheDocument();
-    expect(await screen.findAllByRole('button', { name: /^Open: / })).toHaveLength(3);
+    expect(await screen.findAllByRole('button', { name: /^Read and accept: / })).toHaveLength(3);
     expect(screen.getByRole('button', { name: 'Submit application' })).toBeDisabled();
     expect(screen.getByText('Accept 3 more documents to submit.')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open: Security regulations' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Read and accept: Security regulations' }));
     const dialog = await screen.findByRole('dialog');
     expect(within(dialog).getByText(/only in English/)).toBeInTheDocument();
     expect(within(dialog).getByRole('button', { name: 'Accept' })).toBeDisabled();
     fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-    expect(screen.getAllByText('Not accepted yet')).toHaveLength(3);
+    expect(screen.getAllByText('Not accepted yet: read it to the end and accept it')).toHaveLength(3);
+    expect(screen.getByText('0 of 3 accepted')).toBeInTheDocument();
   });
 
   it('submits with a consent per document, in the language read', async () => {
     const { applicationRepository } = renderOnboarding(termsOf(ERIKA_APPLICATION_CREATED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_CREATED] } });
     await acceptAll();
     expect(screen.getAllByText('Accepted · English')).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: /^Read again: / })).toHaveLength(3);
+    expect(screen.queryByRole('button', { name: /^Read and accept: / })).not.toBeInTheDocument();
+    expect(screen.getByText('3 of 3 accepted')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Submit application' }));
     expect(await screen.findByRole('heading', { name: 'Application submitted' })).toBeInTheDocument();
     expect(applicationRepository?.applications[0].consents.map((c) => `${c.agreementKey}@${c.version}:${c.language}`)).toEqual([
@@ -81,7 +85,7 @@ describe('Onboarding: roles, terms and submission', () => {
   it('changes the roles with PATCH, and the terms follow', async () => {
     renderOnboarding(termsOf(ERIKA_APPLICATION_CREATED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_CREATED] } });
     fireEvent.click(await screen.findByRole('checkbox', { name: /App provider/ }));
-    expect(await screen.findByRole('button', { name: 'Open: Terms and conditions app provider' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Read and accept: Terms and conditions app provider' })).toBeInTheDocument();
   });
 
   it('offers to verify again when the attestation is too old', async () => {
