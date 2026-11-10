@@ -84,6 +84,17 @@ describe('mock mode', () => {
     expect(await modules.c4m2?.getOwnWallet.execute(session.companyId!)).toMatchObject({ status: 'found' });
   });
 
+  it('lets the preview person (demo) register her company in onboarding, as the applicant she was before', async () => {
+    const { c1m2 } = createMockCoreModules('demo');
+    const created = await c1m2!.createApplication.execute({
+      kind: 'ONBOARDING',
+      verification: 'EBW',
+      attestation: mockAttestation(),
+      companyRoles: ['ACTIVE_PARTICIPANT'],
+    });
+    expect(created).toMatchObject({ status: 'created', application: { companyData: { legalName: 'Beispiel Maschinenbau GmbH' } } });
+  });
+
   it('starts signed out for a person key it does not know', async () => {
     const modules = createMockCoreModules('none');
     expect(await modules.identity.getCurrentSession.execute()).toBeNull();

@@ -62,6 +62,13 @@ import { C3_MOCK_PERSONS } from './mock-persons';
 /** How long the mock Business Wallet takes to answer: the dialog's three approvals plus a moment on "approved". */
 export const MOCK_WALLET_DELAY_MS = 3600;
 
+/**
+ * The session C1-M2 Registration sees for a preview person, where it differs from MOCK_PERSONS: `demo` is bound to
+ * Beispiel Maschinenbau GmbH, and a bound account may not register a company (problem account-bound). For onboarding
+ * she is Erika the applicant (C1-M2 test person, same `sub`, no company), so "Open wallet" leads to the company data.
+ */
+const ONBOARDING_SESSION_OF: Readonly<Record<string, SessionAnemic>> = { demo: ERIKA_SESSION };
+
 /** The person signed in when VITE_MOCK_PERSON is not set. */
 export const DEFAULT_MOCK_PERSON = 'pia';
 
@@ -310,6 +317,7 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
    * The preview person of `npm run start:mock`: Erika Mustermann as Company Admin of Beispiel Maschinenbau GmbH (U1),
    * the company the fixtures of every company-side feature are bound to, with the Company Admin keys of all of them
    * (company profile, company and technical users, credentials, dataspace wallet, wallet accounts, notifications).
+   * Onboarding sees her as the applicant she was before (ONBOARDING_SESSION_OF), so the preview can run it too.
    */
   demo: { ...C3_MOCK_PERSONS.erika, permissions: [...COMPANY_ADMIN_PERMISSIONS] },
   /** People of an onboarded company (C3-M1): Erika and Hans Company Admin, Max Member. */
@@ -380,7 +388,7 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
     // The wallet answers after the approvals the wallet dialog shows one by one (WalletDialog, APPROVAL_STEP_MS).
-    c1m2: createMockC1M2Module(session, { walletDelayMs: MOCK_WALLET_DELAY_MS }),
+    c1m2: createMockC1M2Module(ONBOARDING_SESSION_OF[selectedPerson] ?? session, { walletDelayMs: MOCK_WALLET_DELAY_MS }),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
       getCompanyUser: new GetCompanyUserUseCase(companyUsers),
