@@ -44,5 +44,21 @@
   "appNotAssignable": "This company cannot assign roles for this application.",
   "editAppRoles": "Edit application roles",
   "saveAppRoles": "Save application roles",
-  "appRolesSaveError": "Unable to update application roles."
+  "appRolesSaveError": "Unable to update application roles.",
+  "invitationCount_one": "{{count}} open invitation",
+  "invitationCount_other": "{{count}} open invitations",
+  "invitee": "Person",
+  "created": "Created",
+  "expires": "Expires",
+  "invitationStatus": "Status",
+  "newInvitation": "New invitation",
+  "openInvitations": "Open invitations",
+  "invitationRolesHint": "For example: Member, IT Admin",
+  "acceptInvitationIntro": "Enter the code you received from the Company Admin to join their company.",
+  "invitationStates": {
+    "OPEN": "Open",
+    "ACCEPTED": "Accepted",
+    "REVOKED": "Revoked",
+    "EXPIRED": "Expired"
+  }
 }

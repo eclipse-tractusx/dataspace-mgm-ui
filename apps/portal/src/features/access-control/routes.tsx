@@ -1,9 +1,10 @@
 /* Copyright (c) 2026 Contributors to the Eclipse Foundation
  * AI Disclosure: This file was entirely AI-generated. The human contributor has reviewed and verified it.
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
- * Assisted-By: OpenAI GPT-6.1 Terra */
+ * Assisted-By: OpenAI GPT-6.1 Terra
+ * Assisted-By: Claude Code (claude-opus-5-5) */
 import type { ReactElement } from 'react';
-import { Box, Button, Container, Stack, VerifiedUserOutlinedIcon } from '@dataspace-mgm/ui-mui';
+import { Box, Container, Tab, Tabs, VerifiedUserOutlinedIcon } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import type { FeatureTranslations } from '../../i18n/lazyFeatureTranslations';
@@ -29,23 +30,27 @@ function AccessControlView({ children }: { children: ReactElement }) {
     { path: '/access-control/technical-users', label: t('technicalUsers', { ns: PEOPLE_NS }) },
     { path: '/access-control/iam', label: t('title', { ns: IAM_NAMESPACE }) },
   ];
+  const active = links.some((link) => link.path === pathname) ? pathname : false;
   return (
-    <Box>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Container maxWidth="lg">
-          <Stack component="nav" aria-label={t('overline', { ns: PEOPLE_NS })} direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1, py: 2 }}>
-            {links.map(({ path, label }) => (
-              <Button key={path} component={RouterLink} to={path} variant={pathname === path ? 'contained' : 'text'} aria-current={pathname === path ? 'page' : undefined}>
-                {label}
-              </Button>
-            ))}
-          </Stack>
-        </Container>
+    <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+      {/* Underline tabs like Wallets as a service; the <nav> carries the name, the links keep aria-current. */}
+      <Box component="nav" aria-label={t('overline', { ns: PEOPLE_NS })} sx={{ mb: 3.5, borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={active} variant="scrollable" scrollButtons={false}>
+          {links.map(({ path, label }) => (
+            <Tab
+              key={path}
+              value={path}
+              label={label}
+              component={RouterLink}
+              to={path}
+              aria-current={pathname === path ? 'page' : undefined}
+              sx={{ textTransform: 'none', fontWeight: 500, fontSize: '1rem', px: 2, color: 'text.secondary', '&.Mui-selected': { color: 'text.primary' } }}
+            />
+          ))}
+        </Tabs>
       </Box>
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
-        {children}
-      </Container>
-    </Box>
+      {children}
+    </Container>
   );
 }
 

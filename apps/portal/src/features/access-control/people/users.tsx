@@ -3,10 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
  * AI Disclosure: This file was entirely AI-generated; the human contributor has reviewed it.
  * Assisted-By: OpenAI GPT-6.1 Terra
+ * Assisted-By: Claude Code (claude-opus-5-5)
  */
-import { Box, Button, Card, Stack, Typography } from "@dataspace-mgm/ui-mui";
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  DataTable,
+  IconButton,
+  PersonAddAltOutlinedIcon,
+  CloseIcon,
+  Stack,
+  Typography,
+  type GridColDef,
+  type GridRenderCellParams,
+} from "@dataspace-mgm/ui-mui";
 import { useTranslation } from "react-i18next";
-import { actionSx, gridSx, PeopleHeader, PeopleState } from "./common";
+import { actionSx, PeopleHeader, PeopleState } from "./common";
+import { cardGridSx, DotChip, Identity, ListToolbar, Tag, toneOf, useTableLocale, useViewMode } from "./display";
 import { PEOPLE_NS } from "./i18n";
 import type { CompanyUser, PeopleStatus, UserFilter } from "./types";
 
@@ -42,24 +57,66 @@ export function Users({
   onSignIn,
 }: UsersProps) {
   const { t } = useTranslation(PEOPLE_NS);
+  const locale = useTableLocale();
+  const [mode, setMode] = useViewMode("users");
   const name = (user: CompanyUser) =>
     [user.givenName, user.familyName].filter(Boolean).join(" ") ||
     t("nameUnavailable");
+  const joined = (user: CompanyUser) =>
+    user.joinedVia ? t("joinedViaValue", { via: t(`via.${user.joinedVia}`, { defaultValue: user.joinedVia }) }) : undefined;
+  const statusLabel = (value: string) => t(value, { defaultValue: value });
+  const roles = (user: CompanyUser) =>
+    user.portalRoles.length ? (
+      <Stack direction="row" useFlexGap sx={{ flexWrap: "wrap", gap: 0.75 }}>
+        {user.portalRoles.map((role) => <Tag key={role}>{role}</Tag>)}
+      </Stack>
+    ) : (
+      <Typography variant="body2" color="text.secondary">{t("noRoles")}</Typography>
+    );
+  const details = (user: CompanyUser) =>
+    onView && (
+      <Button size="small" variant="text" onClick={(event) => { event.stopPropagation(); onView(user); }} aria-label={`${t("details")}: ${name(user)}`}>
+        {t("details")}
+      </Button>
+    );
+  const columns: GridColDef<CompanyUser>[] = [
+    { field: "name", headerName: t("name"), flex: 1.4, minWidth: 220, valueGetter: (_, row) => name(row), renderCell: ({ row }: GridRenderCellParams<CompanyUser>) => <Identity name={name(row)} secondary={joined(row)} /> },
+    { field: "portalRoles", headerName: t("roles"), flex: 1, minWidth: 180, sortable: false, renderCell: ({ row }: GridRenderCellParams<CompanyUser>) => roles(row) },
+    { field: "status", headerName: t("status"), width: 150, valueGetter: (_, row) => statusLabel(row.status), renderCell: ({ row }: GridRenderCellParams<CompanyUser>) => <DotChip tone={toneOf(row.status)} label={statusLabel(row.status)} /> },
+    { field: "actions", headerName: "", width: 140, sortable: false, align: "right", renderCell: ({ row }: GridRenderCellParams<CompanyUser>) => details(row) },
+  ];
+  const filters = (
+    <Stack direction="row" useFlexGap sx={{ flexWrap: "wrap", gap: 1 }} role="group" aria-label={t("statusFilter")}>
+      {(["", "ACTIVE", "DISABLED", "REMOVED"] as const).map((value) => (
+        <Chip
+          key={value}
+          label={t(value || "defaultUsers")}
+          clickable
+          color={filter === value ? "primary" : "default"}
+          variant={filter === value ? "filled" : "outlined"}
+          aria-pressed={filter === value}
+          onClick={() => onFilterChange(value)}
+          sx={{ fontWeight: 600 }}
+        />
+      ))}
+    </Stack>
+  );
   return (
     <Box>
       <PeopleHeader
         title={t("users")}
         description={companyName}
         action={t("invite")}
+        actionIcon={<PersonAddAltOutlinedIcon />}
         onAction={onInvite}
       />
       <PeopleState status={status} onRetry={onRetry} onSignIn={onSignIn} />
       {status === "empty" && (
-        <Card sx={{ p: 3 }}>
-          <Typography variant="h2">{t("noUsers")}</Typography>
-          <Typography sx={{ my: 2 }}>{t("invitePrompt")}</Typography>
+        <Card sx={{ p: 4, textAlign: "center", "&:hover": { boxShadow: "none" } }}>
+          <Typography variant="h2" sx={{ fontSize: "1.375rem", fontWeight: 700 }}>{t("noUsers")}</Typography>
+          <Typography color="text.secondary" sx={{ my: 2 }}>{t("invitePrompt")}</Typography>
           {onInvite && (
-            <Button variant="contained" sx={actionSx} onClick={onInvite}>
+            <Button variant="contained" startIcon={<PersonAddAltOutlinedIcon />} sx={actionSx} onClick={onInvite}>
               {t("invite")}
             </Button>
           )}
@@ -67,135 +124,83 @@ export function Users({
       )}
       {status === "loaded" && (
         <>
-          <Stack
-            direction="row"
-            sx={{ flexWrap: "wrap", gap: 1, mb: 2.5 }}
-            role="group"
-            aria-label={t("statusFilter")}
-          >
-            {(["", "ACTIVE", "DISABLED", "REMOVED"] as const).map((value) => (
-              <Button
-                key={value}
-                size="small"
-                sx={actionSx}
-                variant={filter === value ? "contained" : "outlined"}
-                aria-pressed={filter === value}
-                onClick={() => onFilterChange(value)}
-              >
-                {t(value || "defaultUsers")}
-              </Button>
-            ))}
-          </Stack>
+          <ListToolbar filters={filters} count={t("userCount", { count: users.length })} mode={mode} onMode={setMode} />
           {users.length === 0 ? (
-            <Typography color="text.secondary">{t("noUserMatches")}</Typography>
+            <Card sx={{ p: 3, "&:hover": { boxShadow: "none" } }}>
+              <Typography color="text.secondary">{t("noUserMatches")}</Typography>
+            </Card>
+          ) : mode === "table" ? (
+            <DataTable<CompanyUser>
+              aria-label={t("users")}
+              rows={users}
+              columns={columns}
+              getRowId={(row) => row.userId}
+              locale={locale}
+              hideFooter
+              onRowClick={onView ? ({ row }) => onView(row) : undefined}
+            />
           ) : (
-            <Box sx={gridSx}>
+            <Box sx={cardGridSx} component="ul" aria-label={t("users")} style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {users.map((user) => (
                 <Card
+                  component="li"
                   key={user.userId}
-                  sx={{
-                    p: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    gap: 2,
-                  }}
+                  sx={{ p: 2.5, display: "flex", flexDirection: "column", gap: 2, cursor: onView ? "pointer" : "default" }}
+                  onClick={onView ? () => onView(user) : undefined}
                 >
-                  <Box>
-                    <Typography variant="h2">{name(user)}</Typography>
-                    <Typography color="text.secondary" sx={{ mt: 1 }}>
-                      {user.portalRoles.join(", ") || t("noRoles")}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                      {t(user.status, { defaultValue: user.status })}
-                    </Typography>
-                  </Box>
-                  {onView && (
-                    <Box>
-                      <Button
-                        variant="outlined"
-                        sx={actionSx}
-                        onClick={() => onView(user)}
-                      >
-                        {t("details")}
-                      </Button>
-                    </Box>
-                  )}
+                  <Stack direction="row" spacing={1} sx={{ alignItems: "flex-start", justifyContent: "space-between" }}>
+                    <Identity name={name(user)} secondary={joined(user)} size={44} />
+                    <DotChip tone={toneOf(user.status)} label={statusLabel(user.status)} />
+                  </Stack>
+                  {roles(user)}
+                  {onView && <Box sx={{ mt: "auto", ml: -1 }}>{details(user)}</Box>}
                 </Card>
               ))}
             </Box>
           )}
           {selectedUser && (
-            <Card sx={{ p: 3, mt: 3 }}>
-              <Stack
-                direction="row"
-                sx={{
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 2,
-                }}
-              >
-                <Typography variant="h2">{name(selectedUser)}</Typography>
-                {onCloseDetails && (
-                  <Button
-                    variant="outlined"
-                    sx={actionSx}
-                    onClick={onCloseDetails}
-                  >
-                    {t("close")}
-                  </Button>
-                )}
+            <Card component="section" aria-label={name(selectedUser)} sx={{ p: { xs: 3, md: 3.5 }, mt: 3, "&:hover": { boxShadow: "none" } }}>
+              <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "flex-start", gap: 2 }}>
+                <Identity name={name(selectedUser)} secondary={joined(selectedUser)} size={52} />
+                <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                  <DotChip tone={toneOf(selectedUser.status)} label={statusLabel(selectedUser.status)} />
+                  {onCloseDetails && (
+                    <IconButton aria-label={t("close")} onClick={onCloseDetails} size="small">
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  )}
+                </Stack>
               </Stack>
-              <Box component="dl" sx={{ ...gridSx, my: 2.5 }}>
-                {[
-                  [t("userId"), selectedUser.userId],
+              <Box
+                component="dl"
+                sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }, columnGap: 4, rowGap: 2, my: 3, borderTop: 1, borderColor: "divider", pt: 2.5 }}
+              >
+                {(
                   [
-                    t("status"),
-                    t(selectedUser.status, {
-                      defaultValue: selectedUser.status,
-                    }),
-                  ],
-                  [
-                    t("roles"),
-                    selectedUser.portalRoles.join(", ") || t("noRoles"),
-                  ],
-                  [t("joinedVia"), selectedUser.joinedVia ?? "—"],
-                ].map(([label, value]) => (
-                  <Box key={label}>
-                    <Typography
-                      component="dt"
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ fontWeight: "bold", mb: 0.5 }}
-                    >
+                    [t("userId"), <Tag key="id" mono>{selectedUser.userId}</Tag>],
+                    [t("roles"), roles(selectedUser)],
+                    [t("joinedVia"), selectedUser.joinedVia ? t(`via.${selectedUser.joinedVia}`, { defaultValue: selectedUser.joinedVia }) : "—"],
+                    [t("status"), statusLabel(selectedUser.status)],
+                  ] as const
+                ).map(([label, value]) => (
+                  <Box key={label} sx={{ minWidth: 0 }}>
+                    <Typography component="dt" variant="body2" color="text.secondary" sx={{ fontWeight: 600, mb: 0.75 }}>
                       {label}
                     </Typography>
-                    <Typography
-                      component="dd"
-                      sx={{ m: 0, overflowWrap: "anywhere" }}
-                    >
+                    <Box component="dd" sx={{ m: 0, overflowWrap: "anywhere" }}>
                       {value}
-                    </Typography>
+                    </Box>
                   </Box>
                 ))}
               </Box>
               <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
                 {onEditRoles && (
-                  <Button
-                    variant="outlined"
-                    sx={actionSx}
-                    onClick={() => onEditRoles(selectedUser)}
-                  >
+                  <Button variant="outlined" sx={actionSx} onClick={() => onEditRoles(selectedUser)}>
                     {t("editRoles")}
                   </Button>
                 )}
                 {onRemove && (
-                  <Button
-                    variant="outlined"
-                    sx={actionSx}
-                    onClick={() => onRemove(selectedUser)}
-                  >
+                  <Button variant="outlined" color="error" sx={actionSx} onClick={() => onRemove(selectedUser)}>
                     {t("remove")}
                   </Button>
                 )}

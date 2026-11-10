@@ -20,31 +20,42 @@
  *
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
  * Assisted-By: Codex (GPT-6)
+ * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { Alert, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { Alert, Box, Stack, Typography } from '@dataspace-mgm/ui-mui';
 import type { ReviewProblem } from '@dataspace-mgm/c1-m3-core';
 import { useReviewTranslation } from '../use-review-translation';
+
+/** A problem of the review API: the translated message, its details, and the problem type in code (like the wallet). */
 export function ReviewError({ error }: { error: unknown }) {
   const { t } = useReviewTranslation();
   const problem = error as Partial<ReviewProblem> | undefined;
   const key = problem?.type?.split(':').at(-1) ?? 'unknownError';
+  const details = [
+    ...(problem?.pendingChecks ?? []).map((v) => t(v)),
+    ...(problem?.failedChecks ?? []).map((v) => t(v)),
+    ...(problem?.cspOutcome ? [t(problem.cspOutcome)] : []),
+    ...(problem?.errors ?? []).map((v) => `${v.field}: ${t(v.message)}`),
+  ];
   return (
     <Alert severity="error" role="alert">
-      <Stack spacing={1}>
+      <Stack spacing={0.75}>
         <Typography>{t(key)}</Typography>
-        {problem?.pendingChecks?.map((v) => (
-          <Typography key={v}>{t(v)}</Typography>
-        ))}
-        {problem?.failedChecks?.map((v) => (
-          <Typography key={v}>{t(v)}</Typography>
-        ))}
-        {problem?.cspOutcome && <Typography>{t(problem.cspOutcome)}</Typography>}
-        {problem?.errors?.map((v) => (
-          <Typography key={v.field}>
-            {v.field}: {t(v.message)}
+        {details.length > 0 && (
+          <Box component="ul" sx={{ m: 0, pl: 2.5, display: 'grid', gap: 0.25 }}>
+            {details.map((v) => (
+              <Typography component="li" variant="body2" key={v}>
+                {v}
+              </Typography>
+            ))}
+          </Box>
+        )}
+        {problem?.type && (
+          <Typography component="code" variant="caption" sx={{ fontFamily: 'monospace', color: 'text.secondary' }}>
+            {problem.type}
           </Typography>
-        ))}
+        )}
       </Stack>
     </Alert>
   );

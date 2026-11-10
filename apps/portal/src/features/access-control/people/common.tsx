@@ -3,13 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
  * AI Disclosure: This file was entirely AI-generated; the human contributor has reviewed it.
  * Assisted-By: OpenAI GPT-6.1 Terra
+ * Assisted-By: Claude Code (claude-opus-5-5)
  */
+import type { ReactNode } from "react";
 import {
   Alert,
   Box,
   Button,
   Card,
   LoginIcon,
+  Skeleton,
   Stack,
   Typography,
 } from "@dataspace-mgm/ui-mui";
@@ -28,48 +31,47 @@ export function PeopleHeader({
   title,
   description,
   action,
+  actionIcon,
   onAction,
 }: {
   title: string;
   description?: string;
   action: string;
+  actionIcon?: ReactNode;
   onAction?: () => void;
 }) {
   const { t } = useTranslation(PEOPLE_NS);
   return (
-    <Box sx={{ mb: 3 }}>
-      <Typography variant="overline" color="text.secondary">
-        {t("overline")}
-      </Typography>
-      <Stack
-        direction="row"
-        sx={{
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 2,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="h1"
-            sx={{ fontSize: "clamp(2rem, 2vw + 1rem, 2.75rem)", mt: 0.5 }}
-          >
-            {title}
+    <Stack
+      direction="row"
+      useFlexGap
+      sx={{ justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 2, mb: 3 }}
+    >
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          variant="overline"
+          sx={{ display: "block", color: "text.secondary", fontWeight: 700, letterSpacing: "0.16em", lineHeight: 1.6 }}
+        >
+          {t("overline")}
+        </Typography>
+        <Typography
+          variant="h1"
+          sx={{ fontSize: "clamp(2rem, 2vw + 1rem, 2.75rem)", fontWeight: 800, mt: 0.5 }}
+        >
+          {title}
+        </Typography>
+        {description && (
+          <Typography color="text.secondary" sx={{ mt: 1, maxWidth: 640 }}>
+            {description}
           </Typography>
-          {description && (
-            <Typography color="text.secondary" sx={{ mt: 1 }}>
-              {description}
-            </Typography>
-          )}
-        </Box>
-        {onAction && (
-          <Button variant="contained" sx={actionSx} onClick={onAction}>
-            {action}
-          </Button>
         )}
-      </Stack>
-    </Box>
+      </Box>
+      {onAction && (
+        <Button variant="contained" startIcon={actionIcon} sx={actionSx} onClick={onAction}>
+          {action}
+        </Button>
+      )}
+    </Stack>
   );
 }
 
@@ -94,28 +96,16 @@ export function PeopleState({
         <Typography color="text.secondary" sx={{ mb: 2 }}>
           {t(technical ? "loadingTechnical" : "loadingUsers")}
         </Typography>
-        <Box sx={technical ? {} : gridSx} aria-hidden="true">
-          {Array.from({ length: technical ? 2 : 3 }, (_, i) => (
-            <Card
-              key={i}
-              sx={{ p: 3, mb: technical ? 1 : 0, bgcolor: "action.hover" }}
-            >
-              <Stack direction={technical ? "row" : "column"} sx={{ gap: 2 }}>
-                {[1, 2, 3].map((line) => (
-                  <Box
-                    key={line}
-                    sx={{
-                      height: 12,
-                      width: technical ? "25%" : line === 1 ? "80%" : "50%",
-                      bgcolor: "action.selected",
-                      borderRadius: 1,
-                    }}
-                  />
-                ))}
-              </Stack>
-            </Card>
+        <Card sx={{ p: 2, "&:hover": { boxShadow: "none" } }} aria-hidden="true">
+          {Array.from({ length: 3 }, (_, i) => (
+            <Stack key={i} direction="row" spacing={2} sx={{ alignItems: "center", py: 1.25 }}>
+              <Skeleton variant="circular" width={36} height={36} />
+              <Skeleton variant="text" width="30%" />
+              <Skeleton variant="text" width="20%" />
+              <Skeleton variant="rounded" width={72} height={24} sx={{ ml: "auto" }} />
+            </Stack>
           ))}
-        </Box>
+        </Card>
       </Box>
     );
   }

@@ -1,5 +1,6 @@
 {
   "title": "Application review",
+  "overline": "Onboarding",
   "intro": "Review company applications and their verification results.",
   "mockBanner": "Interactive demo · simulated applications and reviewers · no real data is changed.",
   "liveBanner": "Connected to the Application Review API.",
@@ -134,5 +135,21 @@
   "unknownError": "The request could not be completed.",
   "allOptions": "All",
   "downloadDocument": "Download document",
-  "COMPANY_MISMATCH": "Representation evidence belongs to a different company"
+  "COMPANY_MISMATCH": "Representation evidence belongs to a different company",
+  "backShort": "Applications",
+  "demoControls": "Demo controls",
+  "checksSummary": "{passed} of {total} passed",
+  "representative": "Representative",
+  "role": "Role",
+  "validUntil": "Valid until",
+  "verifiedOn": "Verified on",
+  "expiresAt": "Valid until (attestation)",
+  "representationNotConfirmed": "Representation not confirmed",
+  "dashboard": "Overview of the review cases",
+  "statusShare": "Share of the review cases by status",
+  "kpiOpen": "To review",
+  "kpiSecond": "Second approval",
+  "CONFIRMED": "Confirmed",
+  "viewCards": "Cards",
+  "viewTable": "Table"
 }

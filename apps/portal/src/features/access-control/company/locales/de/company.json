@@ -44,5 +44,21 @@
   "appNotAssignable": "Dieses Unternehmen kann für diese Anwendung keine Rollen zuweisen.",
   "editAppRoles": "Anwendungsrollen bearbeiten",
   "saveAppRoles": "Anwendungsrollen speichern",
-  "appRolesSaveError": "Anwendungsrollen konnten nicht aktualisiert werden."
+  "appRolesSaveError": "Anwendungsrollen konnten nicht aktualisiert werden.",
+  "invitationCount_one": "{{count}} offene Einladung",
+  "invitationCount_other": "{{count}} offene Einladungen",
+  "invitee": "Person",
+  "created": "Erstellt",
+  "expires": "Läuft ab",
+  "invitationStatus": "Status",
+  "newInvitation": "Neue Einladung",
+  "openInvitations": "Offene Einladungen",
+  "invitationRolesHint": "Zum Beispiel: Member, IT Admin",
+  "acceptInvitationIntro": "Geben Sie den Code ein, den Sie vom Company Admin erhalten haben, um dem Unternehmen beizutreten.",
+  "invitationStates": {
+    "OPEN": "Offen",
+    "ACCEPTED": "Angenommen",
+    "REVOKED": "Widerrufen",
+    "EXPIRED": "Abgelaufen"
+  }
 }

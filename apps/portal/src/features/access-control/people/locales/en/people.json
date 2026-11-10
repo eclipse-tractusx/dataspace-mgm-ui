@@ -64,5 +64,19 @@
   "signed-out": "Sign in to view users.",
   "signIn": "Sign in",
   "not-connected": "This feature is not connected.",
-  "retry": "Try again"
+  "retry": "Try again",
+  "joinedViaValue": "Joined via {{via}}",
+  "via": {
+    "ONBOARDING": "onboarding",
+    "INVITATION": "invitation"
+  },
+  "userCount_one": "{{count}} user",
+  "userCount_other": "{{count}} users",
+  "technicalCount_one": "{{count}} technical user",
+  "technicalCount_other": "{{count}} technical users",
+  "view": {
+    "label": "Display",
+    "table": "Table",
+    "cards": "Cards"
+  }
 }
