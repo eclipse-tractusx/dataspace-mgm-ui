@@ -23,6 +23,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import type { ReviewCase } from '@dataspace-mgm/c1-m3-core';
 import {
   reviewUi,
@@ -33,6 +34,7 @@ import {
 } from '@dataspace-mgm/c1-m3-state';
 import {
   Alert,
+  ArrowForwardIcon,
   Box,
   Button,
   CheckCircleOutlinedIcon,
@@ -46,8 +48,16 @@ import {
 import { ReviewError } from './review-error';
 import { useReviewTranslation } from '../use-review-translation';
 
+/** A same-origin path the page was opened from (navigation state `returnTo`), e.g. the applicant's application. */
+function useReturnTo(): string | null {
+  const returnTo = (useLocation().state as { returnTo?: unknown } | null)?.returnTo;
+  return typeof returnTo === 'string' && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : null;
+}
+
 export function ReviewDecision({ review }: { review: ReviewCase }) {
   const { t } = useReviewTranslation();
+  const returnTo = useReturnTo();
+  const decided = review.status === 'APPROVED' || review.status === 'DECLINED';
   const dispatch = useReviewDispatch();
   const { actor, dialog, comment } = useReviewSelector((s) => s.reviewUi);
   const permitted = actor.permissions.includes('review_application');
@@ -89,6 +99,11 @@ export function ReviewDecision({ review }: { review: ReviewCase }) {
           {t('success')}
         </Alert>
       ) : null}
+      {returnTo && decided && (
+        <Button component={RouterLink} to={returnTo} variant="contained" fullWidth endIcon={<ArrowForwardIcon />}>
+          {t('backToApplicant')}
+        </Button>
+      )}
       <Stack spacing={1.25}>
         <Button
           variant="contained"

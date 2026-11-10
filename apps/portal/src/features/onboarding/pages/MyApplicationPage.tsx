@@ -26,7 +26,7 @@
 
 import { useState } from 'react';
 import type { FailedOutcome, ProblemOutcome } from '@dataspace-mgm/c1-m2-core';
-import { Alert, Box, Button, Card, CardContent, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { Alert, ArrowForwardIcon, Box, Button, Card, CardContent, HowToRegOutlinedIcon, Stack, Typography } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ApplicationStepper } from '../components/ApplicationStepper';
@@ -39,6 +39,7 @@ import { Toast } from '../components/Toast';
 import { WithdrawSection } from '../components/WithdrawSection';
 import { useApplicationActions, useCompanyRoles, useOwnApplication } from '../hooks/useApplications';
 import { ONBOARDING_NS } from '../i18n';
+import { MOCK_MODE } from '../../../core/mock-mode';
 
 /** My application (mockup view 5, decided: withdraw=bottom · status=stepper · details=tabs). */
 export default function MyApplicationPage() {
@@ -76,6 +77,42 @@ export default function MyApplicationPage() {
   return (
     <PageFrame titleKey="application.title">
       {outcome && <OutcomeAlert outcome={outcome} />}
+      {application.status === 'COMPLETED' && (
+        <Alert
+          severity="success"
+          action={
+            <Button variant="text" color="inherit" onClick={() => navigate('/participants')}>
+              {t('application.yourCompany')}
+            </Button>
+          }
+        >
+          <strong>{t('application.approvedTitle')}</strong>
+          <Box>{t('application.approvedText', { company: application.companyData.legalName })}</Box>
+        </Alert>
+      )}
+      {MOCK_MODE && application.status === 'SUBMITTED' && (
+        // Demo only: the reviewer's side is one click away (Application review on the C1-M3 mock, linked to this one).
+        <Card component="section" aria-labelledby="demo-review-title" sx={{ borderStyle: 'dashed' }}>
+          <CardContent sx={{ p: { xs: 2.5, md: 3 }, display: 'flex', gap: 2, alignItems: { sm: 'center' }, flexDirection: { xs: 'column', sm: 'row' } }}>
+            <HowToRegOutlinedIcon sx={{ color: 'primary.main' }} />
+            <Box sx={{ flex: 1 }}>
+              <Typography id="demo-review-title" sx={{ fontWeight: 700 }}>
+                {t('application.demoReviewTitle')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('application.demoReviewText')}
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              endIcon={<ArrowForwardIcon />}
+              onClick={() => navigate(`/onboarding/reviews/${applicationId}`, { state: { returnTo: `/onboarding/application/${applicationId}` } })}
+            >
+              {t('application.demoReviewAction')}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
       {application.status === 'DECLINED' && (
         <Alert
           severity="error"
