@@ -56,7 +56,8 @@ function useReturnTo(): string | null {
 
 export function ReviewDecision({ review }: { review: ReviewCase }) {
   const { t } = useReviewTranslation();
-  const returnTo = useReturnTo();
+  // Back to the applicant's view: the page it was opened from, or, for a demo case (mock mode), its application.
+  const returnTo = useReturnTo() ?? (review.demo ? `/onboarding/application/${review.applicationId}` : null);
   const decided = review.status === 'APPROVED' || review.status === 'DECLINED';
   const dispatch = useReviewDispatch();
   const { actor, dialog, comment } = useReviewSelector((s) => s.reviewUi);

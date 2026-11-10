@@ -95,6 +95,34 @@ function resultsOf(counts: ReviewCaseSummary['checkCounts']): ReviewCheck['resul
   ];
 }
 
+/** Mock mode: marks the case of the application submitted in onboarding in this session. */
+function DemoTag() {
+  const { t } = useReviewTranslation();
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 0.5,
+        px: 0.75,
+        py: 0.125,
+        borderRadius: '6px',
+        border: '1px solid',
+        borderColor: 'primary.main',
+        color: 'primary.main',
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: '0.04em',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {t('demoApplication')}
+    </Box>
+  );
+}
+const DEMO_ACCENT = { boxShadow: 'inset 3px 0 0 #FAA023', backgroundColor: 'rgba(250, 160, 35, 0.06)' };
+
 const nameOf = (review: ReviewCaseSummary) => review.application?.legalName ?? review.companyId;
 const pathOf = (review: ReviewCaseSummary) => `/onboarding/reviews/${review.id}`;
 
@@ -218,6 +246,7 @@ function ReviewCards({ items }: { items: ReadonlyArray<ReviewCaseSummary> }) {
             '&:hover': { borderColor: 'primary.main' },
             '&:hover .review-chevron': { color: 'primary.main', transform: 'translateX(2px)' },
             '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 },
+            ...(review.demo ? { borderColor: 'primary.main', ...DEMO_ACCENT } : {}),
           }}
         >
           <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -226,6 +255,11 @@ function ReviewCards({ items }: { items: ReadonlyArray<ReviewCaseSummary> }) {
               <Typography variant="body2" color="text.secondary">
                 {review.application?.countryCode} · {t('opened')} {date(review.openedAt)}
               </Typography>
+              {review.demo && (
+                <Box sx={{ mt: 0.75 }}>
+                  <DemoTag />
+                </Box>
+              )}
             </Box>
             <ReviewStatus value={review.status} />
           </Stack>
@@ -271,9 +305,12 @@ function ReviewTable({ items, loading }: { items: ReadonlyArray<ReviewCaseSummar
             {nameOf(row)}
             <HiddenCounts review={row} />
           </Box>
-          <Typography variant="body2" color="text.secondary">
-            {row.application?.countryCode}
-          </Typography>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              {row.application?.countryCode}
+            </Typography>
+            {row.demo && <DemoTag />}
+          </Stack>
         </Box>
       ),
     },
@@ -327,6 +364,8 @@ function ReviewTable({ items, loading }: { items: ReadonlyArray<ReviewCaseSummar
       loading={loading}
       hideFooter
       onRowClick={({ row }) => navigate(pathOf(row))}
+      getRowClassName={({ row }) => (row.demo ? 'review-demo-row' : '')}
+      sx={{ '& .review-demo-row, & .review-demo-row:hover': DEMO_ACCENT }}
       aria-label={t('title')}
     />
   );

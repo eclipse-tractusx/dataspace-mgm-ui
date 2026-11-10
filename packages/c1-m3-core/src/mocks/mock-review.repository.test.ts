@@ -213,7 +213,8 @@ describe('Review simulated server linked to the registration mock (mock mode)', 
     const { link, decisions } = linkOf([linked()]);
     const module = createReviewModule(new MockReviewRepository(link));
     const queue = await module.list.execute({ size: 100 });
-    expect('data' in queue && queue.data.items.at(-1)).toMatchObject({ id: linked().id, checkCounts: { passed: 6, failed: 0, error: 0 } });
+    expect('data' in queue && queue.data.items[0]).toMatchObject({ id: linked().id, demo: true, checkCounts: { passed: 6, failed: 0, error: 0 } });
+    expect('data' in queue && queue.data.items.slice(1).some((item) => item.demo)).toBe(false);
     expect(await module.approve.execute({ id: linked().id })).toMatchObject({ data: { status: 'APPROVED' } });
     expect(decisions).toEqual([[linked().id, true, null]]);
   });
