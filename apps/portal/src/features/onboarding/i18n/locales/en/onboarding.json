@@ -83,6 +83,9 @@
     "lpid": "the company's legal person ID (LPID) in its Business Wallet.",
     "waiting": "Waiting for your wallet…",
     "openWallet": "Open wallet",
+    "scanTitle": "Scan with your wallet",
+    "scanHint": "Scan the code with your EUDI Wallet on your phone, or open the wallet on this device.",
+    "qrLabel": "QR code of the wallet request of the EBW-Connector",
     "cancelled": "The verification in the wallet was cancelled."
   },
   "company": {

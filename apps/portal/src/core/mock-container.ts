@@ -303,6 +303,12 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   rolf: both(ROLF_SESSION, C3_MOCK_PERSONS.rolf),
   otto: both(OTTO_SESSION, C3_MOCK_PERSONS.otto),
   renate: C3_MOCK_PERSONS.renate,
+  /**
+   * The preview person of `npm run start:mock`: Erika Mustermann as Company Admin of Beispiel Maschinenbau GmbH (U1),
+   * the company the fixtures of every company-side feature are bound to, with the Company Admin keys of all of them
+   * (company profile, company and technical users, credentials, dataspace wallet, wallet accounts, notifications).
+   */
+  demo: { ...C3_MOCK_PERSONS.erika, permissions: [...COMPANY_ADMIN_PERMISSIONS] },
   /** People of an onboarded company (C3-M1): Erika and Hans Company Admin, Max Member. */
   'erika-c3': C3_MOCK_PERSONS.erika,
   'max-c3': C3_MOCK_PERSONS.max,

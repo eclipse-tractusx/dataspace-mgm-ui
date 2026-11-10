@@ -24,12 +24,27 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { AccountBalanceWalletOutlinedIcon, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { AccountBalanceWalletOutlinedIcon, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, QrCode, Stack, Typography } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { ONBOARDING_NS } from '../i18n';
 
-/** The wallet step: what the EBW-Connector asks the wallets for, then "Open wallet". */
-export function WalletDialog({ open, waiting, onOpenWallet, onClose }: { open: boolean; waiting: boolean; onOpenWallet: () => void; onClose: () => void }) {
+/**
+ * The wallet step: what the EBW-Connector asks the wallets for, then "Open wallet". With `walletRequest` (the
+ * OpenID4VP request of the EBW-Connector) it also shows the request as a QR code, for the EUDI Wallet on a phone.
+ */
+export function WalletDialog({
+  open,
+  waiting,
+  walletRequest,
+  onOpenWallet,
+  onClose,
+}: {
+  open: boolean;
+  waiting: boolean;
+  walletRequest?: string;
+  onOpenWallet: () => void;
+  onClose: () => void;
+}) {
   const { t } = useTranslation(ONBOARDING_NS);
   return (
     <Dialog open={open} onClose={waiting ? undefined : onClose} aria-labelledby="wallet-title" maxWidth="sm" fullWidth>
@@ -41,6 +56,15 @@ export function WalletDialog({ open, waiting, onOpenWallet, onClose }: { open: b
           <li>{t('wallet.mandate')}</li>
           <li>{t('wallet.lpid')}</li>
         </Box>
+        {walletRequest && (
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} sx={{ alignItems: { xs: 'flex-start', sm: 'center' }, mb: 2, p: 2, borderRadius: '10px', border: 1, borderColor: 'divider' }}>
+            <QrCode value={walletRequest} label={t('wallet.qrLabel')} size={148} />
+            <Box>
+              <Typography sx={{ fontWeight: 600, mb: 0.5 }}>{t('wallet.scanTitle')}</Typography>
+              <Typography variant="body2" color="text.secondary">{t('wallet.scanHint')}</Typography>
+            </Box>
+          </Stack>
+        )}
         {waiting && (
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }} role="status">
             <CircularProgress size={20} />

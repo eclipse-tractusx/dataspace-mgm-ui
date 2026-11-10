@@ -74,6 +74,16 @@ describe('mock mode', () => {
     expect(await c3m1.getOwnCompany.execute(companyId)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH', bpn: 'BPNLIUK2REMLK3F4' } });
   });
 
+  it('shows the preview person (demo) the data of every company-side feature', async () => {
+    const modules = createMockCoreModules('demo');
+    const session = (await modules.identity.getCurrentSession.execute())!;
+    expect(session).toMatchObject({ user: { name: 'Erika Mustermann' }, companyId: MOCK_PERSONS['wallets-erika'].companyId });
+    expect(session.permissions).toEqual(expect.arrayContaining(['view_company', 'view_company_users', 'view_technical_users', 'view_credentials', 'view_dataspace_wallet']));
+    expect(await modules.c3m1.getOwnCompany.execute(session.companyId!)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH' } });
+    expect(await modules.c4m1?.listCompanyCredentials.execute(session.companyId!)).toMatchObject({ status: 'found' });
+    expect(await modules.c4m2?.getOwnWallet.execute(session.companyId!)).toMatchObject({ status: 'found' });
+  });
+
   it('starts signed out for a person key it does not know', async () => {
     const modules = createMockCoreModules('none');
     expect(await modules.identity.getCurrentSession.execute()).toBeNull();

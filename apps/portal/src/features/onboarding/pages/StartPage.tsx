@@ -40,6 +40,14 @@ import { useSignedInPerson } from '../hooks/useOnboarding';
 import { useStartApplication } from '../hooks/useStartApplication';
 import { ONBOARDING_NS } from '../i18n';
 import { EBW_STEPS } from './flowSteps';
+import { MOCK_MODE } from '../../../core/mock-mode';
+
+/**
+ * Mock mode only: an OpenID4VP request of the EBW-Connector of OSP A, so the wallet dialog shows its QR code. The
+ * C1-M2 contract does not hand the request to the portal yet; once it does, the real request replaces this one.
+ */
+const MOCK_WALLET_REQUEST =
+  'openid4vp://?client_id=x509_san_dns%3Aebw-connector.osp-a.example.org&request_uri=https%3A%2F%2Febw-connector.osp-a.example.org%2Foid4vp%2Frequests%2Fmock';
 
 /** Start application (mockup view 1, decided: progress=side · choice=tiles, the goal cards stay visible). */
 export default function StartPage() {
@@ -124,7 +132,13 @@ export default function StartPage() {
           <ProofSection path={path} onPath={setPath} onContinue={onContinue} busy={state.status === 'working'} />
         </div>
       )}
-      <WalletDialog open={walletOpen && (state.status === 'idle' || state.status === 'working')} waiting={state.status === 'working'} onOpenWallet={() => withWallet(choice)} onClose={() => setWalletOpen(false)} />
+      <WalletDialog
+        open={walletOpen && (state.status === 'idle' || state.status === 'working')}
+        waiting={state.status === 'working'}
+        walletRequest={MOCK_MODE ? MOCK_WALLET_REQUEST : undefined}
+        onOpenWallet={() => withWallet(choice)}
+        onClose={() => setWalletOpen(false)}
+      />
     </PageFrame>
   );
 }
