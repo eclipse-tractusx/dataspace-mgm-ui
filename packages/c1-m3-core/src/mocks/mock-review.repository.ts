@@ -34,6 +34,7 @@ import type {
   ReviewPage,
   ReviewProblem,
 } from '../domain/data/review.data';
+import { type MockRegistrationLink, reviewCaseOf } from './mock-registration-link';
 import { DOCUMENT_ID, reviewFixtures, REVIEW_ACTORS } from './review-fixtures';
 
 /** Simulated server. Business transitions deliberately live here, never in React or Redux. */
@@ -41,6 +42,16 @@ export class MockReviewRepository implements ReviewRepository {
   private cases = reviewFixtures();
   actor = REVIEW_ACTORS[0];
   unavailable = false;
+  /** Mock mode: the applications submitted in onboarding get a case here, and their decision goes back (link). */
+  constructor(private readonly link?: MockRegistrationLink) {}
+  /** Opens a case for every linked application that has none yet. */
+  private sync() {
+    for (const linked of this.link?.submitted() ?? []) {
+      if (!this.cases.some((c) => c.applicationId === linked.id)) {
+        this.cases.push(reviewCaseOf(linked, linked.submittedAt ?? new Date().toISOString()));
+      }
+    }
+  }
   reset() {
     this.cases = reviewFixtures();
     this.unavailable = false;
@@ -61,6 +72,7 @@ export class MockReviewRepository implements ReviewRepository {
     return null;
   }
   async list(filters: ReviewFilters): Promise<Outcome<ReviewPage>> {
+    this.sync();
     const denied = this.denied<ReviewPage>('view_reviews');
     if (denied) {
       return denied;
@@ -107,6 +119,7 @@ export class MockReviewRepository implements ReviewRepository {
     return { data: structuredClone({ items, page, size, total: all.length }) };
   }
   async get(id: string): Promise<Outcome<ReviewCase>> {
+    this.sync();
     const denied = this.denied<ReviewCase>('view_reviews');
     if (denied) {
       return denied;
@@ -121,6 +134,7 @@ export class MockReviewRepository implements ReviewRepository {
     return this.decide(input, false);
   }
   private decide(input: DecisionInput, approve: boolean): Outcome<ReviewCase> {
+    this.sync();
     const denied = this.denied<ReviewCase>('review_application');
     if (denied) {
       return denied;
@@ -196,6 +210,9 @@ export class MockReviewRepository implements ReviewRepository {
       comment: text ?? null,
       autoApproved: false,
     };
+    if (this.link?.submitted().some((linked) => linked.id === c.applicationId)) {
+      this.link.decided(c.applicationId, approve, text?.trim() || null);
+    }
     return this.reply(c);
   }
   private reply(c: ReviewCase): Outcome<ReviewCase> {

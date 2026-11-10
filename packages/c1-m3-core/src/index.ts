@@ -32,6 +32,7 @@ import type { ReviewRepository } from './domain/repositories/review.repository';
 import type { ReviewModule } from './data/review-module.data';
 import { ReviewHttpRepository } from './infrastructure/repositories/review-http.repository';
 import { MockReviewRepository } from './mocks/mock-review.repository';
+import type { MockRegistrationLink } from './mocks/mock-registration-link';
 export function createReviewModule(repository: ReviewRepository): ReviewModule {
   return {
     list: new ListReviewsUseCase(repository),
@@ -44,11 +45,12 @@ export function createReviewModule(repository: ReviewRepository): ReviewModule {
 export function createHttpReviewModule(config: CoreModuleConfig, registrationConfig: CoreModuleConfig) {
   return createReviewModule(new ReviewHttpRepository(config, registrationConfig));
 }
-export function createMockReviewModule() {
-  const server = new MockReviewRepository();
+export function createMockReviewModule(link?: MockRegistrationLink) {
+  const server = new MockReviewRepository(link);
   return { module: createReviewModule(server), server };
 }
 export { REVIEW_ACTORS } from './mocks/review-fixtures';
+export type { LinkedApplication, MockRegistrationLink } from './mocks/mock-registration-link';
 export type * from './domain/data/review.data';
 export type { ReviewModule } from './data/review-module.data';
 export type { ReviewRepository } from './domain/repositories/review.repository';

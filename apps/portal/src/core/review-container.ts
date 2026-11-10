@@ -26,6 +26,7 @@ import { createHttpReviewModule, createMockReviewModule } from '@dataspace-mgm/c
 import { createReviewStore } from '@dataspace-mgm/c1-m3-state';
 import { CsrfTokenStore } from '@dataspace-mgm/core-http';
 import type { RuntimeConfig } from '../config';
+import { mockRegistrationLink } from './mock-registration-link';
 export function createReviewWorkspace(config: RuntimeConfig) {
   if (import.meta.env.VITE_REVIEW_API === 'live') {
     const baseUrl = config.api_base_url.replace(/\/$/, '');
@@ -46,7 +47,8 @@ export function createReviewWorkspace(config: RuntimeConfig) {
       { id: '', name: '', permissions: [] },
     );
   }
-  const mock = createMockReviewModule();
+  // Mock: the applications submitted in onboarding join the fixtures, and the decision reaches the applicant.
+  const mock = createMockReviewModule(mockRegistrationLink);
   return createReviewStore({
     useCases: { review: mock.module },
     mock: mock.server,

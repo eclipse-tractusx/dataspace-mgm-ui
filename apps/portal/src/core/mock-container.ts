@@ -24,7 +24,7 @@
  ********************************************************************************/
 
 import {
-  createMockC1M2Module,
+  createMockC1M2Ports,
   ERIKA_SESSION,
   HANS_SESSION,
   LIESCHEN_SESSION,
@@ -35,6 +35,7 @@ import {
 import { createInMemoryC3M1Module } from '@dataspace-mgm/c3-m1-core/testing';
 import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
 import { GetCspRegistrationUseCase } from '@dataspace-mgm/c3-m2-core';
+import { createC1M2UseCases } from '@dataspace-mgm/c1-m2-core';
 import { createC11M1ModuleFrom } from '@dataspace-mgm/c11-m1-core';
 import { InMemoryInboxEventSource, InMemoryNotificationRepository, MOCK_INBOX } from '@dataspace-mgm/c11-m1-core/testing';
 import {
@@ -58,6 +59,7 @@ import { createIdentityModule, type RedirectPort, type SessionAnemic, type Sessi
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
 import { C3_MOCK_PERSONS } from './mock-persons';
+import { linkMockRegistration } from './mock-registration-link';
 
 /** How long the mock Business Wallet takes to answer: the dialog's three approvals plus a moment on "approved". */
 export const MOCK_WALLET_DELAY_MS = 3600;
@@ -377,6 +379,10 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     companyId: user.companyId === FIXTURE_COMPANY_ID ? companyId : user.companyId,
     coViewerCompanyId: user.coViewerCompanyId === FIXTURE_COMPANY_ID ? companyId : user.coViewerCompanyId,
   })));
+  // The wallet answers after the approvals the wallet dialog shows one by one (WalletDialog, APPROVAL_STEP_MS).
+  const c1m2 = createMockC1M2Ports(ONBOARDING_SESSION_OF[selectedPerson] ?? session, { walletDelayMs: MOCK_WALLET_DELAY_MS });
+  // Application review (C1-M3 mock) decides on the applications submitted here (mock-registration-link.ts).
+  linkMockRegistration(c1m2.applications);
   return {
     identity: createIdentityModule({
       bffBaseUrl: '',
@@ -387,8 +393,7 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
     c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
-    // The wallet answers after the approvals the wallet dialog shows one by one (WalletDialog, APPROVAL_STEP_MS).
-    c1m2: createMockC1M2Module(ONBOARDING_SESSION_OF[selectedPerson] ?? session, { walletDelayMs: MOCK_WALLET_DELAY_MS }),
+    c1m2: createC1M2UseCases(c1m2),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
       getCompanyUser: new GetCompanyUserUseCase(companyUsers),
