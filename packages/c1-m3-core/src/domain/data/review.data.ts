@@ -28,10 +28,17 @@ import type { components as Registration } from '../../generated/registration-ap
 // The backend contract uses camelCase, overriding the generic snake_case guideline.
 export type ReviewStatus = components['schemas']['ReviewStatus'];
 export type ReviewCheck = components['schemas']['ReviewCheck'];
-export type ReviewCaseSummary = components['schemas']['ReviewCaseSummary'];
-export type ReviewPage = components['schemas']['ReviewCasePage'];
+export type ReviewCaseSummary = components['schemas']['ReviewCaseSummary'] & {
+  /** Mock mode only, never sent by the backend: the case of an application submitted in onboarding (demo). */
+  demo?: boolean;
+};
+export type ReviewPage = Omit<components['schemas']['ReviewCasePage'], 'items'> & { items: ReviewCaseSummary[] };
 export type Application = Registration['schemas']['ApplicationInternal'];
-export type ReviewCase = Omit<components['schemas']['ReviewCase'], 'application'> & { application?: Application };
+export type ReviewCase = Omit<components['schemas']['ReviewCase'], 'application'> & {
+  application?: Application;
+  /** Mock mode only, never sent by the backend: the case of an application submitted in onboarding (demo). */
+  demo?: boolean;
+};
 export type ReviewProblem = components['schemas']['Problem'] & {
   status: number;
   type: string;

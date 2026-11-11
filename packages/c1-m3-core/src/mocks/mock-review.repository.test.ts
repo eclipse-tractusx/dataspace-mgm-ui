@@ -26,6 +26,7 @@ import { describe, expect, it } from 'vitest';
 import { createReviewModule } from '../index';
 import { MockReviewRepository } from './mock-review.repository';
 import { reviewFixtures, REVIEW_ACTORS, DOCUMENT_ID } from './review-fixtures';
+import type { LinkedApplication, MockRegistrationLink } from './mock-registration-link';
 const id = (n: number) => reviewFixtures()[n - 1].id;
 const error = (name: string) => ({
   error: expect.objectContaining({ type: `urn:c1-m3:problem:${name}` }),
@@ -174,5 +175,65 @@ describe('Review simulated server contract', () => {
         documentId: DOCUMENT_ID,
       }),
     ).toEqual(error('forbidden'));
+  });
+});
+
+describe('Review simulated server linked to the registration mock (mock mode)', () => {
+  const linked = (overrides: Partial<LinkedApplication> = {}): LinkedApplication => {
+    const { application } = reviewFixtures()[0];
+    return {
+      id: 'a1b2c3d4-0000-4000-8000-000000000099',
+      companyId: application!.companyId,
+      kind: 'ONBOARDING',
+      existingCompany: false,
+      verification: 'EBW',
+      applicant: { sub: REVIEW_ACTORS[3].id, givenName: 'Erika', familyName: 'Mustermann' },
+      companyData: application!.companyData,
+      companyRoles: ['ACTIVE_PARTICIPANT'],
+      consents: application!.consents,
+      requiredAgreements: application!.requiredAgreements,
+      createdAt: '2026-11-10T09:00:00Z',
+      submittedAt: '2026-11-10T09:05:00Z',
+      ...overrides,
+    };
+  };
+  const linkOf = (applications: LinkedApplication[]) => {
+    const decisions: Array<[string, boolean, string | null]> = [];
+    const link: MockRegistrationLink = {
+      submitted: () => applications,
+      decided: (applicationId, approved, reason) => {
+        decisions.push([applicationId, approved, reason]);
+        applications.splice(applications.findIndex((application) => application.id === applicationId), 1);
+      },
+    };
+    return { link, decisions };
+  };
+
+  it('opens a case with passed checks for an application submitted in onboarding, and approval reaches it', async () => {
+    const { link, decisions } = linkOf([linked()]);
+    const module = createReviewModule(new MockReviewRepository(link));
+    const queue = await module.list.execute({ size: 100 });
+    expect('data' in queue && queue.data.items[0]).toMatchObject({ id: linked().id, demo: true, checkCounts: { passed: 6, failed: 0, error: 0 } });
+    expect('data' in queue && queue.data.items.slice(1).some((item) => item.demo)).toBe(false);
+    expect(await module.approve.execute({ id: linked().id })).toMatchObject({ data: { status: 'APPROVED' } });
+    expect(decisions).toEqual([[linked().id, true, null]]);
+  });
+
+  it('passes the reason of a decline to the registration mock', async () => {
+    const { link, decisions } = linkOf([linked()]);
+    const module = createReviewModule(new MockReviewRepository(link));
+    expect(await module.decline.execute({ id: linked().id, reason: 'Register extract is missing' })).toMatchObject({ data: { status: 'DECLINED' } });
+    expect(decisions).toEqual([[linked().id, false, 'Register extract is missing']]);
+  });
+
+  it('reaches the applicant only with the final decision (four eyes for supporting documents)', async () => {
+    const { link, decisions } = linkOf([linked({ verification: 'DOCUMENTS' })]);
+    const server = new MockReviewRepository(link);
+    const module = createReviewModule(server);
+    expect(await module.approve.execute({ id: linked().id })).toMatchObject({ data: { status: 'AWAITING_SECOND_APPROVAL' } });
+    expect(decisions).toEqual([]);
+    server.setActor(REVIEW_ACTORS[1]);
+    expect(await module.approve.execute({ id: linked().id })).toMatchObject({ data: { status: 'APPROVED' } });
+    expect(decisions).toEqual([[linked().id, true, null]]);
   });
 });

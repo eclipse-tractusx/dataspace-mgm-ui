@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
  * AI Disclosure: This file was entirely AI-generated; the human contributor has reviewed it.
  * Assisted-By: OpenAI GPT-6.1 Terra
+ * Assisted-By: Claude Code (claude-opus-5-5)
  */
 import { useState } from 'react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useTranslation } from 'react-i18next';
-import { Alert, Box, Button, Card, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { Alert, Box, Button, Card, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@dataspace-mgm/ui-mui';
 import type { CompanyUserDetailAnemic } from '@dataspace-mgm/c2-m2-core';
 import { useGetCompanyAppRolesQuery, useSetUserAppRolesMutation } from './company.api';
 import { COMPANY_NS } from './i18n';
-import { checkboxSx, inputSx, labelSx } from '../input-styles';
 
 export function AppRoleEditor({ companyId, user, canAssign }: { companyId: string; user: CompanyUserDetailAnemic; canAssign: boolean }) {
   const { t, i18n } = useTranslation(COMPANY_NS);
@@ -22,19 +22,18 @@ export function AppRoleEditor({ companyId, user, canAssign }: { companyId: strin
   const [save, mutation] = useSetUserAppRolesMutation();
   const app = query.currentData?.status === 'success' ? query.currentData.data : null;
   return (
-    <Card sx={{ p: 3, mt: 2 }}>
-      <Typography variant="h3">{t('manageAppRoles')}</Typography>
-      <Stack direction="row" sx={{ mt: 1.5, alignItems: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}>
-        <Box component="label" sx={{ ...labelSx, flexGrow: 1, maxWidth: 480 }}>
-          {t('appId')}{' '}
-          <Box
-            component="input"
-            sx={inputSx}
-            value={appInput}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAppInput(event.target.value)}
-          />
-        </Box>
+    <Card component="section" aria-label={t('manageAppRoles')} sx={{ p: { xs: 3, md: 3.5 }, mt: 3, '&:hover': { boxShadow: 'none' } }}>
+      <Typography variant="h3" sx={{ fontSize: '1.125rem', fontWeight: 700 }}>{t('manageAppRoles')}</Typography>
+      <Stack direction="row" sx={{ mt: 2, alignItems: 'center', flexWrap: 'wrap', gap: 1.5 }}>
+        <TextField
+          size="small"
+          label={t('appId')}
+          value={appInput}
+          onChange={(event) => setAppInput(event.target.value)}
+          sx={{ flexGrow: 1, maxWidth: 480 }}
+        />
         <Button
+          sx={{ height: 40 }}
           variant="outlined"
           disabled={!appInput.trim()}
           onClick={() => {
@@ -58,18 +57,19 @@ export function AppRoleEditor({ companyId, user, canAssign }: { companyId: strin
             {app.roles.map((role) => (
               <Box key={role.name}>
                 {draft !== null ? (
-                  <Box component="label" sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5, overflowWrap: 'anywhere' }}>
-                    <Box
-                      component="input"
-                      type="checkbox"
-                      sx={checkboxSx}
-                      checked={draft.includes(role.name)}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setDraft(event.target.checked ? [...draft, role.name] : draft.filter((name) => name !== role.name))
-                      }
-                    />{' '}
-                    {role.name} {role.description}
-                  </Box>
+                  <FormControlLabel
+                    sx={{ overflowWrap: 'anywhere' }}
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={draft.includes(role.name)}
+                        onChange={(event) =>
+                          setDraft(event.target.checked ? [...draft, role.name] : draft.filter((name) => name !== role.name))
+                        }
+                      />
+                    }
+                    label={`${role.name} ${role.description ?? ''}`.trim()}
+                  />
                 ) : (
                   <Typography>{role.name} {role.description}</Typography>
                 )}
@@ -91,6 +91,7 @@ export function AppRoleEditor({ companyId, user, canAssign }: { companyId: strin
             ) : (
               <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
                 <Button
+                  variant="contained"
                   disabled={mutation.isLoading}
                   onClick={() => {
                     void save({ companyId, userId: user.userId, appId, roles: draft }).then((response) => {

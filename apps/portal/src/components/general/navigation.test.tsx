@@ -93,6 +93,15 @@ describe('Sidebar', () => {
     expect(within(nav).getAllByRole('link').at(-1)).toBe(allApps);
   });
 
+  it('marks only the deepest matching favourite as active (Application review, not also Onboarding)', () => {
+    wrap(<Sidebar />, '/onboarding/reviews/123');
+    const nav = screen.getByRole('navigation', { name: 'Features' });
+    const active = within(nav)
+      .getAllByRole('link')
+      .filter((link) => link.getAttribute('aria-current') === 'page');
+    expect(active.map((link) => link.getAttribute('aria-label'))).toEqual([text('onboarding-review')]);
+  });
+
   it('switches favourites on and off in the plus menu, which stays open', () => {
     wrap(<Sidebar />);
     fireEvent.click(screen.getByRole('button', { name: 'Edit favourites' }));

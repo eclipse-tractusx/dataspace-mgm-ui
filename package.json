@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "nx serve portal",
-    "start:mock": "VITE_USE_MOCKS=true VITE_MOCK_PERSON=erika npm start",
+    "start:mock": "VITE_USE_MOCKS=true VITE_MOCK_PERSON=demo npm start",
     "build": "nx build portal",
     "lint": "nx run-many -t lint",
     "typecheck": "nx run-many -t typecheck",
@@ -22,6 +22,7 @@
     "@fontsource-variable/manrope": "^5.3.0",
     "@mui/icons-material": "^9.5.0",
     "@mui/material": "^9.5.0",
+    "@mui/x-data-grid": "9.15.0",
     "@reduxjs/toolkit": "^2.14.0",
     "i18next": "^26.4.2",
     "i18next-browser-languagedetector": "^8.2.1",

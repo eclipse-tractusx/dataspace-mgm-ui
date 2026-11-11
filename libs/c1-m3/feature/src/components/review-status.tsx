@@ -20,18 +20,77 @@
  *
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
  * Assisted-By: Codex (GPT-6)
+ * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { Chip } from '@dataspace-mgm/ui-mui';
+import { Box, tractusx, useTheme, type Theme } from '@dataspace-mgm/ui-mui';
 import { useReviewTranslation } from '../use-review-translation';
-export function ReviewStatus({ value }: { value: string }) {
+
+/**
+ * The colour of a review status or check result. Orange: to act on; pale orange: waiting for the second approval;
+ * Eclipse Tractus-X green: approved or passed; red: declined or failed; gray: closed or not applicable.
+ */
+export function statusColor(theme: Theme, value: string): string {
+  switch (value) {
+    case 'OPEN':
+      return tractusx.orange;
+    case 'AWAITING_SECOND_APPROVAL':
+    case 'ERROR':
+      return tractusx.orangeLightest;
+    case 'APPROVED':
+    case 'PASSED':
+    case 'VALID':
+    case 'CONFIRMED':
+      return tractusx.green;
+    case 'DECLINED':
+    case 'FAILED':
+    case 'INVALID':
+      return theme.palette.error.main;
+    default:
+      return theme.palette.text.disabled;
+  }
+}
+
+/** A status as a pill with a dot in its colour on a tint of it, like the status of a wallet pass. */
+export function ReviewStatus({ value, label }: { value: string; label?: string }) {
   const { t } = useReviewTranslation();
-  const color = ['APPROVED', 'PASSED'].includes(value)
-    ? 'success'
-    : ['DECLINED', 'FAILED'].includes(value)
-      ? 'error'
-      : ['ERROR', 'AWAITING_SECOND_APPROVAL'].includes(value)
-        ? 'warning'
-        : 'default';
-  return <Chip size="small" variant="outlined" color={color} label={t(value)} />;
+  const theme = useTheme();
+  const color = statusColor(theme, value);
+  const neutral = color === theme.palette.text.disabled;
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        flexShrink: 0,
+        width: 'fit-content',
+        px: 1.25,
+        py: 0.375,
+        borderRadius: '999px',
+        fontSize: '0.8125rem',
+        fontWeight: 600,
+        lineHeight: 1.4,
+        whiteSpace: 'nowrap',
+        color: neutral ? 'text.secondary' : 'text.primary',
+        bgcolor: `color-mix(in srgb, ${color} 16%, transparent)`,
+        '&::before': { content: '""', width: 8, height: 8, borderRadius: '50%', bgcolor: color, flexShrink: 0 },
+      }}
+    >
+      {label ?? t(value)}
+    </Box>
+  );
+}
+
+/** Visually hidden text, for screen readers (and the counts the list announces per row). */
+export function VisuallyHidden({ children }: { children: string }) {
+  return (
+    <Box
+      component="span"
+      sx={{ position: 'absolute', width: 1, height: 1, p: 0, m: '-1px', overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 }}
+    >
+      {children}
+    </Box>
+  );
 }

@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { ERIKA_APPLICATION_SUBMITTED, ERIKA_SESSION, HANS_APPLICATION_DECLINED, HANS_SESSION } from '@dataspace-mgm/c1-m2-core/testing';
+import { ERIKA_APPLICATION_COMPLETED, ERIKA_APPLICATION_SUBMITTED, ERIKA_SESSION, HANS_APPLICATION_DECLINED, HANS_SESSION } from '@dataspace-mgm/c1-m2-core/testing';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { onboardingTranslations } from './i18n';
@@ -59,6 +59,20 @@ describe('Onboarding: my application', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Withdraw application' }));
     fireEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Withdraw application' }));
     expect(await screen.findByText('urn:c1-m2:problem:already-decided')).toBeInTheDocument();
+  });
+
+  it('shows the approval and leads to the company', async () => {
+    renderOnboarding(pathOf(ERIKA_APPLICATION_COMPLETED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_COMPLETED] } });
+    expect(await screen.findByText('OSP staff approved the application.')).toBeInTheDocument();
+    expect(screen.getByText('Beispiel Maschinenbau GmbH is active in the dataspace. You are its Company Admin.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Your company' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Withdraw the application' })).not.toBeInTheDocument();
+  });
+
+  it('offers the demo review only in mock mode', async () => {
+    renderOnboarding(pathOf(ERIKA_APPLICATION_SUBMITTED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_SUBMITTED] } });
+    await screen.findByRole('heading', { name: 'Beispiel Maschinenbau GmbH' });
+    expect(screen.queryByRole('button', { name: 'Open in Application review' })).not.toBeInTheDocument();
   });
 
   it('shows the reason of a decline and offers a new application', async () => {

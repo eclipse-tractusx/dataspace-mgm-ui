@@ -74,6 +74,27 @@ describe('mock mode', () => {
     expect(await c3m1.getOwnCompany.execute(companyId)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH', bpn: 'BPNLIUK2REMLK3F4' } });
   });
 
+  it('shows the preview person (demo) the data of every company-side feature', async () => {
+    const modules = createMockCoreModules('demo');
+    const session = (await modules.identity.getCurrentSession.execute())!;
+    expect(session).toMatchObject({ user: { name: 'Erika Mustermann' }, companyId: MOCK_PERSONS['wallets-erika'].companyId });
+    expect(session.permissions).toEqual(expect.arrayContaining(['view_company', 'view_company_users', 'view_technical_users', 'view_credentials', 'view_dataspace_wallet']));
+    expect(await modules.c3m1.getOwnCompany.execute(session.companyId!)).toMatchObject({ status: 'found', company: { name: 'Beispiel Maschinenbau GmbH' } });
+    expect(await modules.c4m1?.listCompanyCredentials.execute(session.companyId!)).toMatchObject({ status: 'found' });
+    expect(await modules.c4m2?.getOwnWallet.execute(session.companyId!)).toMatchObject({ status: 'found' });
+  });
+
+  it('lets the preview person (demo) register her company in onboarding, as the applicant she was before', async () => {
+    const { c1m2 } = createMockCoreModules('demo');
+    const created = await c1m2!.createApplication.execute({
+      kind: 'ONBOARDING',
+      verification: 'EBW',
+      attestation: mockAttestation(),
+      companyRoles: ['ACTIVE_PARTICIPANT'],
+    });
+    expect(created).toMatchObject({ status: 'created', application: { companyData: { legalName: 'Beispiel Maschinenbau GmbH' } } });
+  });
+
   it('starts signed out for a person key it does not know', async () => {
     const modules = createMockCoreModules('none');
     expect(await modules.identity.getCurrentSession.execute()).toBeNull();

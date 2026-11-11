@@ -34,6 +34,7 @@ import type {
   ReviewPage,
   ReviewProblem,
 } from '../domain/data/review.data';
+import { type MockRegistrationLink, reviewCaseOf } from './mock-registration-link';
 import { DOCUMENT_ID, reviewFixtures, REVIEW_ACTORS } from './review-fixtures';
 
 /** Simulated server. Business transitions deliberately live here, never in React or Redux. */
@@ -41,8 +42,22 @@ export class MockReviewRepository implements ReviewRepository {
   private cases = reviewFixtures();
   actor = REVIEW_ACTORS[0];
   unavailable = false;
+  /** Mock mode: the applications submitted in onboarding get a case here, and their decision goes back (link). */
+  constructor(private readonly link?: MockRegistrationLink) {}
+  /** The cases opened for linked applications (the demo cases), shown first in the queue. */
+  private readonly linked = new Set<string>();
+  /** Opens a case for every linked application that has none yet. */
+  private sync() {
+    for (const linked of this.link?.submitted() ?? []) {
+      if (!this.cases.some((c) => c.applicationId === linked.id)) {
+        this.cases.push(reviewCaseOf(linked, linked.submittedAt ?? new Date().toISOString()));
+        this.linked.add(linked.id);
+      }
+    }
+  }
   reset() {
     this.cases = reviewFixtures();
+    this.linked.clear();
     this.unavailable = false;
   }
   setActor(actor: ReviewActor) {
@@ -61,6 +76,7 @@ export class MockReviewRepository implements ReviewRepository {
     return null;
   }
   async list(filters: ReviewFilters): Promise<Outcome<ReviewPage>> {
+    this.sync();
     const denied = this.denied<ReviewPage>('view_reviews');
     if (denied) {
       return denied;
@@ -79,7 +95,8 @@ export class MockReviewRepository implements ReviewRepository {
           (!filters.verification?.length || filters.verification.includes(c.verification)) &&
           (!filters.applicationId || c.applicationId === filters.applicationId),
       )
-      .sort((a, b) => a.openedAt.localeCompare(b.openedAt));
+      // Oldest first; the demo cases of this session lead, so the application just submitted is easy to find.
+      .sort((a, b) => Number(this.linked.has(b.id)) - Number(this.linked.has(a.id)) || a.openedAt.localeCompare(b.openedAt));
     const items = all.slice(page * size, (page + 1) * size).map((c) => ({
       id: c.id,
       applicationId: c.applicationId,
@@ -89,6 +106,7 @@ export class MockReviewRepository implements ReviewRepository {
       status: c.status,
       openedAt: c.openedAt,
       decidedAt: c.decision?.decidedAt ?? null,
+      ...(this.linked.has(c.id) ? { demo: true } : {}),
       checkCounts: {
         passed: c.checks.filter((v) => v.result === 'PASSED').length,
         failed: c.checks.filter((v) => v.result === 'FAILED').length,
@@ -107,12 +125,13 @@ export class MockReviewRepository implements ReviewRepository {
     return { data: structuredClone({ items, page, size, total: all.length }) };
   }
   async get(id: string): Promise<Outcome<ReviewCase>> {
+    this.sync();
     const denied = this.denied<ReviewCase>('view_reviews');
     if (denied) {
       return denied;
     }
     const review = this.cases.find((c) => c.id === id);
-    return review ? { data: structuredClone(review) } : this.failure(404, 'not-found');
+    return review ? { data: { ...structuredClone(review), ...this.demoMark(review) } } : this.failure(404, 'not-found');
   }
   async approve(input: DecisionInput): Promise<Outcome<ReviewCase>> {
     return this.decide(input, true);
@@ -121,6 +140,7 @@ export class MockReviewRepository implements ReviewRepository {
     return this.decide(input, false);
   }
   private decide(input: DecisionInput, approve: boolean): Outcome<ReviewCase> {
+    this.sync();
     const denied = this.denied<ReviewCase>('review_application');
     if (denied) {
       return denied;
@@ -196,10 +216,16 @@ export class MockReviewRepository implements ReviewRepository {
       comment: text ?? null,
       autoApproved: false,
     };
+    if (this.link?.submitted().some((linked) => linked.id === c.applicationId)) {
+      this.link.decided(c.applicationId, approve, text?.trim() || null);
+    }
     return this.reply(c);
   }
+  private demoMark(c: ReviewCase): Partial<ReviewCase> {
+    return this.linked.has(c.id) ? { demo: true } : {};
+  }
   private reply(c: ReviewCase): Outcome<ReviewCase> {
-    const copy = structuredClone(c);
+    const copy = { ...structuredClone(c), ...this.demoMark(c) };
     delete copy.application;
     return { data: copy };
   }

@@ -64,5 +64,19 @@
   "signed-out": "Melden Sie sich an, um Benutzer anzuzeigen.",
   "signIn": "Anmelden",
   "not-connected": "Diese Funktion ist nicht verbunden.",
-  "retry": "Erneut versuchen"
+  "retry": "Erneut versuchen",
+  "joinedViaValue": "Beigetreten über {{via}}",
+  "via": {
+    "ONBOARDING": "Onboarding",
+    "INVITATION": "Einladung"
+  },
+  "userCount_one": "{{count}} Benutzer",
+  "userCount_other": "{{count}} Benutzer",
+  "technicalCount_one": "{{count}} technischer Benutzer",
+  "technicalCount_other": "{{count}} technische Benutzer",
+  "view": {
+    "label": "Ansicht",
+    "table": "Tabelle",
+    "cards": "Karten"
+  }
 }

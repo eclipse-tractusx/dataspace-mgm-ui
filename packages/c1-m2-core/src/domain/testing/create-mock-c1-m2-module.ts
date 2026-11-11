@@ -47,6 +47,8 @@ export interface MockC1M2Options {
   now?: () => Date;
   /** Every call of every port fails with this error. */
   failure?: Error | null;
+  /** The time the wallet takes to answer the attestation request; default 0. */
+  walletDelayMs?: number;
 }
 
 /** The in-memory adapters of C1-M2 with the caller of the session, sharing one list of terms. */
@@ -64,7 +66,7 @@ export function createMockC1M2Ports(session: SessionAnemic | null, options: Mock
     now: options.now,
     failure,
   });
-  const wallet = new InMemoryWalletAttestationRepository({ caller, now: options.now, failure });
+  const wallet = new InMemoryWalletAttestationRepository({ caller, now: options.now, failure, delayMs: options.walletDelayMs });
   return { referenceData, applications, agreements, wallet } satisfies C1M2Ports;
 }
 

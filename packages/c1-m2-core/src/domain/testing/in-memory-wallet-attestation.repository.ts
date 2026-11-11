@@ -41,6 +41,8 @@ export interface InMemoryWalletAttestationOptions {
   cancel?: boolean;
   now?: () => Date;
   failure?: Error | null;
+  /** The time the person takes in the wallet before it answers (mock mode: the approval in the dialog); default 0. */
+  delayMs?: number;
 }
 
 /**
@@ -54,6 +56,9 @@ export class InMemoryWalletAttestationRepository implements WalletAttestationRep
 
   public async requestAttestation(): Promise<string | null> {
     this.calls.push('requestAttestation');
+    if (this.options.delayMs) {
+      await new Promise((resolve) => setTimeout(resolve, this.options.delayMs));
+    }
     if (this.options.failure) {
       throw this.options.failure;
     }

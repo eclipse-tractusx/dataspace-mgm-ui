@@ -24,7 +24,7 @@
  ********************************************************************************/
 
 import {
-  createMockC1M2Module,
+  createMockC1M2Ports,
   ERIKA_SESSION,
   HANS_SESSION,
   LIESCHEN_SESSION,
@@ -35,6 +35,7 @@ import {
 import { createInMemoryC3M1Module } from '@dataspace-mgm/c3-m1-core/testing';
 import { CSP_REGISTRATIONS, InMemoryCspRegistrationRepository } from '@dataspace-mgm/c3-m2-core/testing';
 import { GetCspRegistrationUseCase } from '@dataspace-mgm/c3-m2-core';
+import { createC1M2UseCases } from '@dataspace-mgm/c1-m2-core';
 import { createC11M1ModuleFrom } from '@dataspace-mgm/c11-m1-core';
 import { InMemoryInboxEventSource, InMemoryNotificationRepository, MOCK_INBOX } from '@dataspace-mgm/c11-m1-core/testing';
 import {
@@ -58,6 +59,17 @@ import { createIdentityModule, type RedirectPort, type SessionAnemic, type Sessi
 import { InMemorySessionRepository, PIA_SESSION } from '@dataspace-mgm/identity-core/testing';
 import type { CoreModules } from './container';
 import { C3_MOCK_PERSONS } from './mock-persons';
+import { linkMockRegistration } from './mock-registration-link';
+
+/** How long the mock Business Wallet takes to answer: the dialog's three approvals plus a moment on "approved". */
+export const MOCK_WALLET_DELAY_MS = 3600;
+
+/**
+ * The session C1-M2 Registration sees for a preview person, where it differs from MOCK_PERSONS: `demo` is bound to
+ * Beispiel Maschinenbau GmbH, and a bound account may not register a company (problem account-bound). For onboarding
+ * she is Erika the applicant (C1-M2 test person, same `sub`, no company), so "Open wallet" leads to the company data.
+ */
+const ONBOARDING_SESSION_OF: Readonly<Record<string, SessionAnemic>> = { demo: ERIKA_SESSION };
 
 /** The person signed in when VITE_MOCK_PERSON is not set. */
 export const DEFAULT_MOCK_PERSON = 'pia';
@@ -303,6 +315,13 @@ export const MOCK_PERSONS: Readonly<Record<string, SessionAnemic>> = {
   rolf: both(ROLF_SESSION, C3_MOCK_PERSONS.rolf),
   otto: both(OTTO_SESSION, C3_MOCK_PERSONS.otto),
   renate: C3_MOCK_PERSONS.renate,
+  /**
+   * The preview person of `npm run start:mock`: Erika Mustermann as Company Admin of Beispiel Maschinenbau GmbH (U1),
+   * the company the fixtures of every company-side feature are bound to, with the Company Admin keys of all of them
+   * (company profile, company and technical users, credentials, dataspace wallet, wallet accounts, notifications).
+   * Onboarding sees her as the applicant she was before (ONBOARDING_SESSION_OF), so the preview can run it too.
+   */
+  demo: { ...C3_MOCK_PERSONS.erika, permissions: [...COMPANY_ADMIN_PERMISSIONS] },
   /** People of an onboarded company (C3-M1): Erika and Hans Company Admin, Max Member. */
   'erika-c3': C3_MOCK_PERSONS.erika,
   'max-c3': C3_MOCK_PERSONS.max,
@@ -360,6 +379,10 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     companyId: user.companyId === FIXTURE_COMPANY_ID ? companyId : user.companyId,
     coViewerCompanyId: user.coViewerCompanyId === FIXTURE_COMPANY_ID ? companyId : user.coViewerCompanyId,
   })));
+  // The wallet answers after the approvals the wallet dialog shows one by one (WalletDialog, APPROVAL_STEP_MS).
+  const c1m2 = createMockC1M2Ports(ONBOARDING_SESSION_OF[selectedPerson] ?? session, { walletDelayMs: MOCK_WALLET_DELAY_MS });
+  // Application review (C1-M3 mock) decides on the applications submitted here (mock-registration-link.ts).
+  linkMockRegistration(c1m2.applications);
   return {
     identity: createIdentityModule({
       bffBaseUrl: '',
@@ -370,7 +393,7 @@ export function createMockCoreModules(person: string = DEFAULT_MOCK_PERSON): Cor
     // C3-M1 and C3-M2 on fixtures (the mockup's data). The rules stay the modules': mock mode shows success paths only.
     c3m1: createInMemoryC3M1Module({ actorId: session?.user.id }).module,
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(new InMemoryCspRegistrationRepository(CSP_REGISTRATIONS)) },
-    c1m2: createMockC1M2Module(session),
+    c1m2: createC1M2UseCases(c1m2),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
       getCompanyUser: new GetCompanyUserUseCase(companyUsers),

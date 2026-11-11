@@ -35,6 +35,8 @@ export { tractusx, uiTokens, type BrandColors, type UiTokens } from './theme/pal
 export { fontFamily } from './theme/typography';
 export { TractusXLogo } from './components/TractusXLogo';
 export { QrCode } from './components/QrCode';
+export { DataTable, type DataTableLocale, type DataTableProps } from './components/DataTable';
+export type { GridColDef, GridRenderCellParams, GridRowParams, GridValidRowModel, GridSortModel, GridPaginationModel } from '@mui/x-data-grid';
 export { BrandBackdrop } from './components/BrandBackdrop';
 export { SpaceGlow } from './components/SpaceGlow';
 
@@ -85,6 +87,8 @@ export { default as Stack } from '@mui/material/Stack';
 export { default as Switch } from '@mui/material/Switch';
 export { default as Toolbar } from '@mui/material/Toolbar';
 export { default as Tooltip } from '@mui/material/Tooltip';
+export { default as ToggleButton } from '@mui/material/ToggleButton';
+export { default as ToggleButtonGroup } from '@mui/material/ToggleButtonGroup';
 export { default as Typography } from '@mui/material/Typography';
 export { default as useMediaQuery } from '@mui/material/useMediaQuery';
 export { default as AlertTitle } from '@mui/material/AlertTitle';
@@ -131,6 +135,11 @@ export { default as AdminPanelSettingsOutlinedIcon } from '@mui/icons-material/A
 export { default as ArrowForwardIcon } from '@mui/icons-material/ArrowForward';
 export { default as ChevronLeftIcon } from '@mui/icons-material/ChevronLeft';
 export { default as ChevronRightIcon } from '@mui/icons-material/ChevronRight';
+export { default as TableRowsOutlinedIcon } from '@mui/icons-material/TableRowsOutlined';
+export { default as GridViewOutlinedIcon } from '@mui/icons-material/GridViewOutlined';
+export { default as PersonAddAltOutlinedIcon } from '@mui/icons-material/PersonAddAltOutlined';
+export { default as SmartToyOutlinedIcon } from '@mui/icons-material/SmartToyOutlined';
+export { default as MailOutlineOutlinedIcon } from '@mui/icons-material/MailOutlineOutlined';
 export { default as CheckIcon } from '@mui/icons-material/Check';
 export { default as CircleIcon } from '@mui/icons-material/Circle';
 export { default as DarkModeOutlinedIcon } from '@mui/icons-material/DarkModeOutlined';

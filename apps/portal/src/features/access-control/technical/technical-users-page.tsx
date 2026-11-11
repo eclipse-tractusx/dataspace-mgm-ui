@@ -1,15 +1,16 @@
 /* Copyright (c) 2026 Contributors to the Eclipse Foundation
  * AI Disclosure: This file was entirely AI-generated. The human contributor has reviewed and verified it.
  * SPDX-License-Identifier: Apache-2.0 AND CC0-1.0
- * Assisted-By: OpenAI GPT-6.1 Terra */
+ * Assisted-By: OpenAI GPT-6.1 Terra
+ * Assisted-By: Claude Code (claude-opus-5-5) */
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useState, type FormEvent } from 'react';
-import { Alert, Box, Button, Card, Stack, Typography } from '@dataspace-mgm/ui-mui';
+import { Alert, Box, Button, Card, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@dataspace-mgm/ui-mui';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import type { Origin, Status, TechnicalUserFilters, WalletAccess } from '@dataspace-mgm/c2-m3-core';
 import { useCoreModules, useSession } from '../../../core/CoreModulesContext';
-import { checkboxSx, inputSx, labelSx } from '../input-styles';
+import { Tag } from '../people/display';
 import { TechnicalUsers, type PeopleStatus, type TechnicalFilters } from '../people';
 import { useCreateTechnicalUserMutation, useDeleteTechnicalUserMutation, useGetTechnicalUserQuery, useListAssignableTechnicalRolesQuery, useListTechnicalUsersQuery, useRotateTechnicalCredentialsMutation, useUpdateTechnicalUserMutation } from './technical.api';
 import { TECHNICAL_NS } from './i18n';
@@ -110,15 +111,18 @@ export function TechnicalUsersPage() {
     }
   }
   return <>
-  {credentials && <Card sx={{ p: 3, mb: 3 }} role="region" aria-label={text('credentialsTitle')}>
+  {credentials && <Card sx={{ p: { xs: 3, md: 3.5 }, mb: 3, borderColor: 'warning.main', '&:hover': { boxShadow: 'none' } }} role="region" aria-label={text('credentialsTitle')}>
     <Stack spacing={2} sx={{ alignItems: 'flex-start' }}>
-      <Typography variant="h2">{text('credentialsTitle')}</Typography>
+      <Typography variant="h2" sx={{ fontSize: '1.375rem', fontWeight: 700 }}>{text('credentialsTitle')}</Typography>
       <Alert severity="warning" sx={{ width: '100%' }}>{text('credentialsOnce')}</Alert>
-      <Stack spacing={1} sx={{ width: '100%' }}>
-        <Typography sx={{ overflowWrap: 'anywhere' }}>{text('clientId')}: {credentials.iamClientId}</Typography>
-        <Typography sx={{ overflowWrap: 'anywhere' }}>{text('secret')}: {credentials.secret}</Typography>
-        <Typography sx={{ overflowWrap: 'anywhere' }}>{text('tokenUrl')}: {credentials.tokenUrl}</Typography>
-      </Stack>
+      <Box component="dl" sx={{ width: '100%', m: 0, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '160px 1fr' }, rowGap: 1.25, columnGap: 2, alignItems: 'center' }}>
+        {([['clientId', credentials.iamClientId], ['secret', credentials.secret], ['tokenUrl', credentials.tokenUrl]] as const).map(([key, value]) => (
+          <Box key={key} sx={{ display: 'contents' }}>
+            <Typography component="dt" variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>{text(key)}</Typography>
+            <Box component="dd" sx={{ m: 0, overflowWrap: 'anywhere', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 14 }}>{value}</Box>
+          </Box>
+        ))}
+      </Box>
       <Button variant="outlined" onClick={() => setCredentials(null)}>{text('dismissCredentials')}</Button>
     </Stack>
   </Card>}
@@ -150,23 +154,23 @@ export function TechnicalUsersPage() {
     onRetry={() => { void list.refetch(); }}
     onSignIn={() => identity.login.execute(window.location.pathname)}
   />
-  {listResult?.status === 'success' && <Stack direction="row" sx={{ gap: 1, mt: 2, alignItems: 'center' }}>
-    <Button disabled={page === 0 || list.isFetching} onClick={() => setParams((previous) => { const updated = new URLSearchParams(previous); updated.set('page', String(page - 1)); updated.delete('technicalUser'); return updated; })}>{text('previous')}</Button>
-    <Typography>{t('page', { page: page + 1 })}</Typography>
-    <Button disabled={(page + 1) * listResult.data.size >= listResult.data.total || list.isFetching} onClick={() => setParams((previous) => { const updated = new URLSearchParams(previous); updated.set('page', String(page + 1)); updated.delete('technicalUser'); return updated; })}>{text('next')}</Button>
+  {listResult?.status === 'success' && listResult.data.total > listResult.data.size && <Stack direction="row" sx={{ gap: 1, mt: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+    <Button size="small" variant="outlined" disabled={page === 0 || list.isFetching} onClick={() => setParams((previous) => { const updated = new URLSearchParams(previous); updated.set('page', String(page - 1)); updated.delete('technicalUser'); return updated; })}>{text('previous')}</Button>
+    <Typography variant="body2" color="text.secondary">{t('page', { page: page + 1 })}</Typography>
+    <Button size="small" variant="outlined" disabled={(page + 1) * listResult.data.size >= listResult.data.total || list.isFetching} onClick={() => setParams((previous) => { const updated = new URLSearchParams(previous); updated.set('page', String(page + 1)); updated.delete('technicalUser'); return updated; })}>{text('next')}</Button>
   </Stack>}
   {id && detail.isFetching && <Typography role="status" sx={{ mt: 2 }}>{text('detailLoading')}</Typography>}
   {id && !detail.isFetching && (detail.isError || (detail.currentData && detail.currentData.status !== 'success')) && <Alert severity="error" sx={{ mt: 2 }}>{detail.currentData && detail.currentData.status !== 'success' && detail.currentData.status !== 'failed' ? text(detail.currentData.status) : text('detailError')} <Button onClick={() => { void detail.refetch(); }}>{text('retry')}</Button></Alert>}
-  {active && <Card sx={{ p: 3, mt: 3 }}>
-    <Typography variant="h2">{text(active === 'create' ? 'createTitle' : active === 'edit' ? 'editTitle' : active === 'rotate' ? 'rotateTitle' : 'deleteTitle')}</Typography>
+  {active && <Card component="section" aria-label={text(active === 'create' ? 'createTitle' : active === 'edit' ? 'editTitle' : active === 'rotate' ? 'rotateTitle' : 'deleteTitle')} sx={{ p: { xs: 3, md: 3.5 }, mt: 3, ...(active === 'delete' && { borderColor: 'error.main' }), '&:hover': { boxShadow: 'none' } }}>
+    <Typography variant="h2" sx={{ fontSize: '1.375rem', fontWeight: 700 }}>{text(active === 'create' ? 'createTitle' : active === 'edit' ? 'editTitle' : active === 'rotate' ? 'rotateTitle' : 'deleteTitle')}</Typography>
     <Box component="form" onSubmit={submit}>
       {(active === 'create' || active === 'edit') && <Stack sx={{ gap: 2, my: 2.5 }}>
-        <Box component="label" sx={labelSx}>{text('name')}<Box component="input" name="name" required defaultValue={active === 'edit' ? selected?.name : ''} sx={inputSx} /></Box>
-        <Box component="label" sx={labelSx}>{text('description')}<Box component="textarea" name="description" rows={3} defaultValue={active === 'edit' ? selected?.description ?? '' : ''} sx={inputSx} /></Box>
-        <Box component="fieldset" sx={{ minWidth: 0, p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}><legend>{text('roles')}</legend>
+        <TextField name="name" required size="small" label={text('name')} defaultValue={active === 'edit' ? selected?.name : ''} sx={{ maxWidth: 520 }} />
+        <TextField name="description" size="small" multiline minRows={3} label={text('description')} defaultValue={active === 'edit' ? selected?.description ?? '' : ''} sx={{ maxWidth: 720 }} />
+        <Box component="fieldset" sx={{ minWidth: 0, m: 0, p: 2, border: 1, borderColor: 'divider', borderRadius: '10px' }}><Box component="legend" sx={{ px: 0.75, fontWeight: 600, fontSize: 14 }}>{text('roles')}</Box>
           {roles.isFetching && <Typography role="status">{text('rolesLoading')}</Typography>}
           {(roles.isError || (roles.currentData && roles.currentData.status !== 'success')) && <Alert severity="error">{text('rolesError')} <Button onClick={() => { void roles.refetch(); }}>{text('roles')}</Button></Alert>}
-          {roles.currentData?.status === 'success' && roles.currentData.data.map((role) => <Box component="label" key={role.name} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}><Box component="input" type="checkbox" name="roles" value={role.name} defaultChecked={active === 'edit' && selected?.roles.some((item) => item.name === role.name)} sx={checkboxSx} /> {role.name}</Box>)}
+          {roles.currentData?.status === 'success' && <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 240px), 1fr))', columnGap: 2 }}>{roles.currentData.data.map((role) => <FormControlLabel key={role.name} label={<Tag>{role.name}</Tag>} control={<Checkbox size="small" name="roles" value={role.name} defaultChecked={active === 'edit' && selected?.roles.some((item) => item.name === role.name)} />} />)}</Box>}
         </Box>
       </Stack>}
       <Stack direction="row" sx={{ gap: 1, mt: 2.5, flexWrap: 'wrap' }}><Button type="submit" variant="contained" disabled={busy || ((active === 'create' || active === 'edit') && roles.currentData?.status !== 'success')}>{busy ? text('working') : text(active === 'create' || active === 'edit' ? 'save' : 'confirm')}</Button><Button variant="outlined" onClick={() => setAction(null)} disabled={busy}>{text('cancel')}</Button></Stack>
