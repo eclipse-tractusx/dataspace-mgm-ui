@@ -29,12 +29,9 @@ import type { C1M2Module, FailedOutcome } from '@dataspace-mgm/c1-m2-core';
 import { useCoreModules, useSession } from '../../../core/CoreModulesContext';
 
 /** The states every page of the feature has besides the results of its use case. */
-export type LoadState<R> = { status: 'loading' } | { status: 'signed-out' } | { status: 'not-connected' } | FailedOutcome | R;
+export type LoadState<R> = { status: 'loading' } | { status: 'signed-out' } | FailedOutcome | R;
 
-/**
- * Runs a read use case of C1-M2 for the signed-in person and returns its result as state. The module is optional
- * while the feature is a proof of concept (CoreModules.c1m2): without it the page shows "not connected".
- */
+/** Runs a read use case of C1-M2 for the signed-in person and returns its result as state. */
 export function useLoad<R>(load: ((c1m2: C1M2Module) => Promise<R>) | null, deps: ReadonlyArray<unknown>): { state: LoadState<R>; reload: () => void } {
   const { c1m2 } = useCoreModules();
   const session = useSession();
@@ -44,7 +41,7 @@ export function useLoad<R>(load: ((c1m2: C1M2Module) => Promise<R>) | null, deps
   const signedIn = session.status === 'signed-in';
 
   useEffect(() => {
-    if (!signedIn || !c1m2 || !load) {
+    if (!signedIn || !load) {
       return;
     }
     let active = true;
@@ -67,18 +64,14 @@ export function useLoad<R>(load: ((c1m2: C1M2Module) => Promise<R>) | null, deps
   if (session.status === 'failed') {
     return { state: { status: 'failed', error: { status: null, problemType: null, message: session.message } }, reload };
   }
-  if (!c1m2) {
-    return { state: { status: 'not-connected' }, reload };
-  }
   if (session.status === 'loading' || !result || result.key !== key) {
     return { state: { status: 'loading' }, reload };
   }
   return { state: result.value, reload };
 }
 
-/** For pages without a read: whether the person is signed in and the module is there. */
-export function useReadiness(): { status: 'ready' } | { status: 'loading' } | { status: 'signed-out' } | { status: 'not-connected' } | FailedOutcome {
-  const { c1m2 } = useCoreModules();
+/** For pages without a read: whether the person is signed in. */
+export function useReadiness(): { status: 'ready' } | { status: 'loading' } | { status: 'signed-out' } | FailedOutcome {
   const session = useSession();
   if (session.status === 'loading') {
     return { status: 'loading' };
@@ -89,5 +82,5 @@ export function useReadiness(): { status: 'ready' } | { status: 'loading' } | { 
   if (session.status === 'failed') {
     return { status: 'failed', error: { status: null, problemType: null, message: session.message } };
   }
-  return c1m2 ? { status: 'ready' } : { status: 'not-connected' };
+  return { status: 'ready' };
 }

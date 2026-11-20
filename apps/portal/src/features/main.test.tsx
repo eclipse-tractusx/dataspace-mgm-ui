@@ -53,6 +53,13 @@ describe('feature registry', () => {
     expect(getAllRoutes().map((route) => route.path ?? 'index')).toEqual([
       'index',
       'notifications',
+      'onboarding',
+      'onboarding/start',
+      'onboarding/new',
+      'onboarding/application/:applicationId',
+      'onboarding/application/:applicationId/company-data',
+      'onboarding/application/:applicationId/documents',
+      'onboarding/application/:applicationId/terms',
       'onboarding/reviews/*',
       'participants',
       'participants/company/change',
@@ -74,6 +81,6 @@ describe('feature registry', () => {
     const gated = getAllRoutes()
       .map((route) => route.element.key)
       .filter((key) => key !== null);
-    expect([...new Set(gated)]).toEqual(['home', 'notifications', 'participants', 'access-control']);
+    expect([...new Set(gated)]).toEqual(['home', 'notifications', 'onboarding', 'participants', 'access-control']);
   });
 });

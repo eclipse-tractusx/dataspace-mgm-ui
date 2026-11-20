@@ -88,9 +88,6 @@ async function openBlob(result: { status: string; content?: Blob }): Promise<boo
 /** The changing operations of the person's own application, as use cases. */
 export function useApplicationActions(applicationId: string) {
   const c1m2 = useC1M2();
-  if (!c1m2) {
-    return null;
-  }
   return {
     update: (input: ApplicationUpdateInput) => c1m2.updateApplication.execute(applicationId, input),
     upload: (file: File, documentType: DocumentType) => c1m2.uploadDocument.execute(applicationId, { file, fileName: file.name, documentType }),
@@ -109,5 +106,5 @@ export function useApplicationActions(applicationId: string) {
 /** OSP staff open a supporting document of any application (GET /osp/applications/{id}/documents/{documentId}). */
 export function useStaffDocuments() {
   const c1m2 = useC1M2();
-  return c1m2 ? { open: async (applicationId: string, documentId: string) => openBlob(await c1m2.getAnyDocument.execute(applicationId, documentId)) } : null;
+  return { open: async (applicationId: string, documentId: string) => openBlob(await c1m2.getAnyDocument.execute(applicationId, documentId)) };
 }

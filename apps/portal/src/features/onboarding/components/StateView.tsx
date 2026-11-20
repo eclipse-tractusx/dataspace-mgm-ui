@@ -32,7 +32,7 @@ import { OutcomeAlert } from './OutcomeAlert';
 
 type CommonState = { status: string };
 
-/** The states every page shares (loading, signed out, not connected, failed); null for the page's own results. */
+/** The states every page shares (loading, signed out, failed); null for the page's own results. */
 export function StateView({ state, returnTo }: { state: CommonState; returnTo: string }) {
   const { t } = useTranslation(ONBOARDING_NS);
   const { identity } = useCoreModules();
@@ -57,8 +57,6 @@ export function StateView({ state, returnTo }: { state: CommonState; returnTo: s
           {t('signInPrompt')}
         </Alert>
       );
-    case 'not-connected':
-      return <Alert severity="info">{t('notConnected')}</Alert>;
     case 'failed':
     case 'not-found':
     case 'forbidden':
@@ -69,4 +67,4 @@ export function StateView({ state, returnTo }: { state: CommonState; returnTo: s
 }
 
 /** Whether the state is one of the shared ones that StateView renders. */
-export const isCommonState = (state: CommonState) => ['loading', 'signed-out', 'not-connected', 'failed', 'not-found', 'forbidden'].includes(state.status);
+export const isCommonState = (state: CommonState) => ['loading', 'signed-out', 'failed', 'not-found', 'forbidden'].includes(state.status);

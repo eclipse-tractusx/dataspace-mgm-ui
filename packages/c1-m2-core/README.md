@@ -19,10 +19,11 @@ the application of a company at the OSP, filed by the applicant personally, with
 EBW-Connector (path `EBW`) or supporting documents (path `DOCUMENTS`), for the kinds `ONBOARDING`, `REACTIVATION` and
 `TRANSFER`.
 
-**Phase: proof of concept.** The backend module does not exist yet. The package has the use cases, the ports and an
-in-memory adapter that behaves like the C1-M2 contract, so that the registration screens can be designed, built on
-mock data and later connected without changing the pages. There is no HTTP adapter, no `createC1M2Module` and no
-generated code yet (phase 3, skill `build-feature`).
+**Phase: feature (skill `build-feature`).** The package has the use cases, the ports and two adapters of each port:
+HTTP (`createC1M2Module`, types generated from the vendored spec) for the running Dataspace Management Service, and
+in-memory (`@dataspace-mgm/c1-m2-core/testing`) for mock mode and tests. The pages are the same on both. The wallet
+step is the exception: no operation hands the verification attestation to the browser yet, so outside mock mode only
+the verification path `DOCUMENTS` runs to the end (open point 1).
 
 ## Use cases
 
@@ -59,9 +60,20 @@ each `status` (and for `failed` the `error.problemType`) to an i18n key; it neve
 
 ## Use it
 
-Now (mock mode, `VITE_USE_MOCKS=true npm start`): `apps/portal/src/core/mock-container.ts` wires the module on the
+Against the backend (`npm start`, dev BFF): `apps/portal/src/core/container.ts` creates the module once, as the
+member `c1m2` of `CoreModules`. `config.baseUrl` is the base URL of the module (`<api_base_url>/registration`, the
+`servers.url` of the spec); `createCoreClient` of `core-http` sends the session cookie and the CSRF token.
+
+```ts
+import { createC1M2Module, C1M2_BASE_PATH } from '@dataspace-mgm/c1-m2-core';
+
+const c1m2 = createC1M2Module(moduleConfig(C1M2_BASE_PATH)); // moduleConfig: baseUrl, getCsrfToken, onUnauthorized
+const result = await c1m2.listOwnApplications.execute({ status: ['CREATED', 'SUBMITTED'] });
+```
+
+Mock mode (`VITE_USE_MOCKS=true npm start`): `apps/portal/src/core/mock-container.ts` wires the same use cases on the
 in-memory adapters, signed in as the person of `VITE_MOCK_PERSON` (`erika`, `max`, `hans`, `lieschen`, `rolf`, `otto`,
-`pia`). It is the optional member `c1m2` of `CoreModules`; outside mock mode it is `undefined`.
+`pia`).
 
 ```ts
 import { createMockC1M2Module, mockAttestation } from '@dataspace-mgm/c1-m2-core/testing';
@@ -75,9 +87,7 @@ const created = await c1m2.createApplication.execute({
 });
 ```
 
-Phase 3 adds the HTTP adapters behind the same ports and `createC1M2Module(config)` in `index.ts`; `container.ts`
-then wires `c1m2: createC1M2Module(moduleConfig(C1M2_BASE_PATH))`. `createC1M2UseCases(ports)` already wires every use
-case to its port, so both composition roots do it the same way.
+`createC1M2UseCases(ports)` wires every use case to its port, so both composition roots do it the same way.
 
 Tests of pages use `testCoreModules({ session, c1m2: { applications, failure, now } })` from `apps/portal/src/core/testing.tsx`,
 which also returns the `applicationRepository` (to call `setReviewStatus`, `complete`, `decline`, or read `calls`).
@@ -115,10 +125,10 @@ that every result state can be rendered and tested; they are never a source of t
 | 7.15, 7.16 terms | versions per key, new version ACTIVE and previous INACTIVE, `conflict`, `companyRoles` only for COMPANY_ROLE and selectable, HTTPS documents, `reconsentDueAt` required and in the future | the event `AgreementVersionActivated` |
 | 6.12, 8, 9, 10 | – | audit log, steps, internal queries, `signatureCheck`, events |
 
-## Proof of concept: the onboarding feature
+## The onboarding feature
 
-`apps/portal/src/features/onboarding/` (FeatureConfig `stage: 'poc'`: routed only with `VITE_USE_MOCKS=true`,
-"coming soon" otherwise) builds the decided views of `mockups/onboarding/` on this package's use cases. Mapping:
+`apps/portal/src/features/onboarding/` builds the decided views of `mockups/onboarding/` on this package's use cases.
+Mapping:
 
 | Mockup (hub decision) | Code |
 |---|---|
@@ -147,11 +157,14 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
    `C1M2ProblemException extends CoreHttpException` with `problem: C1M2ProblemData` (the `Problem` schema); every
    adapter throws it for the module's 4xx answers, and `ProblemOutcomeDomain` maps the `type` to the result in one
    place. **Proposal for `packages/core-http`** (not changed here): `CoreHttpException.problem` with the raw Problem
-   Details body, so that phase 3 needs no own `ensureData`.
+   Details body, so that the module needs no own reading of the answer. Until then
+   `infrastructure/helpers/c1-m2-response.helper.ts` throws `C1M2ProblemException` for a 4xx answer whose `type` starts
+   with `urn:c1-m2:problem:` and hands everything else to `ensureData` (a 502 `upstream-error`, a 401, a problem of
+   the BFF: `failed` with status and type).
 3. **Backend spec over frontend spec 14.** `architecture/14-example-registration.md` of the frontend spec assumed
-   `/api/registration/...`, snake_case, `verified_fields` and a `process_id` on the application. C1-M2's openapi.yaml
-   has `/api/c1-m2/...`, camelCase, `comparison[]` and no process id (the process belongs to C12-M1). This package
-   follows the backend spec (AGENTS.md rule 2).
+   snake_case, `verified_fields` and a `process_id` on the application. C1-M2's openapi.yaml has camelCase,
+   `comparison[]` and no process id (the process belongs to C12-M1); the base path is `/api/registration` in both.
+   This package follows the backend spec (AGENTS.md rule 2).
 4. **After submission only `reviewStatus`.** The "in review / completed / declined" view needs C12-M1 process state or
    C1-M3; C1-M2 offers `reviewStatus` on the application. A `c12-m1-core` with `watchProcess` is a later package.
 5. **The fake's rules are copies, not truth.** Everything lives under `domain/testing/`; the only non-test domain
@@ -170,9 +183,10 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
     `failed` (403 `forbidden`) from C1-M2, not `account-bound`; with `register_company` added (as every real account
     has the role `Applicant`) she gets `account-bound`. New sessions carry the full lists of C2-M5 6.3.
 11. **Reference data has only DE and US** (the extract of README 14.2, as the backend's `config/master-data.json`).
-12. **Document download** is `{ content: Blob; contentType; fileName }`. Phase 3 needs a raw `fetch` for this path
-    (openapi-fetch parses JSON) and the file name from `Content-Disposition`; the upload sends `multipart/form-data`
-    with `fileName` as the file name of the part.
+12. **Document download** is `{ content: Blob; contentType; fileName }`: the generated client reads the answer as a
+    blob (`parseAs: 'blob'`), the file name comes from `Content-Disposition` (`filename*=UTF-8''…`, the document id
+    without the header); the upload sends `multipart/form-data` with the parts `file` (`fileName` as its file name)
+    and `documentType`.
 13. **Paging:** `page` from 0 (default 0), `size` 1 to 100 (default 20) per FRAMEWORK 4.1; the fake answers
     `validation` otherwise. The list use cases therefore also have `validation` (the spec has 400 there).
 14. **`forbidden` vs `failed`:** `forbidden` only on the `osp` operations (a page may show "no access"); for `own`
@@ -189,6 +203,27 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
     return fixture carries a fictitious address given by the person.
 18. **Mock attestation header and client:** `kid` `ebw-test-2026-1` (README 14.4) and `client_id` `osp-a-ui`
     (FRAMEWORK 7a), allowed by the fake's `ATTESTATION_CLIENT_IDS`.
+
+19. **The wallet step outside mock mode fails on purpose.** `WalletAttestationUnavailableRepository` is the adapter
+    of the wallet port in `createC1M2Module`: it makes no request and rejects, so `requestAttestation` reports
+    `failed`. The backend's test tool `POST /ebw/test/attestations` is outside `/api` (the BFF does not proxy it) and
+    not a contract; this package calls no path the spec does not have.
+20. **Optional members of the spec become `null`.** `Application` requires only part of its members; the mapper sets
+    the others to `null` (`attestation`, `representationDeclared`, `declineReason`, the dates) and `changedAt` to
+    `createdAt` when the module leaves it out. The running module sends every member.
+
+## Seen against the running backend
+
+Checked through the dev BFF with the test persons (19 Nov 2026, backend `dataspace-mgm-service` develop): reference
+data, create, change, upload, download, delete, submit, withdraw, the reads of OSP staff and the versions of the
+terms answer as the spec says, and a submitted application opens a review case in C1-M3. Differences and gaps:
+
+| # | What | Where | Effect on the UI |
+|---|---|---|---|
+| 1 | The wallet step has no operation (open point 1) | BFF | Path `EBW` ends at "Open wallet" with `failed`; "Verify again" on the terms page too. Path `DOCUMENTS` runs to the end. |
+| 2 | `reviewStatus` is `NONE` right after submission and `OPEN` a moment later (the review case is opened by the process) | `GET /applications/{applicationId}` | "My application" shows the review only after a reload (open point 3). |
+| 3 | The documents of the test terms are `https://osp-a.example.org/…` and `https://dataspace.example.org/…`, hosts that do not resolve | `GET /agreements` | The terms viewer frames a document that cannot load. Not looked at in a browser in this check. |
+| 4 | In the path `DOCUMENTS`, Beispiel Maschinenbau GmbH (with its VAT ID) got a new `companyId`, not its FRAMEWORK 7a id | `POST /applications` | None; the fake assigns the 7a id (decision 6). |
 
 ## Open points for the backend
 
@@ -215,8 +250,9 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
 ## Layout
 
 `domain/` (anemics, data, `C1M2ProblemException`, `ProblemOutcomeDomain`, ports, `testing/` with the in-memory
-adapters and fixtures) ← `application/` (use cases, `createC1M2UseCases`). No `infrastructure/` yet; in phase 3 it
-gets the generated client, mappers and HTTP adapters, and only `index.ts` imports it.
+adapters and fixtures) ← `application/` (use cases, `createC1M2UseCases`). `infrastructure/` implements the ports over
+HTTP: `data/` (the client and DTO aliases of `generated/c1-m2-api.d.ts`), `mappers/` (DTO ↔ anemic, Problem Details),
+`helpers/` (reading an answer), `repositories/` (one adapter per port). Only `index.ts` imports it.
 
 ## Update the spec
 
@@ -225,4 +261,5 @@ cp ../portal-backend-spec/C1-M2-Registration/openapi.yaml specs/c1-m2/openapi.ya
 .claude/skills/contract-seam/scripts/seam-check.py vendored --ui .
 ```
 
-Phase 3 adds the targets `generate-api` and `check-api` (as in `c3-m1-core`).
+Then `npx nx run c1-m2-core:generate-api` (never edit `src/generated/`); `npx nx run c1-m2-core:check-api` fails when
+the generated types are stale.

@@ -52,7 +52,7 @@ export default function MyApplicationPage() {
   const [outcome, setOutcome] = useState<ProblemOutcome | FailedOutcome | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
-  if (state.status !== 'found' || !actions) {
+  if (state.status !== 'found') {
     return (
       <PageFrame titleKey="application.title">
         <StateView state={state} returnTo={`/onboarding/application/${applicationId}`} />

@@ -50,7 +50,7 @@ function sourceAnswering(response: () => Response) {
     requests.push(request);
     return response();
   };
-  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c11-m1', fetch: fetchImpl as unknown as typeof fetch });
+  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/notifications', fetch: fetchImpl as unknown as typeof fetch });
   return { source: new InboxSseEventSource(client), requests };
 }
 
@@ -80,7 +80,7 @@ describe('InboxSseEventSource', () => {
       { kind: 'event', id: '7', event: { kind: 'created', notificationId: 'n1', type: 'PROCESS_STEP_FAILED', topic: 'ACTION', forStaff: true, done: false, createdAt: 't' } },
       { kind: 'event', id: '8', event: { kind: 'done', notificationId: 'n1', doneAt: 't2' } },
     ]);
-    expect(new URL(requests[0].url).pathname).toBe('/api/c11-m1/notifications/events');
+    expect(new URL(requests[0].url).pathname).toBe('/api/notifications/notifications/events');
     expect(requests[0].headers.get('Last-Event-ID')).toBe('6');
     expect(requests[0].headers.get('accept')).toBe('text/event-stream');
     expect(requests[0].headers.get('authorization')).toBeNull();

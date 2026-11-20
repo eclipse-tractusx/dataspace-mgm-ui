@@ -54,7 +54,7 @@ export default function DocumentsPage() {
   const [declared, setDeclared] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  if (state.status !== 'found' || !actions) {
+  if (state.status !== 'found') {
     return (
       <PageFrame titleKey="documents.title">
         <StateView state={state} returnTo={`/onboarding/application/${applicationId}/documents`} />

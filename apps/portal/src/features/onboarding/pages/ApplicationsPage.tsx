@@ -77,7 +77,7 @@ export default function ApplicationsPage() {
                     </Typography>
                     <StatusChip status={detail.application.status} />
                   </Stack>
-                  <StaffApplicationDetail application={detail.application} roleName={roleName} onOpenDocument={(documentId) => documents?.open(selected, documentId)} />
+                  <StaffApplicationDetail application={detail.application} roleName={roleName} onOpenDocument={(documentId) => documents.open(selected, documentId)} />
                 </>
               ) : (
                 <StateView state={detail} returnTo="/onboarding" />

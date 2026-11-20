@@ -69,11 +69,11 @@ the current stand-in lacks four-eyes approval, filters, full checks and embedded
 
 | Operation | Actual HTTP path |
 |---|---|
-| list | GET /api/c1-m3/review-cases |
-| details | GET /api/c1-m3/review-cases/{reviewCaseId} |
-| approve | POST /api/c1-m3/review-cases/{reviewCaseId}/approve |
-| decline | POST /api/c1-m3/review-cases/{reviewCaseId}/decline |
-| document | GET /api/c1-m2/osp/applications/{applicationId}/documents/{documentId} |
+| list | GET /api/application-review/review-cases |
+| details | GET /api/application-review/review-cases/{reviewCaseId} |
+| approve | POST /api/application-review/review-cases/{reviewCaseId}/approve |
+| decline | POST /api/application-review/review-cases/{reviewCaseId}/decline |
+| document | GET /api/registration/osp/applications/{applicationId}/documents/{documentId} |
 
 List filters support repeated status/kind/verification, applicationId, zero-based page and size <=100.
 Mutations invalidate the detail and list queries; the UI reloads `application` because POST responses omit it.

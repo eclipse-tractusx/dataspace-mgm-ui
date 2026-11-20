@@ -35,11 +35,11 @@ import { renderOnboarding } from './test-utils';
 
 beforeAll(() => onboardingTranslations.load());
 
-describe('Onboarding: start application (C1-M2, proof of concept)', () => {
-  it('is a proof of concept: closed outside mock mode', () => {
-    expect(features.find((feature) => feature.id === 'onboarding')?.disabled).toBe(true);
-    const ownPaths = onboardingFeature.routes.map((route) => route.path);
-    expect(getAllRoutes().some((route) => ownPaths.includes(route.path))).toBe(false);
+describe('Onboarding: start application (C1-M2)', () => {
+  it('is open outside mock mode: every page is routed', () => {
+    expect(features.find((feature) => feature.id === 'onboarding')?.disabled).toBe(false);
+    const routed = getAllRoutes().map((route) => route.path);
+    expect(onboardingFeature.routes.every((route) => routed.includes(route.path))).toBe(true);
   });
 
   it('keeps the goal cards visible and shows the proof below them, steps at the side', async () => {
@@ -105,13 +105,8 @@ describe('Onboarding: start application (C1-M2, proof of concept)', () => {
     expect(await screen.findByText(/HTTP 502/)).toHaveTextContent('EBW-Connector not reachable');
   });
 
-  it('asks a signed-out person to sign in and says when the module is not connected', async () => {
+  it('asks a signed-out person to sign in', async () => {
     renderOnboarding('/onboarding/start', { session: null });
     expect(await screen.findByText('Sign in to register your company.')).toBeInTheDocument();
-  });
-
-  it('says when the module is not connected (outside mock mode)', async () => {
-    renderOnboarding('/onboarding/start', { session: ERIKA_SESSION, c1m2: false });
-    expect(await screen.findByText('Onboarding is not connected to its backend yet.')).toBeInTheDocument();
   });
 });

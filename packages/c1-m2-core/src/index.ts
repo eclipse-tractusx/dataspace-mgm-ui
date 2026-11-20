@@ -24,11 +24,31 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-/** The base path of the module under the app's api_base_url (`servers.url` of specs/c1-m2/openapi.yaml without `/api`). */
-export const C1M2_BASE_PATH = '/c1-m2';
+import { createCoreClient, type CoreModuleConfig } from '@dataspace-mgm/core-http';
+import { createC1M2UseCases } from './application/c1-m2-use-cases.factory';
+import type { C1M2Module } from './data/c1-m2-module.data';
+import type { paths } from './generated/c1-m2-api';
+import { AgreementHttpRepository } from './infrastructure/repositories/agreement-http.repository';
+import { ApplicationHttpRepository } from './infrastructure/repositories/application-http.repository';
+import { ReferenceDataHttpRepository } from './infrastructure/repositories/reference-data-http.repository';
+import { WalletAttestationUnavailableRepository } from './infrastructure/repositories/wallet-attestation-unavailable.repository';
 
-// No createC1M2Module yet: the HTTP adapter comes in phase 3 (skill build-feature). Mock mode and tests wire the use
-// cases with createMockC1M2Module from @dataspace-mgm/c1-m2-core/testing.
+/** The base path of the module under the app's api_base_url (`servers.url` of specs/c1-m2/openapi.yaml without `/api`). */
+export const C1M2_BASE_PATH = '/registration';
+
+/**
+ * Creates the module once per app (composition root); `config.baseUrl` is the module's base URL. Mock mode and tests
+ * wire the same use cases on the in-memory adapters (createMockC1M2Module of @dataspace-mgm/c1-m2-core/testing).
+ */
+export function createC1M2Module(config: CoreModuleConfig): C1M2Module {
+  const client = createCoreClient<paths>(config);
+  return createC1M2UseCases({
+    referenceData: new ReferenceDataHttpRepository(client),
+    applications: new ApplicationHttpRepository(client),
+    agreements: new AgreementHttpRepository(client),
+    wallet: new WalletAttestationUnavailableRepository(),
+  });
+}
 
 export { createC1M2UseCases, type C1M2Ports } from './application/c1-m2-use-cases.factory';
 export type { C1M2Module } from './data/c1-m2-module.data';

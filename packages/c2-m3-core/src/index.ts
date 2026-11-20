@@ -8,7 +8,7 @@ import type { C2M3Module } from './data/c2-m3-module.data';
 import type { paths } from './generated/c2-m3-api';
 import { TechnicalUserHttpRepository } from './infrastructure/repositories/technical-user-http.repository';
 
-export const C2_M3_BASE_PATH = '/c2-m3';
+export const C2_M3_BASE_PATH = '/technical-user';
 export function createC2M3Module(config: CoreModuleConfig): C2M3Module {
   const repository = new TechnicalUserHttpRepository(createCoreClient<paths>(config));
   return {

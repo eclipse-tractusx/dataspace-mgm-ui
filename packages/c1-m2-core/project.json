@@ -5,6 +5,17 @@
   "sourceRoot": "packages/c1-m2-core/src",
   "tags": ["type:core", "scope:c1-m2"],
   "targets": {
+    "generate-api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx --yes openapi-typescript@7.13.0 ../../specs/c1-m2/openapi.yaml -o src/generated/c1-m2-api.d.ts",
+        "cwd": "packages/c1-m2-core"
+      }
+    },
+    "check-api": {
+      "executor": "nx:run-commands",
+      "options": { "command": "nx run c1-m2-core:generate-api && git diff --exit-code -- packages/c1-m2-core/src/generated" }
+    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": { "command": "tsc -p tsconfig.json", "cwd": "packages/c1-m2-core" }

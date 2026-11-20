@@ -36,8 +36,8 @@ import StartPage from './pages/StartPage';
 import TermsPage from './pages/TermsPage';
 
 /**
- * Onboarding, a proof of concept on mock data (skill build-poc): routed only in mock mode, "coming soon" otherwise.
- * Its backend module is C1-M2 Registration; the version is the API version of the module (specs/c1-m2/openapi.yaml).
+ * Onboarding: the application of a company at the OSP, on the use cases of C1-M2 Registration (c1-m2-core, over HTTP;
+ * in-memory in mock mode). The version is the API version of the module (specs/c1-m2/openapi.yaml).
  * Every page is open to every signed-in person: an applicant has register_company (every account, C2-M5 6.3), OSP
  * staff view_applications; the API decides and the pages show its 403.
  */
@@ -48,7 +48,6 @@ export const onboardingFeature: FeatureConfig = {
   icon: <AppRegistrationOutlinedIcon />,
   navigationPath: '/onboarding',
   disabled: false,
-  stage: 'poc',
   translations: onboardingTranslations,
   routes: [
     { path: 'onboarding', element: <OnboardingPage />, meta: { title: 'application.title' } },

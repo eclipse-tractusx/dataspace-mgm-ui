@@ -62,7 +62,7 @@ export default function TermsPage() {
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  if (state.status !== 'found' || !actions) {
+  if (state.status !== 'found') {
     return (
       <PageFrame titleKey="terms.title">
         <StateView state={state} returnTo={`/onboarding/application/${applicationId}/terms`} />

@@ -89,7 +89,7 @@ export interface TestModulesOptions {
    * Absent: the module is not connected.
    */
   c4m1?: true | InMemoryC4M1ModuleOptions | C4M1Module;
-  /** C1-M2 Registration (proof of concept) on its in-memory adapters; absent = `modules.c1m2` is undefined. */
+  /** Fixtures and injected answers of the in-memory C1-M2 Registration; absent = no applications. */
   c1m2?: Pick<MockC1M2Options, 'applications' | 'existingCompanies' | 'agreements' | 'failure' | 'now'>;
   notifications?: ReadonlyArray<NotificationAnemic>;
   notificationFailure?: Error;
@@ -135,7 +135,7 @@ export function testCoreModules({
   const companyRepository = new InMemoryCompanyRepository(companies ?? [], companyFailure ?? null);
   const store = new InMemoryC3M1Store({ ...participants, actorId: session?.user.id });
   const cspRepository = new InMemoryCspRegistrationRepository(cspRegistrations, cspFailure ?? null);
-  const c1m2Ports = c1m2 ? createMockC1M2Ports(session, { ...c1m2, applications: c1m2.applications ?? [] }) : undefined;
+  const c1m2Ports = createMockC1M2Ports(session, { ...c1m2, applications: c1m2?.applications ?? [] });
   const companyId = session?.companyId ?? FIXTURE_COMPANY_ID;
   const companyUsers = new InMemoryCompanyUserRepository(
     COMPANY_USERS.map((user) => ({ ...user, companyId })),
@@ -165,7 +165,7 @@ export function testCoreModules({
     c3m2: { getCspRegistration: new GetCspRegistrationUseCase(cspRepository) },
     c4m1: c4m1Module(c4m1),
     c4m2: c4m2Module(c4m2),
-    c1m2: c1m2Ports ? createC1M2UseCases(c1m2Ports) : undefined,
+    c1m2: createC1M2UseCases(c1m2Ports),
     c2m2: {
       listCompanyUsers: new ListCompanyUsersUseCase(companyUsers),
       getCompanyUser: new GetCompanyUserUseCase(companyUsers),
@@ -195,7 +195,7 @@ export function testCoreModules({
     companyRepository,
     store,
     cspRepository,
-    applicationRepository: c1m2Ports?.applications,
+    applicationRepository: c1m2Ports.applications,
     companyUsers,
     invitations,
     technicalUsers,

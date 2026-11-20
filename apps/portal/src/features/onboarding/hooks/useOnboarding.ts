@@ -29,8 +29,8 @@ import { useTranslation } from 'react-i18next';
 import { useCoreModules, useSession } from '../../../core/CoreModulesContext';
 import { useAppLocale } from '../../../i18n/locale';
 
-/** The C1-M2 module (undefined outside mock mode while the feature is a proof of concept). */
-export function useC1M2(): C1M2Module | undefined {
+/** The C1-M2 module: over HTTP in the app, on its in-memory adapters in mock mode and tests. */
+export function useC1M2(): C1M2Module {
   return useCoreModules().c1m2;
 }
 

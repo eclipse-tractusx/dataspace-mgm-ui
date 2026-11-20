@@ -50,7 +50,7 @@ export default function CompanyDataPage() {
   const [toast, setToast] = useState<string | null>(null);
   const returnTo = `/onboarding/application/${applicationId}/company-data`;
 
-  if (state.status !== 'found' || !actions) {
+  if (state.status !== 'found') {
     return (
       <PageFrame titleKey="company.title">
         <StateView state={state} returnTo={returnTo} />

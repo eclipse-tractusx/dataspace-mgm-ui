@@ -30,7 +30,7 @@ import type { C1M2ProblemData } from './data/c1-m2-problem.data';
 /**
  * A 4xx Problem Details answer of C1-M2 with all its extension fields. `CoreHttpException` keeps only `status`, `type`
  * and `title`; C1-M2 needs `reason`, `fields`, `missing`, `existingApplicationId`, ... to render each result. Every
- * adapter of the ports (in-memory now, HTTP in phase 3) throws this for the module's 4xx answers.
+ * adapter of the ports (in-memory and HTTP) throws this for the module's 4xx answers.
  */
 export class C1M2ProblemException extends CoreHttpException {
   public readonly problem: C1M2ProblemData;

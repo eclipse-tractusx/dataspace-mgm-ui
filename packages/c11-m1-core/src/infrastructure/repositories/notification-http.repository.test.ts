@@ -29,7 +29,7 @@ import { describe, expect, it } from 'vitest';
 import type { paths } from '../../generated/c11-m1-api';
 import { NotificationHttpRepository } from './notification-http.repository';
 
-/** GET /api/c11-m1/notifications of the C11-M1 stand-in for Erika after demo scenario 1 (6 Nov 2026). */
+/** GET /api/notifications/notifications of the C11-M1 stand-in for Erika after demo scenario 1 (6 Nov 2026). */
 const STAND_IN_PAGE = {
   items: [
     {
@@ -57,7 +57,7 @@ function repositoryAnswering(status: number, body?: unknown) {
     return new Response(JSON.stringify(body), { status, headers: { 'content-type': type } });
   };
   const client = createCoreClient<paths>({
-    baseUrl: 'http://ui.test/api/c11-m1',
+    baseUrl: 'http://ui.test/api/notifications',
     fetch: fetchImpl as unknown as typeof fetch,
     getCsrfToken: () => 'csrf-1',
   });
@@ -65,20 +65,20 @@ function repositoryAnswering(status: number, body?: unknown) {
 }
 
 describe('NotificationHttpRepository', () => {
-  it('lists with GET /api/c11-m1/notifications and the filter as query', async () => {
+  it('lists with GET /api/notifications/notifications and the filter as query', async () => {
     const { repository, requests } = repositoryAnswering(200, STAND_IN_PAGE);
     const page = await repository.list({ topic: 'INFO', read: false, order: 'newest-first' });
     expect(page.total).toBe(1);
     expect(page.items[0]).toMatchObject({ id: 'c35cbdfd-2436-4f1c-b909-6c40f6d4c496', type: 'APPLICATION_SUBMITTED', done: null });
     const url = new URL(requests[0].url);
-    expect(url.pathname).toBe('/api/c11-m1/notifications');
+    expect(url.pathname).toBe('/api/notifications/notifications');
     expect(Object.fromEntries(url.searchParams)).toEqual({ topic: 'INFO', read: 'false', sort: 'createdAt.desc' });
   });
 
   it('reads the counters', async () => {
     const { repository, requests } = repositoryAnswering(200, { total: 3, unread: 2, openTasks: 1, unreadInfo: 1 });
     expect(await repository.count()).toEqual({ total: 3, unread: 2, openTasks: 1, unreadInfo: 1 });
-    expect(new URL(requests[0].url).pathname).toBe('/api/c11-m1/notifications/count');
+    expect(new URL(requests[0].url).pathname).toBe('/api/notifications/notifications/count');
   });
 
   it('throws 501 while the module does not have the operation yet', async () => {
@@ -95,7 +95,7 @@ describe('NotificationHttpRepository', () => {
     const { repository, requests } = repositoryAnswering(204);
     expect(await repository.markRead('n1')).toBe('changed');
     expect(requests[0].method).toBe('POST');
-    expect(new URL(requests[0].url).pathname).toBe('/api/c11-m1/notifications/n1/read');
+    expect(new URL(requests[0].url).pathname).toBe('/api/notifications/notifications/n1/read');
     expect(requests[0].headers.get('X-CSRF-Token')).toBe('csrf-1');
   });
 

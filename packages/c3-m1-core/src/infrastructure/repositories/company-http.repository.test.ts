@@ -30,7 +30,7 @@ import { OSP_A_COMPANY } from '../../domain/testing/in-memory-company.repository
 import type { paths } from '../../generated/c3-m1-api';
 import { CompanyHttpRepository } from './company-http.repository';
 
-/** The answer of the C3-M1 stand-in of the backend for Pia (GET /api/c3-m1/companies/1111…), as it is on the wire. */
+/** The answer of the C3-M1 stand-in of the backend for Pia (GET /api/company-profile/companies/1111…), as it is on the wire. */
 const WIRE = {
   id: '11111111-1111-4111-8111-111111111111',
   name: 'OSP A Beispiel GmbH',
@@ -58,16 +58,16 @@ function repositoryAnswering(status: number, body: unknown) {
     const type = status < 400 ? 'application/json' : 'application/problem+json';
     return new Response(JSON.stringify(body), { status, headers: { 'content-type': type } });
   };
-  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c3-m1', fetch: fetchImpl as unknown as typeof fetch });
+  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/company-profile', fetch: fetchImpl as unknown as typeof fetch });
   return { repository: new CompanyHttpRepository(client), requests };
 }
 
 describe('CompanyHttpRepository', () => {
-  it('calls GET /api/c3-m1/companies/{companyId} and maps the answer', async () => {
+  it('calls GET /api/company-profile/companies/{companyId} and maps the answer', async () => {
     const { repository, requests } = repositoryAnswering(200, WIRE);
     expect(await repository.getCompany(WIRE.id)).toEqual(OSP_A_COMPANY);
     expect(requests[0].method).toBe('GET');
-    expect(new URL(requests[0].url).pathname).toBe(`/api/c3-m1/companies/${WIRE.id}`);
+    expect(new URL(requests[0].url).pathname).toBe(`/api/company-profile/companies/${WIRE.id}`);
   });
 
   it('maps 404 to null', async () => {

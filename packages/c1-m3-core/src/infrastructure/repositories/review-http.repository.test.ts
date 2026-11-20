@@ -34,13 +34,13 @@ describe('real HTTP adapter', () => {
       return Response.json(review);
     });
     const config = {
-      baseUrl: 'https://portal.test/api/c1-m3',
+      baseUrl: 'https://portal.test/api/application-review',
       fetch: fetcher,
       getCsrfToken: () => 'test-csrf',
     };
     const module = createHttpReviewModule(config, {
       ...config,
-      baseUrl: 'https://portal.test/api/c1-m2',
+      baseUrl: 'https://portal.test/api/registration',
     });
     await module.list.execute({
       status: ['APPROVED', 'DECLINED'],
@@ -55,7 +55,7 @@ describe('real HTTP adapter', () => {
       data: { id: review.id },
     });
     await module.approve.execute({ id: review.id, comment: 'Checked' });
-    expect(requests[2].url).toBe(`https://portal.test/api/c1-m3/review-cases/${review.id}/approve`);
+    expect(requests[2].url).toBe(`https://portal.test/api/application-review/review-cases/${review.id}/approve`);
     expect(requests[2].headers.get('X-CSRF-Token')).toBe('test-csrf');
     expect(await requests[2].json()).toEqual({ comment: 'Checked' });
     await module.decline.execute({ id: review.id, reason: 'Not sufficient' });
@@ -68,7 +68,7 @@ describe('real HTTP adapter', () => {
       pendingChecks: ['NO_DUPLICATE'],
     };
     const config = {
-      baseUrl: 'https://portal.test/api/c1-m3',
+      baseUrl: 'https://portal.test/api/application-review',
       fetch: vi.fn(async () => Response.json(problem, { status: 409 })),
     };
     expect(
@@ -84,7 +84,7 @@ describe('real HTTP adapter', () => {
   it('downloads document bytes through the C1-M2 adapter', async () => {
     const requests: Request[] = [];
     const config = {
-      baseUrl: 'https://portal.test/api/c1-m3',
+      baseUrl: 'https://portal.test/api/application-review',
       fetch: vi.fn(async (r: RequestInfo | URL) => {
         requests.push(new Request(r));
         return new Response(new Blob(['document'], { type: 'application/pdf' }));
@@ -92,7 +92,7 @@ describe('real HTTP adapter', () => {
     };
     const module = createHttpReviewModule(config, {
       ...config,
-      baseUrl: 'https://portal.test/api/c1-m2',
+      baseUrl: 'https://portal.test/api/registration',
     });
     const reply = await module.document.execute({
       applicationId: review.applicationId,
@@ -100,7 +100,7 @@ describe('real HTTP adapter', () => {
     });
     expect('data' in reply && (await reply.data.content.text())).toBe('document');
     expect(requests[0].url).toBe(
-      `https://portal.test/api/c1-m2/osp/applications/${review.applicationId}/documents/document-id`,
+      `https://portal.test/api/registration/osp/applications/${review.applicationId}/documents/document-id`,
     );
   });
 });

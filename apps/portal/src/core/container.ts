@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import type { C1M2Module } from '@dataspace-mgm/c1-m2-core';
+import { createC1M2Module, C1M2_BASE_PATH, type C1M2Module } from '@dataspace-mgm/c1-m2-core';
 import { createC3M1Module, C3M1_BASE_PATH, type C3M1Module } from '@dataspace-mgm/c3-m1-core';
 import { createC3M2Module, C3M2_BASE_PATH, type C3M2Module } from '@dataspace-mgm/c3-m2-core';
 import { createC2M3Module, C2_M3_BASE_PATH, type C2M3Module } from '@dataspace-mgm/c2-m3-core';
@@ -47,11 +47,8 @@ export interface CoreModules {
    * in-memory adapters. Pages treat a missing module as "not connected". Required here once its HTTP adapter exists.
    */
   c4m1?: C4M1Module;
-  /**
-   * C1-M2 Registration, proof of concept: no HTTP adapter yet, wired only in mock-container.ts. Pages check that it is
-   * there (undefined outside mock mode); it becomes required here with createC1M2Module (skill build-feature).
-   */
-  c1m2?: C1M2Module;
+  /** C1-M2 Registration (feature `onboarding`): over HTTP here, on its in-memory adapters in mock-container.ts. */
+  c1m2: C1M2Module;
   c2m3: C2M3Module;
   c2m2: C2M2Module;
   c11m1: C11M1Module;
@@ -82,6 +79,7 @@ export function createCoreModules(config: RuntimeConfig): CoreModules {
     identity,
     c3m1: createC3M1Module(moduleConfig(C3M1_BASE_PATH)),
     c3m2: createC3M2Module(moduleConfig(C3M2_BASE_PATH)),
+    c1m2: createC1M2Module(moduleConfig(C1M2_BASE_PATH)),
     c2m2: createC2M2Module(moduleConfig(C2_M2_BASE_PATH)),
     c2m3: createC2M3Module(moduleConfig(C2_M3_BASE_PATH)),
     c11m1: createC11M1Module(moduleConfig(C11M1_BASE_PATH)),

@@ -16,14 +16,14 @@ function setup(status: number, body?: unknown) {
     requests.push(request);
     return new Response(status === 204 ? null : JSON.stringify(body), { status, headers: { 'content-type': status >= 400 ? 'application/problem+json' : 'application/json' } });
   };
-  return { requests, repository: new TechnicalUserHttpRepository(createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c2-m3', fetch: fetch as unknown as typeof globalThis.fetch })) };
+  return { requests, repository: new TechnicalUserHttpRepository(createCoreClient<paths>({ baseUrl: 'http://ui.test/api/technical-user', fetch: fetch as unknown as typeof globalThis.fetch })) };
 }
 describe('TechnicalUserHttpRepository', () => {
   it('lists with repeated status filters and maps the page', async () => {
     const { repository, requests } = setup(200, { items: [user], page: 0, size: 20, total: 1 });
     expect((await repository.listTechnicalUsers('company', { status: ['ACTIVE', 'PENDING'] })).total).toBe(1);
     const url = new URL(requests[0].url);
-    expect(url.pathname).toBe('/api/c2-m3/companies/company/technical-users');
+    expect(url.pathname).toBe('/api/technical-user/companies/company/technical-users');
     expect(url.searchParams.getAll('status')).toEqual(['ACTIVE', 'PENDING']);
   });
   it('creates with wire roles and returns credentials separately', async () => {
@@ -43,7 +43,7 @@ describe('TechnicalUserHttpRepository', () => {
     expect(new URL(roles.requests[0].url).searchParams.get('lang')).toBe('en');
     const rotation = setup(200, credentials);
     expect(await rotation.repository.rotateCredentials('company', 'user')).toEqual(credentials);
-    expect(new URL(rotation.requests[0].url).pathname).toBe('/api/c2-m3/companies/company/technical-users/user/credentials/rotate');
+    expect(new URL(rotation.requests[0].url).pathname).toBe('/api/technical-user/companies/company/technical-users/user/credentials/rotate');
   });
   it('distinguishes immediate and pending deletion', async () => {
     expect(await setup(204).repository.deleteTechnicalUser('company', 'user')).toEqual({ status: 'deleted' });

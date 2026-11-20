@@ -72,7 +72,7 @@ export function createMockC1M2Ports(session: SessionAnemic | null, options: Mock
 
 /**
  * C1-M2 for mock mode (`VITE_USE_MOCKS=true`): every use case on the in-memory adapters, signed in as the person of
- * the session (null: signed out, every call answers 403). Phase 3 replaces it with createC1M2Module (HTTP).
+ * the session (null: signed out, every call answers 403). The app outside mock mode uses createC1M2Module (HTTP).
  */
 export function createMockC1M2Module(session: SessionAnemic | null, options: MockC1M2Options = {}): C1M2Module {
   return createC1M2UseCases(createMockC1M2Ports(session, options));

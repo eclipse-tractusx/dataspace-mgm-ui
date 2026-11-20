@@ -50,7 +50,7 @@ import { UpdateApplicationUseCase } from './useCases/update-application.use-case
 import { UploadDocumentUseCase } from './useCases/upload-document.use-case';
 import { WithdrawApplicationUseCase } from './useCases/withdraw-application.use-case';
 
-/** The adapters of the three ports of C1-M2: in-memory in mock mode and tests, HTTP in phase 3. */
+/** The adapters of the three ports of C1-M2: HTTP in the app (createC1M2Module), in-memory in mock mode and tests. */
 export interface C1M2Ports {
   referenceData: ReferenceDataRepository;
   applications: ApplicationRepository;

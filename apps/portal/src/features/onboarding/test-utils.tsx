@@ -40,8 +40,8 @@ function Location() {
 }
 
 /** Renders the onboarding routes at a path, with the core packages on their in-memory adapters (mock mode). */
-export function renderOnboarding(path: string, options: { session: SessionAnemic | null; c1m2?: NonNullable<Parameters<typeof testCoreModules>[0]>['c1m2'] | false }) {
-  const test = testCoreModules({ session: options.session, c1m2: options.c1m2 === false ? undefined : { now: () => NOW, ...options.c1m2 } });
+export function renderOnboarding(path: string, options: { session: SessionAnemic | null; c1m2?: NonNullable<Parameters<typeof testCoreModules>[0]>['c1m2'] }) {
+  const test = testCoreModules({ session: options.session, c1m2: { now: () => NOW, ...options.c1m2 } });
   render(
     <ColorModeProvider>
       <MemoryRouter initialEntries={[path]}>

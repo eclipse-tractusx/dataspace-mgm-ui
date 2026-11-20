@@ -28,7 +28,7 @@ import { describe, expect, it } from 'vitest';
 import type { NotificationDto } from '../data/c11-m1-infrastructure.data';
 import { NotificationMapper } from './notification.mapper';
 
-/** An item of GET /api/c11-m1/notifications from the C11-M1 stand-in for Erika after demo scenario 1 (6 Nov 2026). */
+/** An item of GET /api/notifications/notifications from the C11-M1 stand-in for Erika after demo scenario 1 (6 Nov 2026). */
 const STAND_IN_ITEM = {
   id: 'c35cbdfd-2436-4f1c-b909-6c40f6d4c496',
   userId: '5a1c0001-0000-4000-8000-000000000001',

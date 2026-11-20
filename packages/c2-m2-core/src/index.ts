@@ -40,7 +40,7 @@ export function createC2M2Module(config: CoreModuleConfig): C2M2Module {
   };
 }
 
-export const C2_M2_BASE_PATH = "/c2-m2";
+export const C2_M2_BASE_PATH = "/app-access";
 export type { CompanyUserAnemic } from "./domain/anemics/company-user.anemic";
 export type { CompanyUserDetailAnemic } from "./domain/anemics/company-user-detail.anemic";
 export type { CompanyUserRepository } from "./domain/repositories/company-user.repository";

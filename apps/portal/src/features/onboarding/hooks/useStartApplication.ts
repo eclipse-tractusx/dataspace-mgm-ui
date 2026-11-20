@@ -38,7 +38,7 @@ export interface StartChoice {
 
 /**
  * Creating the application. Roles: C1-M2 requires companyRoles at creation for a new company (README 6.2), the person
- * chooses them later (step "Roles and terms", PATCH); the POC sends ACTIVE_PARTICIPANT until the backend answers the
+ * chooses them later (step "Roles and terms", PATCH); the page sends ACTIVE_PARTICIPANT until the backend answers the
  * open point (README "Open points for the backend"). With a reference the roles come from C3-M1.
  */
 function createInput(choice: StartChoice, extra: Pick<ApplicationCreateInput, 'verification' | 'attestation' | 'companyData'>): ApplicationCreateInput {
@@ -52,9 +52,6 @@ export function useStartApplication() {
   const [state, setState] = useState<StartState>({ status: 'idle' });
 
   const withWallet = async (choice: StartChoice) => {
-    if (!c1m2) {
-      return;
-    }
     setState({ status: 'working' });
     const wallet = await c1m2.requestAttestation.execute();
     if (wallet.status !== 'received') {
@@ -65,9 +62,6 @@ export function useStartApplication() {
   };
 
   const withDocuments = async (choice: StartChoice, companyData: CompanyDataInput) => {
-    if (!c1m2) {
-      return;
-    }
     setState({ status: 'working' });
     setState(await c1m2.createApplication.execute(createInput(choice, { verification: 'DOCUMENTS', companyData })));
   };
