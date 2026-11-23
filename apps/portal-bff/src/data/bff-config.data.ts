@@ -23,6 +23,8 @@
  * Assisted-By: Claude Code (claude-fable-5-2)
  ********************************************************************************/
 
+import type { EbwConfig } from './ebw.data.ts';
+
 /** Settings of the BFF, read and checked once at start (load-config.ts). */
 export interface BffConfig {
   /** Origin the browser uses, e.g. `https://portal.example.org` (no path, no trailing slash). */
@@ -45,4 +47,6 @@ export interface BffConfig {
   port: number;
   sessionIdleSeconds: number;
   sessionMaxSeconds: number;
+  /** The wallet step at the EBW-Connector; null when it is not connected (then /ebw/** answers 404). */
+  ebw: EbwConfig | null;
 }

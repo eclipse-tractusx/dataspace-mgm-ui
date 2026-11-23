@@ -59,19 +59,29 @@ export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`);
 }
 
+/** Title and way out of an error page; fixed texts of the BFF, never something a client sent. */
+export interface ErrorPage {
+  title: string;
+  retry: { href: string; label: string };
+}
+
+const SIGN_IN_PAGE: ErrorPage = { title: 'Sign-in failed', retry: { href: '/auth/login', label: 'Try again' } };
+
 /**
- * The page a person sees when the sign-in fails (the only HTML the BFF writes itself). `code` is shown for support;
- * it is cut down to a short word and escaped, so nothing from the query of a callback is reflected as markup.
+ * The page a person sees when the sign-in (or, with `page`, the wallet step) fails: the only HTML the BFF writes
+ * itself. `code` is shown for support; it is cut down to a short word and escaped, so nothing from the query of a
+ * callback is reflected as markup.
  */
-export function sendErrorPage(res: ServerResponse, status: number, message: string, code?: string | null): void {
+export function sendErrorPage(res: ServerResponse, status: number, message: string, code?: string | null, page: ErrorPage = SIGN_IN_PAGE): void {
   const safeCode = code && /^[a-z0-9_]{1,40}$/.test(code) ? code : null;
+  const title = escapeHtml(page.title);
   const html = `<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sign-in failed</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${title}</title></head>
 <body>
-<h1>Sign-in failed</h1>
+<h1>${title}</h1>
 <p>${escapeHtml(message)}</p>
-${safeCode ? `<p>Code: <code>${escapeHtml(safeCode)}</code></p>\n` : ''}<p><a href="/auth/login">Try again</a></p>
+${safeCode ? `<p>Code: <code>${escapeHtml(safeCode)}</code></p>\n` : ''}<p><a href="${escapeHtml(page.retry.href)}">${escapeHtml(page.retry.label)}</a></p>
 </body>
 </html>
 `;

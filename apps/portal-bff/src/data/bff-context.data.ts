@@ -24,6 +24,7 @@
  ********************************************************************************/
 
 import type { BffConfig } from './bff-config.data.ts';
+import type { EbwContext } from './ebw.data.ts';
 import type { LoginTransactionStore } from '../session/login-transaction.store.ts';
 import type { SessionStore } from '../session/session.store.ts';
 import type { OidcClient } from '../oidc/oidc.client.ts';
@@ -47,6 +48,8 @@ export interface BffContext {
   sessions: SessionStore;
   transactions: LoginTransactionStore;
   oidc: OidcClient;
+  /** The wallet step at the EBW-Connector; null when it is not connected. */
+  ebw: EbwContext | null;
   log: Log;
   now: () => number;
   sessionCookie: string;

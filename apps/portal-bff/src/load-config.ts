@@ -25,6 +25,7 @@
 
 import { isAbsolute } from 'node:path';
 import type { BffConfig } from './data/bff-config.data.ts';
+import type { EbwConfig } from './data/ebw.data.ts';
 
 const LOOPBACK = /^(localhost|127\.0\.0\.1|\[::1\]|[a-z0-9-]+\.localhost)$/;
 
@@ -68,6 +69,35 @@ function seconds(env: Env, name: string, fallback: number, errors: string[]): nu
 
 function optional(env: Env, name: string): string | null {
   return env[name]?.trim() || null;
+}
+
+/**
+ * The wallet step (BFF_EBW_*): all three settings or none. Without them the step is not connected, which is a valid
+ * installation (the registration then runs with supporting documents only).
+ */
+function ebwSettings(env: Env, publicUrl: URL | null, errors: string[]): EbwConfig | null {
+  const names = ['BFF_EBW_ISSUER_URL', 'BFF_EBW_CLIENT_ID', 'BFF_EBW_KEY_FILE'];
+  const given = names.filter((name) => optional(env, name) !== null);
+  if (given.length === 0) {
+    return null;
+  }
+  if (given.length < names.length) {
+    errors.push(`${names.join(', ')} belong together: set all three or none (missing: ${names.filter((name) => !given.includes(name)).join(', ')})`);
+    return null;
+  }
+  const issuer = httpUrl(env, 'BFF_EBW_ISSUER_URL', errors);
+  if (issuer && publicUrl && publicUrl.protocol === 'https:' && issuer.protocol !== 'https:') {
+    errors.push('BFF_EBW_ISSUER_URL must be https when BFF_PUBLIC_URL is https');
+  }
+  const clientId = optional(env, 'BFF_EBW_CLIENT_ID') as string;
+  if (!/^[A-Za-z0-9._-]{1,100}$/.test(clientId)) {
+    errors.push('BFF_EBW_CLIENT_ID must be the client id at the EBW-Connector (letters, digits, ".", "_", "-")');
+  }
+  const keyFile = optional(env, 'BFF_EBW_KEY_FILE') as string;
+  if (!isAbsolute(keyFile)) {
+    errors.push('BFF_EBW_KEY_FILE must be an absolute path');
+  }
+  return issuer ? { issuer: issuer.href.replace(/\/$/, ''), clientId, keyFile } : null;
 }
 
 /**
@@ -120,6 +150,8 @@ export function loadConfig(env: Env): BffConfig {
     errors.push('BFF_PORT must be a port number between 1 and 65535');
   }
 
+  const ebw = ebwSettings(env, publicUrl, errors);
+
   const sessionIdleSeconds = seconds(env, 'BFF_SESSION_IDLE_SECONDS', 30 * 60, errors);
   const sessionMaxSeconds = seconds(env, 'BFF_SESSION_MAX_SECONDS', 10 * 60 * 60, errors);
   if (sessionIdleSeconds > sessionMaxSeconds) {
@@ -143,5 +175,6 @@ export function loadConfig(env: Env): BffConfig {
     port,
     sessionIdleSeconds,
     sessionMaxSeconds,
+    ebw,
   };
 }
