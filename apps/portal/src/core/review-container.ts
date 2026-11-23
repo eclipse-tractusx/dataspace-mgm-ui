@@ -39,8 +39,8 @@ export function createReviewWorkspace(config: RuntimeConfig) {
       {
         useCases: {
           review: createHttpReviewModule(
-            { ...common, baseUrl: `${baseUrl}/c1-m3` },
-            { ...common, baseUrl: `${baseUrl}/c1-m2` },
+            { ...common, baseUrl: `${baseUrl}/application-review` },
+            { ...common, baseUrl: `${baseUrl}/registration` },
           ),
         },
       },

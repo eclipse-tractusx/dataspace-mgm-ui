@@ -16,7 +16,7 @@
 This guide shows how a page of the portal calls a module of the
 [Dataspace Management Service](https://github.com/eclipse-tractusx/dataspace-mgm-service). The example is already in
 the repository: **Participant management → Your company** reads the company of the signed-in person from
-**C3-M1 Company Profile** (`GET /api/c3-m1/companies/{companyId}`). Copy its pattern for your team's module.
+**C3-M1 Company Profile** (`GET /api/company-profile/companies/{companyId}`). Copy its pattern for your team's module.
 
 ## 1. Run it (about 5 minutes)
 
@@ -62,7 +62,7 @@ sequenceDiagram
     P->>B: GET /me (session cookie)
     B-->>P: { name, company_id, permissions, csrf_token }
     P->>U: getOwnCompany.execute(companyId)
-    U->>B: GET /api/c3-m1/companies/{companyId} (cookie, no token)
+    U->>B: GET /api/company-profile/companies/{companyId} (cookie, no token)
     B->>M: same path + Authorization: Bearer <token of Pia>
     M-->>B: 200 Company (or Problem Details)
     B-->>U: 200 Company
@@ -102,8 +102,8 @@ Then `npm run lint && npm run typecheck && npm test` and try it in the browser a
 
 ### Tips
 
-- **Base path:** every module is served under `/api/<module>` (the `servers.url` of its spec). The generated paths start
-  after it, so the client of C3-M1 has the base URL `<api_base_url>/c3-m1`.
+- **Base path:** every module is served under `/api/<feature>` (the `servers.url` of its spec). The generated paths start
+  after it, so the client of C3-M1 has the base URL `<api_base_url>/company-profile`.
 - **Permissions and scope:** the module checks them (`x-permission`, `x-permission-scope` in the spec). A person
   without the permission gets 403; a company that is not the person's own gives 404 in the scope `company`. Pick a test
   person who has the permission (`/me` lists them).
@@ -114,7 +114,7 @@ Then `npm run lint && npm run typecheck && npm test` and try it in the browser a
 - **No backend at hand:** `VITE_USE_MOCKS=true npm start` runs the portal on the in-memory adapters
   (`apps/portal/src/core/mock-container.ts`), signed in as Pia. A page built before its module is connected is a proof
   of concept: `stage: 'poc'` in its `routes.tsx` opens it only in mock mode.
-- **Live updates** (Server-Sent Events, e.g. `GET /api/c11-m1/notifications/events`) go through the same proxy.
+- **Live updates** (Server-Sent Events, e.g. `GET /api/notifications/notifications/events`) go through the same proxy.
 
 ### Settings of the dev BFF
 

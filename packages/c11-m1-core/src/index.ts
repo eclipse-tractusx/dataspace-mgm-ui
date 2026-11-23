@@ -40,7 +40,7 @@ import { InboxSseEventSource } from './infrastructure/repositories/inbox-sse.eve
 import { NotificationHttpRepository } from './infrastructure/repositories/notification-http.repository';
 
 /** The base path of the module under the app's api_base_url (`servers.url` of specs/c11-m1/openapi.yaml). */
-export const C11M1_BASE_PATH = '/c11-m1';
+export const C11M1_BASE_PATH = '/notifications';
 
 /** Builds the use cases on any adapters: the HTTP ones in the app, the in-memory ones in tests and mock mode. */
 export function createC11M1ModuleFrom(notifications: NotificationRepository, events: InboxEventSource): C11M1Module {

@@ -19,7 +19,7 @@ It is a **proof of concept** (phase 2 of `build-poc`): the use cases run on the 
 `@dataspace-mgm/c4-m2-core/testing`, with the data of the wallets mockup (`mockups/wallets/shared/data.js`). The
 vendored spec, the generated types, the HTTP adapter and `createC4M2Module(config)` come in phase 3 (`build-feature`).
 
-Base path: `C4M2_BASE_PATH = '/c4-m2'` (`servers.url` `/api/c4-m2` without `/api`).
+Base path: `C4M2_BASE_PATH = '/dataspace-wallet-interface'` (`servers.url` `/api/dataspace-wallet-interface` without `/api`).
 
 ## Mockup → code
 

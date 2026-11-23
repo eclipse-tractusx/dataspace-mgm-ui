@@ -30,8 +30,8 @@
  * come with the vendored spec and the generated types in phase 3.
  */
 
-/** The base path of the module under the app's api_base_url (`servers.url` /api/c4-m2 of the C4-M2 openapi.yaml). */
-export const C4M2_BASE_PATH = '/c4-m2';
+/** The base path of the module under the app's api_base_url (`servers.url` /api/dataspace-wallet-interface of the C4-M2 openapi.yaml). */
+export const C4M2_BASE_PATH = '/dataspace-wallet-interface';
 
 export type { C4M2Module } from './data/c4-m2-module.data';
 export type { TechnicalUserRefAnemic } from './domain/anemics/technical-user-ref.anemic';

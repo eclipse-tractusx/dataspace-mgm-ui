@@ -31,7 +31,7 @@ import type { paths } from './generated/c3-m2-api';
 import { CspRegistrationHttpRepository } from './infrastructure/repositories/csp-registration-http.repository';
 
 /** The base path of the module under the app's api_base_url (`servers.url` of specs/c3-m2/openapi.yaml). */
-export const C3M2_BASE_PATH = '/c3-m2';
+export const C3M2_BASE_PATH = '/csp-connection';
 
 /** Creates the module once per app (composition root); `config.baseUrl` is the module's base URL. */
 export function createC3M2Module(config: CoreModuleConfig): C3M2Module {

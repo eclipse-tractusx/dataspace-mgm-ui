@@ -31,7 +31,7 @@ import { C11M1_BASE_PATH } from './index';
 describe('C11M1_BASE_PATH', () => {
   it('matches servers.url of the vendored spec', () => {
     const spec = readFileSync(new URL('../../../specs/c11-m1/openapi.yaml', import.meta.url), 'utf8');
-    expect(spec).toMatch(/servers:\s*\n\s*-\s*url:\s*\/api\/c11-m1\s*\n/);
-    expect(`/api${C11M1_BASE_PATH}`).toBe('/api/c11-m1');
+    expect(spec).toMatch(/servers:\s*\n\s*-\s*url:\s*\/api\/notifications\s*\n/);
+    expect(`/api${C11M1_BASE_PATH}`).toBe('/api/notifications');
   });
 });

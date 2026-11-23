@@ -25,7 +25,7 @@
  ********************************************************************************/
 
 /** The base path of the module under the app's api_base_url (`servers.url` of specs/c1-m2/openapi.yaml without `/api`). */
-export const C1M2_BASE_PATH = '/c1-m2';
+export const C1M2_BASE_PATH = '/registration';
 
 // No createC1M2Module yet: the HTTP adapter comes in phase 3 (skill build-feature). Mock mode and tests wire the use
 // cases with createMockC1M2Module from @dataspace-mgm/c1-m2-core/testing.

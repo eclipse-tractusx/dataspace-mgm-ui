@@ -26,7 +26,7 @@
 
 /** How an app creates a core package: one config, shared by every module. */
 export interface CoreModuleConfig {
-  /** Base URL of the module's API, e.g. `/api/c3-m1` (the `servers.url` of its openapi.yaml under the app's api_base_url). */
+  /** Base URL of the module's API, e.g. `/api/company-profile` (the `servers.url` of its openapi.yaml under the app's api_base_url). */
   baseUrl: string;
   /** The CSRF token of the session (from GET /me), sent on write requests. */
   getCsrfToken?: () => string | null;

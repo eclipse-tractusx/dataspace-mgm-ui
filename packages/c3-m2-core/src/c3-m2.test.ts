@@ -40,7 +40,7 @@ function httpAnswering(status: number, body: unknown) {
     const type = status < 400 ? 'application/json' : 'application/problem+json';
     return new Response(JSON.stringify(body), { status, headers: { 'content-type': type } });
   };
-  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c3-m2', fetch: fetchImpl as unknown as typeof fetch });
+  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/csp-connection', fetch: fetchImpl as unknown as typeof fetch });
   return { useCase: new GetCspRegistrationUseCase(new CspRegistrationHttpRepository(client)), requests };
 }
 
@@ -61,14 +61,14 @@ describe('GetCspRegistrationUseCase (in memory)', () => {
 });
 
 describe('CspRegistrationHttpRepository (wire format of C3-M2)', () => {
-  it('calls GET /api/c3-m2/companies/{companyId} and maps missing fields to null', async () => {
+  it('calls GET /api/csp-connection/companies/{companyId} and maps missing fields to null', async () => {
     const { useCase, requests } = httpAnswering(200, { companyId: U1, status: 'PENDING', membership: 'NONE', updatedAt: '2026-11-04T11:02:00Z' });
     expect(await useCase.execute(U1)).toEqual({
       status: 'found',
       registration: { companyId: U1, bpn: null, status: 'PENDING', failureReason: null, did: null, membership: 'NONE', registeredAt: null, updatedAt: '2026-11-04T11:02:00Z' },
     });
     expect(requests[0].method).toBe('GET');
-    expect(new URL(requests[0].url).pathname).toBe(`/api/c3-m2/companies/${U1}`);
+    expect(new URL(requests[0].url).pathname).toBe(`/api/csp-connection/companies/${U1}`);
   });
 
   it.each([
