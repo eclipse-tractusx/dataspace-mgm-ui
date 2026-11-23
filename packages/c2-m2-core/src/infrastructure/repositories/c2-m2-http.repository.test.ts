@@ -14,22 +14,22 @@ describe('C2-M2 HTTP module', () => {
       request = input;
       return Response.json({ userId: 'u', companyId: 'c', status: 'ACTIVE', joinedVia: 'INVITATION', portalRoles: ['Member'], createdAt: '2026-01-01T00:00:00Z' });
     };
-    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/c2-m2', fetch: fetch as unknown as typeof globalThis.fetch });
+    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/app-access', fetch: fetch as unknown as typeof globalThis.fetch });
     expect((await module.setCompanyUserPortalRoles.execute('c', 'u', ['Member'])).status).toBe('success');
     expect(request?.method).toBe('PUT');
-    expect(new URL(request!.url).pathname).toBe('/api/c2-m2/companies/c/users/u/portal-roles');
+    expect(new URL(request!.url).pathname).toBe('/api/app-access/companies/c/users/u/portal-roles');
     expect(await request!.json()).toEqual({ portalRoles: ['Member'] });
   });
 
   it('preserves problem types in conflict results', async () => {
     const fetch = async () => new Response(JSON.stringify({ type: 'urn:c2-m2:problem:last-company-admin', status: 409, title: 'Conflict' }), { status: 409, headers: { 'content-type': 'application/problem+json' } });
-    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/c2-m2', fetch: fetch as typeof globalThis.fetch });
+    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/app-access', fetch: fetch as typeof globalThis.fetch });
     expect(await module.removeCompanyUser.execute('c', 'u')).toMatchObject({ status: 'conflict', error: { problemType: 'urn:c2-m2:problem:last-company-admin' } });
   });
 
   it('maps a scoped 404 to not-found', async () => {
     const fetch = async () => new Response(JSON.stringify({ type: 'urn:c2-m2:problem:not-found', status: 404, title: 'Not found' }), { status: 404, headers: { 'content-type': 'application/problem+json' } });
-    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/c2-m2', fetch: fetch as typeof globalThis.fetch });
+    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/app-access', fetch: fetch as typeof globalThis.fetch });
     expect(await module.getCompanyUser.execute('c', 'u')).toEqual({ status: 'not-found' });
   });
 
@@ -40,7 +40,7 @@ describe('C2-M2 HTTP module', () => {
       const page = Number(new URL(request.url).searchParams.get('page'));
       return Response.json({ items: [{ id: String(page), kind: 'COMPANY', companyId: 'c', roles: ['Member'], status: 'OPEN', createdAt: '2026-01-01T00:00:00Z', expiresAt: '2026-01-02T00:00:00Z' }], page, size: 100, total: 2 });
     };
-    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/c2-m2', fetch: fetch as unknown as typeof globalThis.fetch });
+    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/app-access', fetch: fetch as unknown as typeof globalThis.fetch });
     const result = await module.listInvitations.execute('c');
     expect(result).toMatchObject({ status: 'success', data: [{ id: '0', givenName: null }, { id: '1' }] });
     expect(requests).toHaveLength(2);
@@ -59,7 +59,7 @@ describe('C2-M2 HTTP module', () => {
         roles: ['Member'],
       });
     };
-    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/c2-m2', fetch: fetch as unknown as typeof globalThis.fetch });
+    const module = createC2M2Module({ baseUrl: 'http://ui.test/api/app-access', fetch: fetch as unknown as typeof globalThis.fetch });
     const result = await module.acceptInvitation!.execute(code);
     expect(result).toEqual({
       status: 'success',
@@ -72,7 +72,7 @@ describe('C2-M2 HTTP module', () => {
       },
     });
     expect(request?.method).toBe('POST');
-    expect(new URL(request!.url).pathname).toBe('/api/c2-m2/invitations/accept');
+    expect(new URL(request!.url).pathname).toBe('/api/app-access/invitations/accept');
     expect(await request!.json()).toEqual({ code });
   });
 });

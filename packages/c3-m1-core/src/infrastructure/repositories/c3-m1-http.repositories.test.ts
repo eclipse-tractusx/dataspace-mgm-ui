@@ -93,7 +93,7 @@ function moduleAnswering(...answers: Answer[]) {
     const content = body instanceof Blob ? body : JSON.stringify(body);
     return new Response(content, { status, headers: { 'content-type': type, ...headers } });
   };
-  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c3-m1', fetch: fetchImpl as unknown as typeof fetch, getCsrfToken: () => 'csrf-1' });
+  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/company-profile', fetch: fetchImpl as unknown as typeof fetch, getCsrfToken: () => 'csrf-1' });
   const module = c3m1ModuleFrom({
     companies: new CompanyHttpRepository(client),
     ownChangeRequests: new OwnChangeRequestHttpRepository(client),
@@ -112,7 +112,7 @@ describe('own company over HTTP', () => {
     const { module, sent } = moduleAnswering({ status: 200, body: { ...COMPANY_WIRE, shortName: null } });
     expect(await module.updateShortName.execute(U1, '')).toMatchObject({ status: 'success', data: { shortName: null, postalAddress: { street: 'Musterstraße' } } });
     expect(sent().method).toBe('PATCH');
-    expect(sent().url.pathname).toBe(`/api/c3-m1/companies/${U1}`);
+    expect(sent().url.pathname).toBe(`/api/company-profile/companies/${U1}`);
     expect(sent().request.headers.get('X-CSRF-Token')).toBe('csrf-1');
     expect(await sent().request.json()).toEqual({ shortName: null });
   });
@@ -128,7 +128,7 @@ describe('own change requests over HTTP', () => {
     const { module, sent } = moduleAnswering({ status: 200, body: { items: [CR_WIRE], page: 0, size: 20, total: 1 } });
     const result = await module.listOwnChangeRequests.execute(U1, { page: 0, size: 20 });
     expect(result).toMatchObject({ status: 'success', data: { total: 1, items: [{ id: CR, companyName: null, decidedBy: null, closedAt: null }] } });
-    expect(sent().url.pathname).toBe(`/api/c3-m1/companies/${U1}/change-requests`);
+    expect(sent().url.pathname).toBe(`/api/company-profile/companies/${U1}/change-requests`);
     expect(sent().url.search).toBe('?page=0&size=20');
   });
 
@@ -155,7 +155,7 @@ describe('own change requests over HTTP', () => {
   ])('withdraw maps %j', async (answer, expected) => {
     const { module, sent } = moduleAnswering(answer);
     expect(await module.withdrawChangeRequest.execute(U1, CR)).toMatchObject(expected);
-    expect(sent().url.pathname).toBe(`/api/c3-m1/companies/${U1}/change-requests/${CR}/withdraw`);
+    expect(sent().url.pathname).toBe(`/api/company-profile/companies/${U1}/change-requests/${CR}/withdraw`);
   });
 });
 
@@ -170,7 +170,7 @@ describe('company roles over HTTP', () => {
     expect(await sent(1).request.json()).toEqual({ companyRole: 'APP_PROVIDER', consents: [{ agreementKey: 'terms-app-provider', version: '1.0' }] });
     await module.removeCompanyRole.execute(U1, 'APP_PROVIDER', 'de');
     expect(sent(2).method).toBe('DELETE');
-    expect(sent(2).url.pathname).toBe(`/api/c3-m1/companies/${U1}/company-roles/APP_PROVIDER`);
+    expect(sent(2).url.pathname).toBe(`/api/company-profile/companies/${U1}/company-roles/APP_PROVIDER`);
   });
 
   it('keeps the UI safe when the catalogue has no entry (null assignableBy, name, documentUrl)', async () => {
@@ -196,7 +196,7 @@ describe('companies of the OSP over HTTP', () => {
     const result = await module.listCompanies.execute({ page: 0, size: 20, status: ['ACTIVE', 'REQUESTED'], name: ' Beisp ', hasBpn: true, coreDataSource: 'EBW' });
     expect(result).toMatchObject({ status: 'success', data: { items: [{ bpn: null, companyRoles: [] }] } });
     const query = sent().url.searchParams;
-    expect(sent().url.pathname).toBe('/api/c3-m1/osp/companies');
+    expect(sent().url.pathname).toBe('/api/company-profile/osp/companies');
     expect(query.getAll('status')).toEqual(['ACTIVE', 'REQUESTED']);
     expect(query.get('name')).toBe('Beisp');
     expect(query.get('hasBpn')).toBe('true');
@@ -210,7 +210,7 @@ describe('companies of the OSP over HTTP', () => {
     expect(sent(1).method).toBe('PATCH');
     expect(await sent(1).request.json()).toEqual({ identifiers: [{ type: 'VAT_ID', value: 'DE1' }], reason: 'extract' });
     expect(await module.deactivateCompany.execute(U1, 'ended')).toMatchObject({ status: 'success', data: { status: 'INACTIVE' } });
-    expect(sent(2).url.pathname).toBe(`/api/c3-m1/osp/companies/${U1}/deactivate`);
+    expect(sent(2).url.pathname).toBe(`/api/company-profile/osp/companies/${U1}/deactivate`);
     expect(await sent(2).request.json()).toEqual({ reason: 'ended' });
   });
 
@@ -235,7 +235,7 @@ describe('review over HTTP', () => {
     expect(await module.getChangeRequest.execute(CR)).toMatchObject({ status: 'success', data: { company: { address: { countryCode: 'DE', addressAddition: null } } } });
     const file = await module.downloadChangeRequestDocument.execute(CR, 'd1');
     expect(file).toMatchObject({ status: 'success', data: { fileName: 'lei.pdf', mediaType: 'application/pdf', sizeBytes: 4 } });
-    expect(sent(2).url.pathname).toBe(`/api/c3-m1/osp/change-requests/${CR}/documents/d1`);
+    expect(sent(2).url.pathname).toBe(`/api/company-profile/osp/change-requests/${CR}/documents/d1`);
     await module.approveChangeRequest.execute(CR);
     expect(await sent(3).request.json()).toEqual({});
     expect(await module.declineChangeRequest.execute(CR, ' no ')).toMatchObject({ status: 'success', data: { decisionReason: 'no' } });

@@ -58,16 +58,16 @@ function repositoryAnswering(status: number, body: unknown) {
     const type = status < 400 ? 'application/json' : 'application/problem+json';
     return new Response(JSON.stringify(body), { status, headers: { 'content-type': type } });
   };
-  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/c3-m1', fetch: fetchImpl as unknown as typeof fetch });
+  const client = createCoreClient<paths>({ baseUrl: 'http://ui.test/api/company-profile', fetch: fetchImpl as unknown as typeof fetch });
   return { repository: new CompanyHttpRepository(client), requests };
 }
 
 describe('CompanyHttpRepository', () => {
-  it('calls GET /api/c3-m1/companies/{companyId} and maps the answer', async () => {
+  it('calls GET /api/company-profile/companies/{companyId} and maps the answer', async () => {
     const { repository, requests } = repositoryAnswering(200, WIRE);
     expect(await repository.getCompany(WIRE.id)).toEqual(OSP_A_COMPANY);
     expect(requests[0].method).toBe('GET');
-    expect(new URL(requests[0].url).pathname).toBe(`/api/c3-m1/companies/${WIRE.id}`);
+    expect(new URL(requests[0].url).pathname).toBe(`/api/company-profile/companies/${WIRE.id}`);
   });
 
   it('maps 404 to null', async () => {

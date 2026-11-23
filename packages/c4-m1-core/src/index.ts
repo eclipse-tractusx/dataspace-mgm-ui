@@ -27,8 +27,8 @@
 // Public API of @dataspace-mgm/c4-m1-core. Proof of concept: no HTTP adapter and no createC4M1Module yet (skill
 // build-feature); the app wires the module on the in-memory adapters of `@dataspace-mgm/c4-m1-core/testing`.
 
-/** The base path of the module under the app's api_base_url (`servers.url` /api/c4-m1 of the spec without /api). */
-export const C4M1_BASE_PATH = '/c4-m1';
+/** The base path of the module under the app's api_base_url (`servers.url` /api/credentials of the spec without /api). */
+export const C4M1_BASE_PATH = '/credentials';
 
 export type { C4M1Module } from './data/c4-m1-module.data';
 export type { CredentialDetailAnemic } from './domain/anemics/credential-detail.anemic';

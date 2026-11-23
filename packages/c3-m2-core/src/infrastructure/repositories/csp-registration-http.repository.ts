@@ -30,7 +30,7 @@ import type { CspRegistrationRepository } from '../../domain/repositories/csp-re
 import type { C3M2Client } from '../data/c3-m2-infrastructure.data';
 import { CspRegistrationMapper } from '../mappers/csp-registration.mapper';
 
-/** Adapter of the port over HTTP (GET /api/c3-m2/companies/{companyId}). */
+/** Adapter of the port over HTTP (GET /api/csp-connection/companies/{companyId}). */
 export class CspRegistrationHttpRepository implements CspRegistrationRepository {
   constructor(private readonly client: C3M2Client) {}
 

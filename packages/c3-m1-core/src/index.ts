@@ -35,7 +35,7 @@ import { OspCompanyHttpRepository } from './infrastructure/repositories/osp-comp
 import { OwnChangeRequestHttpRepository } from './infrastructure/repositories/own-change-request-http.repository';
 
 /** The base path of the module under the app's api_base_url (`servers.url` of specs/c3-m1/openapi.yaml). */
-export const C3M1_BASE_PATH = '/c3-m1';
+export const C3M1_BASE_PATH = '/company-profile';
 
 /** Creates the module once per app (composition root); `config.baseUrl` is the module's base URL. */
 export function createC3M1Module(config: CoreModuleConfig): C3M1Module {

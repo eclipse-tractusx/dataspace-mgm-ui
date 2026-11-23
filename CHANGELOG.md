@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Updated all module base paths from legacy `/api/<module>` to `/api/<feature>` across core packages, container wiring, OpenAPI specs (`specs/*/openapi.yaml`), and test suites in accordance with backend spec commit `abab1fa` and FRAMEWORK 4.9 ([#46](https://github.com/eclipse-tractusx/dataspace-mgm-ui/issues/46), [#45](https://github.com/eclipse-tractusx/dataspace-mgm-ui/issues/45)):
+  - `c1-m2-core`: `/c1-m2` → `/registration` (`C1M2_BASE_PATH`)
+  - C1-M3 review container: `/c1-m3` and `/c1-m2` → `/application-review` and `/registration`
+  - `c2-m2-core`: `/c2-m2` → `/app-access` (`C2_M2_BASE_PATH`)
+  - `c2-m3-core`: `/c2-m3` → `/technical-user` (`C2_M3_BASE_PATH`)
+  - `c3-m1-core`: `/c3-m1` → `/company-profile` (`C3M1_BASE_PATH`)
+  - `c3-m2-core`: `/c3-m2` → `/csp-connection` (`C3M2_BASE_PATH`)
+  - `c4-m1-core`: `/c4-m1` → `/credentials` (`C4M1_BASE_PATH`)
+  - `c4-m2-core`: `/c4-m2` → `/dataspace-wallet-interface` (`C4M2_BASE_PATH`)
+  - `c11-m1-core`: `/c11-m1` → `/notifications` (`C11M1_BASE_PATH`)
+
 ### Added
 
 - Automated GitHub Actions CI workflow for linting, TypeScript typechecking, unit test execution, and production asset bundle builds on PRs and pushes to main/develop (`.github/workflows/tests.yml`).
