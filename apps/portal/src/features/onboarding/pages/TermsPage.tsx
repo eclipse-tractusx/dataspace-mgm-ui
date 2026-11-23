@@ -39,6 +39,7 @@ import { TermsList, termKey } from '../components/TermsList';
 import { TermsViewer } from '../components/TermsViewer';
 import { Toast } from '../components/Toast';
 import { useAgreements, useApplicationActions, useCompanyRoles, useOwnApplication } from '../hooks/useApplications';
+import { useWalletReturn } from '../hooks/useWalletReturn';
 import { useApiLanguage } from '../hooks/useOnboarding';
 import { ONBOARDING_NS } from '../i18n';
 import { stepsOf } from './flowSteps';
@@ -61,6 +62,19 @@ export default function TermsPage() {
   const [busy, setBusy] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  const reverify = async () => {
+    // Behind the BFF the wallet step leaves the portal and comes back to this page, which then runs this again.
+    const answer = await actions.reverify(`/onboarding/application/${applicationId}/terms`);
+    if (answer.status === 'replaced') {
+      setOutcome(null);
+      setToast(t('terms.reverified'));
+      reload();
+    } else if (answer.status !== 'cancelled') {
+      setOutcome(answer);
+    }
+  };
+  useWalletReturn(state.status === 'found', () => void reverify());
 
   if (state.status !== 'found') {
     return (
@@ -101,17 +115,6 @@ export default function TermsPage() {
       agreements.reload();
     }
   };
-  const reverify = async () => {
-    const answer = await actions.reverify();
-    if (answer.status === 'replaced') {
-      setOutcome(null);
-      setToast(t('terms.reverified'));
-      reload();
-    } else if (answer.status !== 'cancelled') {
-      setOutcome(answer);
-    }
-  };
-
   if (submitted) {
     return (
       <PageFrame titleKey="terms.title">

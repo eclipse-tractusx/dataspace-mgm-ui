@@ -387,9 +387,16 @@ describe('OSP staff over HTTP', () => {
 });
 
 describe('the wallet step outside mock mode', () => {
-  it('fails without a request: no operation hands the verification attestation to the browser yet', async () => {
-    const { module, sent } = moduleAnswering();
-    expect(await module.requestAttestation.execute()).toMatchObject({ status: 'failed', error: { status: null, problemType: null } });
-    expect(() => sent()).toThrow();
+  it('collects the verification attestation at the BFF (POST /ebw/attestation), not at C1-M2', async () => {
+    const calls: Array<{ url: string; init?: RequestInit }> = [];
+    const fetchImpl = (async (url: string, init?: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(JSON.stringify({ status: 'received', attestation: 'a.b.c' }), { status: 200 });
+    }) as unknown as typeof fetch;
+    const module = createC1M2Module({ baseUrl: `http://ui.test${BASE}`, fetch: fetchImpl, getCsrfToken: () => 'csrf-1' }, { bffBaseUrl: 'http://ui.test' });
+    expect(await module.requestAttestation.execute('/onboarding/start')).toEqual({ status: 'received', attestation: 'a.b.c' });
+    expect(calls).toHaveLength(1);
+    expect(calls[0].url).toBe('http://ui.test/ebw/attestation');
+    expect(calls[0].init).toMatchObject({ method: 'POST', credentials: 'include', headers: { 'X-CSRF-Token': 'csrf-1' } });
   });
 });

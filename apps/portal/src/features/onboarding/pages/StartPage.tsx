@@ -24,7 +24,7 @@
  * Assisted-By: Claude Code (claude-opus-5-5)
  ********************************************************************************/
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ApplicationKind, Verification } from '@dataspace-mgm/c1-m2-core';
 import { Alert, Button, Typography } from '@dataspace-mgm/ui-mui';
 import { Trans, useTranslation } from 'react-i18next';
@@ -37,7 +37,8 @@ import { StateView } from '../components/StateView';
 import { WalletDialog } from '../components/WalletDialog';
 import { useReadiness } from '../hooks/useLoad';
 import { useSignedInPerson } from '../hooks/useOnboarding';
-import { useStartApplication } from '../hooks/useStartApplication';
+import { choiceOfReturn, useStartApplication } from '../hooks/useStartApplication';
+import { useWalletReturn } from '../hooks/useWalletReturn';
 import { ONBOARDING_NS } from '../i18n';
 import { EBW_STEPS } from './flowSteps';
 import { MOCK_MODE } from '../../../core/mock-mode';
@@ -67,6 +68,23 @@ export default function StartPage() {
   const proofRef = useRef<HTMLDivElement>(null);
   const answered = goal === 'new' || (goal === 'existing' && kind !== null);
   // The wallet dialog shows while the step runs; a result closes it (the page shows the result).
+
+  // Back from the wallet step (BFF, EBW-Connector): the choice is in the address; collect the outcome and go on.
+  const resume = useCallback(
+    (params: URLSearchParams) => {
+      const returned = choiceOfReturn(params);
+      setGoal(returned.kind === 'ONBOARDING' ? 'new' : 'existing');
+      setKind(returned.kind);
+      setBpn(returned.bpn);
+      setPath('EBW');
+      setWalletOpen(true);
+      void withWallet(returned);
+    },
+    // `withWallet` is rebuilt on every render; it only uses the stable core module and state setter.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  useWalletReturn(readiness.status === 'ready', resume);
 
   useEffect(() => {
     if (state.status === 'created' || state.status === 'repeated') {

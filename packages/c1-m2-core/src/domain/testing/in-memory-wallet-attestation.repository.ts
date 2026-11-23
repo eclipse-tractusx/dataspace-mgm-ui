@@ -47,13 +47,15 @@ export interface InMemoryWalletAttestationOptions {
 
 /**
  * In-memory adapter of the wallet step: a new mock attestation of the signed-in person for the company of their
- * Business Wallet (Beispiel Maschinenbau GmbH unless WALLET_COMPANY says otherwise). Stand-in for the BFF.
+ * Business Wallet (Beispiel Maschinenbau GmbH unless WALLET_COMPANY says otherwise). Stands in for the BFF in mock
+ * mode and tests.
  */
 export class InMemoryWalletAttestationRepository implements WalletAttestationRepository {
   public readonly calls: string[] = [];
 
   constructor(private readonly options: InMemoryWalletAttestationOptions) {}
 
+  /** Takes no `returnTo`: this wallet answers without leaving the page. */
   public async requestAttestation(): Promise<string | null> {
     this.calls.push('requestAttestation');
     if (this.options.delayMs) {

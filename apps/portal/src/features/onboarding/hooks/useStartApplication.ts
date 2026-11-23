@@ -46,6 +46,27 @@ function createInput(choice: StartChoice, extra: Pick<ApplicationCreateInput, 'v
   return { kind: choice.kind, ...extra, ...(bpn ? { bpn } : { companyRoles: ['ACTIVE_PARTICIPANT'] }) };
 }
 
+const KINDS: ReadonlyArray<ApplicationKind> = ['ONBOARDING', 'REACTIVATION', 'TRANSFER'];
+
+/**
+ * The address the wallet step returns to, with the choice in its query: the step leaves the portal (BFF,
+ * EBW-Connector), so nothing in the memory of the page survives it.
+ */
+export function startReturnPath(choice: StartChoice): string {
+  const params = new URLSearchParams({ kind: choice.kind });
+  const bpn = choice.bpn?.trim();
+  if (bpn) {
+    params.set('bpn', bpn);
+  }
+  return `/onboarding/start?${params.toString()}`;
+}
+
+/** The choice in the query of a return address; ONBOARDING when the kind is missing or unknown. */
+export function choiceOfReturn(params: URLSearchParams): Required<StartChoice> {
+  const kind = params.get('kind') as ApplicationKind | null;
+  return { kind: kind !== null && KINDS.includes(kind) ? kind : 'ONBOARDING', bpn: params.get('bpn') ?? '' };
+}
+
 /** Start application: the wallet step and createApplication (EBW), or createApplication with the company data (DOCUMENTS). */
 export function useStartApplication() {
   const c1m2 = useC1M2();
@@ -53,7 +74,8 @@ export function useStartApplication() {
 
   const withWallet = async (choice: StartChoice) => {
     setState({ status: 'working' });
-    const wallet = await c1m2.requestAttestation.execute();
+    // Behind the BFF this call leaves the portal and does not come back; StartPage runs it again after the return.
+    const wallet = await c1m2.requestAttestation.execute(startReturnPath(choice));
     if (wallet.status !== 'received') {
       setState(wallet);
       return;

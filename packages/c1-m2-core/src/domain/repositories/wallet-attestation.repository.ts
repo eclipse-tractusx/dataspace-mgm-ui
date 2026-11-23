@@ -26,10 +26,16 @@
 
 /**
  * Port: the wallet step (C1-M2 README 1, FRAMEWORK 5.2 step 2). The EBW-Connector checks the person's EUDI Wallet and
- * the company's Business Wallet and hands the verification attestation to the BFF. Not an operation of C1-M2: a
- * stand-in until the BFF offers it (open point P0 in the README); the attestation stays an opaque string.
+ * the company's Business Wallet and hands the verification attestation to the BFF, which hands it to the portal. Not an
+ * operation of C1-M2: it is the wallet step of the BFF (`/ebw/**`); the attestation stays an opaque string.
  */
 export interface WalletAttestationRepository {
-  /** The compact JWS of the verification attestation; null when the person cancelled in the wallet. */
-  requestAttestation(): Promise<string | null>;
+  /**
+   * The compact JWS of the verification attestation; null when the person cancelled in the wallet.
+   *
+   * Behind the BFF the step leaves the portal: the browser goes to the EBW-Connector and comes back to `returnTo` (a
+   * path of the portal, default: the current page) with the query parameter `wallet=returned`. The promise of the
+   * call that left does not settle; the page calls again after the return and then gets the outcome.
+   */
+  requestAttestation(returnTo?: string): Promise<string | null>;
 }

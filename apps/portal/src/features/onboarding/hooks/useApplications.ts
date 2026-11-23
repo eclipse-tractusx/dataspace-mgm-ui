@@ -95,9 +95,12 @@ export function useApplicationActions(applicationId: string) {
     deleteDocument: (documentId: string) => c1m2.deleteDocument.execute(applicationId, documentId),
     submit: (input: SubmitInput) => c1m2.submitApplication.execute(applicationId, input),
     withdraw: () => c1m2.withdrawApplication.execute(applicationId),
-    /** Verify again with the Business Wallet and replace the attestation (README 7.6). */
-    reverify: async () => {
-      const wallet = await c1m2.requestAttestation.execute();
+    /**
+     * Verify again with the Business Wallet and replace the attestation (README 7.6). `returnTo` is the page the wallet
+     * step comes back to; behind the BFF the call leaves the portal and the page runs it again after the return.
+     */
+    reverify: async (returnTo?: string) => {
+      const wallet = await c1m2.requestAttestation.execute(returnTo);
       return wallet.status === 'received' ? c1m2.replaceAttestation.execute(applicationId, wallet.attestation) : wallet;
     },
   };

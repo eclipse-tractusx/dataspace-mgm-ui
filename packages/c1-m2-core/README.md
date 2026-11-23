@@ -22,8 +22,9 @@ EBW-Connector (path `EBW`) or supporting documents (path `DOCUMENTS`), for the k
 **Phase: feature (skill `build-feature`).** The package has the use cases, the ports and two adapters of each port:
 HTTP (`createC1M2Module`, types generated from the vendored spec) for the running Dataspace Management Service, and
 in-memory (`@dataspace-mgm/c1-m2-core/testing`) for mock mode and tests. The pages are the same on both. The wallet
-step is the exception: no operation hands the verification attestation to the browser yet, so outside mock mode only
-the verification path `DOCUMENTS` runs to the end (open point 1).
+step is not an operation of C1-M2: outside mock mode it is the wallet step of the BFF (`/ebw/**`,
+`apps/portal-bff/README.md`), which needs the settings of an EBW-Connector there; without them the step reports
+`failed` and only the verification path `DOCUMENTS` runs to the end.
 
 ## Use cases
 
@@ -53,7 +54,7 @@ for Process Orchestration and other modules and are not here. Every use case ret
 | `getAnyDocument.execute(applicationId, documentId)` | `GET /osp/applications/{applicationId}/documents/{documentId}` | `view_applications`, osp | `found` {content, contentType, fileName}, `not-found`, `forbidden`, `failed` |
 | `listAgreementVersions.execute(filter)` | `GET /osp/agreements` | `manage_agreements`, osp | `found` {page}, `validation`, `forbidden`, `failed` |
 | `createAgreementVersion.execute(input)` | `POST /osp/agreements` | `manage_agreements`, osp | `created` {version}, `conflict`, `validation` {errors}, `forbidden`, `failed` |
-| `requestAttestation.execute()` | **not a C1-M2 operation**: the wallet step of the BFF (FRAMEWORK 5.2 step 2), a stand-in until the BFF offers it (open point 1) | – | `received` {attestation}, `cancelled`, `failed` |
+| `requestAttestation.execute(returnTo?)` | **not a C1-M2 operation**: the wallet step of the BFF (FRAMEWORK 5.2 step 2). Behind the BFF the call leaves the portal for the EBW-Connector and does not settle; the page executes it again when it is back at `returnTo` with `wallet=returned` and then gets the outcome | – | `received` {attestation}, `cancelled`, `failed` |
 
 Result `status` strings are the Problem Details names of C1-M2 README 12 without `urn:c1-m2:problem:`. A page maps
 each `status` (and for `failed` the `error.problemType`) to an i18n key; it never shows `title` or `detail`.
@@ -152,7 +153,7 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
 ## Decisions
 
 1. **The attestation is an opaque string.** The use cases take `attestation` as received; mock mode builds it with
-   `mockAttestation()`. Who hands it to the browser is open (P0 below).
+   `mockAttestation()`. Outside mock mode the BFF hands it to the browser, once (decision 19).
 2. **Problem Details extensions.** `ensureData` of `core-http` keeps only `type` and `title`. This package defines
    `C1M2ProblemException extends CoreHttpException` with `problem: C1M2ProblemData` (the `Problem` schema); every
    adapter throws it for the module's 4xx answers, and `ProblemOutcomeDomain` maps the `type` to the result in one
@@ -204,10 +205,15 @@ type; withdrawing is offered while the status is CREATED or SUBMITTED and the AP
 18. **Mock attestation header and client:** `kid` `ebw-test-2026-1` (README 14.4) and `client_id` `osp-a-ui`
     (FRAMEWORK 7a), allowed by the fake's `ATTESTATION_CLIENT_IDS`.
 
-19. **The wallet step outside mock mode fails on purpose.** `WalletAttestationUnavailableRepository` is the adapter
-    of the wallet port in `createC1M2Module`: it makes no request and rejects, so `requestAttestation` reports
-    `failed`. The backend's test tool `POST /ebw/test/attestations` is outside `/api` (the BFF does not proxy it) and
-    not a contract; this package calls no path the spec does not have.
+19. **The wallet step outside mock mode goes through the BFF.** `WalletAttestationBffRepository` is the adapter of the
+    wallet port in `createC1M2Module`. `POST /ebw/attestation` collects the outcome of a step, once; when there is
+    none, the browser leaves for `GET /ebw/attestation/start?return_to=<page>`, the BFF sends it to the EBW-Connector
+    and brings it back to the page with `wallet=returned`. The promise of the call that left never settles. So a page
+    that starts the step puts what it needs to go on into `returnTo` (the start page: `kind` and `bpn`) and executes
+    the use case again after the return (`useWalletReturn` of the feature). The adapter is the only place of the
+    package that touches `window`; `createC1M2Module(config, wallet)` replaces the base URL of the BFF, `fetch` and
+    the way of leaving for tests. A BFF without the settings of an EBW-Connector answers 404, which the use case
+    reports as `failed`. The dev BFF (`apps/portal/dev-bff`) has no wallet step.
 20. **Optional members of the spec become `null`.** `Application` requires only part of its members; the mapper sets
     the others to `null` (`attestation`, `representationDeclared`, `declineReason`, the dates) and `changedAt` to
     `createdAt` when the module leaves it out. The running module sends every member.
@@ -220,7 +226,7 @@ terms answer as the spec says, and a submitted application opens a review case i
 
 | # | What | Where | Effect on the UI |
 |---|---|---|---|
-| 1 | The wallet step has no operation (open point 1) | BFF | Path `EBW` ends at "Open wallet" with `failed`; "Verify again" on the terms page too. Path `DOCUMENTS` runs to the end. |
+| 1 | The wallet step had no operation on 19 Nov 2026 (open point 1). Since 23 Nov 2026 the BFF offers it (`/ebw/**`) | BFF | Checked on 23 Nov 2026 against the EBW-Connector of the backend repository (`ebw/`): the BFF fetches the verification attestation, C1-M2 accepts the application created with it, and the start page leaves for the EBW-Connector at "Open wallet". The return to the page with a real wallet was checked by the tests of the page, not yet in a browser. |
 | 2 | `reviewStatus` is `NONE` right after submission and `OPEN` a moment later (the review case is opened by the process) | `GET /applications/{applicationId}` | "My application" shows the review only after a reload (open point 3). |
 | 3 | The documents of the test terms are `https://osp-a.example.org/…` and `https://dataspace.example.org/…`, hosts that do not resolve | `GET /agreements` | The terms viewer frames a document that cannot load. Not looked at in a browser in this check. |
 | 4 | In the path `DOCUMENTS`, Beispiel Maschinenbau GmbH (with its VAT ID) got a new `companyId`, not its FRAMEWORK 7a id | `POST /applications` | None; the fake assigns the 7a id (decision 6). |
@@ -229,7 +235,7 @@ terms answer as the spec says, and a submitted application opens a review case i
 
 | # | Priority | Operation | What the UI needs | In the spec? | Notes |
 |---|---|---|---|---|---|
-| 1 | P0 (blocks the feature) | BFF, e.g. `GET /ebw/attestation` | The verification attestation of the current session, to pass to `POST /applications` | no | FRAMEWORK 5.2 step 2: the BFF is the OIDC client of the EBW-Connector and receives `ebw_attestation`; neither the BFF nor its OpenAPI exists. The frontend spec 14 assumed `POST /api/ebw/presentation-requests`. |
+| 1 | done (was P0) | BFF `POST /ebw/attestation`, `GET /ebw/attestation/start` | The verification attestation of the current session, to pass to `POST /applications` | no | Built in `apps/portal-bff` (its README, "Wallet step"): the BFF is the OIDC client of the EBW-Connector and receives `ebw_attestation` (FRAMEWORK 5.2 step 2, C5-M1 6.8). The contract of the three paths is the README of the BFF; an OpenAPI of the BFF does not exist. Open: the step leaves the portal, and the person presents the EUDI Wallet again although the sign-in already used it. |
 | 2 | P1 (needed for the full feature) | BFF `GET /me` | `given_name` and `family_name` of the person | no | The page should warn before the attestation check fails with `person` (README 6.4 step 10); `SessionAnemic` has one `name`. |
 | 3 | P1 | `GET /applications/{applicationId}` | A live update when `reviewStatus` or `status` changes after submission | no | AGENTS.md rule 7: SSE, no polling. C1-M2 has no stream for the applicant, and C12-M1 `process-changed` needs a process id the application does not carry. |
 | 4 | P1 | `POST /applications` (REACTIVATION, return) | How the applicant finds the `companyId` or `bpn` of the deactivated or transferred company | no | C1-M2 offers no lookup for a person without a company; the UI can only ask for the BPN as free text. |

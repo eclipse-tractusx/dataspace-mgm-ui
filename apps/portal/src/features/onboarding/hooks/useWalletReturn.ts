@@ -1,5 +1,4 @@
 /********************************************************************************
- * Copyright (c) 2026 Catena-X Automotive Network e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -24,16 +23,29 @@
  * Assisted-By: Claude Code (claude-fable-5-2)
  ********************************************************************************/
 
-import type { WalletAttestationRepository } from '../../domain/repositories/wallet-attestation.repository';
+import { useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
+/** The mark the BFF adds to the address of the page the wallet step returns to (`GET /ebw/callback`). */
+const WALLET_PARAM = 'wallet';
+const WALLET_RETURNED = 'returned';
 
 /**
- * Adapter of the wallet step outside mock mode. The verification attestation comes from the BFF, which is the OIDC
- * client of the EBW-Connector (FRAMEWORK 5.2 step 2); neither C1-M2 nor the BFF has an operation that hands it to the
- * browser yet (README, open point 1), and this package invents none. Until then the step fails, the use case reports
- * `failed`, and the verification path DOCUMENTS is the one that works against the backend.
+ * The wallet step leaves the portal for the EBW-Connector and comes back to the page with `wallet=returned` in its
+ * address. Then, once `ready`, this runs `resume` once with the other query parameters of the address (what the page
+ * put there before it left), and clears the query, so a reload does not start the step again.
  */
-export class WalletAttestationUnavailableRepository implements WalletAttestationRepository {
-  public requestAttestation(): Promise<string | null> {
-    return Promise.reject(new Error('The wallet step is not connected: the BFF does not hand out the verification attestation yet.'));
-  }
+export function useWalletReturn(ready: boolean, resume: (params: URLSearchParams) => void): void {
+  const [params, setParams] = useSearchParams();
+  const resumed = useRef(false);
+  useEffect(() => {
+    if (!ready || resumed.current || params.get(WALLET_PARAM) !== WALLET_RETURNED) {
+      return;
+    }
+    resumed.current = true;
+    const rest = new URLSearchParams(params);
+    rest.delete(WALLET_PARAM);
+    setParams(new URLSearchParams(), { replace: true });
+    resume(rest);
+  }, [ready, params, setParams, resume]);
 }
