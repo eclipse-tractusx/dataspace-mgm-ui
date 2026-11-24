@@ -19,13 +19,27 @@ import { ListInvitationsUseCase } from './application/useCases/list-invitations.
 import { CreateInvitationUseCase } from './application/useCases/create-invitation.use-case';
 import { RevokeInvitationUseCase } from './application/useCases/revoke-invitation.use-case';
 import { AcceptInvitationUseCase } from './application/useCases/accept-invitation.use-case';
+import { AcceptInvitationWithMandateUseCase } from './application/useCases/accept-invitation-with-mandate.use-case';
+import type { MandateStepOptions } from './infrastructure/data/mandate-step.data';
+import { MandateAttestationBffRepository } from './infrastructure/repositories/mandate-attestation-bff.repository';
 import { GetCompanyAppRolesUseCase } from './application/useCases/get-company-app-roles.use-case';
 import { SetUserAppRolesUseCase } from './application/useCases/set-user-app-roles.use-case';
 
-export function createC2M2Module(config: CoreModuleConfig): C2M2Module {
+/**
+ * Creates the module once per app (composition root); `config.baseUrl` is the module's base URL. `wallet` places the
+ * wallet step of the BFF (`/ebw/**`); by default the BFF is the origin of the portal.
+ */
+export function createC2M2Module(config: CoreModuleConfig, wallet: Partial<MandateStepOptions> = {}): C2M2Module {
   const client = createCoreClient<paths>(config);
   const users = new C2M2HttpRepository(client);
   const invitations = new InvitationHttpRepository(client);
+  const mandates = new MandateAttestationBffRepository({
+    bffBaseUrl: '',
+    getCsrfToken: config.getCsrfToken,
+    onUnauthorized: config.onUnauthorized,
+    fetch: config.fetch,
+    ...wallet,
+  });
   return {
     listCompanyUsers: new ListCompanyUsersUseCase(users),
     getCompanyUser: new GetCompanyUserUseCase(users),
@@ -35,6 +49,7 @@ export function createC2M2Module(config: CoreModuleConfig): C2M2Module {
     createInvitation: new CreateInvitationUseCase(invitations),
     revokeInvitation: new RevokeInvitationUseCase(invitations),
     acceptInvitation: new AcceptInvitationUseCase(invitations),
+    acceptInvitationWithMandate: new AcceptInvitationWithMandateUseCase(invitations, mandates),
     getCompanyAppRoles: new GetCompanyAppRolesUseCase(users),
     setUserAppRoles: new SetUserAppRolesUseCase(users),
   };
@@ -64,6 +79,11 @@ export { ListInvitationsUseCase } from './application/useCases/list-invitations.
 export { CreateInvitationUseCase } from './application/useCases/create-invitation.use-case';
 export { RevokeInvitationUseCase } from './application/useCases/revoke-invitation.use-case';
 export { AcceptInvitationUseCase } from './application/useCases/accept-invitation.use-case';
+export { AcceptInvitationWithMandateUseCase } from './application/useCases/accept-invitation-with-mandate.use-case';
+export type { MandateJoinRefusal, MandateJoinResult, MandateRefusalCause } from './domain/data/mandate-join.data';
+export { MandateNotConfirmedException } from './domain/mandate-not-confirmed.exception';
+export type { MandateAttestationRepository } from './domain/repositories/mandate-attestation.repository';
+export type { MandateStepOptions } from './infrastructure/data/mandate-step.data';
 export type { CompanyAppRoles, AppRolesResult, InstanceClientRef } from './domain/data/company-app-roles.data';
 export type { CompanyAppRolesRepository } from './domain/repositories/company-app-roles.repository';
 export { GetCompanyAppRolesUseCase } from './application/useCases/get-company-app-roles.use-case';

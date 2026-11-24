@@ -4,7 +4,7 @@
  * AI Disclosure: This file was entirely AI-generated; the human contributor has reviewed it.
  * Assisted-By: OpenAI GPT-6.1 Terra
  */
-import type { C2M2Module, Invitation, InvitationInput, OperationResult } from '@dataspace-mgm/c2-m2-core';
+import type { C2M2Module, Invitation, InvitationInput, MandateJoinResult, OperationResult } from '@dataspace-mgm/c2-m2-core';
 import { accessControlApi, getCoreModules, toQueryResult } from '../state/access-control.api';
 import type { BaseQueryApi } from '@reduxjs/toolkit/query';
 import type { UserFilter } from '../people';
@@ -73,6 +73,15 @@ export const companyUsersApi = accessControlApi.injectEndpoints({
       }),
       invalidatesTags: (result) => result?.status === 'success' ? ['AccessControl'] : [],
     }),
+    // `returnTo`: the page the wallet step comes back to. While the browser is on its way to the wallet this never settles.
+    acceptInvitationWithMandate: builder.mutation<MandateJoinResult, string>({
+      queryFn: (returnTo, api) => toQueryResult(() => {
+        const useCase = moduleFrom(api).acceptInvitationWithMandate;
+        if (!useCase) { throw new Error('C2-M2 module is not connected'); }
+        return useCase.execute(returnTo);
+      }),
+      invalidatesTags: (result) => result?.status === 'joined' ? ['AccessControl'] : [],
+    }),
     getCompanyAppRoles: builder.query<Awaited<ReturnType<NonNullable<C2M2Module['getCompanyAppRoles']>['execute']>>, { companyId: string; appId: string; lang: string }>({
       queryFn: ({ companyId, appId, lang }, api) => toQueryResult(() => {
         const useCase = moduleFrom(api).getCompanyAppRoles;
@@ -101,6 +110,7 @@ export const {
   useCreateInvitationMutation,
   useRevokeInvitationMutation,
   useAcceptInvitationMutation,
+  useAcceptInvitationWithMandateMutation,
   useGetCompanyAppRolesQuery,
   useSetUserAppRolesMutation,
 } = companyUsersApi;

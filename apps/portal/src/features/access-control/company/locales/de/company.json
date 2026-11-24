@@ -60,5 +60,26 @@
     "ACCEPTED": "Angenommen",
     "REVOKED": "Widerrufen",
     "EXPIRED": "Abgelaufen"
+  },
+  "mandateJoinIntro": "Oder zeigen Sie die Vollmacht Ihres Unternehmens aus Ihrer Wallet. Einen Code brauchen Sie dann nicht.",
+  "mandateJoinButton": "Mit Vollmacht beitreten",
+  "mandateJoinCancelled": "Sie haben die Anfrage in der Wallet abgelehnt. Es wurde nichts geändert.",
+  "mandateJoinWalletFailed": "Die Prüfung in der Wallet ist fehlgeschlagen. Versuchen Sie es erneut.",
+  "mandateJoinFailed": "Der Beitritt ist fehlgeschlagen. Versuchen Sie es später erneut.",
+  "mandateJoinRefused": {
+    "attestation-invalid": "Das Ergebnis der Prüfung wurde nicht angenommen. Starten Sie den Schritt erneut.",
+    "representation-not-confirmed": "Die Vollmacht wurde nicht bestätigt. Lassen Sie sich von Ihrem Unternehmen eine neue Vollmacht ausstellen.",
+    "name-mismatch": "Der Name in der Wallet passt nicht zu Ihrem Konto.",
+    "invitation-not-found": "Ihr Unternehmen hat Sie in diesem Portal noch nicht angelegt. Wenden Sie sich an Ihren Company Admin.",
+    "company-not-active": "Das Unternehmen Ihrer Vollmacht ist in diesem Portal nicht aktiv.",
+    "user-already-bound": "Ihr Konto gehört bereits zu einem Unternehmen.",
+    "staff-company-conflict": "Konten des Betreibers können keinem anderen Unternehmen beitreten."
+  },
+  "mandateJoinNotConfirmed": {
+    "EXPIRED": "Die Vollmacht ist abgelaufen. Lassen Sie sich von Ihrem Unternehmen eine neue Vollmacht ausstellen.",
+    "PERSON_MISMATCH": "Die Vollmacht ist auf eine andere Person ausgestellt als Ihr Personennachweis.",
+    "COMPANY_MISMATCH": "Die Vollmacht nennt ein anderes Unternehmen als der Unternehmensnachweis, den sie enthält.",
+    "TYPE_NOT_ACCEPTED": "Diese Art von Vollmacht wird hier nicht angenommen.",
+    "ISSUER_NOT_TRUSTED": "Der Aussteller der Vollmacht ist nicht als vertrauenswürdig bekannt. Lassen Sie sich von Ihrem Unternehmen eine neue Vollmacht ausstellen."
   }
 }

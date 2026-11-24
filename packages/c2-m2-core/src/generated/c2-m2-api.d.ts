@@ -206,12 +206,18 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Accept an invitation with the code
+         * Accept an invitation with the code or with a mandate
          * @description README 7.10. Acts only on the caller's own account (`sub`). An invitation
          *     of kind COMPANY can be accepted only by an account without a company.
          *     The names in the token must match the names of the invitation.
          *     Afterwards the UI fetches a new token. The same invitation by the same
          *     account again: 200 with the same result.
+         *
+         *     The body carries exactly one proof. `code`: the invitation code.
+         *     `attestation` (README 6.8a, kind COMPANY only): a verification
+         *     attestation of the EBW-Connector with the purpose `representation`. It
+         *     shows that the person holds a mandate of a company; the module then
+         *     accepts the newest open invitation of that company for this person.
          */
         post: operations["acceptInvitation"];
         delete?: never;
@@ -1034,9 +1040,18 @@ export interface components {
             size: number;
             total: number;
         };
+        /** @description Exactly one of `code` and `attestation` (README 7.10). */
         AcceptInvitationInput: {
             code: components["schemas"]["InvitationCode"];
+        } | {
+            attestation: components["schemas"]["VerificationAttestation"];
         };
+        /**
+         * @description Verification attestation of the EBW-Connector (C5-M1 section 9) with the
+         *     purpose `representation`, as a compact JWS. The module checks it as
+         *     README 6.8a describes and never stores it.
+         */
+        VerificationAttestation: string;
         /** @description Afterwards the UI fetches a new token; only this token contains company_id, bpn and the new permissions. */
         AcceptInvitationResult: {
             /** Format: uuid */

@@ -8,6 +8,7 @@ import { ensureData, ensureOk } from '@dataspace-mgm/core-http';
 import type { Client } from 'openapi-fetch';
 import type { components, paths } from '../../generated/c2-m2-api';
 import type { AcceptInvitationResult, Invitation, InvitationInput, InvitationStatus } from '../../domain/data/invitation.data';
+import { MandateNotConfirmedException } from '../../domain/mandate-not-confirmed.exception';
 import type { InvitationRepository } from '../../domain/repositories/invitation.repository';
 
 function mapInvitation(dto: components['schemas']['Invitation']): Invitation {
@@ -22,6 +23,31 @@ function mapInvitation(dto: components['schemas']['Invitation']): Invitation {
     acceptedBy: dto.acceptedBy ?? null,
     acceptedAt: dto.acceptedAt ?? null,
     status: dto.status,
+  };
+}
+
+const NOT_CONFIRMED = 'urn:c2-m2:problem:representation-not-confirmed';
+
+/** Title and `reasons` of the answer `representation-not-confirmed` (C2-M2 section 12), null for any other answer. */
+function notConfirmed(error: unknown): { title: string; reasons: string[] } | null {
+  if (typeof error !== 'object' || error === null) {
+    return null;
+  }
+  const problem = error as Record<string, unknown>;
+  if (problem.type !== NOT_CONFIRMED) {
+    return null;
+  }
+  const reasons = Array.isArray(problem.reasons) ? problem.reasons.filter((reason): reason is string => typeof reason === 'string') : [];
+  return { title: typeof problem.title === 'string' ? problem.title : NOT_CONFIRMED, reasons };
+}
+
+function mapAccepted(dto: components['schemas']['AcceptInvitationResult']): AcceptInvitationResult {
+  return {
+    invitationId: dto.invitationId,
+    kind: dto.kind,
+    userId: dto.userId,
+    companyId: dto.companyId ?? null,
+    roles: dto.roles,
   };
 }
 
@@ -81,13 +107,15 @@ export class InvitationHttpRepository implements InvitationRepository {
   }
 
   async accept(code: string): Promise<AcceptInvitationResult> {
-    const dto = await ensureData(this.client.POST('/invitations/accept', { body: { code } }));
-    return {
-      invitationId: dto.invitationId,
-      kind: dto.kind,
-      userId: dto.userId,
-      companyId: dto.companyId ?? null,
-      roles: dto.roles,
-    };
+    return mapAccepted(await ensureData(this.client.POST('/invitations/accept', { body: { code } })));
+  }
+
+  async acceptWithMandate(attestation: string): Promise<AcceptInvitationResult> {
+    const answer = await this.client.POST('/invitations/accept', { body: { attestation } });
+    const refusal = notConfirmed(answer.error);
+    if (refusal !== null) {
+      throw new MandateNotConfirmedException(answer.response.status, NOT_CONFIRMED, refusal.title, refusal.reasons);
+    }
+    return mapAccepted(await ensureData(Promise.resolve(answer)));
   }
 }

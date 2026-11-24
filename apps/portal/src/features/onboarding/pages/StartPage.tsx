@@ -38,7 +38,7 @@ import { WalletDialog } from '../components/WalletDialog';
 import { useReadiness } from '../hooks/useLoad';
 import { useSignedInPerson } from '../hooks/useOnboarding';
 import { choiceOfReturn, useStartApplication } from '../hooks/useStartApplication';
-import { useWalletReturn } from '../hooks/useWalletReturn';
+import { useWalletReturn } from '../../../core/useWalletReturn';
 import { ONBOARDING_NS } from '../i18n';
 import { EBW_STEPS } from './flowSteps';
 import { MOCK_MODE } from '../../../core/mock-mode';

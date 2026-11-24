@@ -14,6 +14,7 @@ import type { ListInvitationsUseCase } from '../application/useCases/list-invita
 import type { CreateInvitationUseCase } from '../application/useCases/create-invitation.use-case';
 import type { RevokeInvitationUseCase } from '../application/useCases/revoke-invitation.use-case';
 import type { AcceptInvitationUseCase } from '../application/useCases/accept-invitation.use-case';
+import type { AcceptInvitationWithMandateUseCase } from '../application/useCases/accept-invitation-with-mandate.use-case';
 import type { GetCompanyAppRolesUseCase } from '../application/useCases/get-company-app-roles.use-case';
 import type { SetUserAppRolesUseCase } from '../application/useCases/set-user-app-roles.use-case';
 
@@ -26,6 +27,8 @@ export interface C2M2Module {
   createInvitation: CreateInvitationUseCase;
   revokeInvitation: RevokeInvitationUseCase;
   acceptInvitation?: AcceptInvitationUseCase;
+  /** Missing where no wallet step is connected (mock mode). */
+  acceptInvitationWithMandate?: AcceptInvitationWithMandateUseCase;
   getCompanyAppRoles: GetCompanyAppRolesUseCase;
   setUserAppRoles: SetUserAppRolesUseCase;
 }

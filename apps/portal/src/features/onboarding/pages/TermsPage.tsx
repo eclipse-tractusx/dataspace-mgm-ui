@@ -39,7 +39,7 @@ import { TermsList, termKey } from '../components/TermsList';
 import { TermsViewer } from '../components/TermsViewer';
 import { Toast } from '../components/Toast';
 import { useAgreements, useApplicationActions, useCompanyRoles, useOwnApplication } from '../hooks/useApplications';
-import { useWalletReturn } from '../hooks/useWalletReturn';
+import { useWalletReturn } from '../../../core/useWalletReturn';
 import { useApiLanguage } from '../hooks/useOnboarding';
 import { ONBOARDING_NS } from '../i18n';
 import { stepsOf } from './flowSteps';

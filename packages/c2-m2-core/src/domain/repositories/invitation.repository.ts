@@ -10,4 +10,6 @@ export interface InvitationRepository {
   create(companyId: string, input: InvitationInput): Promise<InvitationWithCode | null>;
   revoke(companyId: string, invitationId: string): Promise<boolean | null>;
   accept?(code: string): Promise<AcceptInvitationResult | null>;
+  /** Accepts the newest open invitation of the company whose mandate the verification attestation confirms (C2-M2 6.8a). */
+  acceptWithMandate?(attestation: string): Promise<AcceptInvitationResult | null>;
 }

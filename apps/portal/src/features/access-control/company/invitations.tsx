@@ -5,7 +5,8 @@
  * Assisted-By: OpenAI GPT-6.1 Terra
  * Assisted-By: Claude Code (claude-opus-5-5)
  */
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Invitation } from '@dataspace-mgm/c2-m2-core';
 import {
@@ -21,8 +22,10 @@ import {
   type GridColDef,
   type GridRenderCellParams,
 } from '@dataspace-mgm/ui-mui';
+import { useWalletReturn } from '../../../core/useWalletReturn';
 import {
   useAcceptInvitationMutation,
+  useAcceptInvitationWithMandateMutation,
   useCreateInvitationMutation,
   useListInvitationsQuery,
   useRevokeInvitationMutation,
@@ -34,7 +37,51 @@ const INVITATION_CODE_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 
 const cardSx = { p: { xs: 3, md: 3.5 }, mt: 3, '&:hover': { boxShadow: 'none' } } as const;
 
-export function AcceptInvitationSection({ onAccepted }: { onAccepted?: () => void }) {
+/**
+ * Joining with a mandate instead of the code: the person shows the mandate of the company in their wallet. The wallet
+ * step leaves the portal and comes back to this page with `wallet=returned`; then the step is asked again, once, and
+ * hands out its outcome.
+ */
+function MandateJoin({ onAccepted }: { onAccepted?: () => void }) {
+  const { t } = useTranslation(COMPANY_NS);
+  const { pathname } = useLocation();
+  const [join, joining] = useAcceptInvitationWithMandateMutation();
+  const resume = useCallback(() => {
+    void join(pathname);
+  }, [join, pathname]);
+  useWalletReturn(true, resume);
+  const outcome = joining.data;
+
+  return (
+    <Box sx={{ mt: 3, pt: 3, borderTop: 1, borderColor: 'divider' }}>
+      <Typography variant="body2" color="text.secondary">{t('mandateJoinIntro')}</Typography>
+      <Button variant="outlined" disabled={joining.isLoading} onClick={resume} sx={{ mt: 1.5, px: 2.5, height: 40 }}>
+        {t('mandateJoinButton')}
+      </Button>
+      {outcome?.status === 'joined' && (
+        <Alert
+          severity="success"
+          sx={{ mt: 2 }}
+          action={onAccepted ? <Button color="inherit" onClick={onAccepted}>{t('refreshSession')}</Button> : undefined}
+        >
+          {t('acceptInvitationSuccess')}
+        </Alert>
+      )}
+      {outcome?.status === 'cancelled' && <Alert severity="info" sx={{ mt: 2 }}>{t('mandateJoinCancelled')}</Alert>}
+      {outcome?.status === 'refused' && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {outcome.causes.length > 0
+            ? outcome.causes.map((cause) => t(`mandateJoinNotConfirmed.${cause}`)).join(' ')
+            : t(`mandateJoinRefused.${outcome.reason}`)}
+        </Alert>
+      )}
+      {outcome?.status === 'wallet-failed' && <Alert severity="error" sx={{ mt: 2 }}>{t('mandateJoinWalletFailed')}</Alert>}
+      {(joining.isError || outcome?.status === 'failed') && <Alert severity="error" sx={{ mt: 2 }}>{t('mandateJoinFailed')}</Alert>}
+    </Box>
+  );
+}
+
+export function AcceptInvitationSection({ onAccepted, withMandate = false }: { onAccepted?: () => void; withMandate?: boolean }) {
   const { t } = useTranslation(COMPANY_NS);
   const [codeInput, setCodeInput] = useState('');
   const [accept, acceptance] = useAcceptInvitationMutation();
@@ -83,6 +130,7 @@ export function AcceptInvitationSection({ onAccepted }: { onAccepted?: () => voi
           {t('acceptInvitationError')}
         </Alert>
       )}
+      {withMandate && <MandateJoin onAccepted={onAccepted} />}
     </Card>
   );
 }
