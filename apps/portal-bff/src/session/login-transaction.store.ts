@@ -23,7 +23,7 @@
  * Assisted-By: Claude Code (claude-fable-5-2)
  ********************************************************************************/
 
-import type { LoginTransaction, LoginTransactionStoreOptions } from '../data/session.data.ts';
+import type { LoginTransaction, LoginTransactionStoreOptions, WalletStepPurpose } from '../data/session.data.ts';
 import { safeEqual } from '../http/csrf.ts';
 import { randomToken } from '../oidc/pkce.ts';
 
@@ -45,8 +45,8 @@ export class LoginTransactionStore {
     return this.transactions.size;
   }
 
-  /** Starts a sign-in for the browser that holds `binding` in its login cookie. */
-  public create(binding: string, returnTo: string): LoginTransaction {
+  /** Starts a sign-in for the browser that holds `binding` in its login cookie; a wallet step names its purpose. */
+  public create(binding: string, returnTo: string, purpose?: WalletStepPurpose): LoginTransaction {
     if (this.transactions.size >= this.options.maxTransactions) {
       this.sweep();
     }
@@ -64,6 +64,7 @@ export class LoginTransactionStore {
       binding,
       returnTo,
       expiresAt: this.options.now() + this.options.ttlMs,
+      ...(purpose ? { purpose } : {}),
     };
     this.transactions.set(transaction.state, transaction);
     return transaction;

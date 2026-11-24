@@ -70,13 +70,13 @@ export class EbwConnectorClient {
     return this.endpointsRequest;
   }
 
-  /** The URL of the authorization endpoint for this wallet step (code flow, PKCE S256, state, nonce, the scopes of 6.8). */
+  /** The URL of the authorization endpoint for this wallet step (code flow, PKCE S256, state, nonce, the scopes of its purpose). */
   public async authorizationUrl(transaction: LoginTransaction): Promise<string> {
     const url = new URL((await this.endpoints()).authorization);
     url.searchParams.set('response_type', 'code');
     url.searchParams.set('client_id', this.options.clientId);
     url.searchParams.set('redirect_uri', this.options.redirectUri);
-    url.searchParams.set('scope', BFF.EBW_SCOPE);
+    url.searchParams.set('scope', BFF.EBW_SCOPES[transaction.purpose ?? 'onboarding']);
     url.searchParams.set('state', transaction.state);
     url.searchParams.set('nonce', transaction.nonce);
     url.searchParams.set('code_challenge', codeChallengeOf(transaction.codeVerifier));

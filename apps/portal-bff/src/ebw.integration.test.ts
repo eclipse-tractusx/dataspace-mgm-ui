@@ -138,6 +138,26 @@ describe('wallet step at the EBW-Connector', () => {
     expect(log).not.toContain(query.state);
   });
 
+  it('asks for the person and the mandate only when the step is for a mandate, and refuses an unknown purpose', async () => {
+    const { browser, csrf } = await signedIn();
+
+    const start = await browser.call('/ebw/attestation/start?purpose=representation&return_to=%2Faccess-control');
+    const location = new URL(start.headers.location as string);
+    expect(location.searchParams.get('scope')).toBe('openid profile representation attestation');
+    const atConnector = await fetch(location, { redirect: 'manual' });
+    const callback = new URL(atConnector.headers.get('location') as string);
+    const done = await browser.call(`${callback.pathname}${callback.search}`);
+    expect(done.headers.location).toBe(`${app.origin}/access-control?wallet=returned`);
+    expect(JSON.parse((await collect(browser, csrf)).body)).toEqual({ status: 'received', attestation: connector.attestation });
+
+    const explicit = await browser.call('/ebw/attestation/start?purpose=onboarding');
+    expect(new URL(explicit.headers.location as string).searchParams.get('scope')).toBe(SCOPE);
+
+    const unknown = await browser.call('/ebw/attestation/start?purpose=anything');
+    expect(unknown.status).toBe(400);
+    expect(problemOf(unknown.body).type).toBe(`${PROBLEM}bad-request`);
+  });
+
   it('hands the attestation only to the signed-in portal: session, CSRF token and origin', async () => {
     const { browser, csrf } = await signedIn();
     await walletStep(browser);

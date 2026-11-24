@@ -27,6 +27,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { BFF } from '../constants/bff.constant.ts';
 import type { BffContext } from '../data/bff-context.data.ts';
 import type { WalletStepResult } from '../data/ebw.data.ts';
+import type { WalletStepPurpose } from '../data/session.data.ts';
 import { isCsrfValid, isOwnOrigin } from '../http/csrf.ts';
 import { sendErrorPage, sendJson, sendProblem, sendRedirect } from '../http/respond.ts';
 import { safeReturnTo } from '../http/return-to.ts';
@@ -61,14 +62,28 @@ function failureOf(error: string, description: string | null): WalletStepResult 
   return { status: 'failed', reason: /^[a-z_]{1,40}$/.test(error) ? error : 'error' };
 }
 
+/** The purpose a start request names, `onboarding` without one, or null for a word that is no purpose. */
+function purposeOf(value: string | null): WalletStepPurpose | null {
+  if (value === null || value === 'onboarding') {
+    return 'onboarding';
+  }
+  return value === 'representation' ? value : null;
+}
+
 /**
- * GET /ebw/attestation/start?return_to=<path>: starts the wallet step of the registration for the signed-in person and
- * sends the browser to the EBW-Connector. An outcome of an earlier step that was not collected is dropped.
+ * GET /ebw/attestation/start?return_to=<path>[&purpose=representation]: starts a wallet step for the signed-in person
+ * and sends the browser to the EBW-Connector. Without `purpose` it is the step of the registration (`onboarding`);
+ * `representation` is the step of a person who joins a company with a mandate. An outcome of an earlier step that was
+ * not collected is dropped.
  */
 export async function startWalletStep(context: BffContext, req: IncomingMessage, res: ServerResponse, query: URLSearchParams): Promise<void> {
   const { ebw } = context;
   if (!ebw) {
     return sendProblem(res, 404, 'not-found', NOT_CONNECTED);
+  }
+  const purpose = purposeOf(query.get(BFF.WALLET_PURPOSE_PARAM));
+  if (purpose === null) {
+    return sendProblem(res, 400, 'bad-request', 'purpose: onboarding or representation.');
   }
   const returnTo = returnPathOf(query.get('return_to'), context.config.publicOrigin);
   const session = sessionOf(context, req);
@@ -77,7 +92,7 @@ export async function startWalletStep(context: BffContext, req: IncomingMessage,
     return sendRedirect(res, `${context.config.publicOrigin}/auth/login?return_to=${encodeURIComponent(returnTo)}`);
   }
   session.walletStep = null;
-  const transaction = ebw.transactions.create(session.key, returnTo);
+  const transaction = ebw.transactions.create(session.key, returnTo, purpose);
   let location: string;
   try {
     location = await ebw.client.authorizationUrl(transaction);
@@ -132,7 +147,7 @@ export async function walletStepCallback(context: BffContext, req: IncomingMessa
 
 /**
  * POST /ebw/attestation: hands the outcome of the wallet step to the portal, once: `received` with the verification
- * attestation (for POST /applications of C1-M2), `cancelled`, `failed` with a reason, or `none` when no step has
+ * attestation (for POST /applications of C1-M2 or POST /invitations/accept of C2-M2), `cancelled`, `failed` with a reason, or `none` when no step has
  * ended since the last call. A write request: it needs the CSRF token and the portal as origin.
  */
 export function collectAttestation(context: BffContext, req: IncomingMessage, res: ServerResponse): void {

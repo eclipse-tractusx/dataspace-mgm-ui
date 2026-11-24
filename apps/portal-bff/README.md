@@ -35,7 +35,7 @@ It needs Node >= 24 and has no dependencies: Node runs the TypeScript sources di
 | `POST /auth/logout` | Ends the session, clears the cookie and ends the session at Keycloak with the refresh token (no browser redirect). Always 204. |
 | `GET /me` | `{ id, name, username, company_id, bpn, permissions, csrf_token }` from the claims of the access token; 401 as Problem Details when nobody is signed in. `Cache-Control: no-store`. |
 | `/api/**` | Forwarded to the backend with `Authorization: Bearer <access token>`. Write requests need the header `X-CSRF-Token` with the token from `/me` (403 otherwise). The access token is refreshed 30 seconds before it expires; when the identity provider refuses the refresh, the session ends and the answer is 401. Bodies are streamed in both directions, Server-Sent Events included. |
-| `GET /ebw/attestation/start?return_to=<path>` | Wallet step: 302 to the authorization endpoint of the EBW-Connector with `state`, `nonce`, a PKCE S256 challenge and the scopes `openid profile representation company attestation`. Needs a session; without one it goes to `/auth/login` first. |
+| `GET /ebw/attestation/start?return_to=<path>[&purpose=representation]` | Wallet step: 302 to the authorization endpoint of the EBW-Connector with `state`, `nonce`, a PKCE S256 challenge and the scopes of the purpose. Without `purpose` (or with `onboarding`): `openid profile representation company attestation`, the step of the registration. `representation`: `openid profile representation attestation`, the step of a person who joins a company with a mandate; the Business Wallet takes no part. Another word: 400. Needs a session; without one it goes to `/auth/login` first. |
 | `GET /ebw/callback` | Wallet step: checks `state` (once, and only in the session that started the step), exchanges the code with `private_key_jwt`, checks the ID token, keeps the outcome in the session and goes back to `return_to` with the query parameter `wallet=returned`. |
 | `POST /ebw/attestation` | Wallet step: the outcome, handed out once: `{ "status": "received", "attestation": "<JWS>" }`, `cancelled`, `failed` with a `reason`, or `none`. Needs the session and the header `X-CSRF-Token`. |
 | `GET /ebw/jwks` | The public key of the client at the EBW-Connector, for its entry there (`jwksUri`). |
@@ -102,7 +102,11 @@ portal page          BFF                          EBW-Connector            walle
 ```
 
 The page leaves the portal for the step and continues after the return (`packages/c1-m2-core`, adapter
-`wallet-attestation-bff.repository.ts`; `apps/portal/src/features/onboarding/hooks/useWalletReturn.ts`).
+`wallet-attestation-bff.repository.ts`; `apps/portal/src/core/useWalletReturn.ts`).
+
+The same step with `purpose=representation` serves a person who joins a company with a mandate (C2-M2): the page
+Users of Access control passes the attestation to `POST /api/app-access/invitations/accept`
+(`packages/c2-m2-core`, adapter `mandate-attestation-bff.repository.ts`). The client at the EBW-Connector is the same.
 
 - The outcome is kept in the session and handed out once. A new step drops an outcome that was not collected.
 - A step has to come back within 20 minutes. That is longer than a transaction lives at the EBW-Connector (10 minutes

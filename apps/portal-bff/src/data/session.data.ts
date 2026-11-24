@@ -75,7 +75,12 @@ export interface LoginTransaction {
   binding: string;
   returnTo: string;
   expiresAt: number;
+  /** Wallet steps only: what the step is for; it decides the scopes at the EBW-Connector. */
+  purpose?: WalletStepPurpose;
 }
+
+/** What a wallet step is for: the purposes of a verification attestation (C5-M1 9.1). */
+export type WalletStepPurpose = 'onboarding' | 'representation';
 
 export interface LoginTransactionStoreOptions {
   ttlMs: number;

@@ -128,7 +128,7 @@ export async function startFakeEbwConnector(clientId: string, now: () => number)
       const valid =
         query.response_type === 'code' &&
         query.client_id === clientId &&
-        query.scope === BFF.EBW_SCOPE &&
+        (Object.values(BFF.EBW_SCOPES) as string[]).includes(query.scope) &&
         query.code_challenge_method === 'S256' &&
         Boolean(query.code_challenge && query.state && query.nonce && query.redirect_uri);
       if (!valid) {

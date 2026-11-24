@@ -32,8 +32,17 @@ export const BFF = {
   CALLBACK_PATH: '/auth/callback',
   /** Redirect URI of the wallet step at the EBW-Connector. */
   EBW_CALLBACK_PATH: '/ebw/callback',
-  /** Scopes of the wallet step of the registration (C5-M1 6.8): person, representation, company, attestation. */
-  EBW_SCOPE: 'openid profile representation company attestation',
+  /**
+   * Scopes of a wallet step by its purpose (C5-M1 6.1). `onboarding`: person, mandate and the company from its
+   * Business Wallet, for the registration (C1-M2). `representation`: person and mandate only, for a person who joins
+   * a company with a mandate (C2-M2 6.8a).
+   */
+  EBW_SCOPES: {
+    onboarding: 'openid profile representation company attestation',
+    representation: 'openid profile representation attestation',
+  },
+  /** Query parameter of GET /ebw/attestation/start that names the purpose; without it the purpose is `onboarding`. */
+  WALLET_PURPOSE_PARAM: 'purpose',
   /** The page the wallet step returns to gets this query parameter, so it knows to collect the outcome. */
   WALLET_RETURN_PARAM: 'wallet',
   WALLET_RETURNED: 'returned',
