@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The image of `apps/portal-bff` builds the application review against the service (`VITE_REVIEW_API=live` as build argument); before, every image showed the review on example data.
 - Cross-platform path resolution in `dev-bff.test.ts` ensuring test suite succeeds reliably across POSIX and Windows environments.
 
 - A feature opened from the sidebar loads its translations; it showed raw keys (for example Participant management) until the page was reloaded

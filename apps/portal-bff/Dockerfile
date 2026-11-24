@@ -41,6 +41,9 @@ WORKDIR /workspace
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 COPY . .
+# The image serves the real service, so the application review calls it too (src/core/review-container.ts).
+# Vite reads the value at build time; --build-arg VITE_REVIEW_API=mock builds the review on example data.
+ARG VITE_REVIEW_API=live
 RUN npx nx build portal --configuration=production \
     && mkdir -p /out/public /out/src \
     && cp -R dist/apps/portal/. /out/public/ \
