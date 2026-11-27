@@ -30,6 +30,24 @@ export const BFF = {
   HOST_PREFIX: '__Host-',
   CSRF_HEADER: 'x-csrf-token',
   CALLBACK_PATH: '/auth/callback',
+  /** Redirect URI of the wallet step at the EBW-Connector. */
+  EBW_CALLBACK_PATH: '/ebw/callback',
+  /**
+   * Scopes of a wallet step by its purpose (C5-M1 6.1). `onboarding`: person, mandate and the company from its
+   * Business Wallet, for the registration (C1-M2). `representation`: person and mandate only, for a person who joins
+   * a company with a mandate (C2-M2 6.8a).
+   */
+  EBW_SCOPES: {
+    onboarding: 'openid profile representation company attestation',
+    representation: 'openid profile representation attestation',
+  },
+  /** Query parameter of GET /ebw/attestation/start that names the purpose; without it the purpose is `onboarding`. */
+  WALLET_PURPOSE_PARAM: 'purpose',
+  /** The page the wallet step returns to gets this query parameter, so it knows to collect the outcome. */
+  WALLET_RETURN_PARAM: 'wallet',
+  WALLET_RETURNED: 'returned',
+  /** A verification attestation is at most this long (C1-M2 7.2: 16 KB). */
+  MAX_ATTESTATION_CHARS: 16_384,
   /** Client whose roles are the permission keys of GET /me (C2-M5 7.5). */
   PERMISSIONS_CLIENT: 'portal-core',
   PROBLEM_PREFIX: 'urn:portal-bff:problem:',
@@ -37,6 +55,12 @@ export const BFF = {
   API_METHODS: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE'],
   /** A sign-in must be finished within this time. */
   LOGIN_TTL_MS: 10 * 60_000,
+  /**
+   * A wallet step must be finished within this time. Longer than the lifetime of a transaction at the EBW-Connector
+   * (C5-M1 4: `TRANSACTION_TTL_SECONDS`, default 10 minutes), so that a step that expires there still comes back to
+   * the page as a failed step and not as an unknown one.
+   */
+  WALLET_STEP_TTL_MS: 20 * 60_000,
   /** The access token is refreshed this long before it expires. */
   REFRESH_SKEW_MS: 30_000,
   /** Accepted clock difference to the identity provider when checking the ID token. */

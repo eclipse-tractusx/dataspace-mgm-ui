@@ -29,15 +29,16 @@ import type { RequestAttestationResult } from '../../domain/data/request-attesta
 import type { WalletAttestationRepository } from '../../domain/repositories/wallet-attestation.repository';
 
 /**
- * "Verify with the Business Wallet": gets the verification attestation of the wallet step (stand-in for the BFF, open
- * point P0). Expected outcomes are results, not exceptions.
+ * "Verify with the Business Wallet": gets the verification attestation of the wallet step of the BFF. Expected
+ * outcomes are results, not exceptions. `returnTo` is the page that continues after the step (see the port): a page
+ * that sees `wallet=returned` in its address executes the use case again and gets the outcome.
  */
 export class RequestAttestationUseCase {
   constructor(private readonly wallet: WalletAttestationRepository) {}
 
-  public async execute(): Promise<RequestAttestationResult> {
+  public async execute(returnTo?: string): Promise<RequestAttestationResult> {
     try {
-      const attestation = await this.wallet.requestAttestation();
+      const attestation = await this.wallet.requestAttestation(returnTo);
       return attestation ? { status: 'received', attestation } : { status: 'cancelled' };
     } catch (error) {
       return ProblemOutcomeDomain.resultOf(error, []);

@@ -23,6 +23,8 @@
  * Assisted-By: Claude Code (claude-fable-5-2)
  ********************************************************************************/
 
+import type { WalletStepResult } from './ebw.data.ts';
+
 /** A signed-in person. Tokens stay here, on the server; the browser only holds the random session id. */
 export interface Session {
   /** SHA-256 of the session id: the id itself is never stored. */
@@ -41,6 +43,8 @@ export interface Session {
   lastSeenAt: number;
   /** A running refresh, shared by parallel requests. */
   refreshing: Promise<SessionState> | null;
+  /** Outcome of the last wallet step that the portal has not collected yet (POST /ebw/attestation). */
+  walletStep: WalletStepResult | null;
 }
 
 export type SessionState = 'ok' | 'ended' | 'unavailable';
@@ -71,7 +75,12 @@ export interface LoginTransaction {
   binding: string;
   returnTo: string;
   expiresAt: number;
+  /** Wallet steps only: what the step is for; it decides the scopes at the EBW-Connector. */
+  purpose?: WalletStepPurpose;
 }
+
+/** What a wallet step is for: the purposes of a verification attestation (C5-M1 9.1). */
+export type WalletStepPurpose = 'onboarding' | 'representation';
 
 export interface LoginTransactionStoreOptions {
   ttlMs: number;

@@ -29,6 +29,7 @@ import { ERIKA_SESSION, MAX_APPLICATION_REACTIVATION, MAX_SESSION } from '@datas
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { features, getAllRoutes } from '../main';
+import { choiceOfReturn, startReturnPath } from './hooks/useStartApplication';
 import { onboardingFeature } from './routes';
 import { onboardingTranslations } from './i18n';
 import { renderOnboarding } from './test-utils';
@@ -103,6 +104,44 @@ describe('Onboarding: start application (C1-M2)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Continue with the Business Wallet' }));
     fireEvent.click(await screen.findByRole('button', { name: 'Open wallet' }));
     expect(await screen.findByText(/HTTP 502/)).toHaveTextContent('EBW-Connector not reachable');
+  });
+
+  it('puts the choice into the address the wallet step returns to, and reads it back', () => {
+    expect(startReturnPath({ kind: 'ONBOARDING' })).toBe('/onboarding/start?kind=ONBOARDING');
+    expect(startReturnPath({ kind: 'ONBOARDING', bpn: '  ' })).toBe('/onboarding/start?kind=ONBOARDING');
+    expect(startReturnPath({ kind: 'REACTIVATION', bpn: ' BPNL00000000003C ' })).toBe('/onboarding/start?kind=REACTIVATION&bpn=BPNL00000000003C');
+    expect(choiceOfReturn(new URLSearchParams('kind=TRANSFER&bpn=BPNL00000000003C'))).toEqual({ kind: 'TRANSFER', bpn: 'BPNL00000000003C' });
+    expect(choiceOfReturn(new URLSearchParams('kind=SOMETHING'))).toEqual({ kind: 'ONBOARDING', bpn: '' });
+    expect(choiceOfReturn(new URLSearchParams(''))).toEqual({ kind: 'ONBOARDING', bpn: '' });
+  });
+
+  it('goes on after the wallet step returned: collects the attestation, creates the application, opens the company data', async () => {
+    const { applicationRepository } = renderOnboarding('/onboarding/start?kind=ONBOARDING&wallet=returned', { session: ERIKA_SESSION });
+    expect(await screen.findByRole('heading', { name: 'Your company' })).toBeInTheDocument();
+    const created = applicationRepository?.applications[0];
+    expect(created).toMatchObject({ kind: 'ONBOARDING', verification: 'EBW' });
+    expect(screen.getByTestId('location')).toHaveTextContent(`/onboarding/application/${created?.id}/company-data`);
+    // Once, although the page renders several times.
+    expect(applicationRepository?.applications).toHaveLength(1);
+  });
+
+  it('restores the choice of an existing company after the return and shows a failure of the step on the page', async () => {
+    renderOnboarding('/onboarding/start?kind=REACTIVATION&bpn=BPNL00000000003C&wallet=returned', {
+      session: MAX_SESSION,
+      c1m2: { failure: new CoreHttpException(502, null, 'EBW-Connector not reachable') },
+    });
+    expect(await screen.findByText(/HTTP 502/)).toHaveTextContent('EBW-Connector not reachable');
+    expect(screen.getByRole('button', { name: /Reactivate it here/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByLabelText(/Business partner number \(BPN\)/)).toHaveValue('BPNL00000000003C');
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/start');
+  });
+
+  it('does not start the wallet step for an address without the mark of a return', async () => {
+    const { applicationRepository } = renderOnboarding('/onboarding/start?kind=ONBOARDING', { session: ERIKA_SESSION });
+    expect(await screen.findByText('Erika Mustermann')).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(applicationRepository?.applications).toHaveLength(0);
+    expect(screen.getByTestId('location')).toHaveTextContent('/onboarding/start');
   });
 
   it('asks a signed-out person to sign in', async () => {

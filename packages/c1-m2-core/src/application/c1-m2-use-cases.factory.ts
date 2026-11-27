@@ -55,7 +55,7 @@ export interface C1M2Ports {
   referenceData: ReferenceDataRepository;
   applications: ApplicationRepository;
   agreements: AgreementRepository;
-  /** The wallet step (stand-in for the BFF until it offers the attestation, open point P0). */
+  /** The wallet step of the BFF (`/ebw/**`); not an operation of C1-M2. */
   wallet: WalletAttestationRepository;
 }
 

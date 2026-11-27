@@ -28,13 +28,17 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { BFF } from './constants/bff.constant.ts';
 import type { BffConfig } from './data/bff-config.data.ts';
 import type { Bff, BffContext, BffOptions } from './data/bff-context.data.ts';
+import type { EbwContext } from './data/ebw.data.ts';
 import { cookieName } from './http/cookies.ts';
 import { parseRequestTarget } from './http/request-target.ts';
 import { applySecurityHeaders, sendJson, sendProblem } from './http/respond.ts';
 import { jsonLog } from './log.ts';
+import { loadClientKey } from './oidc/client-key.ts';
+import { EbwConnectorClient } from './oidc/ebw-connector.client.ts';
 import { OidcClient } from './oidc/oidc.client.ts';
 import { apiProxy } from './routes/api-proxy.route.ts';
 import { callback, login, logout } from './routes/auth.routes.ts';
+import { clientJwks, collectAttestation, startWalletStep, walletStepCallback } from './routes/ebw.routes.ts';
 import { me } from './routes/me.route.ts';
 import { serveConfig, serveStatic } from './routes/static.route.ts';
 import { LoginTransactionStore } from './session/login-transaction.store.ts';
@@ -79,6 +83,21 @@ async function route(context: BffContext, req: IncomingMessage, res: ServerRespo
   if (path.startsWith('/api/')) {
     return apiProxy(context, req, res, target);
   }
+  if (path === '/ebw/attestation/start') {
+    return allow(res, method, 'GET') ? startWalletStep(context, req, res, target.searchParams) : undefined;
+  }
+  if (path === BFF.EBW_CALLBACK_PATH) {
+    return allow(res, method, 'GET') ? walletStepCallback(context, req, res, target.searchParams) : undefined;
+  }
+  if (path === '/ebw/attestation') {
+    return allow(res, method, 'POST') ? collectAttestation(context, req, res) : undefined;
+  }
+  if (path === '/ebw/jwks') {
+    return allow(res, method, 'GET') ? clientJwks(context, res) : undefined;
+  }
+  if (path === '/ebw' || path.startsWith('/ebw/')) {
+    return sendProblem(res, 404, 'not-found', 'Not found.');
+  }
   if (!allow(res, method, 'GET', 'HEAD')) {
     return;
   }
@@ -88,13 +107,35 @@ async function route(context: BffContext, req: IncomingMessage, res: ServerRespo
   return serveStatic(context, req, res, path);
 }
 
+/** The wallet step, when the settings name an EBW-Connector. Reads the key of the client: throws when it is unusable. */
+function createEbwContext(config: BffConfig, now: () => number, fetchImpl: typeof fetch): EbwContext | null {
+  if (!config.ebw) {
+    return null;
+  }
+  const key = loadClientKey(config.ebw.keyFile);
+  return {
+    client: new EbwConnectorClient({
+      issuer: config.ebw.issuer,
+      clientId: config.ebw.clientId,
+      redirectUri: `${config.publicOrigin}${BFF.EBW_CALLBACK_PATH}`,
+      key,
+      now,
+      fetch: fetchImpl,
+    }),
+    transactions: new LoginTransactionStore({ ttlMs: BFF.WALLET_STEP_TTL_MS, maxTransactions: BFF.MAX_LOGIN_TRANSACTIONS, now }),
+    jwks: { keys: [key.publicJwk] },
+  };
+}
+
 /**
  * The BFF as a request handler for `node:http`: serves the portal, signs persons in at the identity provider, keeps
- * their tokens in a server-side session and forwards /api/** to the backend with the token of the person.
+ * their tokens in a server-side session and forwards /api/** to the backend with the token of the person. With the
+ * settings of an EBW-Connector it also runs the wallet step of the registration (/ebw/**).
  */
 export function createBff(config: BffConfig, options: BffOptions = {}): Bff {
   const now = options.now ?? Date.now;
   const log = options.log ?? jsonLog;
+  const fetchImpl: typeof fetch = options.fetch ?? ((...args) => fetch(...args));
   const context: BffContext = {
     config,
     sessions: new SessionStore({
@@ -111,8 +152,9 @@ export function createBff(config: BffConfig, options: BffOptions = {}): Bff {
       redirectUri: `${config.publicOrigin}${BFF.CALLBACK_PATH}`,
       idpHint: config.idpHint,
       now,
-      fetch: options.fetch ?? ((...args) => fetch(...args)),
+      fetch: fetchImpl,
     }),
+    ebw: createEbwContext(config, now, fetchImpl),
     log,
     now,
     sessionCookie: cookieName(BFF.SESSION_COOKIE, config.secureCookies),
@@ -124,6 +166,7 @@ export function createBff(config: BffConfig, options: BffOptions = {}): Bff {
   const sweeper = setInterval(() => {
     context.sessions.sweep();
     context.transactions.sweep();
+    context.ebw?.transactions.sweep();
   }, BFF.SWEEP_INTERVAL_MS);
   sweeper.unref();
 

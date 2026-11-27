@@ -60,5 +60,26 @@
     "ACCEPTED": "Accepted",
     "REVOKED": "Revoked",
     "EXPIRED": "Expired"
+  },
+  "mandateJoinIntro": "Or present the mandate of your company from your wallet. You do not need a code then.",
+  "mandateJoinButton": "Join with a mandate",
+  "mandateJoinCancelled": "You declined the request in the wallet. Nothing was changed.",
+  "mandateJoinWalletFailed": "The check in the wallet failed. Try again.",
+  "mandateJoinFailed": "Joining failed. Try again later.",
+  "mandateJoinRefused": {
+    "attestation-invalid": "The result of the check was not accepted. Start the step again.",
+    "representation-not-confirmed": "The mandate was not confirmed. Ask your company to issue a new mandate.",
+    "name-mismatch": "The name in the wallet does not match your account.",
+    "invitation-not-found": "Your company has not added you in this portal yet. Contact your Company Admin.",
+    "company-not-active": "The company of your mandate is not active in this portal.",
+    "user-already-bound": "Your account already belongs to a company.",
+    "staff-company-conflict": "Accounts of the operator cannot join another company."
+  },
+  "mandateJoinNotConfirmed": {
+    "EXPIRED": "The mandate has expired. Ask your company to issue a new mandate.",
+    "PERSON_MISMATCH": "The mandate was issued to another person than your personal identification.",
+    "COMPANY_MISMATCH": "The mandate names another company than the company credential it contains.",
+    "TYPE_NOT_ACCEPTED": "This kind of mandate is not accepted here.",
+    "ISSUER_NOT_TRUSTED": "The issuer of the mandate is not known as trusted. Ask your company to issue a new mandate."
   }
 }

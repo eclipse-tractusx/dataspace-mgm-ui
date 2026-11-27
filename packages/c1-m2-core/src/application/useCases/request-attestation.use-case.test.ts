@@ -48,6 +48,14 @@ describe('RequestAttestationUseCase', () => {
     expect(payload).toMatchObject({ person: { given_name: 'Max' }, company: { ebwoid: 'EBWOID-DE-0000000003' } });
   });
 
+  it('passes the page to return to on to the wallet step', async () => {
+    const seen: Array<string | undefined> = [];
+    const wallet = { requestAttestation: async (returnTo?: string) => (seen.push(returnTo), 'a.b.c') };
+    await new RequestAttestationUseCase(wallet).execute('/onboarding/start?kind=ONBOARDING');
+    await new RequestAttestationUseCase(wallet).execute();
+    expect(seen).toEqual(['/onboarding/start?kind=ONBOARDING', undefined]);
+  });
+
   it('reports a cancelled wallet step and a failure', async () => {
     const caller = callerOf(ERIKA_SESSION);
     expect(await new RequestAttestationUseCase(new InMemoryWalletAttestationRepository({ caller, cancel: true })).execute()).toEqual({ status: 'cancelled' });

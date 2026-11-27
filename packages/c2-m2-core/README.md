@@ -28,6 +28,7 @@ Framework-free core package of the backend module **C2-M2 Users and App Access**
 | `createInvitation.execute(companyId, input)` | `POST /companies/{companyId}/invitations` (`createInvitation`) | `manage_company_users` (`company`) | `success` (`InvitationWithCode`), `not-found`, `forbidden`, `conflict`, `failed` |
 | `revokeInvitation.execute(companyId, invitationId)` | `DELETE /companies/{companyId}/invitations/{invitationId}` (`revokeInvitation`) | `manage_company_users` (`company`) | `success` (`true`), `not-found`, `forbidden`, `conflict`, `failed` |
 | `acceptInvitation.execute(code)` | `POST /invitations/accept` (`acceptInvitation`) | `accept_invitation` (`own`) | `success` (`AcceptInvitationResult`), `not-found`, `forbidden`, `conflict`, `failed` |
+| `acceptInvitationWithMandate.execute(returnTo?)` | wallet step of the BFF (`/ebw/attestation/start?purpose=representation`, `POST /ebw/attestation`), then `POST /invitations/accept` with `attestation` | `accept_invitation` (`own`) | `joined` (`AcceptInvitationResult`), `cancelled`, `refused` (`reason`: the Problem name of the backend), `wallet-failed`, `failed` |
 | `getCompanyAppRoles.execute(companyId, appId, lang)` | `GET /companies/{companyId}/apps/{appId}/roles` (`getCompanyAppRoles`) | `view_app_roles` (`company`) | `success` (`CompanyAppRoles`), `not-found`, `forbidden`, `conflict`, `failed` |
 | `setUserAppRoles.execute(companyId, userId, appId, roles)` | `PUT /companies/{companyId}/users/{userId}/apps/{appId}/roles` (`setUserAppRoles`) | `assign_app_roles` (`company`) | `success` (`AppRolesResult`), `not-found`, `forbidden`, `conflict`, `failed` |
 
@@ -41,6 +42,28 @@ const result = await c2m2.listCompanyUsers.execute(companyId, { page: 0 });
 ```
 
 In-memory adapters and fixtures (`InMemoryCompanyUserRepository`, `InMemoryInvitationRepository`, `COMPANY_USERS`, `COMPANY_APP_ROLES`) are exported from `@dataspace-mgm/c2-m2-core/testing`.
+
+## Joining with a mandate
+
+`acceptInvitationWithMandate` lets a person join the company that invited them by showing a mandate of that company in
+their wallet, in place of the invitation code. It has two steps behind one call:
+
+1. The port `MandateAttestationRepository` yields a verification attestation. Its adapter
+   (`mandate-attestation-bff.repository.ts`) asks the BFF: `POST /ebw/attestation` collects the outcome of a wallet
+   step; when there is none, the browser leaves the portal for `GET /ebw/attestation/start?purpose=representation`
+   and comes back to `returnTo` with `wallet=returned`. The call never settles then; the page calls again after the
+   return.
+2. `InvitationRepository.acceptWithMandate(attestation)` posts it to `POST /invitations/accept`.
+
+A refusal of the backend ends as `refused` with its `reason`, the name of the Problem Details. For
+`representation-not-confirmed` the adapter also keeps the field `reasons` of the answer (`MandateNotConfirmedException`),
+and the result carries the ones the page has words for as `causes`: `EXPIRED`, `PERSON_MISMATCH`, `COMPANY_MISMATCH`,
+`TYPE_NOT_ACCEPTED`, `ISSUER_NOT_TRUSTED` (C5-M1 6.5). `causes` is empty for every other refusal.
+
+`createC2M2Module(config, wallet)` takes the place of the BFF as its second argument (`MandateStepOptions`; default:
+the origin of the portal). The use case is missing where no wallet step is connected (mock mode); the page then
+offers the code only. The adapter has the same shape as the wallet step of `c1-m2-core`; core packages do not import
+each other.
 
 ## Update the spec
 

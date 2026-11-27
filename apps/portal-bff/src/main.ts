@@ -29,6 +29,7 @@ import { join } from 'node:path';
 import process from 'node:process';
 import { createBff } from './create-bff.ts';
 import type { BffConfig } from './data/bff-config.data.ts';
+import type { Bff } from './data/bff-context.data.ts';
 import { jsonLog } from './log.ts';
 import { loadConfig } from './load-config.ts';
 
@@ -36,17 +37,18 @@ const SHUTDOWN_GRACE_MS = 10_000;
 
 function start(): void {
   let config: BffConfig;
+  let bff: Bff;
   try {
     config = loadConfig(process.env);
     if (!statSync(join(config.staticDir, 'index.html'), { throwIfNoEntry: false })?.isFile()) {
       throw new Error('The BFF cannot start: BFF_STATIC_DIR does not contain index.html. Build the portal first (nx build portal).');
     }
+    bff = createBff(config);
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : 'The BFF cannot start.'}\n`);
     process.exit(1);
   }
 
-  const bff = createBff(config);
   const server = createServer(bff.handler);
   server.listen(config.port, () => {
     jsonLog('info', 'started', {
@@ -60,6 +62,8 @@ function start(): void {
       config_file_set: config.configFile !== null,
       session_idle_seconds: config.sessionIdleSeconds,
       session_max_seconds: config.sessionMaxSeconds,
+      ebw_connector: config.ebw?.issuer ?? null,
+      ebw_client_id: config.ebw?.clientId ?? null,
     });
   });
 
@@ -67,6 +71,10 @@ function start(): void {
   bff.context.oidc.metadata().then(
     () => jsonLog('info', 'identity_provider_ready'),
     () => jsonLog('warn', 'identity_provider_not_ready', { hint: 'discovery failed; it is tried again at the next sign-in' }),
+  );
+  bff.context.ebw?.client.endpoints().then(
+    () => jsonLog('info', 'ebw_connector_ready'),
+    () => jsonLog('warn', 'ebw_connector_not_ready', { hint: 'discovery failed; it is tried again at the next wallet step' }),
   );
 
   const stop = () => {

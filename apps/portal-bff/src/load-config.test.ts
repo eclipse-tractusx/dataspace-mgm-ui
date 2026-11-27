@@ -49,7 +49,30 @@ describe('settings', () => {
       port: 8080,
       sessionIdleSeconds: 1800,
       sessionMaxSeconds: 36000,
+      ebw: null,
     });
+  });
+
+  it('reads the settings of the wallet step', () => {
+    const config = loadConfig({
+      ...env,
+      BFF_EBW_ISSUER_URL: 'https://ebw-connector.example.org/',
+      BFF_EBW_CLIENT_ID: 'osp-a-ui',
+      BFF_EBW_KEY_FILE: '/app/keys/ebw-client.pem',
+    });
+    expect(config.ebw).toEqual({ issuer: 'https://ebw-connector.example.org', clientId: 'osp-a-ui', keyFile: '/app/keys/ebw-client.pem' });
+  });
+
+  it('accepts an EBW-Connector on https for a portal on localhost', () => {
+    const config = loadConfig({
+      ...env,
+      BFF_PUBLIC_URL: 'http://localhost:8081',
+      BFF_ISSUER_URL: 'http://localhost:8080/auth/realms/CX-Central',
+      BFF_EBW_ISSUER_URL: 'https://ebw-connector.example.org',
+      BFF_EBW_CLIENT_ID: 'osp-a-ui',
+      BFF_EBW_KEY_FILE: '/app/keys/ebw-client.pem',
+    });
+    expect(config.ebw?.issuer).toBe('https://ebw-connector.example.org');
   });
 
   it('reads the optional settings', () => {
@@ -98,6 +121,12 @@ describe('settings', () => {
     [{ BFF_SESSION_IDLE_SECONDS: '0' }, 'BFF_SESSION_IDLE_SECONDS must be a whole number'],
     [{ BFF_SESSION_MAX_SECONDS: '-5' }, 'BFF_SESSION_MAX_SECONDS must be a whole number'],
     [{ BFF_SESSION_IDLE_SECONDS: '600', BFF_SESSION_MAX_SECONDS: '60' }, 'must not be greater than'],
+    [{ BFF_EBW_ISSUER_URL: 'https://ebw.example.org' }, 'belong together: set all three or none (missing: BFF_EBW_CLIENT_ID, BFF_EBW_KEY_FILE)'],
+    [{ BFF_EBW_CLIENT_ID: 'osp-a-ui', BFF_EBW_KEY_FILE: '/k.pem' }, 'missing: BFF_EBW_ISSUER_URL'],
+    [{ BFF_EBW_ISSUER_URL: 'http://ebw.example.org', BFF_EBW_CLIENT_ID: 'osp-a-ui', BFF_EBW_KEY_FILE: '/k.pem' }, 'BFF_EBW_ISSUER_URL must be https'],
+    [{ BFF_EBW_ISSUER_URL: 'ebw.example.org', BFF_EBW_CLIENT_ID: 'osp-a-ui', BFF_EBW_KEY_FILE: '/k.pem' }, 'BFF_EBW_ISSUER_URL is not a URL'],
+    [{ BFF_EBW_ISSUER_URL: 'https://ebw.example.org', BFF_EBW_CLIENT_ID: 'a b', BFF_EBW_KEY_FILE: '/k.pem' }, 'BFF_EBW_CLIENT_ID must be the client id'],
+    [{ BFF_EBW_ISSUER_URL: 'https://ebw.example.org', BFF_EBW_CLIENT_ID: 'osp-a-ui', BFF_EBW_KEY_FILE: 'k.pem' }, 'BFF_EBW_KEY_FILE must be an absolute path'],
   ])('refuses %j', (change, message) => {
     expect(() => loadConfig({ ...env, ...change })).toThrow(message);
   });

@@ -70,7 +70,12 @@ export function CompanyUsers() {
         onRemove={selectedUser && canManage ? () => { removal.reset(); dispatch(actions.setConfirming(true)); } : undefined}
         onRetry={() => { if (companyId) { void list.refetch(); } }}
         onSignIn={() => identity.login.execute(window.location.pathname)} />
-      {canAcceptInvitation && <AcceptInvitationSection onAccepted={() => identity.login.execute(window.location.pathname)} />}
+      {canAcceptInvitation && (
+        <AcceptInvitationSection
+          withMandate={Boolean(c2m2.acceptInvitationWithMandate)}
+          onAccepted={() => identity.login.execute(window.location.pathname)}
+        />
+      )}
       {result?.status === 'success' && result.data.total > result.data.size && (
         <Stack direction="row" spacing={1} sx={{ mt: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
           <Button size="small" variant="outlined" disabled={ui.page === 0} onClick={() => dispatch(actions.setPage(ui.page - 1))}>{t('previous')}</Button>

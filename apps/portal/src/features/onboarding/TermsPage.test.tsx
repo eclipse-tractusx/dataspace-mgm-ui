@@ -106,6 +106,23 @@ describe('Onboarding: roles, terms and submission', () => {
     expect(await screen.findByRole('heading', { name: 'Application submitted' })).toBeInTheDocument();
   });
 
+  it('verifies again after the wallet step returned to the page, and only then', async () => {
+    const issuedAt = new Date(NOW.getTime() - 31 * 24 * 3600 * 1000).toISOString();
+    const application: ApplicationWithReviewAnemic = {
+      ...ERIKA_APPLICATION_CREATED,
+      attestation: { ...(ERIKA_APPLICATION_CREATED.attestation as NonNullable<ApplicationWithReviewAnemic['attestation']>), attestationId: 'old-jti', issuedAt, verifiedAt: issuedAt },
+    };
+    renderOnboarding(`${termsOf(application.id)}?wallet=returned`, { session: ERIKA_SESSION, c1m2: { applications: [application] } });
+    expect(await screen.findByText('Verified again with the Business Wallet')).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent(termsOf(application.id));
+  });
+
+  it('does not verify again on its own without the mark of a return', async () => {
+    renderOnboarding(termsOf(ERIKA_APPLICATION_CREATED.id), { session: ERIKA_SESSION, c1m2: { applications: [ERIKA_APPLICATION_CREATED] } });
+    await screen.findAllByRole('button', { name: /^Read and accept: / });
+    expect(screen.queryByText('Verified again with the Business Wallet')).not.toBeInTheDocument();
+  });
+
   it('asks for the documents and the declaration in the documents path', async () => {
     renderOnboarding(termsOf(HANS_APPLICATION_DOCUMENTS.id), { session: HANS_SESSION, c1m2: { applications: [HANS_APPLICATION_DOCUMENTS] } });
     await acceptAll();

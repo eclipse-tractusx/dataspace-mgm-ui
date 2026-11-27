@@ -70,6 +70,7 @@ export class SessionStore {
       createdAt: now,
       lastSeenAt: now,
       refreshing: null,
+      walletStep: null,
     };
     this.sessions.set(session.key, session);
     return { id, session };

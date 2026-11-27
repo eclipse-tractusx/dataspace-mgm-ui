@@ -1,5 +1,4 @@
 /********************************************************************************
- * Copyright (c) 2026 Catena-X Automotive Network e.V.
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -24,16 +23,21 @@
  * Assisted-By: Claude Code (claude-fable-5-2)
  ********************************************************************************/
 
-import type { WalletAttestationRepository } from '../../domain/repositories/wallet-attestation.repository';
+import { CoreHttpException } from '@dataspace-mgm/core-http';
 
 /**
- * Adapter of the wallet step outside mock mode. The verification attestation comes from the BFF, which is the OIDC
- * client of the EBW-Connector (FRAMEWORK 5.2 step 2); neither C1-M2 nor the BFF has an operation that hands it to the
- * browser yet (README, open point 1), and this package invents none. Until then the step fails, the use case reports
- * `failed`, and the verification path DOCUMENTS is the one that works against the backend.
+ * The backend answered 403 `representation-not-confirmed` (C2-M2 6.8a, section 12). `CoreHttpException` keeps only
+ * `status`, `type` and `title`; this one also keeps the field `reasons`, in which the backend repeats why the
+ * EBW-Connector did not confirm the mandate (C5-M1 6.5), so that the page can say it.
  */
-export class WalletAttestationUnavailableRepository implements WalletAttestationRepository {
-  public requestAttestation(): Promise<string | null> {
-    return Promise.reject(new Error('The wallet step is not connected: the BFF does not hand out the verification attestation yet.'));
+export class MandateNotConfirmedException extends CoreHttpException {
+  constructor(
+    status: number,
+    problemType: string,
+    message: string,
+    public readonly reasons: readonly string[],
+  ) {
+    super(status, problemType, message);
+    this.name = 'MandateNotConfirmedException';
   }
 }

@@ -31,7 +31,8 @@ import type { paths } from './generated/c1-m2-api';
 import { AgreementHttpRepository } from './infrastructure/repositories/agreement-http.repository';
 import { ApplicationHttpRepository } from './infrastructure/repositories/application-http.repository';
 import { ReferenceDataHttpRepository } from './infrastructure/repositories/reference-data-http.repository';
-import { WalletAttestationUnavailableRepository } from './infrastructure/repositories/wallet-attestation-unavailable.repository';
+import type { WalletStepOptions } from './infrastructure/data/c1-m2-infrastructure.data';
+import { WalletAttestationBffRepository } from './infrastructure/repositories/wallet-attestation-bff.repository';
 
 /** The base path of the module under the app's api_base_url (`servers.url` of specs/c1-m2/openapi.yaml without `/api`). */
 export const C1M2_BASE_PATH = '/registration';
@@ -39,14 +40,21 @@ export const C1M2_BASE_PATH = '/registration';
 /**
  * Creates the module once per app (composition root); `config.baseUrl` is the module's base URL. Mock mode and tests
  * wire the same use cases on the in-memory adapters (createMockC1M2Module of @dataspace-mgm/c1-m2-core/testing).
+ * `wallet` places the wallet step of the BFF (`/ebw/**`); by default the BFF is the origin of the portal.
  */
-export function createC1M2Module(config: CoreModuleConfig): C1M2Module {
+export function createC1M2Module(config: CoreModuleConfig, wallet: Partial<WalletStepOptions> = {}): C1M2Module {
   const client = createCoreClient<paths>(config);
   return createC1M2UseCases({
     referenceData: new ReferenceDataHttpRepository(client),
     applications: new ApplicationHttpRepository(client),
     agreements: new AgreementHttpRepository(client),
-    wallet: new WalletAttestationUnavailableRepository(),
+    wallet: new WalletAttestationBffRepository({
+      bffBaseUrl: '',
+      getCsrfToken: config.getCsrfToken,
+      onUnauthorized: config.onUnauthorized,
+      fetch: config.fetch,
+      ...wallet,
+    }),
   });
 }
 
@@ -139,4 +147,5 @@ export type { AgreementRepository } from './domain/repositories/agreement.reposi
 export type { ApplicationRepository } from './domain/repositories/application.repository';
 export type { ReferenceDataRepository } from './domain/repositories/reference-data.repository';
 export type { WalletAttestationRepository } from './domain/repositories/wallet-attestation.repository';
+export type { WalletStepOptions } from './infrastructure/data/c1-m2-infrastructure.data';
 export { ProblemOutcomeDomain } from './domain/domains/problem-outcome.domain';
